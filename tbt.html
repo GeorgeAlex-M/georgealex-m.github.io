@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thread-Based Testing Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        td, th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        th {
+            background-color: #f2f2f2;
+            height: auto;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            padding: 8px 4px;
+            text-align: center;
+            vertical-align: middle;
+            word-break: break-word;
+        }
+        td:nth-child(1), th:nth-child(1) { width: 5%; }
+        td:nth-child(2), th:nth-child(2) { width: 30%; }
+        td:nth-child(n+3), th:nth-child(n+3) { width: 7%; }
+        td:last-child, th:last-child { width: 8%; }
+        .thread-cell { width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; margin: 0 auto; }
+        .intake { background-color: #81B2C6; }
+        .setup { background-color: #CA4841; }
+        .product-analysis { background-color: #BC95B5; }
+        .survey-testing { background-color: #9CC37B; }
+        .deep-testing { background-color: #F5EC79; }
+        .reporting { background-color: #FF8F73; }
+        .closure { background-color: #E5E5E5; }
+        .container { display: flex; gap: 20px; }
+        .matrix-section { flex: 2; }
+        .control-section { flex: 1; }
+        input, select, button, textarea { margin: 5px 0; padding: 5px; width: 100%; }
+        button { background-color: #589C1F; color: #ffffff; border: none; cursor: pointer; }
+        button:hover { background-color: #85EB2F; }
+        .edit-icon { cursor: pointer; margin-left: 5px; }
+        .delete-icon { cursor: pointer; margin-left: 5px; }
+        .info-icon { cursor: pointer; margin-left: 5px; }
+        .info-icon:hover { opacity: 0.7; }
+        .charter-textarea { width: 90%; min-height: 100px; resize: vertical; }
+        select option:disabled { color: #888; }
+        .thread-charter { margin-bottom: 5px; }
+        .thread-name { font-weight: bold; }
+        .project-section { margin-bottom: 20px; display: flex; align-items: center; }
+        #projectSelect, #newProjectName { width: 200px; margin-right: 10px; }
+        .project-section button { width: auto; margin-right: 10px; }
+        .stage-actions { margin-top: 10px; }
+        .stage-actions button, .stage-actions select { width: auto; margin-right: 5px; }
+        .undo-redo { margin-top: 10px; }
+        .undo-redo button { width: auto; margin-right: 5px; }
+        .time-input { width: 120px; padding: 5px; margin: 5px 0; }
+        .thread-button { color: #000; margin: 5px 0; padding: 10px; border: 2px solid transparent; border-radius: 5px; cursor: pointer; transition: all 0.3s ease; width: 100%; text-align: left; position: relative; }
+        .thread-button.selected { border-color: #000; box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+        .thread-button.selected::after { content: '✓'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 1.2em; font-weight: bold; }
+        .thread-button:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <h1>Thread-Based Testing Tool</h1>
+    
+    <div class="project-section">
+        <select id="projectSelect"></select>
+        <input type="text" id="newProjectName" placeholder="New Project Name">
+        <button id="addProjectButton" onclick="addProject()">Add Project</button>
+        <button id="deleteProjectButton" onclick="deleteProject()">Delete Project</button>
+        <button onclick="exportProject()">Export Project</button>
+        <input type="file" id="importFile" style="display:none;" onchange="importProject(event)">
+        <button onclick="document.getElementById('importFile').click()">Import Project</button>
+    </div>
+    
+    <div class="container">
+        <div class="matrix-section">
+            <h2>Stages, Charters, and Threads</h2>
+            <table id="matrix"></table>
+            <div class="stage-actions">
+                <button onclick="addStage()">Add Stage</button>
+                <select id="deleteStageSelect"></select>
+                <button onclick="deleteStage()">Delete Selected Stage</button>
+            </div>
+            <div class="undo-redo">
+                <button onclick="undo()">Undo</button>
+                <button onclick="redo()">Redo</button>
+            </div>
+        </div>
+        <div class="control-section">
+            <h2>Add Active Thread to Stage</h2>
+            <select id="stageSelect"></select>
+            <textarea id="charter" placeholder="Enter charter for new active thread"></textarea>
+            <input type="number" id="threadTime" placeholder="Time (minutes)" class="time-input">
+            <h3>Active Threads</h3>
+            <div id="threadButtons"></div>
+            <button onclick="addActiveThread()">Add Active Thread</button>
+        </div>
+    </div>
+
+    <script>
+    let projects = [
+        {
+            name: "Volume Controller",
+            threads: [
+                { name: "Intake", class: "intake" },
+                { name: "Setup", class: "setup" },
+                { name: "Product Analysis", class: "product-analysis" },
+                { name: "Survey Testing", class: "survey-testing" },
+                { name: "Deep Testing", class: "deep-testing" },
+                { name: "Reporting", class: "reporting" },
+                { name: "Closure", class: "closure" }
+            ],
+            stages: [
+                { id: 1, charters: [
+                    { thread: 0, text: "Review the problem and negotiate the mission.", time: 30, created: 1625097600000, lastEdited: 1625097600000, editHistory: [] },
+                ], totalTime: 0 },
+                { id: 2, charters: [
+                    { thread: 2, text: "Review and diagram the specification.", time: 45, created: 1625184000000, lastEdited: 1625184000000, editHistory: [] },
+                ], totalTime: 0 },
+                { id: 3, charters: [
+                    { thread: 1, text: "Develop basic test jig and try testing through it.", time: 0 },
+                    { thread: 3, text: "Develop basic test jig and try testing through it.", time: 0 },
+                ], totalTime: 0 },
+                { id: 4, charters: [
+                    { thread: 1, text: "Report status and consult with client.", time: 0 },
+                    { thread: 5, text: "Report status and consult with client.", time: 0 }
+                ], totalTime: 0 },
+                { id: 5, charters: [
+                    { thread: 0, text: "Re-analyze the assignment.", time: 0 }
+                ], totalTime: 0 },
+                { id: 6, charters: [
+                    { thread: 2, text: "Re-analyze the specification.", time: 0 }
+                ], totalTime: 0 },
+                { id: 7, charters: [
+                    { thread: 3, text: "Survey the volume changing behavior on TV-side when mobile is connected.", time: 0 }
+                ], totalTime: 0 },
+                { id: 8, charters: [
+                    { thread: 2, text: "Consult with the client.", time: 0 },
+                    { thread: 5, text: "Consult with the client.", time: 0 },
+                ], totalTime: 0 },
+                { id: 9, charters: [
+                    { thread: 5, text: "Update my notes.", time: 0 }
+                ], totalTime: 0 },
+                { id: 10, charters: [
+                    { thread: 4, text: "Perform a mobile-connected sound range tour.", time: 0 }
+                ], totalTime: 0 },
+                { id: 11, charters: [
+                    { thread: 4, text: "Reverse engineer the product to produce parallel oracle.", time: 0 }
+                ], totalTime: 0 },
+                { id: 12, charters: [
+                    { thread: 4, text: "Perform an optimal tour of every six-command sequence combination for five commands.", time: 0 }
+                ], totalTime: 0 },
+                { id: 13, charters: [
+                    { thread: 2, text: "Stand back, get the big picture, and consult with client, again.", time: 0 },
+                    { thread: 5, text: "Stand back, get the big picture, and consult with client, again.", time: 0 },
+                    { thread: 6, text: "Stand back, get the big picture, and consult with client, again.", time: 0 }
+                ], totalTime: 0 },
+                { id: 14, charters: [
+                    { thread: 2, text: "Consult with Ilan Aegerter and perform a muting tour.", time: 0 },
+                    { thread: 4, text: "Consult with Ilan Aegerter and perform a muting tour.", time: 0 },
+                    { thread: 5, text: "Consult with Ilan Aegerter and perform a muting tour.", time: 0 }
+                ], totalTime: 0 },
+                { id: 15, charters: [
+                    { thread: 2, text: "Transpect with other testers and discover new test ideas.", time: 0 },
+                    { thread: 5, text: "Transpect with other testers and discover new test ideas.", time: 0 }
+                ], totalTime: 0 },
+                { id: 16, charters: [
+                    { thread: 2, text: "Consult with client and study DIAL and OIPF specifications.", time: 0 },
+                    { thread: 6, text: "Consult with client and study DIAL and OIPF specifications.", time: 0 }
+                ], totalTime: 0 },
+                { id: 17, charters: [
+                    { thread: 5, text: "Update report and consult with client.", time: 0 },
+                    { thread: 6, text: "Update report and consult with client.", time: 0 }
+                ], totalTime: 0 },
+                { id: 18, charters: [
+                    { thread: 4, text: "All Quads, Clean Start, Command Subset and Retrospective Oracle Testing.", time: 0 }
+                ], totalTime: 0 },
+                { id: 19, charters: [
+                    { thread: 2, text: "Create outline of test ideas for future testing.", time: 0 },
+                    { thread: 6, text: "Create outline of test ideas for future testing.", time: 0 }
+                ], totalTime: 0 },
+                { id: 20, charters: [
+                    { thread: 2, text: "Perform HTSM analysis and update report to client.", time: 0 },
+                    { thread: 6, text: "Perform HTSM analysis and update report to client.", time: 0 }
+                ], totalTime: 0 },
+                { id: 21, charters: [
+                    { thread: 2, text: "Produce extended state diagram.", time: 0 }
+                ], totalTime: 0 },
+                { id: 22, charters: [
+                    { thread: 6, text: "Delivery.", time: 0 }
+                ], totalTime: 0 }
+            ]
+        }
+    ];
+
+    let currentProject = {
+        ...projects[0],
+        uiState: {
+            selectedThreads: [],
+            charterText: '',
+            threadTime: '',
+            selectedStage: '1'
+        }
+    };
+    let history = [JSON.parse(JSON.stringify(projects))];
+    let historyIndex = 0;
+
+    function saveState(type = 'project') {
+        const state = {
+            type: type,
+            projects: JSON.parse(JSON.stringify(projects)),
+            currentProjectName: currentProject.name
+        };
+        history = history.slice(0, historyIndex + 1);
+        history.push(state);
+        historyIndex = history.length - 1;
+        updateUndoRedoButtons();
+    }
+
+    function undo() {
+        if (canUndo()) {
+            historyIndex--;
+            restoreState(history[historyIndex]);
+        }
+    }
+
+    function redo() {
+        if (canRedo()) {
+            historyIndex++;
+            restoreState(history[historyIndex]);
+        }
+    }
+
+    function canUndo() {
+        return historyIndex > 0;
+    }
+
+    function canRedo() {
+        return historyIndex < history.length - 1;
+    }
+
+    function updateUndoRedoButtons() {
+        document.querySelector('button[onclick="undo()"]').disabled = !canUndo();
+        document.querySelector('button[onclick="redo()"]').disabled = !canRedo();
+    }
+
+    function restoreState(state) {
+        if (state.type === 'project') {
+            projects = JSON.parse(JSON.stringify(state.projects));
+            currentProject = projects.find(p => p.name === state.currentProjectName) || projects[0];
+        } else if (state.type === 'charter') {
+            const projectIndex = projects.findIndex(p => p.name === state.currentProjectName);
+            if (projectIndex !== -1) {
+                projects[projectIndex] = JSON.parse(JSON.stringify(state.projects[projectIndex]));
+                currentProject = JSON.parse(JSON.stringify(projects[projectIndex]));
+            }
+        }
+        updateUI();
+        updateUndoRedoButtons();
+    }
+
+    function addStage() {
+        const newId = currentProject.stages.length + 1;
+        currentProject.stages.push({ id: newId, charters: [], totalTime: 0 });
+        saveState();
+        updateUI();
+    }
+
+    function deleteStage() {
+        if (currentProject.stages.length > 1) {
+            const stageIdToDelete = parseInt(document.getElementById('deleteStageSelect').value);
+            currentProject.stages = currentProject.stages.filter(stage => stage.id !== stageIdToDelete);
+            currentProject.stages.forEach((stage, index) => {
+                stage.id = index + 1;
+            });
+            saveState();
+            updateUI();
+        }
+    }
+
+    function updateUI() {
+        createMatrix();
+        createThreadButtons();
+        updateStageSelect();
+        updateDeleteStageSelect();
+        updateStageTimes();
+        updateProjectSelect();
+        restoreUIState();
+        updateUndoRedoButtons();
+    }
+
+    function updateProjectSelect() {
+        const select = document.getElementById('projectSelect');
+        select.innerHTML = '';
+        projects.forEach((project, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = project.name;
+            select.appendChild(option);
+        });
+        select.value = projects.findIndex(p => p.name === currentProject.name);
+    }
+
+    function addProject() {
+        saveCurrentProjectState();
+        const newProjectName = document.getElementById('newProjectName').value.trim();
+        if (newProjectName) {
+            const newProject = {
+                name: newProjectName,
+                threads: [
+                    { name: "Intake", class: "intake" },
+                    { name: "Setup", class: "setup" },
+                    { name: "Product Analysis", class: "product-analysis" },
+                    { name: "Survey Testing", class: "survey-testing" },
+                    { name: "Deep Testing", class: "deep-testing" },
+                    { name: "Reporting", class: "reporting" },
+                    { name: "Closure", class: "closure" }
+                ],
+                stages: [
+                    { id: 1, charters: [], totalTime: 0 },
+                    { id: 2, charters: [], totalTime: 0 },
+                    { id: 3, charters: [], totalTime: 0 }
+                ],
+                uiState: {
+                    selectedThreads: [],
+                    charterText: '',
+                    threadTime: '',
+                    selectedStage: '1'
+                }
+            };
+            projects.push(newProject);
+            currentProject = JSON.parse(JSON.stringify(newProject));
+            saveState();
+            updateUI();
+            document.getElementById('newProjectName').value = '';
+        }
+    }
+
+    function deleteProject() {
+        if (projects.length > 1) {
+            const currentIndex = projects.findIndex(p => p.name === currentProject.name);
+            if (currentIndex !== -1) {
+                projects.splice(currentIndex, 1);
+                
+                // Select the next project, or the last one if we deleted the last project
+                const newIndex = currentIndex < projects.length ? currentIndex : projects.length - 1;
+                currentProject = JSON.parse(JSON.stringify(projects[newIndex]));
+                
+                saveState();
+                updateUI();
+            } else {
+                console.error("Current project not found in the projects array");
+            }
+        } else {
+            alert("Cannot delete the last project.");
+        }
+    }
+
+    function changeProject() {
+        saveCurrentProjectState();
+        const projectIndex = parseInt(document.getElementById('projectSelect').value);
+        currentProject = JSON.parse(JSON.stringify(projects[projectIndex]));
+        saveState();
+        updateUI();
+        restoreUIState();
+    }
+
+    function restoreUIState() {
+        if (currentProject.uiState) {
+            document.getElementById('charter').value = currentProject.uiState.charterText || '';
+            document.getElementById('threadTime').value = currentProject.uiState.threadTime || '';
+            document.getElementById('stageSelect').value = currentProject.uiState.selectedStage || '1';
+            
+            const threadButtons = document.querySelectorAll('#threadButtons button');
+            threadButtons.forEach(btn => btn.classList.remove('selected'));
+            currentProject.uiState.selectedThreads.forEach(index => {
+                threadButtons[index].classList.add('selected');
+            });
+
+            // Update thread button states based on the selected stage
+            updateThreadButtons();
+        }
+    }
+
+    function saveCurrentProjectState() {
+        const currentProjectIndex = projects.findIndex(p => p.name === currentProject.name);
+        if (currentProjectIndex !== -1) {
+            currentProject.uiState = {
+                selectedThreads: Array.from(document.querySelectorAll('#threadButtons button.selected')).map(btn => parseInt(btn.dataset.index)),
+                charterText: document.getElementById('charter').value,
+                threadTime: document.getElementById('threadTime').value,
+                selectedStage: document.getElementById('stageSelect').value
+            };
+            projects[currentProjectIndex] = JSON.parse(JSON.stringify(currentProject));
+        }
+    }
+
+    function createThreadButtons() {
+        const container = document.getElementById('threadButtons');
+        container.innerHTML = '';
+        currentProject.threads.forEach((thread, index) => {
+            const button = document.createElement('button');
+            button.textContent = thread.name;
+            button.className = `thread-button ${thread.class}`;
+            button.dataset.index = index;
+            button.onclick = function() {
+                if (!this.disabled) {
+                    this.classList.toggle('selected');
+                }
+            };
+            container.appendChild(button);
+        });
+    }
+
+    function updateStageSelect() {
+        const select = document.getElementById('stageSelect');
+        select.innerHTML = '';
+        currentProject.stages.forEach(stage => {
+            const option = document.createElement('option');
+            option.value = stage.id;
+            option.textContent = `Stage ${stage.id}`;
+            select.appendChild(option);
+        });
+    }
+
+    function updateDeleteStageSelect() {
+        const select = document.getElementById('deleteStageSelect');
+        select.innerHTML = '';
+        currentProject.stages.forEach(stage => {
+            const option = document.createElement('option');
+            option.value = stage.id;
+            option.textContent = `Stage ${stage.id}`;
+            select.appendChild(option);
+        });
+    }
+
+    function updateThreadButtons() {
+        const stageId = parseInt(document.getElementById('stageSelect').value);
+        const stage = currentProject.stages.find(s => s.id === stageId);
+        if (stage) {
+            const buttons = document.querySelectorAll('#threadButtons button');
+            buttons.forEach((button, index) => {
+                const isUsed = stage.charters.some(c => c.thread === index);
+                button.disabled = isUsed;
+                if (isUsed) {
+                    button.classList.remove('selected');
+                } else if (currentProject.uiState && currentProject.uiState.selectedThreads.includes(index)) {
+                    button.classList.add('selected');
+                }
+            });
+        }
+    }
+
+    function addActiveThread() {
+        const stageId = parseInt(document.getElementById('stageSelect').value);
+        const charter = document.getElementById('charter').value;
+        const threadTime = parseInt(document.getElementById('threadTime').value) || 0;
+        const activeThreads = Array.from(document.querySelectorAll('#threadButtons button.selected'))
+                                .map(btn => parseInt(btn.dataset.index));
+
+        if (stageId && charter && activeThreads.length > 0) {
+            const stage = currentProject.stages.find(s => s.id === stageId);
+            if (stage) {
+                const now = Date.now();
+                activeThreads.forEach(threadIndex => {
+                    if (!stage.charters.some(c => c.thread === threadIndex)) {
+                        stage.charters.push({
+                            thread: threadIndex,
+                            text: charter,
+                            time: threadTime,
+                            created: now,
+                            lastEdited: now,
+                            editHistory: []
+                        });
+                        stage.totalTime += threadTime;
+                    }
+                });
+                saveState();
+            }
+            updateUI();
+            document.getElementById('charter').value = '';
+            document.getElementById('threadTime').value = '';
+            document.querySelectorAll('#threadButtons button').forEach(btn => btn.classList.remove('selected'));
+        }
+    }
+
+    function createMatrix() {
+        const table = document.getElementById('matrix');
+        table.innerHTML = '';
+        
+        let headerRow = '<tr><th>Stage</th><th>Charter</th>';
+        currentProject.threads.forEach(thread => {
+            const words = thread.name.split(' ');
+            let displayName;
+            if (words.length === 2 && words[0].length <= 6 && words[1].length <= 7) {
+                displayName = words[0] + '<br>' + words[1];
+            } else if (thread.name.length > 10) {
+                displayName = thread.name.substring(0, 9) + '.';
+            } else {
+                displayName = thread.name;
+            }
+            headerRow += `<th title="${thread.name}">${displayName}</th>`;
+        });
+        headerRow += '<th>Total Time</th></tr>';
+        table.innerHTML = headerRow;
+
+        currentProject.stages.forEach((stage) => {
+            let charterHtml = '';
+            stage.charters.forEach(charter => {
+                charterHtml += `
+                    <div class="thread-charter" data-thread="${charter.thread}">
+                        <strong>${currentProject.threads[charter.thread].name}:</strong>
+                        <span class="charter-text">${charter.text}</span>
+                        <span class="charter-time">(${charter.time}m)</span>
+                        <span class="edit-icon" onclick="editCharter(${stage.id}, ${charter.thread})">✏️</span>
+                        <span class="delete-icon" onclick="deleteCharter(${stage.id}, ${charter.thread})">🗑️</span>
+                        ${charter.created ? `<span class="info-icon" onclick="showCharterInfo(${stage.id}, ${charter.thread})">ℹ️</span>` : ''}
+                    </div>`;
+            });
+
+            let row = `<tr>
+                <td>${stage.id}</td>
+                <td style="text-align: left;">
+                    <div id="charter-${stage.id}">${charterHtml}</div>
+                </td>`;
+            
+            // Replace the existing forEach loop with this new one
+            currentProject.threads.forEach((thread, threadIndex) => {
+                const isActive = stage.charters.some(c => c.thread === threadIndex);
+                row += `<td class="${isActive ? thread.class : ''}" title="${thread.name}">
+                    <div class="thread-cell">${isActive ? 'X' : ''}</div>
+                </td>`;
+            });
+            
+            row += `<td><span class="total-time">${stage.totalTime}</span>m</td></tr>`;
+            table.innerHTML += row;
+        });
+    }
+
+    function showCharterInfo(stageId, threadIndex) {
+        const stage = currentProject.stages.find(s => s.id === stageId);
+        const charter = stage.charters.find(c => c.thread === threadIndex);
+        if (charter) {
+            const createdDate = new Date(charter.created).toLocaleString();
+            const lastEditedDate = new Date(charter.lastEdited).toLocaleString();
+            let historyHtml = charter.editHistory.map(edit => 
+                `<li>Edited on ${new Date(edit.editedAt).toLocaleString()}<br>
+                Old: "${edit.oldText}" (${edit.oldTime}m)<br>
+                New: "${edit.newText}" (${edit.newTime}m)</li>`
+            ).join('');
+            
+            const infoHtml = `
+                <h3>Charter Information</h3>
+                <p><strong>Created:</strong> ${createdDate}</p>
+                <p><strong>Last Edited:</strong> ${lastEditedDate}</p>
+                <h4>Edit History:</h4>
+                <ul>${historyHtml}</ul>
+            `;
+            
+            const infoDialog = document.createElement('div');
+            infoDialog.innerHTML = infoHtml;
+            infoDialog.style.position = 'fixed';
+            infoDialog.style.top = '50%';
+            infoDialog.style.left = '50%';
+            infoDialog.style.transform = 'translate(-50%, -50%)';
+            infoDialog.style.backgroundColor = 'white';
+            infoDialog.style.padding = '20px';
+            infoDialog.style.border = '1px solid black';
+            infoDialog.style.maxHeight = '80%';
+            infoDialog.style.overflowY = 'auto';
+            infoDialog.style.zIndex = '1000';
+            
+            const closeButton = document.createElement('button');
+            closeButton.textContent = 'Close';
+            closeButton.onclick = function() {
+                document.body.removeChild(infoDialog);
+            };
+            infoDialog.appendChild(closeButton);
+            
+            document.body.appendChild(infoDialog);
+        }
+    }
+
+    function editCharter(stageId, threadIndex) {
+        saveState();
+        const stage = currentProject.stages.find(s => s.id === stageId);
+        const charter = stage.charters.find(c => c.thread === threadIndex);
+        if (charter) {
+            const charterElement = document.querySelector(`#charter-${stageId} .thread-charter[data-thread="${threadIndex}"]`);
+            const textElement = charterElement.querySelector('.charter-text');
+            const timeElement = charterElement.querySelector('.charter-time');
+            const editIcon = charterElement.querySelector('.edit-icon');
+            const deleteIcon = charterElement.querySelector('.delete-icon');
+            const infoIcon = charterElement.querySelector('.info-icon');
+            
+            editIcon.style.display = 'none';
+            deleteIcon.style.display = 'none';
+            infoIcon.style.display = 'none';
+            
+            const textInput = document.createElement('input');
+            textInput.type = 'text';
+            textInput.value = charter.text;
+            textInput.className = 'charter-edit-input';
+            
+            const timeInput = document.createElement('input');
+            timeInput.type = 'number';
+            timeInput.value = charter.time;
+            timeInput.min = 0;
+            timeInput.className = 'charter-edit-time';
+            
+            const saveButton = document.createElement('button');
+            saveButton.textContent = 'Save';
+            saveButton.onclick = function() {
+                saveCharterEdit(stageId, threadIndex, textInput.value, parseInt(timeInput.value) || 0);
+            };
+            
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.onclick = function() {
+                updateUI();
+            };
+            
+            textElement.replaceWith(textInput);
+            timeElement.replaceWith(timeInput);
+            charterElement.appendChild(saveButton);
+            charterElement.appendChild(cancelButton);
+        }
+    }
+
+    function saveCharterEdit(stageId, threadIndex, newText, newTime) {
+        const stage = currentProject.stages.find(s => s.id === stageId);
+        if (stage) {
+            const charter = stage.charters.find(c => c.thread === threadIndex);
+            if (charter) {
+                const now = Date.now();
+                charter.editHistory.push({
+                    oldText: charter.text,
+                    oldTime: charter.time,
+                    newText: newText,
+                    newTime: newTime,
+                    editedAt: now
+                });
+                stage.totalTime = stage.totalTime - charter.time + newTime;
+                charter.text = newText;
+                charter.time = newTime;
+                charter.lastEdited = now;
+                
+                saveState();
+                updateUI();
+            }
+        }
+    }
+
+    function deleteCharter(stageId, threadIndex) {
+        saveState(); // Save state before deletion
+        const stage = currentProject.stages.find(s => s.id === stageId);
+        if (stage) {
+            const charterToDelete = stage.charters.find(c => c.thread === threadIndex);
+            stage.totalTime -= charterToDelete.time;
+            stage.charters = stage.charters.filter(c => c.thread !== threadIndex);
+            saveState(); // Save state after deletion
+            updateUI();
+        }
+    }
+
+    function updateStageTimes() {
+        currentProject.stages.forEach(stage => {
+            const totalTimeSpan = document.querySelector(`tr:nth-child(${stage.id + 1}) .total-time`);
+            if (totalTimeSpan) {
+                totalTimeSpan.textContent = stage.totalTime;
+            }
+        });
+    }
+
+    function exportProject() {
+        const projectData = JSON.stringify(currentProject);
+        const blob = new Blob([projectData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${currentProject.name}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function importProject(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedProject = JSON.parse(e.target.result);
+                    if (validateImportedProject(importedProject)) {
+                        saveState();
+                        projects.push(importedProject);
+                        currentProject = importedProject;
+                        updateProjectSelect();
+                        document.getElementById('projectSelect').value = projects.length - 1;
+                        updateUI();
+                        alert('Project imported successfully!');
+                    } else {
+                        alert('Invalid project file format.');
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    alert('Error importing project. Please check the file format.');
+                }
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    function validateImportedProject(project) {
+        return project &&
+               typeof project.name === 'string' &&
+               Array.isArray(project.threads) &&
+               Array.isArray(project.stages) &&
+               project.stages.every(stage => 
+                   typeof stage.id === 'number' &&
+                   Array.isArray(stage.charters) &&
+                   typeof stage.totalTime === 'number'
+               );
+    }
+
+    // Initialize the page
+    updateProjectSelect();
+    updateUI();
+    document.getElementById('stageSelect').addEventListener('change', updateThreadButtons);
+    document.getElementById('projectSelect').addEventListener('change', changeProject);
+    </script>
+</body>
+</html>
