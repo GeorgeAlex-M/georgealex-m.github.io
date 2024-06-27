@@ -231,26 +231,24 @@
             const cornerColors = CONFIG.corner_cubicle.colors;
             const mainColors = CONFIG.main_cubicle.colors;
 
-            let width = height = Math.floor(Math.sqrt(targetSize));
+            // Set minimum dimensions to ensure visibility
+            let width = height = Math.max(100, Math.floor(Math.sqrt(targetSize * 10)));
 
             let cornerSquareSize = Math.max(5, Math.floor(CONFIG.corner_cubicle.size_percentage * Math.min(width, height)));
-            let squareSize = 2 * cornerSquareSize;
+            let squareSize = Math.max(10, 2 * cornerSquareSize);
 
             const cornerAreaSquares = 8;
             let cornerAreaSize = cornerAreaSquares * cornerSquareSize;
 
             const maxCornerArea = 0.2 * Math.min(width, height);
             if (cornerAreaSize > maxCornerArea) {
-                cornerSquareSize = Math.floor(maxCornerArea / 8);
-                squareSize = 2 * cornerSquareSize;
+                cornerSquareSize = Math.max(5, Math.floor(maxCornerArea / 8));
+                squareSize = Math.max(10, 2 * cornerSquareSize);
                 cornerAreaSize = cornerAreaSquares * cornerSquareSize;
             }
 
-            cornerSquareSize = Math.max(1, cornerSquareSize);
-            squareSize = 2 * cornerSquareSize;
-
-            width = Math.floor((width - cornerAreaSize) / squareSize) * squareSize + cornerAreaSize;
-            height = Math.floor((height - cornerAreaSize) / squareSize) * squareSize + cornerAreaSize;
+            width = Math.max(cornerAreaSize + squareSize, Math.floor((width - cornerAreaSize) / squareSize) * squareSize + cornerAreaSize);
+            height = Math.max(cornerAreaSize + squareSize, Math.floor((height - cornerAreaSize) / squareSize) * squareSize + cornerAreaSize);
 
             canvas.width = width;
             canvas.height = height;
