@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placeholder Image Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #previewContainer {
+            text-align: center;
+            margin-top: 30px;
+        }
+        #previewCanvas {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+        }
+        #sizeInfo {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        #infoModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 8px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .info-section {
+            margin-bottom: 20px;
+        }
+        .info-section h3 {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Placeholder Image Generator</h1>
+        
+        <div class="input-group">
+            <label for="sizeInput">Target image size:</label>
+            <input type="number" id="sizeInput" min="0.1" value="1" step="0.1">
+            <select id="unitSelect">
+                <option value="KB">KB</option>
+                <option value="MB" selected>MB</option>
+                <option value="GB">GB</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label for="formatSelect">Image Format:</label>
+            <select id="formatSelect">
+                <option value="png">PNG</option>
+                <option value="jpeg">JPEG</option>
+            </select>
+        </div>
+        
+        <div class="button-group">
+            <button onclick="generateImage()">Generate Image</button>
+            <button onclick="downloadImage()" id="downloadButton" disabled>Download Image</button>
+            <button onclick="showInfo()">Information</button>
+        </div>
+        
+        <div id="sizeInfo"></div>
+        
+        <div id="previewContainer">
+            <h2>Preview:</h2>
+            <canvas id="previewCanvas"></canvas>
+        </div>
+    </div>
+
+    <div id="infoModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeInfo()">&times;</span>
+            <h2>Information</h2>
+            
+            <div class="info-section">
+                <h3>Use Cases</h3>
+                <ul>
+                    <li>Test avatar size limits for user profile uploads</li>
+                    <li>Verify file size restrictions in content management systems</li>
+                    <li>Create placeholder images for web design mockups</li>
+                    <li>Test image upload functionality in web applications</li>
+                    <li>Generate sample images for email attachment size testing</li>
+                </ul>
+            </div>
+
+            <div class="info-section">
+                <h3>Understanding Image Sizes</h3>
+                <p>This tool aims to generate images close to your desired size. However, due to the intricacies of computer file storage and reporting mechanisms, there might be slight variations. Here's a more technical breakdown:</p>
+                <ul>
+                    <li><strong>File System Allocation:</strong> Computers allocate space for files in fixed-size "clusters" or "blocks." A block is the smallest unit of disk space that can be allocated to a file. Even if your image file's actual size is smaller than a block, the entire block is reserved. For example, if the block size is 4 KB, a 1 KB file will occupy 4 KB on disk, thus making the "Size on Disk" larger than the actual file size.</li>
+                    <li><strong>Rounding and Reporting:</strong> Operating systems typically report file sizes in kilobytes (KB) or megabytes (MB), often rounding to two decimal places. This rounding can introduce small discrepancies in the reported size. For instance, a file that is exactly 1024 bytes (1 KB) may be displayed as 1.00 KB, while a file that is 1030 bytes might still be shown as 1.00 KB due to rounding conventions.</li>
+                    <li><strong>Image Format Overhead:</strong> Image formats such as PNG and JPEG include additional data beyond the pixel data. This includes headers, metadata (like EXIF data), and potentially padding for alignment. These overheads add a small amount of extra data to the file, which contributes to the difference between the raw pixel data size and the actual file size.</li>
+                    <li><strong>Compression Algorithms:</strong> Different image formats use various compression algorithms that affect the final file size. For example, PNG uses lossless compression, while JPEG uses lossy compression, leading to variations in file sizes even for the same image content.</li>
+                    <li><strong>Filesystem Overhead:</strong> Beyond block allocation, filesystems may add their own metadata to files, such as timestamps, permissions, and other attributes. This can slightly increase the "Size on Disk" compared to the actual data size.</li>
+                </ul>
+                <p>For example, a 1 KB (1024 bytes) image may be reported as 1.00 KB (1024 bytes), but its "Size on Disk" might be 4.00 KB (4096 bytes) due to the file system's block size. Despite these variations, the tool strives to create an image as close as possible to your target size, but these technical factors can cause minor deviations.</p>
+            </div>
+            
+            <div class="info-section">
+                <h3>How This Tool Works</h3>
+                <p>This tool generates a placeholder image by employing the following steps:</p>
+                <ol>
+                    <li><strong>Checkerboard Pattern Generation:</strong> The tool creates a checkerboard pattern using predefined colors. The pattern size and complexity can be adjusted to influence the image's data size.</li>
+                    <li><strong>Dimension Adjustment:</strong> The tool calculates appropriate image dimensions to achieve the target file size. It iteratively refines the dimensions to match the desired size as closely as possible.</li>
+                    <li><strong>Padding Data Addition:</strong> If the image's data size is slightly less than the target size, the tool appends padding bytes to reach the exact requested file size. This padding ensures the file meets the specified size precisely.</li>
+                    <li><strong>Format Conversion:</strong> The tool converts the generated image into the selected format (PNG or JPEG). Each format has its own compression algorithms and overhead, which can slightly affect the final file size.</li>
+                    <li><strong>Validation and Adjustment:</strong> The tool validates the generated file's size and, if necessary, makes further adjustments to ensure it meets the target size. This might involve tweaking the pattern, dimensions, or adding more padding data.</li>
+                </ol>
+                <p>The tool aims to create an image that adheres to the specified size as closely as possible. However, exact sizes may not always be achievable due to inherent constraints of image formats, compression algorithms, and file system allocations.</p>
+            </div>
+            
+            <div class="info-section">
+                <h3>Technical Details</h3>
+                <p>Here are some additional technical details about how the tool operates:</p>
+                <ul>
+                    <li><strong>Color Space:</strong> The tool uses the RGB color space to generate the checkerboard pattern. Different colors can slightly affect the file size due to varying levels of compression efficiency.</li>
+                    <li><strong>Resolution and DPI:</strong> The tool sets a default DPI (dots per inch) for the generated images, which can influence the perceived quality but generally doesn't affect the file size significantly.</li>
+                    <li><strong>Data URI Conversion:</strong> The generated image is initially created as a data URI, which is then converted to a Blob for further processing and size adjustment.</li>
+                    <li><strong>Error Handling:</strong> The tool includes mechanisms to handle potential errors during image generation, such as exceeding maximum dimensions or encountering unsupported formats.</li>
+                </ul>
+            </div>            
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            corner_cubicle: {
+                colors: [[255, 255, 255], [0, 0, 0]],
+                size_percentage: 0.025,
+            },
+            main_cubicle: {
+                colors: [[255, 0, 0], [0, 255, 0], [0, 0, 255]],
+                size: 50,
+            }
+        };
+
+        const canvas = document.getElementById('previewCanvas');
+        const ctx = canvas.getContext('2d');
+        let generatedImageData = null;
+        let actualSize = 0;
+
+        function createCheckerboardImage(targetSize, imgFormat) {
+            const cornerColors = CONFIG.corner_cubicle.colors;
+            const mainColors = CONFIG.main_cubicle.colors;
+
+            let width = height = Math.floor(Math.sqrt(targetSize));
+
+            let cornerSquareSize = Math.max(5, Math.floor(CONFIG.corner_cubicle.size_percentage * Math.min(width, height)));
+            let squareSize = 2 * cornerSquareSize;
+
+            const cornerAreaSquares = 8;
+            let cornerAreaSize = cornerAreaSquares * cornerSquareSize;
+
+            const maxCornerArea = 0.2 * Math.min(width, height);
+            if (cornerAreaSize > maxCornerArea) {
+                cornerSquareSize = Math.floor(maxCornerArea / 8);
+                squareSize = 2 * cornerSquareSize;
+                cornerAreaSize = cornerAreaSquares * cornerSquareSize;
+            }
+
+            cornerSquareSize = Math.max(1, cornerSquareSize);
+            squareSize = 2 * cornerSquareSize;
+
+            width = Math.floor((width - cornerAreaSize) / squareSize) * squareSize + cornerAreaSize;
+            height = Math.floor((height - cornerAreaSize) / squareSize) * squareSize + cornerAreaSize;
+
+            canvas.width = width;
+            canvas.height = height;
+
+            // Draw corner cubicles
+            for (let y = 0; y < cornerAreaSize; y += cornerSquareSize) {
+                for (let x = 0; x < cornerAreaSize; x += cornerSquareSize) {
+                    const color = cornerColors[(x / cornerSquareSize + y / cornerSquareSize) % cornerColors.length];
+                    ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                    ctx.fillRect(x, y, cornerSquareSize, cornerSquareSize);
+                }
+            }
+
+            // Draw main cubicles
+            for (let y = 0; y < height; y += squareSize) {
+                for (let x = 0; x < width; x += squareSize) {
+                    if (x < cornerAreaSize && y < cornerAreaSize) continue;
+                    const color = mainColors[((x / squareSize + y / squareSize) % mainColors.length)];
+                    ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                    ctx.fillRect(x, y, squareSize, squareSize);
+                }
+            }
+
+            return canvas.toDataURL(`image/${imgFormat}`);
+        }
+
+        function dataURItoBlob(dataURI) {
+            const byteString = atob(dataURI.split(',')[1]);
+            const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], {type: mimeString});
+        }
+
+        function adjustImageSize(blob, targetSize) {
+            const currentSize = blob.size;
+            const diff = targetSize - currentSize;
+            
+            if (diff === 0) return blob;
+
+            const paddingData = new Uint8Array(Math.abs(diff));
+            return new Blob([blob, paddingData], {type: blob.type});
+        }
+
+        async function generateImage() {
+            const sizeInput = parseFloat(document.getElementById('sizeInput').value);
+            const unit = document.getElementById('unitSelect').value;
+            const format = document.getElementById('formatSelect').value;
+            
+            const sizeMultiplier = { 'KB': 1024, 'MB': 1024 * 1024, 'GB': 1024 * 1024 * 1024 };
+            let targetSize = Math.floor(sizeInput * sizeMultiplier[unit]);
+
+            let currentSize = 0;
+            let attempts = 0;
+            const maxAttempts = 20;
+
+            while (currentSize !== targetSize && attempts < maxAttempts) {
+                generatedImageData = createCheckerboardImage(targetSize, format);
+                let blob = dataURItoBlob(generatedImageData);
+                blob = adjustImageSize(blob, targetSize);
+                currentSize = blob.size;
+
+                if (currentSize === targetSize) {
+                    generatedImageData = URL.createObjectURL(blob);
+                    break;
+                }
+
+                targetSize += (targetSize - currentSize);
+                attempts++;
+            }
+
+            actualSize = currentSize;
+
+            // Update preview
+            const img = new Image();
+            img.onload = function() {
+                canvas.width = 200;
+                canvas.height = 200;
+                ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height);
+            }
+            img.src = generatedImageData;
+
+            // Enable download button and show size info
+            document.getElementById('downloadButton').disabled = false;
+            document.getElementById('sizeInfo').textContent = `Actual size: ${(actualSize / sizeMultiplier[unit]).toFixed(2)} ${unit}`;
+        }
+
+        function downloadImage() {
+            if (generatedImageData) {
+                const sizeInput = document.getElementById('sizeInput').value;
+                const unit = document.getElementById('unitSelect').value;
+                const format = document.getElementById('formatSelect').value;
+
+                const link = document.createElement('a');
+                link.download = `placeholder_${sizeInput}${unit}.${format}`;
+                link.href = generatedImageData;
+                link.click();
+            }
+        }
+
+        function showInfo() {
+            document.getElementById('infoModal').style.display = 'block';
+        }
+
+        function closeInfo() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        // Close the modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('infoModal')) {
+                closeInfo();
+            }
+        }
+
+        // Initial generation
+        generateImage();
+    </script>
+</body>
+</html>
