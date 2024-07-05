@@ -68,11 +68,189 @@
         .thread-button.selected { border-color: #000; box-shadow: 0 0 5px rgba(0,0,0,0.3); }
         .thread-button.selected::after { content: '✓'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 1.2em; font-weight: bold; }
         .thread-button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .info-section {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        #infoButton {
+            position: relative;
+            margin: 10px 0 20px 0;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        #infoButton:hover {
+            background-color: #45a049;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
+
+        #infoButton .info-icon {
+            font-size: 18px;
+        }
+
+        #infoButton .info-text {
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .visualization-section {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            clear: both;
+        }
+
+        .visualization-section h2 {
+            cursor: pointer;
+            user-select: none;
+            color: #333;
+            transition: color 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .visualization-section h2:hover {
+            color: #4CAF50;
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        #visualizationContent {
+            flex: 1;
+            max-width: 80%;
+            height: 400px;
+        }
+
+        .chart-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-left: 20px;
+            align-self: flex-start;
+        }
+
+        .chart-controls button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .chart-controls button:hover {
+            background-color: #45a049;
+        }
+
+        #chartLegend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 10px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .legend-item.inactive {
+            opacity: 0.5;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .legend-label {
+            font-size: 14px;
+        }
+
+        .charter-edit-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .charter-edit-input {
+            width: 90%;
+            min-height: 60px;
+            margin-bottom: 10px;
+            resize: vertical;
+        }
+
+        .charter-edit-time {
+            width: 60px;
+            margin-bottom: 10px;
+        }
+
+        .charter-edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
     <h1>Thread-Based Testing Tool</h1>
-    
+
+    <button id="infoButton" onclick="showInfo()">
+        <span class="info-icon">ℹ️</span>
+        <span class="info-text">Info</span>
+    </button>
+
+    <div class="visualization-section">
+        <h2 onclick="toggleVisualization()">Project Timeline Visualization <span id="visualizationToggle">▶</span></h2>
+        <div class="chart-container" style="display: none;">
+            <div id="visualizationContent">
+                <canvas id="timelineChart"></canvas>
+            </div>
+            <div class="chart-controls">
+                <button onclick="switchChartType('bar')">Bar Chart</button>
+                <button onclick="switchChartType('line')">Line Chart</button>
+                <button onclick="switchChartType('radar')">Radar Chart</button>
+                <button onclick="showTotalTime()">Show Total Time</button>
+                <button onclick="showThreadTotals()">Show Thread Totals</button>
+                <button onclick="showAllThreads()">Show All Threads</button>
+            </div>
+        </div>
+        <div id="chartLegend"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <div class="project-section">
         <select id="projectSelect"></select>
         <input type="text" id="newProjectName" placeholder="New Project Name">
@@ -124,82 +302,82 @@
             stages: [
                 { id: 1, charters: [
                     { thread: 0, text: "Review the problem and negotiate the mission.", time: 30, created: 1625097600000, lastEdited: 1625097600000, editHistory: [] },
-                ], totalTime: 0 },
+                ], totalTime: 30 },
                 { id: 2, charters: [
                     { thread: 2, text: "Review and diagram the specification.", time: 45, created: 1625184000000, lastEdited: 1625184000000, editHistory: [] },
-                ], totalTime: 0 },
+                ], totalTime: 45 },
                 { id: 3, charters: [
-                    { thread: 1, text: "Develop basic test jig and try testing through it.", time: 0 },
-                    { thread: 3, text: "Develop basic test jig and try testing through it.", time: 0 },
-                ], totalTime: 0 },
+                    { thread: 1, text: "Develop basic test jig and try testing through it.", time: 60, created: 1625270400000, lastEdited: 1625270400000, editHistory: [] },
+                    { thread: 3, text: "Develop basic test jig and try testing through it.", time: 60, created: 1625270400000, lastEdited: 1625270400000, editHistory: [] },
+                ], totalTime: 120 },
                 { id: 4, charters: [
-                    { thread: 1, text: "Report status and consult with client.", time: 0 },
-                    { thread: 5, text: "Report status and consult with client.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 1, text: "Report status and consult with client.", time: 30, created: 1625356800000, lastEdited: 1625356800000, editHistory: [] },
+                    { thread: 5, text: "Report status and consult with client.", time: 30, created: 1625356800000, lastEdited: 1625356800000, editHistory: [] }
+                ], totalTime: 60 },
                 { id: 5, charters: [
-                    { thread: 0, text: "Re-analyze the assignment.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 0, text: "Re-analyze the assignment.", time: 45, created: 1625443200000, lastEdited: 1625443200000, editHistory: [] }
+                ], totalTime: 45 },
                 { id: 6, charters: [
-                    { thread: 2, text: "Re-analyze the specification.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 2, text: "Re-analyze the specification.", time: 45, created: 1625529600000, lastEdited: 1625529600000, editHistory: [] }
+                ], totalTime: 45 },
                 { id: 7, charters: [
-                    { thread: 3, text: "Survey the volume changing behavior on TV-side when mobile is connected.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 3, text: "Survey the volume changing behavior on TV-side when mobile is connected.", time: 90, created: 1625616000000, lastEdited: 1625616000000, editHistory: [] }
+                ], totalTime: 90 },
                 { id: 8, charters: [
-                    { thread: 2, text: "Consult with the client.", time: 0 },
-                    { thread: 5, text: "Consult with the client.", time: 0 },
-                ], totalTime: 0 },
+                    { thread: 2, text: "Consult with the client.", time: 30, created: 1625702400000, lastEdited: 1625702400000, editHistory: [] },
+                    { thread: 5, text: "Consult with the client.", time: 30, created: 1625702400000, lastEdited: 1625702400000, editHistory: [] },
+                ], totalTime: 60 },
                 { id: 9, charters: [
-                    { thread: 5, text: "Update my notes.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 5, text: "Update my notes.", time: 30, created: 1625788800000, lastEdited: 1625788800000, editHistory: [] }
+                ], totalTime: 30 },
                 { id: 10, charters: [
-                    { thread: 4, text: "Perform a mobile-connected sound range tour.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 4, text: "Perform a mobile-connected sound range tour.", time: 120, created: 1625875200000, lastEdited: 1625875200000, editHistory: [] }
+                ], totalTime: 120 },
                 { id: 11, charters: [
-                    { thread: 4, text: "Reverse engineer the product to produce parallel oracle.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 4, text: "Reverse engineer the product to produce parallel oracle.", time: 180, created: 1625961600000, lastEdited: 1625961600000, editHistory: [] }
+                ], totalTime: 180 },
                 { id: 12, charters: [
-                    { thread: 4, text: "Perform an optimal tour of every six-command sequence combination for five commands.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 4, text: "Perform an optimal tour of every six-command sequence combination for five commands.", time: 240, created: 1626048000000, lastEdited: 1626048000000, editHistory: [] }
+                ], totalTime: 240 },
                 { id: 13, charters: [
-                    { thread: 2, text: "Stand back, get the big picture, and consult with client, again.", time: 0 },
-                    { thread: 5, text: "Stand back, get the big picture, and consult with client, again.", time: 0 },
-                    { thread: 6, text: "Stand back, get the big picture, and consult with client, again.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 2, text: "Stand back, get the big picture, and consult with client, again.", time: 60, created: 1626134400000, lastEdited: 1626134400000, editHistory: [] },
+                    { thread: 5, text: "Stand back, get the big picture, and consult with client, again.", time: 60, created: 1626134400000, lastEdited: 1626134400000, editHistory: [] },
+                    { thread: 6, text: "Stand back, get the big picture, and consult with client, again.", time: 60, created: 1626134400000, lastEdited: 1626134400000, editHistory: [] }
+                ], totalTime: 180 },
                 { id: 14, charters: [
-                    { thread: 2, text: "Consult with Ilan Aegerter and perform a muting tour.", time: 0 },
-                    { thread: 4, text: "Consult with Ilan Aegerter and perform a muting tour.", time: 0 },
-                    { thread: 5, text: "Consult with Ilan Aegerter and perform a muting tour.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 2, text: "Consult with Ilan Aegerter and perform a muting tour.", time: 90, created: 1626220800000, lastEdited: 1626220800000, editHistory: [] },
+                    { thread: 4, text: "Consult with Ilan Aegerter and perform a muting tour.", time: 90, created: 1626220800000, lastEdited: 1626220800000, editHistory: [] },
+                    { thread: 5, text: "Consult with Ilan Aegerter and perform a muting tour.", time: 90, created: 1626220800000, lastEdited: 1626220800000, editHistory: [] }
+                ], totalTime: 270 },
                 { id: 15, charters: [
-                    { thread: 2, text: "Transpect with other testers and discover new test ideas.", time: 0 },
-                    { thread: 5, text: "Transpect with other testers and discover new test ideas.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 2, text: "Transpect with other testers and discover new test ideas.", time: 120, created: 1626307200000, lastEdited: 1626307200000, editHistory: [] },
+                    { thread: 5, text: "Transpect with other testers and discover new test ideas.", time: 120, created: 1626307200000, lastEdited: 1626307200000, editHistory: [] }
+                ], totalTime: 240 },
                 { id: 16, charters: [
-                    { thread: 2, text: "Consult with client and study DIAL and OIPF specifications.", time: 0 },
-                    { thread: 6, text: "Consult with client and study DIAL and OIPF specifications.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 2, text: "Consult with client and study DIAL and OIPF specifications.", time: 150, created: 1626393600000, lastEdited: 1626393600000, editHistory: [] },
+                    { thread: 6, text: "Consult with client and study DIAL and OIPF specifications.", time: 150, created: 1626393600000, lastEdited: 1626393600000, editHistory: [] }
+                ], totalTime: 300 },
                 { id: 17, charters: [
-                    { thread: 5, text: "Update report and consult with client.", time: 0 },
-                    { thread: 6, text: "Update report and consult with client.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 5, text: "Update report and consult with client.", time: 60, created: 1626480000000, lastEdited: 1626480000000, editHistory: [] },
+                    { thread: 6, text: "Update report and consult with client.", time: 60, created: 1626480000000, lastEdited: 1626480000000, editHistory: [] }
+                ], totalTime: 120 },
                 { id: 18, charters: [
-                    { thread: 4, text: "All Quads, Clean Start, Command Subset and Retrospective Oracle Testing.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 4, text: "All Quads, Clean Start, Command Subset and Retrospective Oracle Testing.", time: 300, created: 1626566400000, lastEdited: 1626566400000, editHistory: [] }
+                ], totalTime: 300 },
                 { id: 19, charters: [
-                    { thread: 2, text: "Create outline of test ideas for future testing.", time: 0 },
-                    { thread: 6, text: "Create outline of test ideas for future testing.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 2, text: "Create outline of test ideas for future testing.", time: 90, created: 1626652800000, lastEdited: 1626652800000, editHistory: [] },
+                    { thread: 6, text: "Create outline of test ideas for future testing.", time: 90, created: 1626652800000, lastEdited: 1626652800000, editHistory: [] }
+                ], totalTime: 180 },
                 { id: 20, charters: [
-                    { thread: 2, text: "Perform HTSM analysis and update report to client.", time: 0 },
-                    { thread: 6, text: "Perform HTSM analysis and update report to client.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 2, text: "Perform HTSM analysis and update report to client.", time: 120, created: 1626739200000, lastEdited: 1626739200000, editHistory: [] },
+                    { thread: 6, text: "Perform HTSM analysis and update report to client.", time: 120, created: 1626739200000, lastEdited: 1626739200000, editHistory: [] }
+                ], totalTime: 240 },
                 { id: 21, charters: [
-                    { thread: 2, text: "Produce extended state diagram.", time: 0 }
-                ], totalTime: 0 },
+                    { thread: 2, text: "Produce extended state diagram.", time: 180, created: 1626825600000, lastEdited: 1626825600000, editHistory: [] }
+                ], totalTime: 180 },
                 { id: 22, charters: [
-                    { thread: 6, text: "Delivery.", time: 0 }
-                ], totalTime: 0 }
+                    { thread: 6, text: "Delivery.", time: 30, created: 1626912000000, lastEdited: 1626912000000, editHistory: [] }
+                ], totalTime: 30 }
             ]
         }
     ];
@@ -287,6 +465,185 @@
             saveState();
             updateUI();
         }
+    }
+
+    function toggleVisualization() {
+        const content = document.querySelector('.chart-container');
+        const legend = document.getElementById('chartLegend');
+        const toggle = document.getElementById('visualizationToggle');
+        if (content.style.display === 'none') {
+            content.style.display = 'flex';
+            legend.style.display = 'flex';
+            toggle.textContent = '▼';
+            createVisualization();
+        } else {
+            content.style.display = 'none';
+            legend.style.display = 'none';
+            toggle.textContent = '▶';
+        }
+    }
+
+    function showTotalTime() {
+        const totalData = currentProject.stages.map(stage => stage.totalTime);
+        updateChart('Total Time', [
+            {
+                label: 'Total Time',
+                data: totalData,
+                backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }
+        ]);
+    }
+
+    function showThreadTotals() {
+        const threadTotals = currentProject.threads.map((thread, index) => {
+            return {
+                label: thread.name,
+                data: [currentProject.stages.reduce((total, stage) => {
+                    const charter = stage.charters.find(c => c.thread === index);
+                    return total + (charter ? charter.time : 0);
+                }, 0)],
+                backgroundColor: getColor(thread.class, 0.7),
+                borderColor: getColor(thread.class, 1),
+                borderWidth: 1
+            };
+        });
+        updateChart('Thread Totals', threadTotals);
+    }
+
+    function showAllThreads() {
+        createVisualization(timelineChart.config.type);
+    }
+
+    function updateChart(title, newDatasets) {
+        timelineChart.data.datasets = newDatasets;
+        timelineChart.options.plugins.title.text = title;
+        timelineChart.options.scales.x.stacked = false;
+        timelineChart.options.scales.y.stacked = false;
+        timelineChart.update();
+        createCustomLegend(newDatasets);
+    }
+    
+    let timelineChart;
+
+    function createVisualization(type = 'bar') {
+        const ctx = document.getElementById('timelineChart').getContext('2d');
+        
+        const datasets = currentProject.threads.map((thread, index) => {
+            const data = currentProject.stages.map(stage => {
+                const charter = stage.charters.find(c => c.thread === index);
+                return charter ? charter.time : 0;
+            });
+            return {
+                label: thread.name,
+                data: data,
+                backgroundColor: getColor(thread.class, 0.7),
+                borderColor: getColor(thread.class, 1),
+                borderWidth: 1,
+                fill: type === 'radar' ? 'origin' : false,
+                tension: 0.4
+            };
+        });
+
+        const config = {
+            type: type,
+            data: {
+                labels: currentProject.stages.map(stage => `Stage ${stage.id}`),
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: type === 'bar' },
+                    y: { 
+                        stacked: type === 'bar',
+                        title: {
+                            display: true,
+                            text: 'Time (minutes)'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Time Spent on Each Thread Across Stages',
+                        font: {
+                            size: 18
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.parsed.y || context.parsed.r || 0;
+                                return `${label}: ${value} minutes`;
+                            }
+                        }
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeInOutQuart'
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: false
+                }
+            }
+        };
+
+        if (timelineChart) {
+            timelineChart.destroy();
+        }
+        timelineChart = new Chart(ctx, config);
+
+        createCustomLegend(datasets);
+    }
+
+    function createCustomLegend(datasets) {
+        const legendContainer = document.getElementById('chartLegend');
+        legendContainer.innerHTML = '';
+        datasets.forEach((dataset, index) => {
+            const legendItem = document.createElement('div');
+            legendItem.className = 'legend-item';
+            legendItem.innerHTML = `
+                <span class="legend-color" style="background-color: ${dataset.backgroundColor}"></span>
+                <span class="legend-label">${dataset.label}</span>
+            `;
+            legendItem.addEventListener('click', () => toggleDataset(index));
+            legendContainer.appendChild(legendItem);
+        });
+    }
+
+    function toggleDataset(index) {
+        const isDatasetVisible = timelineChart.isDatasetVisible(index);
+        timelineChart.setDatasetVisibility(index, !isDatasetVisible);
+        timelineChart.update();
+
+        const legendItems = document.querySelectorAll('.legend-item');
+        legendItems[index].classList.toggle('inactive', isDatasetVisible);
+    }
+
+    function switchChartType(type) {
+        createVisualization(type);
+    }
+
+    function getColor(className, alpha = 1) {
+        const colors = {
+            'intake': `rgba(129, 178, 198, ${alpha})`,
+            'setup': `rgba(202, 72, 65, ${alpha})`,
+            'product-analysis': `rgba(188, 149, 181, ${alpha})`,
+            'survey-testing': `rgba(156, 195, 123, ${alpha})`,
+            'deep-testing': `rgba(245, 236, 121, ${alpha})`,
+            'reporting': `rgba(255, 143, 115, ${alpha})`,
+            'closure': `rgba(229, 229, 229, ${alpha})`
+        };
+        return colors[className] || `rgba(0, 0, 0, ${alpha})`;
     }
 
     function updateUI() {
@@ -414,6 +771,7 @@
             button.textContent = thread.name;
             button.className = `thread-button ${thread.class}`;
             button.dataset.index = index;
+            button.title = getThreadDescription(thread.name);
             button.onclick = function() {
                 if (!this.disabled) {
                     this.classList.toggle('selected');
@@ -421,6 +779,183 @@
             };
             container.appendChild(button);
         });
+    }
+
+    function getThreadDescription(threadName) {
+        const descriptions = {
+            "Intake": "Receiving, understanding and accepting a testing project.",
+            "Setup": "Preparing the conditions, tools, or environments required for testing.",
+            "Product Analysis": "Systematic modeling of the product or situation for the purposes of organizing your test process and preparing for deep testing.",
+            "Survey Testing": "Interacting with a product primarily for the purposes of learning what it can be, what it might be, and what it should be.",
+            "Deep Testing": "Interacting with the product in specific and intensive ways primarily to find important and hard-to-find bugs.",
+            "Reporting": "Putting the story of testing into words or pictures; explaining work to yourself as well as other people.",
+            "Closure": "Finishing or polishing or updating work that is substantially complete."
+        };
+        return descriptions[threadName] || "No description available.";
+    }
+
+    function showInfo() {
+        const infoHtml = `
+            <h2>Thread-Based Testing Overview</h2>
+            <p>Thread-based testing is a generalized form of session-based testing. A thread is a test activity or to-do item that tends to recur. Unlike sessions, threads may be interrupted and do not imply a specific commitment.</p>
+            <h3>Common Thread Types:</h3>
+            <ul>
+                <li><strong>Intake:</strong> Receiving, understanding, and accepting a testing project.</li>
+                <li><strong>Setup:</strong> Preparing the conditions, tools, or environments required for testing.</li>
+                <li><strong>Product Analysis:</strong> Systematic modeling of the product or situation for organizing your test process and preparing for deep testing.</li>
+                <li><strong>Survey Testing:</strong> Interacting with a product primarily for learning purposes.</li>
+                <li><strong>Deep Testing:</strong> Interacting with the product in specific and intensive ways to find important and hard-to-find bugs.</li>
+                <li><strong>Reporting:</strong> Putting the story of testing into words or pictures; explaining work to yourself and others.</li>
+                <li><strong>Closure:</strong> Finishing or polishing or updating work that is substantially complete.</li>
+            </ul>
+
+            <h2>Test Sessions Definitions</h2>
+            <p><strong>Role:</strong> An ongoing agreement for a person to perform work of some kind, whether full-time or part-time.</p>
+            <p><strong>Thread:</strong> A possibly recurring activity, problem to be solved, situation to be managed, or category thereof, that requires work of some kind by some person(s), regardless of when it occurs.</p>
+            <p><strong>Stage:</strong> A possibly interrupted period of time, of any length, during which particular person(s) perform work of some kind.</p>
+            <p><strong>Test Session:</strong> A virtually uninterrupted standardized period of time, entirely within one work shift, during which particular person(s) perform testing that has an explicit purpose (documented in a “charter”).</p>
+            <p>Distinct stages of testing with specific themes and recurring activity threads are identifiable, although neither linear nor pre-scripted. Creative technical work has a fairly universal structure, but unless you know how to navigate that structure, you will find the whole process rather bewildering. Here’s part of how we break it down in Rapid Software Testing:</p>
+            <ul>
+                <li><strong>Stages/Sessions:</strong> Testing emerges in stages, distinct blocks of work with a particular focus. A stage may last days and consist of many sessions. A session is a single block of time, representing an attempt to test, and is essentially uninterrupted. Session-Based Test Management focuses on sessions.</li>
+                <li><strong>Charters:</strong> Each stage has a theme or mission, called a charter in Rapid Software Testing. The charter is the intent of the stage. Sometimes the charter is written down, sometimes not.</li>
+                <li><strong>Activities/Threads:</strong> An activity is something you do. A charter describes the purpose or structure of an activity; a stage is a block of time in which an activity occurs. Many activities recur or take many stages to complete, called threads. A stage may have the charter of working on a particular thread or encompass multiple threads. Thread-Based Test Management focuses on threads.</li>
+            </ul>
+            <p>It’s helpful to think about stages because the sequence of stages represents the potentially winding path to completing the project. It’s helpful to think about threads, too, because stages keep revisiting certain kinds of activities, sometimes in a deepening way and sometimes in a broadening way. The concept of threads simplifies the process of telling the testing story.</p>
+            <p>Here is a more linear-looking diagram of exactly the same concept. Time goes left to right. Charters aren’t pictured, but each stage, session, and thread has one (even if you choose not to write charters down, you should still know what your charters are at any given time).</p>
+            <p>Most time can be assigned to some category of activity—some thread—although you might not want to track and categorize every little thing. The choice of what kinds of activity to highlight and what to ignore, or how to categorize activities that are complex and diverse, is all part of the art of story-telling and self-management.</p>
+            <p>Actual testing work I did on this project was a little more porous and mixed together than is presented in this report. During this project, my attention moved around furtively like a sculptor circling a block of marble. Sometimes I worked a little on one stage before I was done with another. That’s okay. The concept of stages, charters, and threads provides an outline. Reality fills that in, but like a child with a coloring book, reality’s crayon often goes outside the lines.</p>
+            <p>Several distinct kinds of threads are typically found in good testing, sequenced not by any pre-specified plan, but by the shape of the emerging problem. A good tester tries to identify a reasonably productive use of time at any given moment.</p>
+            <p>In the Rapid Software Testing methodology we give labels to certain common types of threads.</p>
+            <p>Overview: Thread-based testing is a generalized form of session-based testing, in that sessions are a form of thread, but a thread is not necessarily a session. In SBTM, you test in uninterrupted blocks of time that each have a charter. A charter is a mission for that session; a light sort of commitment, or contract. A thread, on the other hand, may be interrupted, it may go on and on indefinitely, and does not imply a commitment. Session-based testing can be seen as an extension of thread-based testing for especially high accountability and more orderly situations.</p>
+            <p><strong>Thread:</strong> A thread of testing is a test activity or to-do item that tends to recur. For instance, regression testing is a thread because even if you finished your regression testing, it’s going to come up again on your to-do list as soon as they change the product.</p>
+            <h3>Process:</h3>
+            <ul>
+                <li><strong>Intake:</strong> Receiving, understanding, and accepting a testing project.
+                    <ul>
+                        <li>Interview the project manager. Ask about particular concerns or risks.</li>
+                        <li>Read through all new use cases, and discuss with developers.</li>
+                    </ul>
+                </li>
+                <li><strong>Setup:</strong> Preparing the conditions, tools, or environments required for testing.
+                    <ul>
+                        <li>Develop a library of mindmaps for each major feature area. Use SFDIPOT as a checklist for coverage analysis.</li>
+                        <li>Identify and list all the error messages in the product.</li>
+                        <li>Develop a scenario playbook with Subject Matter Experts and other testers.</li>
+                        <li>Review use cases, and for each, add several ways in which the user could accidentally or maliciously misuse the feature.</li>
+                    </ul>
+                </li>
+                <li><strong>Study:</strong> Reading things to gain the required knowledge to test well.</li>
+                <li><strong>Product Analysis:</strong> Systematic modeling of the product or situation for the purposes of organizing your test process and preparing for deep testing.
+                    <ul>
+                        <li>Product analysis means systematically identifying the testable elements of the product. (product coverage outline or mindmap)</li>
+                    </ul>
+                </li>
+                <li><strong>Survey Testing:</strong> Interacting with a product primarily for the purposes of learning what it can be, what it might be, and what it should be.
+                    <ul>
+                        <li>It is typically a shallow and less organized form of testing. However, survey testing is a vital precursor to analysis and deep testing because it helps prepare the tester’s mind and materials.</li>
+                        <li>Shallow testing does not require much skill, effort, preparation, time, or tooling, and cannot reliably and comprehensively fulfill its mission.</li>
+                    </ul>
+                </li>
+                <li><strong>Deep Testing:</strong> Interacting with the product in specific and intensive ways primarily to find important and hard-to-find bugs. Deep testing is "testing that MAXIMIZES the probability of finding every elusive bug THAT MATTERS."
+                    <ul>
+                        <li>Deep testing requires substantial skill, effort, preparation, time, or tooling, AND reliably and comprehensively fulfills its mission.</li>
+                        <li>In general, one important sense of "deep" is "thorough".</li>
+                        <li>Deep analysis of a subject brings hidden or subtle factors to our awareness.</li>
+                        <li>Deep risk analysis is less likely to miss an important risk.</li>
+                        <li>Deep coverage is less likely to miss an important dimension of coverage.</li>
+                        <li>Deep investigation is less likely to miss an important factor in something that we want to understand (like a bug with lots of factors involved).</li>
+                        <li>You can't deeply learn a new product or feature before encountering and interacting with it.</li>
+                    </ul>
+                </li>
+                <li><strong>Reporting:</strong> Putting the story of testing into words or pictures; explaining work to yourself as well as other people.
+                    <ul>
+                        <li>Testers must learn to report and explain. Testing is Telling Stories.</li>
+                        <li>The Testing Story Is Three Braided Stories:
+                            <ul>
+                                <li>(BUGS) - A story about the status of the PRODUCT about what it does, how it failed, and how it might fail in ways that matter to your various clients.</li>
+                                <li>(ORACLES and COVERAGE) A story about HOW YOU TESTED it how you operated and observed the product how you recognized problems and their significance what you have tested so far and have not tested yet what you won't test at all (unless things change).</li>
+                                <li>(ACHIEVEMENTS and ISSUES) - A story about how GOOD that testing was, or could be the risks and costs of testing or not testing how testable (or not) the product is what made testing harder or slower what you need and recommend for faster, higher‐value testing.</li>
+                            </ul>
+                        </li>
+                        <li>Reporting Considerations:
+                            <ul>
+                                <li>Reporter safety: What will they think if I made no progress?</li>
+                                <li>Client: Who am I reporting to and how do I relate to them?</li>
+                                <li>Rules: What rules and traditions are there for reporting here?</li>
+                                <li>Significance of report: How will my report influence events?</li>
+                                <li>Subject of report: On what am I reporting?</li>
+                                <li>Other agents reporting: How do other reports affect mine?</li>
+                                <li>Medium: How will my report be seen, heard, and touched?</li>
+                                <li>Precision and confidence levels: What distinctions make a difference?</li>
+                            </ul>
+                        </li>
+                        <li>Take responsibility for the communication.</li>
+                        <li>Testers must be credible and accountable.</li>
+                    </ul>
+                </li>
+                <li><strong>Closure:</strong> Finishing or polishing or updating work that is substantially complete. Regression testing is a kind of closure activity, as would be writing a formal report or archiving test data.</li>
+            </ul>
+            <p>Original Confluence page for documentation can be found <a href="https://unrealsoftware.atlassian.net/wiki/spaces/RST/pages/49676431/Threads+and+Charters+Summary">here</a>.</p>
+        `;
+        
+        const infoDialog = document.createElement('div');
+        infoDialog.style.position = 'fixed';
+        infoDialog.style.top = '10%';
+        infoDialog.style.left = '50%';
+        infoDialog.style.transform = 'translateX(-50%)';
+        infoDialog.style.backgroundColor = 'white';
+        infoDialog.style.border = '1px solid black';
+        infoDialog.style.borderRadius = '10px';
+        infoDialog.style.width = '80%';
+        infoDialog.style.maxWidth = '800px';
+        infoDialog.style.maxHeight = '80vh';
+        infoDialog.style.zIndex = '1000';
+        infoDialog.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+        infoDialog.style.display = 'flex';
+        infoDialog.style.flexDirection = 'column';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.innerHTML = infoHtml;
+        contentDiv.style.padding = '20px';
+        contentDiv.style.flexGrow = '1';
+        contentDiv.style.overflowY = 'auto';
+
+        const buttonDiv = document.createElement('div');
+        buttonDiv.style.padding = '10px';
+        buttonDiv.style.borderTop = '1px solid #ccc';
+        buttonDiv.style.backgroundColor = '#f8f8f8';
+        buttonDiv.style.borderBottomLeftRadius = '10px';
+        buttonDiv.style.borderBottomRightRadius = '10px';
+
+        const closeButton = document.createElement('button');
+        closeButton.textContent = 'Close';
+        closeButton.style.display = 'block';
+        closeButton.style.width = '100%';
+        closeButton.style.padding = '10px';
+        closeButton.style.backgroundColor = '#4CAF50';
+        closeButton.style.color = 'white';
+        closeButton.style.border = 'none';
+        closeButton.style.borderRadius = '5px';
+        closeButton.style.fontSize = '16px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.style.transition = 'background-color 0.3s';
+
+        closeButton.onmouseover = function() {
+            this.style.backgroundColor = '#45a049';
+        };
+        closeButton.onmouseout = function() {
+            this.style.backgroundColor = '#4CAF50';
+        };
+
+        closeButton.onclick = function() {
+            document.body.removeChild(infoDialog);
+        };
+
+        buttonDiv.appendChild(closeButton);
+        infoDialog.appendChild(contentDiv);
+        infoDialog.appendChild(buttonDiv);
+
+        document.body.appendChild(infoDialog);
     }
 
     function updateStageSelect() {
@@ -535,7 +1070,6 @@
                     <div id="charter-${stage.id}">${charterHtml}</div>
                 </td>`;
             
-            // Replace the existing forEach loop with this new one
             currentProject.threads.forEach((thread, threadIndex) => {
                 const isActive = stage.charters.some(c => c.thread === threadIndex);
                 row += `<td class="${isActive ? thread.class : ''}" title="${thread.name}">
@@ -598,18 +1132,12 @@
         const charter = stage.charters.find(c => c.thread === threadIndex);
         if (charter) {
             const charterElement = document.querySelector(`#charter-${stageId} .thread-charter[data-thread="${threadIndex}"]`);
-            const textElement = charterElement.querySelector('.charter-text');
-            const timeElement = charterElement.querySelector('.charter-time');
-            const editIcon = charterElement.querySelector('.edit-icon');
-            const deleteIcon = charterElement.querySelector('.delete-icon');
-            const infoIcon = charterElement.querySelector('.info-icon');
+            const originalContent = charterElement.innerHTML;
             
-            editIcon.style.display = 'none';
-            deleteIcon.style.display = 'none';
-            infoIcon.style.display = 'none';
+            const editContainer = document.createElement('div');
+            editContainer.className = 'charter-edit-container';
             
-            const textInput = document.createElement('input');
-            textInput.type = 'text';
+            const textInput = document.createElement('textarea');
             textInput.value = charter.text;
             textInput.className = 'charter-edit-input';
             
@@ -618,6 +1146,9 @@
             timeInput.value = charter.time;
             timeInput.min = 0;
             timeInput.className = 'charter-edit-time';
+            
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.className = 'charter-edit-buttons';
             
             const saveButton = document.createElement('button');
             saveButton.textContent = 'Save';
@@ -628,13 +1159,18 @@
             const cancelButton = document.createElement('button');
             cancelButton.textContent = 'Cancel';
             cancelButton.onclick = function() {
-                updateUI();
+                charterElement.innerHTML = originalContent;
             };
             
-            textElement.replaceWith(textInput);
-            timeElement.replaceWith(timeInput);
-            charterElement.appendChild(saveButton);
-            charterElement.appendChild(cancelButton);
+            buttonsContainer.appendChild(saveButton);
+            buttonsContainer.appendChild(cancelButton);
+            
+            editContainer.appendChild(textInput);
+            editContainer.appendChild(timeInput);
+            editContainer.appendChild(buttonsContainer);
+            
+            charterElement.innerHTML = '';
+            charterElement.appendChild(editContainer);
         }
     }
 
