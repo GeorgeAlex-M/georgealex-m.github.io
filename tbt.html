@@ -6,30 +6,9 @@
     <title>Thread-Based Testing Tool</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-
-        td, th {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        th {
-            background-color: #f2f2f2;
-            height: auto;
-            white-space: normal;
-            overflow: visible;
-            text-overflow: clip;
-            padding: 8px 4px;
-            text-align: center;
-            vertical-align: middle;
-            word-break: break-word;
-        }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        td, th { border: 1px solid #ddd; padding: 8px; text-align: center; overflow: hidden; text-overflow: ellipsis; }
+        th { background-color: #f2f2f2; height: auto; white-space: normal; overflow: visible; text-overflow: clip; padding: 8px 4px; text-align: center; vertical-align: middle; word-break: break-word; }
         td:nth-child(1), th:nth-child(1) { width: 5%; }
         td:nth-child(2), th:nth-child(2) { width: 30%; }
         td:nth-child(n+3), th:nth-child(n+3) { width: 7%; }
@@ -68,164 +47,29 @@
         .thread-button.selected { border-color: #000; box-shadow: 0 0 5px rgba(0,0,0,0.3); }
         .thread-button.selected::after { content: '✓'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 1.2em; font-weight: bold; }
         .thread-button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .info-section {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-        #infoButton {
-            position: relative;
-            margin: 10px 0 20px 0;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 8px 16px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        #infoButton:hover {
-            background-color: #45a049;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transform: translateY(-2px);
-        }
-
-        #infoButton .info-icon {
-            font-size: 18px;
-        }
-
-        #infoButton .info-text {
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .visualization-section {
-            margin-top: 30px;
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            clear: both;
-        }
-
-        .visualization-section h2 {
-            cursor: pointer;
-            user-select: none;
-            color: #333;
-            transition: color 0.3s ease;
-            margin-bottom: 15px;
-        }
-
-        .visualization-section h2:hover {
-            color: #4CAF50;
-        }
-
-        .chart-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-top: 20px;
-            width: 100%;
-        }
-
-        #visualizationContent {
-            flex: 1;
-            max-width: 80%;
-            height: 400px;
-        }
-
-        .chart-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-left: 20px;
-            align-self: flex-start;
-        }
-
-        .chart-controls button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-
-        .chart-controls button:hover {
-            background-color: #45a049;
-        }
-
-        #chartLegend {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
-            width: 100%;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            margin: 5px 10px;
-            cursor: pointer;
-            transition: opacity 0.3s ease;
-        }
-
-        .legend-item.inactive {
-            opacity: 0.5;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-
-        .legend-label {
-            font-size: 14px;
-        }
-
-        .charter-edit-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-
-        .charter-edit-input {
-            width: 90%;
-            min-height: 60px;
-            margin-bottom: 10px;
-            resize: vertical;
-        }
-
-        .charter-edit-time {
-            width: 60px;
-            margin-bottom: 10px;
-        }
-
-        .charter-edit-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .charter-text {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
+        .info-section { position: absolute; top: 10px; right: 10px; }
+        #infoButton { position: relative; margin: 10px 0 20px 0; background-color: #4CAF50; color: white; border: none; border-radius: 20px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        #infoButton:hover { background-color: #45a049; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transform: translateY(-2px); }
+        #infoButton .info-icon { font-size: 18px; }
+        #infoButton .info-text { text-transform: uppercase; letter-spacing: 0.5px; }
+        .visualization-section { margin-top: 30px; margin-bottom: 30px; padding: 20px; background-color: #f9f9f9; border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); clear: both; }
+        .visualization-section h2 { cursor: pointer; user-select: none; color: #333; transition: color 0.3s ease; margin-bottom: 15px; }
+        .visualization-section h2:hover { color: #4CAF50; }
+        .chart-container { display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px; width: 100%; }
+        #visualizationContent { flex: 1; max-width: 80%; height: 400px; }
+        .chart-controls { display: flex; flex-direction: column; gap: 10px; margin-left: 20px; align-self: flex-start; }
+        .chart-controls button { background-color: #4CAF50; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; font-size: 14px; cursor: pointer; border-radius: 4px; transition: background-color 0.3s ease; }
+        .chart-controls button:hover { background-color: #45a049; }
+        #chartLegend { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 20px; width: 100%; }
+        .legend-item { display: flex; align-items: center; margin: 5px 10px; cursor: pointer; transition: opacity 0.3s ease; }
+        .legend-item.inactive { opacity: 0.5; }
+        .legend-color { width: 20px; height: 20px; border-radius: 50%; margin-right: 5px; }
+        .legend-label { font-size: 14px; }
+        .charter-edit-container { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .charter-edit-input { width: 90%; min-height: 60px; margin-bottom: 10px; resize: vertical; }
+        .charter-edit-time { width: 60px; margin-bottom: 10px; }
+        .charter-edit-buttons { display: flex; gap: 10px; }
+        .charter-text { white-space: pre-wrap; word-wrap: break-word; }
     </style>
 </head>
 <body>
