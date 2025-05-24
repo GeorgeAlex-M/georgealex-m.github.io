@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unreal Software - Placeholder Image Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            min-height: 100vh;
+            color: #ff6b4a;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated starfield background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ff6b4a, transparent),
+                radial-gradient(2px 2px at 40px 70px, #ff4521, transparent),
+                radial-gradient(1px 1px at 50px 50px, white, transparent),
+                radial-gradient(1px 1px at 80px 10px, white, transparent),
+                radial-gradient(2px 2px at 130px 80px, #ff6b4a, transparent),
+                radial-gradient(1px 1px at 150px 120px, white, transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: stars 200s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes stars {
+            from { transform: translateY(0); }
+            to { transform: translateY(-2000px); }
+        }
+
+        /* Grid overlay effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 107, 74, 0.03) 2px, rgba(255, 107, 74, 0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 107, 74, 0.03) 2px, rgba(255, 107, 74, 0.03) 4px);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header with logo */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            filter: drop-shadow(0 0 20px rgba(255, 107, 74, 0.5));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Support section */
+        .support-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ff6b4a;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .support-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ff6b4a, transparent);
+            animation: scan 4s linear infinite;
+        }
+
+        .support-text {
+            color: #ff9575;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
+        }
+
+        .philosophy-quote {
+            font-style: italic;
+            color: #ff6b4a;
+            margin: 15px 0;
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        .patreon-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ff424d, #ff6b4a);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 74, 0.3);
+        }
+
+        .patreon-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 74, 0.5);
+            background: linear-gradient(135deg, #ff6b4a, #ff9575);
+        }
+
+        .patreon-button img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Floating support button */
+        .floating-support {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+        }
+
+        .floating-patreon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff424d, #ff6b4a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(255, 107, 74, 0.4);
+            transition: all 0.3s ease;
+            animation: pulse 2s ease-in-out infinite;
+            text-decoration: none;
+        }
+
+        .floating-patreon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(255, 107, 74, 0.6);
+        }
+
+        .floating-patreon img {
+            width: 30px;
+            height: 30px;
+            filter: brightness(0) invert(1);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .floating-tooltip {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: #1a1a1a;
+            color: #ff9575;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid #ff6b4a;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .floating-support:hover .floating-tooltip {
+            opacity: 1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 3em;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 20px 0;
+            text-shadow: 
+                0 0 10px rgba(255, 107, 74, 0.8),
+                0 0 20px rgba(255, 107, 74, 0.6),
+                0 0 30px rgba(255, 107, 74, 0.4);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(255, 107, 74, 0.8), 0 0 20px rgba(255, 107, 74, 0.6), 0 0 30px rgba(255, 107, 74, 0.4); }
+            to { text-shadow: 0 0 20px rgba(255, 107, 74, 0.8), 0 0 30px rgba(255, 107, 74, 0.6), 0 0 40px rgba(255, 107, 74, 0.4); }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #ff9575;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+        }
+
+        /* Main panel with retro-futuristic design */
+        .main-panel {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a1515 100%);
+            border: 2px solid #ff6b4a;
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 0 50px rgba(255, 107, 74, 0.3),
+                inset 0 0 50px rgba(255, 107, 74, 0.1);
+        }
+
+        .main-panel::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff6b4a, #ff4521, #ff6b4a);
+            border-radius: 20px;
+            z-index: -1;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Control sections */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .control-group {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ff6b4a;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-group::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff6b4a, transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            color: #ff9575;
+            font-size: 0.9em;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="number"], select {
+            flex: 1;
+            padding: 12px 16px;
+            background: #0a0a0a;
+            border: 1px solid #ff6b4a;
+            color: #ff9575;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #ff9575;
+            box-shadow: 0 0 10px rgba(255, 107, 74, 0.5);
+            background: #1a0a0a;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        button {
+            padding: 16px 32px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .primary-btn {
+            background: #ff6b4a;
+            color: #0a0a0a;
+            box-shadow: 
+                0 4px 15px rgba(255, 107, 74, 0.4),
+                inset 0 -4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 20px rgba(255, 107, 74, 0.6),
+                inset 0 -4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .secondary-btn {
+            background: transparent;
+            color: #ff6b4a;
+            border: 2px solid #ff6b4a;
+        }
+
+        .secondary-btn:hover {
+            background: #ff6b4a;
+            color: #0a0a0a;
+            box-shadow: 0 0 20px rgba(255, 107, 74, 0.6);
+        }
+
+        .secondary-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .info-btn {
+            background: transparent;
+            color: #ff9575;
+            border: 2px solid #ff9575;
+        }
+
+        .info-btn:hover {
+            background: #ff9575;
+            color: #0a0a0a;
+            box-shadow: 0 0 20px rgba(255, 149, 117, 0.6);
+        }
+
+        /* Stats display */
+        .stats {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #ff6b4a;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+            position: relative;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #ff9575;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff6b4a;
+            text-shadow: 0 0 10px rgba(255, 107, 74, 0.5);
+        }
+
+        /* Preview section */
+        .preview-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6b4a;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .preview-container h2 {
+            color: #ff9575;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        #previewCanvas {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ff6b4a;
+            border-radius: 5px;
+            box-shadow: 0 0 30px rgba(255, 107, 74, 0.3);
+            background: #0a0a0a;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a1515 100%);
+            border: 2px solid #ff6b4a;
+            margin: 5% auto;
+            padding: 40px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 0 50px rgba(255, 107, 74, 0.5);
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 36px;
+            color: #ff6b4a;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            transform: rotate(90deg);
+            color: #ff9575;
+        }
+
+        .modal h2, .modal h3 {
+            color: #ff6b4a;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .modal h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .modal h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .modal p, .modal li {
+            color: #ff9575;
+            line-height: 1.8;
+        }
+
+        .modal ul, .modal ol {
+            margin-left: 20px;
+        }
+
+        .modal li {
+            margin-bottom: 10px;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 107, 74, 0.3);
+            border-top: 3px solid #ff6b4a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Progress bar */
+        .progress-container {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ff6b4a;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4521, #ff6b4a, #ff9575);
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .logo { width: 100px; height: 100px; }
+            .controls { grid-template-columns: 1fr; }
+            .button-group { flex-direction: column; }
+            button { width: 100%; }
+            .stats { grid-template-columns: 1fr 1fr; }
+            .support-section { margin: 20px -10px; padding: 15px; }
+            .support-text { font-size: 0.85em; }
+            .philosophy-quote { font-size: 0.8em; }
+            .floating-support { bottom: 20px; right: 20px; }
+            .floating-patreon { width: 50px; height: 50px; }
+            .floating-patreon img { width: 25px; height: 25px; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+            border: 1px solid #ff6b4a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff6b4a;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff9575;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="images/logo.png" alt="Unreal Software" class="logo">
+            <h1>Image Generator</h1>
+            <p class="subtitle">Engineering Division • File Size Control System</p>
+            
+            <div class="support-section">
+                <p class="support-text">
+                    Knowledge should flow freely through the cosmos. This tool is free for all explorers.
+                </p>
+                <p class="philosophy-quote">
+                    "I have not invented anything; I have merely discovered the secrets of nature." — Einstein
+                </p>
+                <a href="https://www.patreon.com/GeoQuasar" target="_blank" rel="noopener noreferrer" class="patreon-button">
+                    <img src="images/patreon.png" alt="Patreon">
+                    Support Mission
+                </a>
+            </div>
+        </div>
+        
+        <div class="main-panel">
+            <div class="controls">
+                <div class="control-group">
+                    <label for="sizeInput">Target File Size</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="sizeInput" min="0.001" value="1" step="0.1">
+                        <select id="unitSelect">
+                            <option value="KB">KB</option>
+                            <option value="MB" selected>MB</option>
+                            <option value="GB">GB</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="formatSelect">Image Format</label>
+                    <select id="formatSelect">
+                        <option value="png">PNG (Lossless)</option>
+                        <option value="jpeg">JPEG (Lossy)</option>
+                        <option value="webp">WebP (Modern)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="patternSelect">Pattern Type</label>
+                    <select id="patternSelect">
+                        <option value="checkerboard">Checkerboard</option>
+                        <option value="gradient">Gradient</option>
+                        <option value="noise">Random Noise</option>
+                        <option value="solid">Solid Color</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="primary-btn" onclick="generateImage()">
+                    Generate
+                </button>
+                <button class="secondary-btn" id="downloadButton" onclick="downloadImage()" disabled>
+                    Download
+                </button>
+                <button class="info-btn" onclick="showInfo()">
+                    Mission Brief
+                </button>
+            </div>
+
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <div class="stats" id="statsContainer" style="display: none;">
+                <div class="stat-item">
+                    <div class="stat-label">Target</div>
+                    <div class="stat-value" id="targetSizeDisplay">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Actual</div>
+                    <div class="stat-value" id="actualSizeDisplay">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Dimensions</div>
+                    <div class="stat-value" id="dimensionsDisplay">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-value" id="accuracyDisplay">-</div>
+                </div>
+            </div>
+            
+            <div class="preview-container">
+                <h2>Visual Output</h2>
+                <canvas id="previewCanvas" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Information Modal -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeInfo()">&times;</span>
+            <h2>Mission Brief</h2>
+            
+            <h3>Primary Objectives</h3>
+            <ul>
+                <li>Generate placeholder images with precise file size specifications</li>
+                <li>Test upload limits across various systems and platforms</li>
+                <li>Create standardized test assets for development pipelines</li>
+                <li>Verify server-side file restrictions and limitations</li>
+                <li>Debug image processing and storage systems</li>
+            </ul>
+
+            <h3>Technical Specifications</h3>
+            <ul>
+                <li><strong>Pattern Generation:</strong> Multiple algorithms for different compression characteristics</li>
+                <li><strong>Size Control:</strong> Precision targeting with dynamic adjustment systems</li>
+                <li><strong>Format Support:</strong> PNG, JPEG, and WebP with optimized encoding</li>
+                <li><strong>Validation:</strong> Real-time accuracy verification and adjustment</li>
+            </ul>
+
+            <h3>Pattern Analysis</h3>
+            <ul>
+                <li><strong>Checkerboard:</strong> Optimal for compression testing with predictable patterns</li>
+                <li><strong>Gradient:</strong> Smooth transitions for moderate file sizes</li>
+                <li><strong>Random Noise:</strong> Maximum entropy for stress testing</li>
+                <li><strong>Solid Color:</strong> Minimal size for baseline measurements</li>
+            </ul>
+
+            <h3>Operational Guidelines</h3>
+            <ul>
+                <li>Select target file size and unit of measurement</li>
+                <li>Choose appropriate image format for your use case</li>
+                <li>Select pattern type based on compression requirements</li>
+                <li>Generate and verify output specifications</li>
+                <li>Download for immediate deployment</li>
+            </ul>
+
+            <h3>System Requirements</h3>
+            <ul>
+                <li>Modern web browser with HTML5 Canvas support</li>
+                <li>JavaScript enabled for processing algorithms</li>
+                <li>Sufficient memory for large file generation</li>
+            </ul>
+
+            <h3>Mission Support</h3>
+            <p>This tool is provided free to all engineers and explorers, following the principle that knowledge and tools should be accessible to everyone. As Einstein believed, we merely discover the secrets of nature that already exist.</p>
+            <p>If you find this tool valuable in your work, consider supporting its continued development and the creation of more free tools through <a href="https://www.patreon.com/GeoQuasar" target="_blank" style="color: #ff9575;">Patreon</a>.</p>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading" id="loadingSpinner">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Floating Support Button -->
+    <div class="floating-support">
+        <a href="https://www.patreon.com/GeoQuasar" target="_blank" rel="noopener noreferrer" class="floating-patreon">
+            <img src="images/patreon.png" alt="Support on Patreon">
+        </a>
+        <div class="floating-tooltip">Support free knowledge</div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('previewCanvas');
+        const ctx = canvas.getContext('2d');
+        let generatedBlob = null;
+        let imageDataUrl = null;
+
+        // Pattern generation functions
+        function generateCheckerboard(width, height) {
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Configuration based on the original pattern
+            const cornerColors = [[255, 255, 255], [0, 0, 0]]; // White and black
+            const mainColors = [[255, 0, 0], [0, 255, 0], [0, 0, 255]]; // RGB
+            
+            // Calculate square sizes
+            const squareSize = Math.max(10, Math.floor(Math.min(width, height) / 40));
+            
+            // Black and white checkerboard extends to the middle of the image
+            const cornerAreaWidth = Math.floor(width / 2);
+            const cornerAreaHeight = Math.floor(height / 2);
+            
+            // Draw black and white checkerboard in top-left quadrant
+            for (let y = 0; y < cornerAreaHeight; y += squareSize) {
+                for (let x = 0; x < cornerAreaWidth; x += squareSize) {
+                    const colorIndex = ((Math.floor(x / squareSize)) + (Math.floor(y / squareSize))) % 2;
+                    const color = cornerColors[colorIndex];
+                    ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                    ctx.fillRect(x, y, squareSize, squareSize);
+                }
+            }
+            
+            // Draw RGB pattern in the remaining areas
+            for (let y = 0; y < height; y += squareSize) {
+                for (let x = 0; x < width; x += squareSize) {
+                    // Skip the top-left quadrant (black/white area)
+                    if (x < cornerAreaWidth && y < cornerAreaHeight) continue;
+                    
+                    const colorIndex = ((Math.floor(x / squareSize)) + (Math.floor(y / squareSize))) % mainColors.length;
+                    const color = mainColors[colorIndex];
+                    ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                    ctx.fillRect(x, y, squareSize, squareSize);
+                }
+            }
+        }
+
+        function generateGradient(width, height) {
+            canvas.width = width;
+            canvas.height = height;
+            
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, '#ff6b4a');
+            gradient.addColorStop(0.25, '#ff4521');
+            gradient.addColorStop(0.5, '#ff9575');
+            gradient.addColorStop(0.75, '#ff4521');
+            gradient.addColorStop(1, '#ff6b4a');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+        }
+
+        function generateNoise(width, height) {
+            canvas.width = width;
+            canvas.height = height;
+            
+            const imageData = ctx.createImageData(width, height);
+            const data = imageData.data;
+            
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = Math.random() * 255;     // Red
+                data[i + 1] = Math.random() * 255; // Green
+                data[i + 2] = Math.random() * 255; // Blue
+                data[i + 3] = 255;                 // Alpha
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function generateSolid(width, height) {
+            canvas.width = width;
+            canvas.height = height;
+            
+            ctx.fillStyle = '#ff6b4a';
+            ctx.fillRect(0, 0, width, height);
+        }
+
+        // Convert canvas to blob with specific format and quality
+        async function canvasToBlob(format, quality = 0.92) {
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => {
+                    resolve(blob);
+                }, `image/${format}`, quality);
+            });
+        }
+
+        // Adjust blob size by adding padding data
+        async function adjustBlobSize(blob, targetSize) {
+            const currentSize = blob.size;
+            
+            if (Math.abs(currentSize - targetSize) < 100) {
+                return blob;
+            }
+            
+            if (currentSize < targetSize) {
+                // Add padding to increase size
+                const paddingSize = targetSize - currentSize;
+                const padding = new Uint8Array(paddingSize);
+                for (let i = 0; i < paddingSize; i++) {
+                    padding[i] = Math.floor(Math.random() * 256);
+                }
+                return new Blob([blob, padding], { type: blob.type });
+            }
+            
+            return blob;
+        }
+
+        // Show progress
+        function showProgress(percent) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            
+            progressContainer.style.display = 'block';
+            progressFill.style.width = percent + '%';
+        }
+
+        function hideProgress() {
+            document.getElementById('progressContainer').style.display = 'none';
+        }
+
+        // Main image generation function
+        async function generateImage() {
+            const sizeInput = parseFloat(document.getElementById('sizeInput').value);
+            const unit = document.getElementById('unitSelect').value;
+            const format = document.getElementById('formatSelect').value;
+            const pattern = document.getElementById('patternSelect').value;
+            
+            // Show loading
+            document.getElementById('loadingSpinner').style.display = 'block';
+            showProgress(10);
+            
+            // Calculate target size in bytes
+            const multipliers = { 'KB': 1024, 'MB': 1024 * 1024, 'GB': 1024 * 1024 * 1024 };
+            const targetSize = Math.floor(sizeInput * multipliers[unit]);
+            
+            // Start with reasonable dimensions
+            let width = Math.max(100, Math.floor(Math.sqrt(targetSize * 2)));
+            let height = width;
+            
+            // Limit maximum dimensions
+            const maxDimension = 4096;
+            width = Math.min(width, maxDimension);
+            height = Math.min(height, maxDimension);
+            
+            showProgress(30);
+            
+            // Generate pattern
+            switch (pattern) {
+                case 'checkerboard':
+                    generateCheckerboard(width, height);
+                    break;
+                case 'gradient':
+                    generateGradient(width, height);
+                    break;
+                case 'noise':
+                    generateNoise(width, height);
+                    break;
+                case 'solid':
+                    generateSolid(width, height);
+                    break;
+            }
+            
+            showProgress(50);
+            
+            // Convert to blob and adjust size
+            let quality = format === 'jpeg' ? 0.92 : 1;
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            while (attempts < maxAttempts) {
+                generatedBlob = await canvasToBlob(format, quality);
+                
+                if (Math.abs(generatedBlob.size - targetSize) < targetSize * 0.05) {
+                    break;
+                }
+                
+                if (generatedBlob.size < targetSize) {
+                    generatedBlob = await adjustBlobSize(generatedBlob, targetSize);
+                    break;
+                } else {
+                    // Reduce quality for JPEG or dimensions for other formats
+                    if (format === 'jpeg' && quality > 0.1) {
+                        quality -= 0.1;
+                    } else {
+                        width = Math.floor(width * 0.9);
+                        height = Math.floor(height * 0.9);
+                        
+                        switch (pattern) {
+                            case 'checkerboard':
+                                generateCheckerboard(width, height);
+                                break;
+                            case 'gradient':
+                                generateGradient(width, height);
+                                break;
+                            case 'noise':
+                                generateNoise(width, height);
+                                break;
+                            case 'solid':
+                                generateSolid(width, height);
+                                break;
+                        }
+                    }
+                }
+                
+                attempts++;
+                showProgress(50 + (attempts / maxAttempts) * 40);
+            }
+            
+            showProgress(90);
+            
+            // Create preview
+            imageDataUrl = URL.createObjectURL(generatedBlob);
+            const previewCanvas = document.getElementById('previewCanvas');
+            const previewCtx = previewCanvas.getContext('2d');
+            
+            const img = new Image();
+            img.onload = function() {
+                const maxPreviewSize = 400;
+                const scale = Math.min(maxPreviewSize / img.width, maxPreviewSize / img.height, 1);
+                previewCanvas.width = img.width * scale;
+                previewCanvas.height = img.height * scale;
+                previewCtx.drawImage(img, 0, 0, previewCanvas.width, previewCanvas.height);
+                
+                // Update stats
+                updateStats(targetSize, generatedBlob.size, img.width, img.height);
+                
+                // Enable download button
+                document.getElementById('downloadButton').disabled = false;
+                
+                // Hide loading
+                document.getElementById('loadingSpinner').style.display = 'none';
+                hideProgress();
+            };
+            img.src = imageDataUrl;
+            
+            showProgress(100);
+        }
+
+        // Update statistics display
+        function updateStats(targetSize, actualSize, width, height) {
+            const multipliers = { 'KB': 1024, 'MB': 1024 * 1024, 'GB': 1024 * 1024 * 1024 };
+            const unit = document.getElementById('unitSelect').value;
+            const multiplier = multipliers[unit];
+            
+            document.getElementById('targetSizeDisplay').textContent = 
+                (targetSize / multiplier).toFixed(3) + ' ' + unit;
+            document.getElementById('actualSizeDisplay').textContent = 
+                (actualSize / multiplier).toFixed(3) + ' ' + unit;
+            document.getElementById('dimensionsDisplay').textContent = 
+                width + ' × ' + height;
+            
+            const accuracy = (1 - Math.abs(targetSize - actualSize) / targetSize) * 100;
+            document.getElementById('accuracyDisplay').textContent = 
+                accuracy.toFixed(1) + '%';
+            
+            document.getElementById('statsContainer').style.display = 'grid';
+        }
+
+        // Download the generated image
+        function downloadImage() {
+            if (!generatedBlob || !imageDataUrl) return;
+            
+            const sizeInput = document.getElementById('sizeInput').value;
+            const unit = document.getElementById('unitSelect').value;
+            const format = document.getElementById('formatSelect').value;
+            const pattern = document.getElementById('patternSelect').value;
+            
+            const link = document.createElement('a');
+            link.download = `unreal_${sizeInput}${unit}_${pattern}.${format}`;
+            link.href = imageDataUrl;
+            link.click();
+        }
+
+        // Modal functions
+        function showInfo() {
+            document.getElementById('infoModal').style.display = 'block';
+        }
+
+        function closeInfo() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('infoModal');
+            if (event.target === modal) {
+                closeInfo();
+            }
+        }
+
+        // Initialize with a default image
+        window.onload = function() {
+            generateImage();
+        };
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                generateImage();
+            } else if (event.key === 'Escape') {
+                closeInfo();
+            }
+        });
+    </script>
+</body>
+</html>
