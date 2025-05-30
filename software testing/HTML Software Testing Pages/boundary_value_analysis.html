@@ -202,6 +202,101 @@
                 height: 60px;
             }
         }
+        
+        /* Image zoom modal styles */
+        .reference-image {
+            max-width: 100%;
+            height: auto;
+            cursor: pointer;
+            border: 2px solid #666;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        .reference-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            cursor: pointer;
+        }
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: none;
+            max-height: none;
+            object-fit: contain;
+            transition: transform 0.1s ease;
+            cursor: grab;
+        }
+        .modal-content:active {
+            cursor: grabbing;
+        }
+        .zoom-controls {
+            position: absolute;
+            top: 70px;
+            right: 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1002;
+        }
+        .zoom-btn {
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .zoom-btn:hover {
+            background: rgba(0,0,0,0.9);
+        }
+        .zoom-info {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #f1f1f1;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1002;
+        }
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .close:hover {
+            color: #bbb;
+        }
+        .zoom-hint {
+            color: #666;
+            font-size: 0.9em;
+            font-style: italic;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -214,13 +309,13 @@
         <h2>Input Section</h2>
         <div>
             <label for="integerLower">Integer Range:</label>
-            <input type="number" id="integerLower" value="1">
-            <input type="number" id="integerUpper" value="20">
+            <input type="number" id="integerLower" value="-10">
+            <input type="number" id="integerUpper" value="50">
         </div>
         <div>
             <label for="floatLower">Float Range:</label>
-            <input type="number" id="floatLower" value="1.0" step="0.1">
-            <input type="number" id="floatUpper" value="20.0" step="0.1">
+            <input type="number" id="floatLower" value="-10.0" step="0.1">
+            <input type="number" id="floatUpper" value="50.0" step="0.1">
         </div>
         <div>
             <label for="charLower">Char Range:</label>
@@ -289,18 +384,189 @@
         </div>
     </div>
 
+    <div class="input-section">
+        <h2>Reference Diagram</h2>
+        <img src="../images/Equivalence Partitioning and Boundary.png" 
+             alt="Equivalence Partitioning and Boundary Value Analysis Diagram" 
+             class="reference-image" 
+             onclick="openModal()">
+        <div class="zoom-hint">Click image to zoom in</div>
+    </div>
+
+    <!-- Image zoom modal -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="zoom-controls">
+            <button class="zoom-btn" onclick="zoomIn(event)" title="Zoom In (+)">+</button>
+            <button class="zoom-btn" onclick="zoomOut(event)" title="Zoom Out (-)">−</button>
+            <button class="zoom-btn" onclick="resetZoom(event)" title="Reset Zoom (R)">⌂</button>
+        </div>
+        <img class="modal-content" id="modalImg" src="" alt="">
+        <div class="zoom-info" id="zoomInfo">100% | Use scroll wheel or +/- keys to zoom</div>
+    </div>
+
     <script>
+        // Modal zoom functionality
+        let currentZoom = 1;
+        let isDragging = false;
+        let startX, startY, offsetX = 0, offsetY = 0;
+        
+        function openModal() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImg');
+            const referenceImg = document.querySelector('.reference-image');
+            
+            if (modal && modalImg && referenceImg) {
+                modal.style.display = 'block';
+                modalImg.src = referenceImg.src;
+                modalImg.alt = referenceImg.alt;
+                
+                // Reset zoom and position - start with maximum zoom out
+                currentZoom = 0.3;  // Start at 30% (maximum zoom out)
+                offsetX = 0;
+                offsetY = 0;
+                updateImageTransform();
+                updateZoomInfo();
+                
+                // Prevent body scrolling when modal is open
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        function zoomIn(event) {
+            event.stopPropagation();
+            changeZoom(1.2);
+        }
+        
+        function zoomOut(event) {
+            event.stopPropagation();
+            changeZoom(0.8);
+        }
+        
+        function resetZoom(event) {
+            event.stopPropagation();
+            currentZoom = 0.1;  // Maximum zoom out
+            offsetX = 0;
+            offsetY = 0;
+            updateImageTransform();
+            updateZoomInfo();
+        }
+        
+        function changeZoom(factor) {
+            const newZoom = currentZoom * factor;
+            if (newZoom >= 0.1 && newZoom <= 10) {
+                currentZoom = newZoom;
+                updateImageTransform();
+                updateZoomInfo();
+            }
+        }
+        
+        function updateImageTransform() {
+            const modalImg = document.getElementById('modalImg');
+            if (modalImg) {
+                modalImg.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px)) scale(${currentZoom})`;
+            }
+        }
+        
+        function updateZoomInfo() {
+            const zoomInfo = document.getElementById('zoomInfo');
+            if (zoomInfo) {
+                const percentage = Math.round(currentZoom * 100);
+                zoomInfo.textContent = `${percentage}% | Use scroll wheel or +/- keys to zoom`;
+            }
+        }
+        
+        // Event listeners
+        document.addEventListener('keydown', function(event) {
+            if (document.getElementById('imageModal').style.display === 'block') {
+                switch(event.key) {
+                    case 'Escape':
+                        closeModal();
+                        break;
+                    case '+':
+                    case '=':
+                        event.preventDefault();
+                        changeZoom(1.2);
+                        break;
+                    case '-':
+                        event.preventDefault();
+                        changeZoom(0.8);
+                        break;
+                    case 'r':
+                    case 'R':
+                        event.preventDefault();
+                        resetZoom(event);
+                        break;
+                }
+            }
+        });
+        
+        // Mouse wheel zoom
+        document.addEventListener('wheel', function(event) {
+            if (document.getElementById('imageModal').style.display === 'block') {
+                event.preventDefault();
+                const delta = event.deltaY > 0 ? 0.9 : 1.1;
+                changeZoom(delta);
+            }
+        });
+        
+        // Drag functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalImg = document.getElementById('modalImg');
+            
+            if (modalImg) {
+                modalImg.addEventListener('mousedown', function(event) {
+                    isDragging = true;
+                    startX = event.clientX - offsetX;
+                    startY = event.clientY - offsetY;
+                    event.preventDefault();
+                });
+                
+                document.addEventListener('mousemove', function(event) {
+                    if (isDragging) {
+                        offsetX = event.clientX - startX;
+                        offsetY = event.clientY - startY;
+                        updateImageTransform();
+                    }
+                });
+                
+                document.addEventListener('mouseup', function() {
+                    isDragging = false;
+                });
+                
+                // Prevent modal from closing when clicking on controls or image
+                modalImg.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                });
+                
+                const zoomControls = document.querySelector('.zoom-controls');
+                if (zoomControls) {
+                    zoomControls.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                    });
+                }
+            }
+        });
+        
         // Populate char dropdowns
         const charDropdowns = document.querySelectorAll('#charLower, #charUpper');
-        for (let i = 65; i <= 90; i++) {
+        for (let i = 48; i <= 122; i++) {
             const option = document.createElement('option');
             option.value = String.fromCharCode(i);
             option.textContent = String.fromCharCode(i);
             charDropdowns[0].appendChild(option.cloneNode(true));
             charDropdowns[1].appendChild(option);
         }
-        document.getElementById('charLower').value = 'A';
-        document.getElementById('charUpper').value = 'Z';
+        document.getElementById('charLower').value = '0';
+        document.getElementById('charUpper').value = 'z';
     
         function pythonicRound(num, precision) {
             var m = Math.pow(10, precision || 0);
@@ -728,12 +994,12 @@
         }
 
         function clearInputs() {
-            document.getElementById('integerLower').value = 1;
-            document.getElementById('integerUpper').value = 20;
-            document.getElementById('floatLower').value = 1.0;
-            document.getElementById('floatUpper').value = 20.0;
-            document.getElementById('charLower').value = 'A';
-            document.getElementById('charUpper').value = 'Z';
+            document.getElementById('integerLower').value = -10;
+            document.getElementById('integerUpper').value = 50;
+            document.getElementById('floatLower').value = -10.0;
+            document.getElementById('floatUpper').value = 50.0;
+            document.getElementById('charLower').value = '0';
+            document.getElementById('charUpper').value = 'z';
             document.getElementById('numPartitions').value = 3;
             document.getElementById('twoPointBva').checked = true;
             document.getElementById('threePointBva').checked = true;
