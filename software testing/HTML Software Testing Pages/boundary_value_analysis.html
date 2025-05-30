@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boundary Value Analysis Test Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px; /* Slightly wider for better spacing */
+            margin: 0 auto;
+            padding: 25px; /* Increased padding */
+            font-size: 18px; /* Increased from 16px */
+            line-height: 1.6; /* Better line spacing */
+            color: #222; /* Darker text for better contrast */
+            background-color: #fafafa; /* Light background to reduce eye strain */
+        }
+        .input-section, .control-section, .output-section {
+            margin-bottom: 35px; /* Increased margin */
+            padding: 25px; /* Increased padding */
+            border: 2px solid #999; /* Thicker, darker border */
+            border-radius: 8px; /* Larger rounded corners */
+            background-color: white; /* White background for sections */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+        }
+        h1, h2 {
+            color: #000; /* Pure black for maximum contrast */
+            margin-bottom: 20px; /* More space below headings */
+        }
+        h1 {
+            font-size: 2.2em; /* Larger main heading */
+        }
+        h2 {
+            font-size: 1.5em; /* Larger section headings */
+        }
+        label {
+            display: inline-block;
+            width: 200px; /* Increased width */
+            margin-bottom: 12px; /* More spacing */
+            font-weight: bold; /* Bold labels for clarity */
+            font-size: 1.1em; /* Slightly larger label text */
+        }
+        input, select {
+            width: 140px; /* Increased width */
+            padding: 12px; /* Increased padding for easier clicking */
+            margin-bottom: 15px; /* More spacing */
+            border: 2px solid #666; /* Thicker, darker border */
+            border-radius: 6px;
+            font-size: 1.1em; /* Larger text in inputs */
+            background-color: white;
+        }
+        input:focus, select:focus {
+            border-color: #007bff;
+            outline: 3px solid rgba(0, 123, 255, 0.25); /* Better focus indication */
+        }
+        input[type="checkbox"] {
+            position: absolute; /* Hide the original checkbox */
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        .checkbox-label {
+            display: inline-flex; 
+            align-items: center; 
+            margin-right: 20px; /* More spacing between checkboxes */
+            cursor: pointer; 
+            position: relative;
+            padding-left: 35px; /* More space for larger checkbox */
+            font-size: 1.1em; /* Larger text */
+            font-weight: bold; /* Bold for better visibility */
+            user-select: none;
+            margin-bottom: 10px; /* Vertical spacing */
+        }
+        /* The custom checkbox */
+        .custom-checkbox {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 24px; /* Larger checkbox */
+            width: 24px; /* Larger checkbox */
+            background-color: white;
+            border: 3px solid #666; /* Thicker border */
+            border-radius: 4px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        /* When the checkbox is checked, add a blue background */
+        .checkbox-label input:checked ~ .custom-checkbox {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .custom-checkbox::after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        /* Show the checkmark when checked */
+        .checkbox-label input:checked ~ .custom-checkbox::after {
+            display: block;
+        }
+        /* Style the checkmark */
+        .checkbox-label .custom-checkbox::after {
+            left: 7px; /* Adjusted for larger checkbox */
+            top: 3px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+        button {
+            margin-right: 15px; /* More spacing between buttons */
+            margin-bottom: 10px; /* Vertical spacing for wrapping */
+            padding: 15px 25px; /* Larger clickable area */
+            font-size: 1.2em; /* Larger button text */
+            font-weight: bold; /* Bold button text */
+            border: none;
+            border-radius: 6px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15); /* Stronger shadow */
+            transition: all 0.2s ease;
+            min-width: 120px; /* Minimum button width */
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px); /* Subtle lift effect */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        #outputTabs button { /* Specific styling for tab buttons */
+            background-color: #f8f9fa;
+            color: #333;
+            border: 2px solid #dee2e6;
+            margin-right: 5px;
+        }
+        #outputTabs button.active { /* Style for the active tab button */
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        #outputTabs button:hover {
+            background-color: #e9ecef;
+        }
+        #outputTabs button.active:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 1.1em; /* Larger table text */
+        }
+        th, td {
+            border: 2px solid #666; /* Thicker table borders */
+            padding: 15px; /* More padding in cells */
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #343a40; /* Darker header background */
+            color: white; /* White text on dark background */
+            font-weight: bold;
+            font-size: 1.15em; /* Slightly larger header text */
+        }
+        td {
+            background-color: white;
+            border-bottom: 1px solid #ddd; /* Subtle row separators */
+        }
+        tr:nth-child(even) td {
+            background-color: #f8f9fa; /* Zebra striping for easier reading */
+        }
+        .tab-content {
+            padding-top: 15px;
+        }
+        .header-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+        .header-title {
+            flex: 1;
+            margin: 0;
+        }
+        @media (max-width: 600px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <img src="../../images/logo.png" alt="Unreal Software Engineering Division Logo" class="logo">
+        <h1 class="header-title">Boundary Value Analysis Test Generator</h1>
+    </div>
+    
+    <div class="input-section">
+        <h2>Input Section</h2>
+        <div>
+            <label for="integerLower">Integer Range:</label>
+            <input type="number" id="integerLower" value="1">
+            <input type="number" id="integerUpper" value="20">
+        </div>
+        <div>
+            <label for="floatLower">Float Range:</label>
+            <input type="number" id="floatLower" value="1.0" step="0.1">
+            <input type="number" id="floatUpper" value="20.0" step="0.1">
+        </div>
+        <div>
+            <label for="charLower">Char Range:</label>
+            <select id="charLower"></select>
+            <select id="charUpper"></select>
+        </div>
+        <div>
+            <label for="numPartitions">Number of Partitions:</label>
+            <input type="number" id="numPartitions" value="3">
+        </div>
+        <div>
+            <label>BVA Types:</label>
+            <label class="checkbox-label" for="twoPointBva">
+                <input type="checkbox" id="twoPointBva" checked>
+                <span class="custom-checkbox"></span> Two-Point BVA
+            </label>
+            <label class="checkbox-label" for="threePointBva">
+                <input type="checkbox" id="threePointBva" checked>
+                <span class="custom-checkbox"></span> Three-Point BVA
+            </label>
+        </div>
+    </div>
+
+    <div class="control-section">
+        <button onclick="generateTestCases()">Generate</button>
+        <button onclick="clearInputs()">Clear</button>
+        <button onclick="saveFile()">Save</button>
+    </div>
+
+    <div class="output-section">
+        <h2>Output Section</h2>
+        <div id="outputTabs">
+            <button onclick="showTab('equivalence', this)">Equivalence Classes</button>
+            <button onclick="showTab('twoPoint', this)">Two-Point BVA</button>
+            <button onclick="showTab('threePoint', this)">Three-Point BVA</button>
+        </div>
+        <div id="equivalenceTab" class="tab-content">
+            <table id="equivalenceTable">
+                <tr>
+                    <th>Data Type</th>
+                    <th>Lower</th>
+                    <th>Upper</th>
+                    <th>Values</th>
+                </tr>
+            </table>
+        </div>
+        <div id="twoPointTab" class="tab-content" style="display:none;">
+            <table id="twoPointTable">
+                <tr>
+                    <th>Data Type</th>
+                    <th>Lower</th>
+                    <th>Upper</th>
+                    <th>Values</th>
+                </tr>
+            </table>
+        </div>
+        <div id="threePointTab" class="tab-content" style="display:none;">
+            <table id="threePointTable">
+                <tr>
+                    <th>Data Type</th>
+                    <th>Lower</th>
+                    <th>Upper</th>
+                    <th>Values</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Populate char dropdowns
+        const charDropdowns = document.querySelectorAll('#charLower, #charUpper');
+        for (let i = 65; i <= 90; i++) {
+            const option = document.createElement('option');
+            option.value = String.fromCharCode(i);
+            option.textContent = String.fromCharCode(i);
+            charDropdowns[0].appendChild(option.cloneNode(true));
+            charDropdowns[1].appendChild(option);
+        }
+        document.getElementById('charLower').value = 'A';
+        document.getElementById('charUpper').value = 'Z';
+    
+        function pythonicRound(num, precision) {
+            var m = Math.pow(10, precision || 0);
+            // Multiply and round to handle floating point inaccuracies
+            var nStr = (num * m).toFixed(precision + 5); // Increased precision for intermediate step
+            var n = parseFloat(nStr);
+
+            var i = Math.floor(n);
+            var f = n - i;
+            var e = 1e-9; // Small epsilon for float comparisons
+
+            // Check if f is effectively 0.5
+            if (Math.abs(f - 0.5) < e) {
+                // It's a .5 case, round to nearest even integer part i
+                return (i % 2 === 0) ? i / m : (i + 1) / m;
+            } else {
+                // Not a .5 case, standard rounding on n (which has m factor)
+                return Math.round(n) / m;
+            }
+        }
+    
+        function showTab(tabName, buttonElement = null) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+
+            // Update active class for tab buttons
+            document.querySelectorAll('#outputTabs button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // If called from a button click, buttonElement will be event.target
+            // If called programmatically, find the button by its onclick attribute
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            } else {
+                const targetButton = document.querySelector(`#outputTabs button[onclick*="${tabName}"]`);
+                if (targetButton) {
+                    targetButton.classList.add('active');
+                }
+            }
+        }
+    
+        let results = [];
+
+        class BoundaryValueAnalysisGenerator {
+            constructor(numPartitions) {
+                this.numPartitions = numPartitions;
+            }
+
+            _nextValue(value, dataType) {
+                if (dataType === "integer") {
+                    return value + 1;
+                } else if (dataType === "float") {
+                    return Math.round((value + 0.1) * 10) / 10; // Use round for consistency with Python
+                } else if (dataType === "char") {
+                    return String.fromCharCode(value.charCodeAt(0) + 1);
+                }
+            }
+
+            _prevValue(value, dataType) {
+                if (dataType === "integer") {
+                    return value - 1;
+                } else if (dataType === "float") {
+                    return Math.round((value - 0.1) * 10) / 10; // Use round for consistency with Python
+                } else if (dataType === "char") {
+                    return String.fromCharCode(value.charCodeAt(0) - 1);
+                }
+            }
+
+            generateEquivalenceClasses(partition) {
+                const lower = partition.lower;
+                const upper = partition.upper;
+                const dataType = partition.dataType;
+
+                let midPoints = [];
+
+                if (dataType === "char") {
+                    // Calculate the total range
+                    const range = upper.charCodeAt(0) - lower.charCodeAt(0);
+                    
+                    // Calculate step size, ensuring it's at least 1
+                    const step = Math.max(1, Math.floor(range / (this.numPartitions + 1)));
+                    
+                    for (let i = 1; i <= this.numPartitions; i++) {
+                        let point = lower.charCodeAt(0) + step * i;
+                        
+                        midPoints.push(String.fromCharCode(point));
+                    }
+                } else {
+                    // Calculate the total range
+                    const range = upper - lower;
+                    
+                    // Calculate step size
+                    const step = range / (this.numPartitions + 1);
+                    
+                    for (let i = 1; i <= this.numPartitions; i++) {
+                        let point = lower + step * i;
+                        
+                        if (dataType === "integer") {
+                            if (i === 1) { // First partition point
+                                midPoints.push(Math.round(point)); 
+                            } else { // Subsequent partition points
+                                midPoints.push(Math.floor(point));
+                            }
+                        } else { // Float
+                            midPoints.push(pythonicRound(point, 1));
+                        }
+                    }
+                }
+
+                return midPoints;
+            }
+
+            generateBoundaryTestCases(partition, bvaType) {
+                const lower = partition.lower;
+                const upper = partition.upper;
+                const dataType = partition.dataType;
+
+                const midPoints = this.generateEquivalenceClasses(partition);
+                let testCases = [];
+
+                if (bvaType === 2) {
+                    testCases.push([
+                        { "below_boundary": this._prevValue(lower, dataType) },
+                        { "on_boundary": lower }
+                    ]);
+                    
+                    let midTestCases = [];
+                    for (let i = 0; i < midPoints.length; i++) {
+                        let point = midPoints[i];
+                        
+                        if (dataType === 'char' && midPoints.length === 3) {
+                            if (i === 0) { // First char mid-point (e.g., G)
+                                midTestCases.push([
+                                    { "on_boundary": point },
+                                    { "above_boundary": this._nextValue(point, dataType) }
+                                ]);
+                            } else { // Second (e.g., M) and Third (e.g., S) char mid-points
+                                midTestCases.push([
+                                    { "below_boundary": this._prevValue(point, dataType) },
+                                    { "on_boundary": point }
+                                ]);
+                            }
+                        } else { // Logic for int, float, or char not having exactly 3 mid-points
+                            if (i < midPoints.length -1) { // For all mid-points except the last one
+                                midTestCases.push([
+                                    { "on_boundary": point },
+                                    { "above_boundary": this._nextValue(point, dataType) }
+                                ]);
+                            } else { // For the last mid-point
+                                midTestCases.push([
+                                    { "below_boundary": this._prevValue(point, dataType) },
+                                    { "on_boundary": point }
+                                ]);
+                            }
+                        }
+                    }
+                    testCases.push(midTestCases);
+                    testCases.push([
+                        { "on_boundary": upper },
+                        { "above_boundary": this._nextValue(upper, dataType) }
+                    ]);
+                } else if (bvaType === 3) {
+                    testCases.push([
+                        { "below_boundary": this._prevValue(lower, dataType) },
+                        { "on_boundary": lower },
+                        { "above_boundary": this._nextValue(lower, dataType) }
+                    ]);
+                    let midTestCases = [];
+                    for (let point of midPoints) {
+                        midTestCases.push([
+                            { "below_boundary": this._prevValue(point, dataType) },
+                            { "on_boundary": point },
+                            { "above_boundary": this._nextValue(point, dataType) }
+                        ]);
+                    }
+                    testCases.push(midTestCases);
+                    testCases.push([
+                        { "below_boundary": this._prevValue(upper, dataType) },
+                        { "on_boundary": upper },
+                        { "above_boundary": this._nextValue(upper, dataType) }
+                    ]);
+                }
+
+                return testCases;
+            }
+        }
+
+        function generateTestCases() {
+            const config = {
+                partitions: [
+                    {lower: parseInt(document.getElementById('integerLower').value), 
+                    upper: parseInt(document.getElementById('integerUpper').value), 
+                    dataType: "integer"},
+                    {lower: parseFloat(document.getElementById('floatLower').value), 
+                    upper: parseFloat(document.getElementById('floatUpper').value), 
+                    dataType: "float"},
+                    {lower: document.getElementById('charLower').value, 
+                    upper: document.getElementById('charUpper').value, 
+                    dataType: "char"}
+                ],
+                numPartitions: parseInt(document.getElementById('numPartitions').value),
+                bvaTypes: [
+                    document.getElementById('twoPointBva').checked ? 2 : null,
+                    document.getElementById('threePointBva').checked ? 3 : null
+                ].filter(type => type !== null)
+            };
+
+            const generator = new BoundaryValueAnalysisGenerator(config.numPartitions);
+            results = config.partitions.map(partition => ({
+                dataType: partition.dataType,
+                lower: partition.lower,
+                upper: partition.upper,
+                equivalenceClasses: generator.generateEquivalenceClasses(partition),
+                boundaryTestCases: Object.fromEntries(
+                    config.bvaTypes.map(type => [
+                        type, 
+                        generator.generateBoundaryTestCases(partition, type)
+                    ])
+                )
+            }));
+
+            populateTables(results);
+        }
+
+        function populateTables(results) {
+            populateEquivalenceTable(results);
+            populateBoundaryTable(results, 2);
+            populateBoundaryTable(results, 3);
+            // Set the first tab (Equivalence Classes) as active by default if results are populated
+            if (results && results.length > 0) {
+                showTab('equivalence'); // This will now work properly
+            } else {
+                 // If no results, ensure no tab is marked active and all are hidden initially
+                document.querySelectorAll('#outputTabs button').forEach(button => button.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+                 // Except for the first one that we want to show by default before generation
+                document.getElementById('equivalenceTab').style.display = 'block';
+                // And mark its button as active
+                const eqButton = document.querySelector('#outputTabs button[onclick*="equivalence"]');
+                if(eqButton) eqButton.classList.add('active');
+            }
+        }
+
+        function populateEquivalenceTable(results) {
+            const table = document.getElementById('equivalenceTable');
+            clearTable(table);
+
+            results.forEach(result => {
+                const row = table.insertRow();
+                row.insertCell().textContent = result.dataType;
+                // Format float lower/upper for display
+                if (result.dataType === 'float' && Number.isInteger(result.lower)) {
+                    row.insertCell().textContent = result.lower.toFixed(1);
+                } else {
+                    row.insertCell().textContent = result.lower;
+                }
+                if (result.dataType === 'float' && Number.isInteger(result.upper)) {
+                    row.insertCell().textContent = result.upper.toFixed(1);
+                } else {
+                    row.insertCell().textContent = result.upper;
+                }
+                row.insertCell().textContent = result.equivalenceClasses.join(', ');
+            });
+        }
+
+        function populateBoundaryTable(results, bvaType) {
+            const table = document.getElementById(`${bvaType === 2 ? 'twoPoint' : 'threePoint'}Table`);
+            clearTable(table);
+
+            results.forEach(result => {
+                if (result.boundaryTestCases[bvaType]) {
+                    const testCasesForType = result.boundaryTestCases[bvaType];
+
+                    // New helper to format a single test case object array into comma-separated values
+                    const formatSingleTestCaseValues = (testCaseObjectArray, dataType) => {
+                        return testCaseObjectArray.map(obj => {
+                            let val = Object.values(obj)[0];
+                            if (dataType === 'float' && Number.isInteger(val)) {
+                                return val.toFixed(1);
+                            }
+                            return val;
+                        }).join(', ');
+                    };
+
+                    // Lower boundary
+                    if (testCasesForType[0]) {
+                        const row = table.insertRow();
+                        row.insertCell().textContent = result.dataType;
+                        // Format float lower/upper for display
+                        if (result.dataType === 'float' && Number.isInteger(result.lower)) {
+                            row.insertCell().textContent = result.lower.toFixed(1);
+                        } else {
+                            row.insertCell().textContent = result.lower;
+                        }
+                        if (result.dataType === 'float' && Number.isInteger(result.upper)) {
+                            row.insertCell().textContent = result.upper.toFixed(1);
+                        } else {
+                            row.insertCell().textContent = result.upper;
+                        }
+                        row.insertCell().textContent = formatSingleTestCaseValues(testCasesForType[0], result.dataType);
+                    }
+
+                    // Mid-points
+                    if (testCasesForType[1] && testCasesForType[1].length > 0) {
+                        const row = table.insertRow(); // One row for all mid-point test cases of a data type
+                        row.insertCell().textContent = result.dataType;
+                        // Format float lower/upper for display
+                        if (result.dataType === 'float' && Number.isInteger(result.lower)) {
+                            row.insertCell().textContent = result.lower.toFixed(1);
+                        } else {
+                            row.insertCell().textContent = result.lower;
+                        }
+                        if (result.dataType === 'float' && Number.isInteger(result.upper)) {
+                            row.insertCell().textContent = result.upper.toFixed(1);
+                        } else {
+                            row.insertCell().textContent = result.upper;
+                        }
+                        
+                        const midPointValuesString = testCasesForType[1].map(midTestCaseGroup => {
+                            const values = midTestCaseGroup.map(obj => {
+                                let val = Object.values(obj)[0];
+                                if (result.dataType === 'float' && Number.isInteger(val)) {
+                                    return val.toFixed(1);
+                                }
+                                return val;
+                            });
+                            return `[${values.join(', ')}]`;
+                        }).join(', ');
+                        row.insertCell().textContent = midPointValuesString;
+                    }
+
+                    // Upper boundary
+                    if (testCasesForType[2]) {
+                        const row = table.insertRow();
+                        row.insertCell().textContent = result.dataType;
+                         // Format float lower/upper for display
+                        if (result.dataType === 'float' && Number.isInteger(result.lower)) {
+                            row.insertCell().textContent = result.lower.toFixed(1);
+                        } else {
+                            row.insertCell().textContent = result.lower;
+                        }
+                        if (result.dataType === 'float' && Number.isInteger(result.upper)) {
+                            row.insertCell().textContent = result.upper.toFixed(1);
+                        } else {
+                            row.insertCell().textContent = result.upper;
+                        }
+                        row.insertCell().textContent = formatSingleTestCaseValues(testCasesForType[2], result.dataType);
+                    }
+                }
+            });
+        }
+
+        function clearTable(table) {
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+        }
+    
+        function formatOutput(results) {
+            const outputs = {
+                "two_point_bva": [],
+                "three_point_bva": []
+            };
+            const floatPlaceholders = new Map();
+            let placeholderId = 0;
+
+            // Helper to format numbers for JSON: if float and whole, use placeholder for later replacement to "1.0" format
+            function formatJsonNumber(value, dataType) {
+                if (dataType === "float" && Number.isFinite(value) && Number.isInteger(value)) {
+                    const placeholder = `__FLOAT_PLACEHOLDER_${placeholderId++}__`;
+                    floatPlaceholders.set(placeholder, value.toFixed(1)); // Store target string like "1.0"
+                    return placeholder; // Return placeholder string for initial JSON stringify
+                }
+                return value; // Return as is for other cases (actual floats with decimals, integers, chars)
+            }
+
+            results.forEach(result => {
+                for (const [bvaType, testCases] of Object.entries(result.boundaryTestCases)) {
+                    const entry = {
+                        "data_type": result.dataType,
+                        "lower": formatJsonNumber(result.lower, result.dataType),
+                        "upper": formatJsonNumber(result.upper, result.dataType),
+                        "equivalence_classes": result.equivalenceClasses.map(ec =>
+                            formatJsonNumber(ec, result.dataType)
+                        ),
+                        "boundary_test_cases": testCases.map((testCaseGroup, index) => { // testCases is [lowerTests, midTestsArray, upperTests]
+                            if (index === 1) { // This is mid_tests_array_of_arrays (array of arrays of objects)
+                                return testCaseGroup.map(midPointTestArray => { // midPointTestArray is like [ {on_boundary:G}, {above_boundary:H} ]
+                                    return midPointTestArray.map(testObject => {
+                                        const key = Object.keys(testObject)[0];
+                                        return { [key]: formatJsonNumber(testObject[key], result.dataType) };
+                                    });
+                                });
+                            } else { // This is lower_boundary_array or upper_boundary_array (array of objects)
+                                return testCaseGroup.map(testObject => { 
+                                    const key = Object.keys(testObject)[0];
+                                    return { [key]: formatJsonNumber(testObject[key], result.dataType) };
+                                });
+                            }
+                        })
+                    };
+                    outputs[`${bvaType === "2" ? 'two' : 'three'}_point_bva`].push(entry);
+                }
+            });
+            
+            // First, stringify the object structure that includes placeholders, using 4 spaces for indent
+            let jsonString = JSON.stringify(outputs, null, 4);
+
+            // Then, replace the stringified placeholders with their target numeric strings (e.g., "__PLACEHOLDER__" -> 1.0)
+            for (const [placeholder, replacement] of floatPlaceholders) {
+                const placeholderInJson = JSON.stringify(placeholder); // Creates "__FLOAT_PLACEHOLDER_n__"
+                // Escape placeholder for regex and replace. The replacement is a numeric string, not a JSON string.
+                jsonString = jsonString.replace(new RegExp(placeholderInJson.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&'), 'g'), replacement);
+            }
+
+            // Collapse simple 3-line objects like { "key": value } into a single line, matching target style.
+            // This regex looks for an opening brace with its indentation, the key-value pair on the next line (indented further),
+            // and the closing brace on the third line (matching initial indentation), optionally followed by a comma.
+            // It replaces this 3-line structure with a single line: <initial_indent>{ <key_value_pair> }<optional_comma>
+            const objectCollapseRegex = /^(\s*){\s*\n\s*(\s*)("[\w_]+":\s*(?:\d+(?:\.\d+)?|"[^"\\]*(?:\\.[^"\\]*)*"|true|false|null))\s*\n\s*\1}(\s*,)?$/gm;
+            jsonString = jsonString.replace(objectCollapseRegex, '$1{ $3 }$4');
+
+            return jsonString; // Return the final JSON string
+        }
+
+        function clearInputs() {
+            document.getElementById('integerLower').value = 1;
+            document.getElementById('integerUpper').value = 20;
+            document.getElementById('floatLower').value = 1.0;
+            document.getElementById('floatUpper').value = 20.0;
+            document.getElementById('charLower').value = 'A';
+            document.getElementById('charUpper').value = 'Z';
+            document.getElementById('numPartitions').value = 3;
+            document.getElementById('twoPointBva').checked = true;
+            document.getElementById('threePointBva').checked = true;
+            
+            // Clear tables
+            clearTable(document.getElementById('equivalenceTable'));
+            clearTable(document.getElementById('twoPointTable'));
+            clearTable(document.getElementById('threePointTable'));
+            
+            results = [];
+            // Reset tabs to default state
+            document.querySelectorAll('#outputTabs button').forEach(button => button.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            document.getElementById('equivalenceTab').style.display = 'block'; // Show equivalence tab
+            const eqButton = document.querySelector('#outputTabs button[onclick*="equivalence"]');
+            if(eqButton) eqButton.classList.add('active'); // Mark its button as active
+        }
+
+        function saveFile() {
+            if (!results || results.length === 0) {
+                alert('No data to save. Please generate test cases first.');
+                return;
+            }
+
+            const jsonString = formatOutput(results); // formatOutput now returns the final JSON string
+            const blob = new Blob([jsonString], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'boundary_value_analysis.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
