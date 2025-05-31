@@ -5,138 +5,225 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boundary Value Analysis Test Generator</title>
     <style>
+        :root {
+            --primary-color: #4A90E2;
+            --primary-color-rgb: 74, 144, 226; /* For rgba */
+            --secondary-color: #50E3C2;
+            --accent-color: #F5A623; /* Orange for emphasis */
+            --background-color: #F4F7F6; /* Soft Light Gray */
+            --surface-color: #FFFFFF; /* White for sections */
+            --text-primary-color: #333333;
+            --text-secondary-color: #5F6368;
+            --border-color: #D8DEE2;
+            --success-color: #34A853;
+            --danger-color: #EA4335;
+            --info-color: #4285F4;
+            --warning-color: #FBBC05;
+            --light-gray-color: #EAECEF;
+            --medium-gray-color: #CED4DA;
+            --dark-gray-color: #495057;
+
+            --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-size-base: 1rem; /* Approx 16px */
+            --line-height-base: 1.6;
+            
+            --border-radius-sm: 0.25rem; /* 4px */
+            --border-radius-md: 0.5rem; /* 8px */
+            --border-radius-lg: 0.75rem; /* 12px */
+
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 900px; /* Slightly wider for better spacing */
+            font-family: var(--font-family-sans-serif);
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 25px; /* Increased padding */
-            font-size: 18px; /* Increased from 16px */
-            line-height: 1.6; /* Better line spacing */
-            color: #222; /* Darker text for better contrast */
-            background-color: #fafafa; /* Light background to reduce eye strain */
+            padding: 30px; /* Increased padding */
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-base);
+            color: var(--text-primary-color);
+            background-color: var(--background-color);
         }
         .input-section, .control-section, .output-section {
-            margin-bottom: 35px; /* Increased margin */
-            padding: 25px; /* Increased padding */
-            border: 2px solid #999; /* Thicker, darker border */
-            border-radius: 8px; /* Larger rounded corners */
-            background-color: white; /* White background for sections */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+            max-width: 1100px; /* New: Constrain width */
+            margin-left: auto;   /* New: Center the section */
+            margin-right: auto;  /* New: Center the section */
+            margin-bottom: 40px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            background-color: var(--surface-color);
+            box-shadow: var(--shadow-md);
         }
-        h1, h2 {
-            color: #000; /* Pure black for maximum contrast */
-            margin-bottom: 20px; /* More space below headings */
+        h1, h2, h3, h4, h5 { /* Standardized heading styles */
+            color: var(--text-primary-color);
+            margin-top: 0;
+            margin-bottom: 1.25rem; /* 20px */
+            font-weight: 600; /* Slightly bolder */
         }
         h1 {
-            font-size: 2.2em; /* Larger main heading */
+            font-size: 2.4rem; /* Approx 38px */
+            line-height: 1.2;
         }
         h2 {
-            font-size: 1.5em; /* Larger section headings */
+            font-size: 1.75rem; /* Approx 28px */
+            border-bottom: 1px solid var(--light-gray-color);
+            padding-bottom: 0.75rem; /* 12px */
+        }
+        h3 {
+            font-size: 1.4rem; /* Approx 22px */
         }
         label {
             display: inline-block;
-            width: 200px; /* Increased width */
-            margin-bottom: 12px; /* More spacing */
-            font-weight: bold; /* Bold labels for clarity */
-            font-size: 1.1em; /* Slightly larger label text */
+            /* width: 220px; Removed fixed width for better responsiveness */
+            margin-bottom: 0.75rem; /* 12px */
+            font-weight: 500; /* Medium weight */
+            font-size: 1.05rem; /* Slightly larger */
+            color: var(--text-secondary-color);
         }
-        input, select {
-            width: 140px; /* Increased width */
-            padding: 12px; /* Increased padding for easier clicking */
-            margin-bottom: 15px; /* More spacing */
-            border: 2px solid #666; /* Thicker, darker border */
-            border-radius: 6px;
-            font-size: 1.1em; /* Larger text in inputs */
-            background-color: white;
+        input[type="number"], 
+        input[type="text"], 
+        select {
+            width: 160px; /* Adjusted width */
+            padding: 0.75rem 1rem; /* 12px 16px */
+            margin-bottom: 1rem; /* 16px */
+            border: 1px solid var(--medium-gray-color);
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            background-color: var(--surface-color);
+            color: var(--text-primary-color);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
         input:focus, select:focus {
-            border-color: #007bff;
-            outline: 3px solid rgba(0, 123, 255, 0.25); /* Better focus indication */
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25); /* Corrected RGBA usage */
         }
-        input[type="checkbox"] {
-            position: absolute; /* Hide the original checkbox */
+        input[type="color"] { /* Style color inputs */
+             width: 50px;
+             height: 40px;
+             padding: 5px;
+             border-radius: var(--border-radius-md);
+             border: 1px solid var(--medium-gray-color);
+             cursor: pointer;
+        }
+
+        .checkbox-label {
+            display: inline-flex; 
+            align-items: center; 
+            margin-right: 1.25rem; /* 20px */
+            cursor: pointer; 
+            position: relative;
+            padding-left: 2.2rem; /* 35px */
+            font-size: 1rem; /* Adjusted */
+            font-weight: 500; /* Medium weight */
+            color: var(--text-secondary-color);
+            user-select: none;
+            margin-bottom: 0.75rem; /* 12px */
+        }
+        .checkbox-label input {
+            position: absolute;
             opacity: 0;
             cursor: pointer;
             height: 0;
             width: 0;
         }
-        .checkbox-label {
-            display: inline-flex; 
-            align-items: center; 
-            margin-right: 20px; /* More spacing between checkboxes */
-            cursor: pointer; 
-            position: relative;
-            padding-left: 35px; /* More space for larger checkbox */
-            font-size: 1.1em; /* Larger text */
-            font-weight: bold; /* Bold for better visibility */
-            user-select: none;
-            margin-bottom: 10px; /* Vertical spacing */
-        }
-        /* The custom checkbox */
         .custom-checkbox {
             position: absolute;
             left: 0;
             top: 50%;
             transform: translateY(-50%);
-            height: 24px; /* Larger checkbox */
-            width: 24px; /* Larger checkbox */
-            background-color: white;
-            border: 3px solid #666; /* Thicker border */
-            border-radius: 4px;
+            height: 1.5rem; /* 24px */
+            width: 1.5rem; /* 24px */
+            background-color: var(--surface-color);
+            border: 2px solid var(--medium-gray-color); /* Softer border */
+            border-radius: var(--border-radius-sm);
             transition: background-color 0.2s ease, border-color 0.2s ease;
         }
-        /* When the checkbox is checked, add a blue background */
         .checkbox-label input:checked ~ .custom-checkbox {
-            background-color: #007bff;
-            border-color: #007bff;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
         }
-        /* Create the checkmark/indicator (hidden when not checked) */
         .custom-checkbox::after {
             content: "";
             position: absolute;
             display: none;
         }
-        /* Show the checkmark when checked */
         .checkbox-label input:checked ~ .custom-checkbox::after {
             display: block;
         }
-        /* Style the checkmark */
         .checkbox-label .custom-checkbox::after {
-            left: 7px; /* Adjusted for larger checkbox */
-            top: 3px;
-            width: 6px;
-            height: 12px;
-            border: solid white;
+            left: 0.44rem; /* 7px */
+            top: 0.19rem; /* 3px */
+            width: 0.375rem; /* 6px */
+            height: 0.75rem; /* 12px */
+            border: solid var(--surface-color);
             border-width: 0 3px 3px 0;
             transform: rotate(45deg);
         }
-        button {
-            margin-right: 15px; /* More spacing between buttons */
-            margin-bottom: 10px; /* Vertical spacing for wrapping */
-            padding: 15px 25px; /* Larger clickable area */
-            font-size: 1.2em; /* Larger button text */
-            font-weight: bold; /* Bold button text */
-            border: none;
-            border-radius: 6px;
-            background-color: #007bff;
-            color: white;
+        button, .button-like { /* Added .button-like for consistent styling */
+            margin-right: 1rem; /* 16px */
+            margin-bottom: 0.75rem; /* 12px */
+            padding: 0.875rem 1.5rem; /* 14px 24px */
+            font-size: 1rem; /* Standardized */
+            font-weight: 500; /* Medium */
+            border: 1px solid transparent;
+            border-radius: var(--border-radius-md);
+            color: var(--surface-color);
             cursor: pointer;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15); /* Stronger shadow */
+            box-shadow: var(--shadow-sm);
             transition: all 0.2s ease;
-            min-width: 120px; /* Minimum button width */
+            text-align: center;
+            display: inline-flex; /* For aligning icons if any */
+            align-items: center;
+            justify-content: center;
         }
-        button:hover {
-            background-color: #0056b3;
-            transform: translateY(-1px); /* Subtle lift effect */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        button:hover, .button-like:hover {
+            transform: translateY(-2px); /* More noticeable hover */
+            box-shadow: var(--shadow-md);
         }
-        #outputTabs button { /* Specific styling for tab buttons */
+        button:active, .button-like:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Specific button themes */
+        #generateButton, button[id="generateEulerDiagramButton"] { background-color: var(--success-color); }
+        #generateButton:hover, button[id="generateEulerDiagramButton"]:hover { background-color: #2a8c4a; }
+
+        #clearButton, button[id="clearEulerConfigButton"] { background-color: var(--danger-color); }
+        #clearButton:hover, button[id="clearEulerConfigButton"]:hover { background-color: #c5372a; }
+        
+        #saveButton, button[id="exportEulerConfigButton"] { background-color: var(--info-color); }
+        #saveButton:hover, button[id="exportEulerConfigButton"]:hover { background-color: #3572de; }
+
+        button[id="importEulerConfigButton"], #loadThermostatTemplate, #loadEmptyTemplate { background-color: var(--warning-color); color: var(--text-primary-color); }
+        button[id="importEulerConfigButton"]:hover, #loadThermostatTemplate:hover, #loadEmptyTemplate:hover { background-color: #e0a800; }
+        
+        #previewFitBtn, #previewResetBtn { padding: 0.5rem 0.75rem; font-size: 0.875rem; } /* Smaller utility buttons */
+        #previewFitBtn { background-color: var(--secondary-color); color: var(--text-primary-color); }
+        #previewFitBtn:hover { background-color: #40c2a8; }
+        #previewResetBtn { background-color: var(--dark-gray-color); }
+        #previewResetBtn:hover { background-color: #3a4045; }
+        
+        #addPhaseButton { background: linear-gradient(to bottom, var(--primary-color), #3b7dd6); padding: 0.5rem 1rem; font-size: 0.9rem; }
+        button[data-action="removePhase"] { background: linear-gradient(to bottom, var(--danger-color), #c5372a) !important; padding: 0.5rem 0.75rem !important; font-size: 1rem !important; height: auto !important; min-width: auto !important;}
+        button[data-action="addBoxToPhase"] { background: linear-gradient(to bottom, var(--info-color), #3572de) !important; padding: 0.3rem 0.6rem !important; font-size: 0.8rem !important; }
+        button[data-action="addBoxToBox"] { background: linear-gradient(to bottom, var(--success-color), #2a8c4a) !important; padding: 0.25rem 0.5rem !important; font-size: 0.75rem !important; }
+        button[data-action="removeBox"] { background: linear-gradient(to bottom, var(--danger-color), #c5372a) !important; padding: 0.25rem 0.5rem !important; font-size: 0.75rem !important; }
+        button[data-action="addDataItem"] { background: linear-gradient(to bottom, var(--accent-color), #d98e1f) !important; color: var(--surface-color) !important; padding: 0.3rem 0.6rem !important; font-size: 0.75rem !important; }
+        button[data-action="addImageItem"] { background: linear-gradient(to bottom, var(--secondary-color), #40c2a8) !important; color: var(--text-primary-color) !important; padding: 0.3rem 0.6rem !important; font-size: 0.75rem !important; }
+        button[data-action^="removeDataItem"] { background-color: var(--danger-color) !important; padding: 0.2rem 0.4rem !important; font-size: 0.7rem !important; margin-left: auto !important; }
+
+        #outputTabs button {
             background-color: #f8f9fa;
             color: #333;
             border: 2px solid #dee2e6;
             margin-right: 5px;
         }
-        #outputTabs button.active { /* Style for the active tab button */
+        #outputTabs button.active {
             background-color: #007bff;
             color: white;
             border-color: #007bff;
@@ -151,26 +238,26 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            font-size: 1.1em; /* Larger table text */
+            font-size: 1.1em;
         }
         th, td {
-            border: 2px solid #666; /* Thicker table borders */
-            padding: 15px; /* More padding in cells */
+            border: 2px solid #666;
+            padding: 15px;
             text-align: left;
             vertical-align: top;
         }
         th {
-            background-color: #343a40; /* Darker header background */
-            color: white; /* White text on dark background */
+            background-color: #343a40;
+            color: white;
             font-weight: bold;
-            font-size: 1.15em; /* Slightly larger header text */
+            font-size: 1.15em;
         }
         td {
             background-color: white;
-            border-bottom: 1px solid #ddd; /* Subtle row separators */
+            border-bottom: 1px solid #ddd;
         }
         tr:nth-child(even) td {
-            background-color: #f8f9fa; /* Zebra striping for easier reading */
+            background-color: #f8f9fa;
         }
         .tab-content {
             padding-top: 15px;
@@ -203,7 +290,6 @@
             }
         }
         
-        /* Image zoom modal styles */
         .reference-image {
             max-width: 100%;
             height: auto;
@@ -297,6 +383,316 @@
             font-style: italic;
             margin-top: 5px;
         }
+
+        .data-type-option-btn {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 2px solid #ccc;
+            transition: all 0.2s ease-in-out;
+        }
+        .data-type-option-btn:hover {
+            background-color: #e0e0e0;
+            border-color: #007bff;
+        }
+        .data-type-option-btn.selected {
+            background-color: #007bff;
+            color: white;
+            border-color: #0056b3;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        #phasesListContainer input[type="color"] {
+            width: 38px; height: 38px; padding: 2px;
+        }
+
+        /* Styling for the dynamically generated phase and box controls */
+        #phasesListContainer .phase-controls,
+        #phasesListContainer .box-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem; /* Consistent spacing */
+            margin-bottom: 0.75rem;
+        }
+
+        #phasesListContainer .phase-controls input[type="text"],
+        #phasesListContainer .box-controls input[type="text"] {
+            flex: 1; /* Allow title input to take available space */
+        }
+        
+        #phasesListContainer .phase-controls input[type="number"] { /* Flex input */
+            width: 70px; /* Keep specific width */
+            padding: 0.6rem 0.5rem !important; /* Adjust padding */
+            font-size: 0.9rem !important;
+        }
+
+        #phasesListContainer .box-item-controls-header, /* For the "Data Items:" label and buttons line */
+        #phasesListContainer .box-item-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem; 
+        }
+
+        #phasesListContainer .data-items-container {
+            padding-left: 0.5rem; /* Indent data items slightly */
+        }
+
+        #phasesListContainer .data-item-entry {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Push remove button to the end */
+            gap: 0.5rem;
+            margin: 0.3rem 0 !important; /* Tighter vertical spacing for items */
+            padding: 0.4rem;
+            border: 1px solid var(--light-gray-color);
+            border-radius: var(--border-radius-md); /* Slightly larger radius for items */
+            background-color: #fdfdff; /* very light bg for items */
+        }
+        #phasesListContainer .data-item-entry > input[type="text"],
+        #phasesListContainer .data-item-entry > textarea {
+             flex-grow: 1; /* Allow input/textarea to take space */
+             font-size: 0.85rem !important;
+             padding: 0.4rem !important;
+             border: 1px solid var(--light-gray-color) !important;
+             border-radius: var(--border-radius-sm);
+        }
+        #phasesListContainer .data-item-entry > input[type="text"]:focus,
+        #phasesListContainer .data-item-entry > textarea:focus {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 1px rgba(var(--primary-color-rgb), 0.2); 
+        }
+
+        #phasesListContainer .data-item-entry img {
+            max-height: 50px !important; /* Smaller image preview */
+            max-width: 80px !important;
+            border-radius: var(--border-radius-sm) !important;
+            border: 1px solid var(--medium-gray-color);
+        }
+
+        #phasesListContainer .data-item-label-static {
+            font-size: 0.9rem !important; 
+            font-weight: 500;
+            color: var(--text-secondary-color) !important; 
+            margin-right: 0.5rem !important;
+            white-space: nowrap;
+        }
+         #phasesListContainer .data-item-filename {
+            font-size: 0.8rem !important;
+            color: var(--text-secondary-color) !important;
+            margin-right: auto; /* Push to left */
+            padding-left: 0.3rem;
+        }
+        
+        /* Adjustments for small action buttons in config */
+        button[data-action="addBoxToPhase"], 
+        button[data-action="addBoxToBox"] {
+            padding: 0.3rem 0.6rem !important; 
+            font-size: 0.8rem !important;
+            min-width: auto; /* Allow them to be as small as content */
+        }
+        button[data-action="addDataItem"], 
+        button[data-action="addImageItem"] {
+            padding: 0.3rem 0.6rem !important; 
+            font-size: 0.8rem !important;
+            min-width: auto; 
+            margin-left: 0px !important; /* Align with Data Items: label */
+        }
+
+        button[data-action^="remove"] { /* General remove buttons like phase/box */
+            padding: 0.4rem 0.6rem !important;
+            font-size: 0.9rem !important;
+            min-width: auto;
+        }
+        button[data-action="removeDataItem"] { 
+            padding: 0.2rem 0.5rem !important; /* Smallest remove for items */
+            font-size: 0.8rem !important;
+            min-width: auto;
+            margin-left: 0.5rem !important; /* Ensure some space from content */
+            background-color: var(--danger-color) !important; /* Override gradient for this one if needed */
+            border-radius: var(--border-radius-sm) !important;
+        }
+        
+        /* Ensure color inputs in box controls are also sized appropriately */
+        #phasesListContainer .box-controls input[type="color"] {
+            width: 32px !important; 
+            height: 30px !important; /* Slightly smaller */
+            padding: 2px !important;
+        }
+
+        /* Container for child boxes */
+        .child-boxes-container {
+            margin-left: 1rem !important; /* Consistent indent */
+            padding-left: 1rem !important;
+            border-left: 2px solid var(--light-gray-color) !important;
+        }
+        
+        #globalSettingsSection h4 {
+            margin-bottom: 1.5rem; /* Increased space below the Global Settings title */
+        }
+
+        /* Global Settings Section specific styles */
+        .global-setting-row {
+            display: flex;
+            align-items: center;
+            /* justify-content: space-between; Removed to bring input closer */
+            margin-bottom: 0.75rem; /* Space between rows */
+            padding: 0.25rem 0; /* Add a little vertical padding */
+            max-width: 550px; /* Constrain the row width */
+            /* margin-left: auto; Centering the row if its parent is wider and allows it */
+            /* margin-right: auto; */
+        }
+
+        .global-setting-row label {
+            margin-bottom: 0; /* Remove default label margin */
+            margin-right: 1rem; /* Space between label and input */
+            flex-shrink: 0; /* Prevent label from shrinking */
+            flex-basis: 200px; /* Give label a consistent base width */
+            text-align: left;
+        }
+
+        .global-setting-row input[type="text"],
+        .global-setting-row input[type="color"] {
+            margin-bottom: 0; /* Remove default input margin */
+            /* margin-left: auto; Removed to bring input immediately next to label */
+        }
+        .global-setting-row input[type="text"]#globalTestItemName {
+            width: 250px; /* More specific width for this input */
+        }
+        .global-setting-row input[type="color"] {
+            width: 60px !important; /* Ensure color pickers are consistently sized */
+            height: 38px !important;
+            /* margin-left: auto; already set above */
+        }
+
+        /* Data Type Modal */
+        #dataTypeModal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            cursor: pointer;
+        }
+        #dataTypeModal .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: none;
+            max-height: none;
+            object-fit: contain;
+            transition: transform 0.1s ease;
+            cursor: grab;
+        }
+        #dataTypeModal .modal-content:active {
+            cursor: grabbing;
+        }
+        #dataTypeModal .zoom-controls {
+            position: absolute;
+            top: 70px;
+            right: 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1002;
+        }
+        #dataTypeModal .zoom-btn {
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        #dataTypeModal .zoom-btn:hover {
+            background: rgba(0,0,0,0.9);
+        }
+        #dataTypeModal .zoom-info {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #f1f1f1;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1002;
+        }
+        #dataTypeModal .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        #dataTypeModal .close:hover {
+            color: #bbb;
+        }
+        #dataTypeModal .zoom-hint {
+            color: #666;
+            font-size: 0.9em;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        #dataTypeOptionsContainer {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        #dataTypeOptionsContainer .data-type-option-btn {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        #dataTypeOptionsContainer .data-type-option-btn:hover {
+            background-color: #0056b3;
+            border-color: #007bff;
+        }
+        #dataTypeOptionsContainer .data-type-option-btn.selected {
+            background-color: #0056b3;
+            color: white;
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        #dataTypeCancelBtn, #dataTypeConfirmBtn {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        #dataTypeCancelBtn:hover, #dataTypeConfirmBtn:hover {
+            background-color: #5a6268;
+        }
+
+        /* Configuration Builder specific styles */
+        div[style*="margin: 5px 0;"] textarea:focus,
+        div[style*="display: flex; align-items: center; margin: 2px 0;"] input[type="text"]:focus {
+             border-color: var(--primary-color) !important;
+             box-shadow: 0 0 0 1px rgba(var(--primary-color-rgb), 0.2); /* Subtler focus */
+        }
     </style>
 </head>
 <body>
@@ -305,6 +701,17 @@
         <h1 class="header-title">Boundary Value Analysis Test Generator</h1>
     </div>
     
+    <div class="input-section" id="conceptualRepresentationSection" style="display: none;">
+        <h2>Tool Conceptual Representation</h2>
+        <div id="referenceImageContainer">
+            <img src="../images/Equivalence Partitioning and Boundary.png" 
+                 alt="Equivalence Partitioning and Boundary Value Analysis Diagram" 
+                 class="reference-image" 
+                 id="referenceImage">
+            <div class="zoom-hint">Click image to zoom in</div>
+        </div>
+    </div>
+
     <div class="input-section">
         <h2>Input Section</h2>
         <div>
@@ -340,17 +747,17 @@
     </div>
 
     <div class="control-section">
-        <button onclick="generateTestCases()">Generate</button>
-        <button onclick="clearInputs()">Clear</button>
-        <button onclick="saveFile()">Save</button>
+        <button id="generateButton">Generate</button>
+        <button id="clearButton">Clear</button>
+        <button id="saveButton">Save</button>
     </div>
 
     <div class="output-section">
         <h2>Output Section</h2>
         <div id="outputTabs">
-            <button onclick="showTab('equivalence', this)">Equivalence Classes</button>
-            <button onclick="showTab('twoPoint', this)">Two-Point BVA</button>
-            <button onclick="showTab('threePoint', this)">Three-Point BVA</button>
+            <button data-tab-name="equivalence">Equivalence Classes</button>
+            <button data-tab-name="twoPoint">Two-Point BVA</button>
+            <button data-tab-name="threePoint">Three-Point BVA</button>
         </div>
         <div id="equivalenceTab" class="tab-content">
             <table id="equivalenceTable">
@@ -385,514 +792,1340 @@
     </div>
 
     <div class="input-section">
-        <h2>Reference Diagram</h2>
-        <img src="../images/Equivalence Partitioning and Boundary.png" 
-             alt="Equivalence Partitioning and Boundary Value Analysis Diagram" 
-             class="reference-image" 
-             onclick="openModal()">
-        <div class="zoom-hint">Click image to zoom in</div>
+        <h2>Euler Representation Configuration</h2>
+        
+        <div>
+            <div style="border: 1px solid var(--border-color) !important; border-radius: var(--border-radius-lg) !important; padding: 20px; background: var(--surface-color) !important; margin-bottom: 25px; box-shadow: var(--shadow-sm);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin: 0; color: #000000; font-size: 1.4em; font-weight: 600;">Live Preview</h3>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button id="previewFitBtn" title="Fit to container">Fit</button>
+                        <button id="previewResetBtn" title="Reset view">Reset</button>
+                        <span id="previewZoomDisplay" style="font-size: 11px; color: #666; font-weight: 500; min-width: 60px; text-align: center;">100%</span>
+                    </div>
+                </div>
+                
+                <div id="previewViewport" 
+                     style="position: relative; border: 2px solid #dee2e6; border-radius: 8px; height: 400px; overflow: hidden; background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f8f9fa 100%); cursor: grab; user-select: none;">
+                    
+                    <div id="previewGrid" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1; pointer-events: none; background-image: radial-gradient(circle, #007bff 1px, transparent 1px); background-size: 20px 20px;"></div>
+                    
+                    <div id="previewContent" style="position: absolute; top: 0; left: 0; transform-origin: top left; transition: transform 0.1s ease-out;">
+                        <div id="previewPlaceholder" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #6c757d; font-size: 16px; font-weight: 500; pointer-events: none;">
+                            <div style="font-size: 48px; margin-bottom: 10px; opacity: 0.5;">📋</div>
+                            <div>Configure phases to see preview</div>
+                            <div style="font-size: 14px; margin-top: 5px; opacity: 0.7;">Use mouse wheel to zoom • Click and drag to pan</div>
+                        </div>
+                    </div>
+                    
+                    <div style="position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 10;">
+                        <button id="previewZoomInBtn" style="width: 32px; height: 32px; border: none; border-radius: 50%; background: rgba(0,0,0,0.7); color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;" title="Zoom In (+)">+</button>
+                        <button id="previewZoomOutBtn" style="width: 32px; height: 32px; border: none; border-radius: 50%; background: rgba(0,0,0,0.7); color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;" title="Zoom Out (-)">−</button>
+                    </div>
+                    
+                    <div id="panIndicator" style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;">
+                        Dragging...
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px;">
+                    
+                </div>
+            </div>
+
+            <div style="border: 1px solid var(--border-color) !important; border-radius: var(--border-radius-md) !important; padding: 15px; background: var(--surface-color) !important;">
+                <h3 style="margin-top: 0;">Configuration Builder</h3>
+
+                <div style="margin-bottom: 20px;">
+                    <h4>Quick Templates</h4>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button id="loadThermostatTemplate" data-template-name="thermostat">Thermostat</button>
+                        <button id="loadEmptyTemplate" data-template-name="empty">Empty</button>
+                    </div>
+                </div>
+
+                <!-- Diagram Actions Moved Up -->
+                <div style="margin-bottom: 20px; padding: 1.5rem !important; border: 1px solid var(--border-color) !important; border-radius: var(--border-radius-md) !important; background: var(--light-gray-color) !important; text-align: center;">
+                    <h4>Diagram Actions</h4>
+                    <button id="generateEulerDiagramButton">Generate Final Diagram</button>
+                    <button id="clearEulerConfigButton">Clear All</button>
+                    <button id="exportEulerConfigButton">Export Configuration</button>
+                    <button id="importEulerConfigButton">Import Configuration</button>
+                </div>
+
+                <!-- Global Settings Below Diagram Actions -->
+                <div id="globalSettingsSection" class="input-section" style="margin-bottom: 20px; padding: 1.25rem; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background: var(--surface-color); box-shadow: var(--shadow-sm);">
+                    <h4>Global Settings</h4>
+                    <div class="global-setting-row">
+                        <label for="globalTestItemName">Test Item Name:</label>
+                        <input type="text" id="globalTestItemName" value="Thermostat">
+                    </div>
+                    <div class="global-setting-row">
+                        <label for="globalDataBoxBg">Data Box Background:</label>
+                        <input type="color" id="globalDataBoxBg" value="#F4F5F6">
+                    </div>
+                    <div class="global-setting-row">
+                        <label for="globalDataBoxBorder">Data Box Border:</label>
+                        <input type="color" id="globalDataBoxBorder" value="#000000">
+                    </div>
+                    <div class="global-setting-row">
+                        <label for="globalDataBoxText">Data Box Text:</label>
+                        <input type="color" id="globalDataBoxText" value="#000000">
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h4>Main Phases</h4>
+                    <div id="phasesListContainer">
+                        <!-- Phases will be dynamically added here -->
+                    </div>
+                    <button id="addPhaseButton" style="background: linear-gradient(to bottom, #28a745, #218838); padding: 6px 12px; font-size: 14px; color: white; border: none; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); cursor: pointer;">+ Add Phase</button>
+                </div>
+            </div>
+        </div>
+
+        <input type="file" id="importFileInput" accept=".json" style="display: none;">
+
+        <div id="dynamicEulerDiagramOutput" style="margin-top: 30px; padding: 20px; border: 2px solid #007bff; border-radius: 8px; background-color: #f8f9fa; display: none;">
+            <h3>Generated Dynamic Euler Diagram</h3>
+            <div id="dynamicEulerDiagramContent"></div>
+        </div>
     </div>
 
     <!-- Image zoom modal -->
-    <div id="imageModal" class="modal" onclick="closeModal()">
-        <span class="close" onclick="closeModal()">&times;</span>
+    <div id="imageZoomModal" class="modal">
+        <span class="close" id="imageZoomModalClose">&times;</span>
         <div class="zoom-controls">
-            <button class="zoom-btn" onclick="zoomIn(event)" title="Zoom In (+)">+</button>
-            <button class="zoom-btn" onclick="zoomOut(event)" title="Zoom Out (-)">−</button>
-            <button class="zoom-btn" onclick="resetZoom(event)" title="Reset Zoom (R)">⌂</button>
+            <button class="zoom-btn" id="imageZoomModalZoomIn" title="Zoom In (+)">+</button>
+            <button class="zoom-btn" id="imageZoomModalZoomOut" title="Zoom Out (-)">−</button>
+            <button class="zoom-btn" id="imageZoomModalResetZoom" title="Reset Zoom (R)">⌂</button>
         </div>
-        <img class="modal-content" id="modalImg" src="" alt="">
-        <div class="zoom-info" id="zoomInfo">100% | Use scroll wheel or +/- keys to zoom</div>
+        <img class="modal-content" id="imageZoomModalImg" src="" alt="">
+        <div class="zoom-info" id="imageZoomModalZoomInfo">100% | Use scroll wheel or +/- keys to zoom</div>
+    </div>
+
+    <!-- Euler diagram modal removed -->
+
+    <!-- Data Type Selection Modal -->
+    <div id="dataTypeModal" class="modal" style="display: none; background-color: rgba(0,0,0,0.7);">
+        <div class="modal-content" 
+             style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                    background-color: #fefefe; padding: 30px; border: 1px solid #888; 
+                    border-radius: 12px; width: auto; min-width: 350px; max-width: 500px; 
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center;">
+            <h3 style="margin-top: 0; margin-bottom: 25px; font-size: 1.6em; color: #333;">Select Data Type</h3>
+            <div id="dataTypeOptionsContainer" style="margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px;">
+                <button class="data-type-option-btn" data-type="text" style="padding: 12px 20px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease;">Simple Text</button>
+                <button class="data-type-option-btn" data-type="multiline" style="padding: 12px 20px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease;">Multi-line Text</button>
+                <button class="data-type-option-btn" data-type="code" style="padding: 12px 20px; font-size: 1.1em; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease;">Code/Logic</button>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button id="dataTypeCancelBtn" style="padding: 10px 20px; font-size: 1em; background-color: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">Cancel</button>
+                <button id="dataTypeConfirmBtn" style="padding: 10px 20px; font-size: 1em; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer;">Confirm</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Modal zoom functionality
-        let currentZoom = 1;
-        let isDragging = false;
-        let startX, startY, offsetX = 0, offsetY = 0;
-        
-        function openModal() {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImg');
-            const referenceImg = document.querySelector('.reference-image');
-            
-            if (modal && modalImg && referenceImg) {
-                modal.style.display = 'block';
-                modalImg.src = referenceImg.src;
-                modalImg.alt = referenceImg.alt;
-                
-                // Reset zoom and position - start with maximum zoom out
-                currentZoom = 0.3;  // Start at 30% (maximum zoom out)
-                offsetX = 0;
-                offsetY = 0;
-                updateImageTransform();
-                updateZoomInfo();
-                
-                // Prevent body scrolling when modal is open
-                document.body.style.overflow = 'hidden';
-            }
+    // Utility function
+    function pythonicRound(num, precision) {
+        var m = Math.pow(10, precision || 0);
+        var nStr = (num * m).toFixed(precision + 5);
+        var n = parseFloat(nStr);
+        var i = Math.floor(n);
+        var f = n - i;
+        var e = 1e-9;
+        if (Math.abs(f - 0.5) < e) {
+            return (i % 2 === 0) ? i / m : (i + 1) / m;
+        } else {
+            return Math.round(n) / m;
         }
-        
-        function closeModal() {
-            const modal = document.getElementById('imageModal');
-            if (modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        }
-        
-        function zoomIn(event) {
-            event.stopPropagation();
-            changeZoom(1.2);
-        }
-        
-        function zoomOut(event) {
-            event.stopPropagation();
-            changeZoom(0.8);
-        }
-        
-        function resetZoom(event) {
-            event.stopPropagation();
-            currentZoom = 0.1;  // Maximum zoom out
-            offsetX = 0;
-            offsetY = 0;
-            updateImageTransform();
-            updateZoomInfo();
-        }
-        
-        function changeZoom(factor) {
-            const newZoom = currentZoom * factor;
-            if (newZoom >= 0.1 && newZoom <= 10) {
-                currentZoom = newZoom;
-                updateImageTransform();
-                updateZoomInfo();
-            }
-        }
-        
-        function updateImageTransform() {
-            const modalImg = document.getElementById('modalImg');
-            if (modalImg) {
-                modalImg.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px)) scale(${currentZoom})`;
-            }
-        }
-        
-        function updateZoomInfo() {
-            const zoomInfo = document.getElementById('zoomInfo');
-            if (zoomInfo) {
-                const percentage = Math.round(currentZoom * 100);
-                zoomInfo.textContent = `${percentage}% | Use scroll wheel or +/- keys to zoom`;
-            }
-        }
-        
-        // Event listeners
-        document.addEventListener('keydown', function(event) {
-            if (document.getElementById('imageModal').style.display === 'block') {
-                switch(event.key) {
-                    case 'Escape':
-                        closeModal();
-                        break;
-                    case '+':
-                    case '=':
-                        event.preventDefault();
-                        changeZoom(1.2);
-                        break;
-                    case '-':
-                        event.preventDefault();
-                        changeZoom(0.8);
-                        break;
-                    case 'r':
-                    case 'R':
-                        event.preventDefault();
-                        resetZoom(event);
-                        break;
-                }
-            }
-        });
-        
-        // Mouse wheel zoom
-        document.addEventListener('wheel', function(event) {
-            if (document.getElementById('imageModal').style.display === 'block') {
-                event.preventDefault();
-                const delta = event.deltaY > 0 ? 0.9 : 1.1;
-                changeZoom(delta);
-            }
-        });
-        
-        // Drag functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const modalImg = document.getElementById('modalImg');
-            
-            if (modalImg) {
-                modalImg.addEventListener('mousedown', function(event) {
-                    isDragging = true;
-                    startX = event.clientX - offsetX;
-                    startY = event.clientY - offsetY;
-                    event.preventDefault();
-                });
-                
-                document.addEventListener('mousemove', function(event) {
-                    if (isDragging) {
-                        offsetX = event.clientX - startX;
-                        offsetY = event.clientY - startY;
-                        updateImageTransform();
-                    }
-                });
-                
-                document.addEventListener('mouseup', function() {
-                    isDragging = false;
-                });
-                
-                // Prevent modal from closing when clicking on controls or image
-                modalImg.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                });
-                
-                const zoomControls = document.querySelector('.zoom-controls');
-                if (zoomControls) {
-                    zoomControls.addEventListener('click', function(event) {
-                        event.stopPropagation();
-                    });
-                }
-            }
-        });
-        
-        // Populate char dropdowns
-        const charDropdowns = document.querySelectorAll('#charLower, #charUpper');
-        for (let i = 48; i <= 122; i++) {
-            const option = document.createElement('option');
-            option.value = String.fromCharCode(i);
-            option.textContent = String.fromCharCode(i);
-            charDropdowns[0].appendChild(option.cloneNode(true));
-            charDropdowns[1].appendChild(option);
-        }
-        document.getElementById('charLower').value = '0';
-        document.getElementById('charUpper').value = 'z';
-    
-        function pythonicRound(num, precision) {
-            var m = Math.pow(10, precision || 0);
-            // Multiply and round to handle floating point inaccuracies
-            var nStr = (num * m).toFixed(precision + 5); // Increased precision for intermediate step
-            var n = parseFloat(nStr);
+    }
 
-            var i = Math.floor(n);
-            var f = n - i;
-            var e = 1e-9; // Small epsilon for float comparisons
+    class BoundaryValueAnalysisGenerator {
+        constructor(numPartitions) {
+            this.numPartitions = numPartitions;
+        }
 
-            // Check if f is effectively 0.5
-            if (Math.abs(f - 0.5) < e) {
-                // It's a .5 case, round to nearest even integer part i
-                return (i % 2 === 0) ? i / m : (i + 1) / m;
+        _nextValue(value, dataType) {
+            if (dataType === "integer") {
+                return value + 1;
+            } else if (dataType === "float") {
+                return Math.round((value + 0.1) * 10) / 10;
+            } else if (dataType === "char") {
+                return String.fromCharCode(value.charCodeAt(0) + 1);
+            }
+        }
+
+        _prevValue(value, dataType) {
+            if (dataType === "integer") {
+                return value - 1;
+            } else if (dataType === "float") {
+                return Math.round((value - 0.1) * 10) / 10;
+            } else if (dataType === "char") {
+                return String.fromCharCode(value.charCodeAt(0) - 1);
+            }
+        }
+
+        generateEquivalenceClasses(partition) {
+            const lower = partition.lower;
+            const upper = partition.upper;
+            const dataType = partition.dataType;
+            let midPoints = [];
+
+            if (dataType === "char") {
+                const range = upper.charCodeAt(0) - lower.charCodeAt(0);
+                const step = Math.max(1, Math.floor(range / (this.numPartitions + 1)));
+                for (let i = 1; i <= this.numPartitions; i++) {
+                    midPoints.push(String.fromCharCode(lower.charCodeAt(0) + step * i));
+                }
             } else {
-                // Not a .5 case, standard rounding on n (which has m factor)
-                return Math.round(n) / m;
+                const range = upper - lower;
+                const step = range / (this.numPartitions + 1);
+                for (let i = 1; i <= this.numPartitions; i++) {
+                    let point = lower + step * i;
+                    if (dataType === "integer") {
+                        midPoints.push(i === 1 ? Math.round(point) : Math.floor(point));
+                    } else {
+                        midPoints.push(pythonicRound(point, 1));
+                    }
+                }
+            }
+            return midPoints;
+        }
+
+        generateBoundaryTestCases(partition, bvaType) {
+            const lower = partition.lower;
+            const upper = partition.upper;
+            const dataType = partition.dataType;
+            const midPoints = this.generateEquivalenceClasses(partition);
+            let testCases = [];
+
+            if (bvaType === 2) {
+                testCases.push([
+                    { "below_boundary": this._prevValue(lower, dataType) },
+                    { "on_boundary": lower }
+                ]);
+                let midTestCases = [];
+                for (let i = 0; i < midPoints.length; i++) {
+                    let point = midPoints[i];
+                    if (dataType === "char" && midPoints.length === 3) {
+                        midTestCases.push(i === 0 ?
+                            [{ "on_boundary": point }, { "above_boundary": this._nextValue(point, dataType) }] :
+                            [{ "below_boundary": this._prevValue(point, dataType) }, { "on_boundary": point }]
+                        );
+                    } else {
+                        midTestCases.push(i < midPoints.length - 1 ?
+                            [{ "on_boundary": point }, { "above_boundary": this._nextValue(point, dataType) }] :
+                            [{ "below_boundary": this._prevValue(point, dataType) }, { "on_boundary": point }]
+                        );
+                    }
+                }
+                testCases.push(midTestCases);
+                testCases.push([
+                    { "on_boundary": upper },
+                    { "above_boundary": this._nextValue(upper, dataType) }
+                ]);
+            } else if (bvaType === 3) {
+                testCases.push([
+                    { "below_boundary": this._prevValue(lower, dataType) },
+                    { "on_boundary": lower },
+                    { "above_boundary": this._nextValue(lower, dataType) }
+                ]);
+                testCases.push(midPoints.map(point => ([
+                    { "below_boundary": this._prevValue(point, dataType) },
+                    { "on_boundary": point },
+                    { "above_boundary": this._nextValue(point, dataType) }
+                ])));
+                testCases.push([
+                    { "below_boundary": this._prevValue(upper, dataType) },
+                    { "on_boundary": upper },
+                    { "above_boundary": this._nextValue(upper, dataType) }
+                ]);
+            }
+            return testCases;
+        }
+    }
+
+    class ImageZoomModal {
+        constructor(modalId, imgId, closeBtnId, zoomInBtnId, zoomOutBtnId, resetBtnId, zoomInfoId) {
+            this.modal = document.getElementById(modalId);
+            this.modalImg = document.getElementById(imgId);
+            this.closeBtn = document.getElementById(closeBtnId);
+            this.zoomInBtn = document.getElementById(zoomInBtnId);
+            this.zoomOutBtn = document.getElementById(zoomOutBtnId);
+            this.resetBtn = document.getElementById(resetBtnId);
+            this.zoomInfo = document.getElementById(zoomInfoId);
+
+            this.currentZoom = 0.3; // Start zoomed out
+            this.offsetX = 0;
+            this.offsetY = 0;
+            this.isDragging = false;
+            this.startX = 0;
+            this.startY = 0;
+
+            this._initListeners();
+        }
+
+        _initListeners() {
+            if (!this.modal || !this.modalImg || !this.closeBtn || !this.zoomInBtn || !this.zoomOutBtn || !this.resetBtn) {
+                console.error("One or more ImageZoomModal elements not found");
+                return;
+            }
+            this.closeBtn.addEventListener("click", () => this.close());
+            this.modal.addEventListener("click", (event) => { // Close on overlay click
+                if (event.target === this.modal) this.close();
+            });
+            this.zoomInBtn.addEventListener("click", (e) => { e.stopPropagation(); this._changeZoom(1.2); });
+            this.zoomOutBtn.addEventListener("click", (e) => { e.stopPropagation(); this._changeZoom(0.8); });
+            this.resetBtn.addEventListener("click", (e) => { e.stopPropagation(); this._resetZoom(); });
+            
+            this.modalImg.addEventListener("mousedown", (e) => this._startDrag(e));
+            document.addEventListener("mousemove", (e) => this._drag(e));
+            document.addEventListener("mouseup", () => this._endDrag());
+            this.modalImg.addEventListener("click", e => e.stopPropagation()); // Prevent close on img click
+            
+            const zoomControls = this.zoomInBtn.parentElement;
+            if (zoomControls) {
+                 zoomControls.addEventListener("click", e => e.stopPropagation());
+            }
+
+            // Global keydown and wheel listeners are managed by BVAApp to avoid multiple modal instances interfering
+        }
+        
+        open(imageElement) {
+            if (!imageElement) return;
+            this.modal.style.display = "block";
+            this.modalImg.src = imageElement.src;
+            this.modalImg.alt = imageElement.alt;
+            this._resetZoom(); // Reset zoom and position to default (zoomed out)
+            document.body.style.overflow = "hidden";
+        }
+
+        close() {
+            this.modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        _resetZoom() {
+            this.currentZoom = 0.8; // Default to slightly zoomed out for better fit
+            this.offsetX = 0;
+            this.offsetY = 0;
+            this._updateTransform();
+            this._updateZoomInfo();
+        }
+
+        _changeZoom(factor, event = null) {
+            if (event) event.stopPropagation();
+            const oldZoom = this.currentZoom;
+            const newZoom = Math.max(0.1, Math.min(10, oldZoom * factor));
+            
+            if (newZoom !== oldZoom) {
+                // Calculate zoom center (center of viewport)
+                const rect = this.modal.getBoundingClientRect();
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Adjust offsets to zoom around the center
+                const zoomRatio = newZoom / oldZoom;
+                this.offsetX = centerX - (centerX - this.offsetX) * zoomRatio;
+                this.offsetY = centerY - (centerY - this.offsetY) * zoomRatio;
+                
+                this.currentZoom = newZoom;
+                this._updateTransform();
+                this._updateZoomInfo();
             }
         }
-    
-        function showTab(tabName, buttonElement = null) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-            document.getElementById(tabName + 'Tab').style.display = 'block';
 
-            // Update active class for tab buttons
-            document.querySelectorAll('#outputTabs button').forEach(button => {
-                button.classList.remove('active');
+        _updateTransform() {
+            this.modalImg.style.transform = `translate(calc(-50% + ${this.offsetX}px), calc(-50% + ${this.offsetY}px)) scale(${this.currentZoom})`;
+        }
+
+        _updateZoomInfo() {
+            if (this.zoomInfo) {
+                const percentage = Math.round(this.currentZoom * 100);
+                this.zoomInfo.textContent = `${percentage}% | Use scroll wheel or +/- keys to zoom`;
+            }
+        }
+        
+        _startDrag(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.isDragging = true;
+            this.startX = event.clientX;
+            this.startY = event.clientY;
+            this.initialOffsetX = this.offsetX;
+            this.initialOffsetY = this.offsetY;
+            this.modalImg.style.cursor = "grabbing";
+        }
+
+        _drag(event) {
+            if (this.isDragging) {
+                const deltaX = event.clientX - this.startX;
+                const deltaY = event.clientY - this.startY;
+                // Apply a damping factor to reduce sensitivity
+                const dampingFactor = 0.8;
+                this.offsetX = this.initialOffsetX + (deltaX * dampingFactor);
+                this.offsetY = this.initialOffsetY + (deltaY * dampingFactor);
+                this._updateTransform();
+            }
+        }
+        
+        _endDrag() {
+            if (this.isDragging) {
+                this.isDragging = false;
+                this.modalImg.style.cursor = "grab";
+            }
+        }
+
+        handleKeyDown(event) { // To be called by BVAApp
+            if (this.modal.style.display !== "block") return;
+            switch(event.key) {
+                case "Escape": this.close(); break;
+                case "+": case "=": event.preventDefault(); this._changeZoom(1.2); break;
+                case "-": event.preventDefault(); this._changeZoom(0.8); break;
+                case "r": case "R": event.preventDefault(); this._resetZoom(); break;
+            }
+        }
+
+        handleWheel(event) { // To be called by BVAApp
+             if (this.modal.style.display !== "block") return;
+             event.preventDefault();
+             const oldZoom = this.currentZoom;
+             const delta = event.deltaY > 0 ? 0.9 : 1.1;
+             const newZoom = Math.max(0.1, Math.min(10, oldZoom * delta));
+             
+             if (newZoom !== oldZoom) {
+                 // Calculate zoom center (mouse position relative to modal)
+                 const rect = this.modal.getBoundingClientRect();
+                 const mouseX = event.clientX - rect.left;
+                 const mouseY = event.clientY - rect.top;
+                 
+                 // Adjust offsets to zoom around mouse position
+                 const zoomRatio = newZoom / oldZoom;
+                 this.offsetX = mouseX - (mouseX - this.offsetX) * zoomRatio;
+                 this.offsetY = mouseY - (mouseY - this.offsetY) * zoomRatio;
+                 
+                 this.currentZoom = newZoom;
+                 this._updateTransform();
+                 this._updateZoomInfo();
+             }
+        }
+    }
+
+    class EulerDiagramManager {
+        constructor(appInstance) {
+            this.app = appInstance; // Reference to main BVAApp if needed
+            this.config = { testItemName: 'Thermostat', phases: [] };
+            this.phaseIdCounter = 0;
+            this.boxIdCounter = 0;
+            this.templatesData = {};
+            this.embeddedTemplatesData = { /* ... embedded templates ... */ }; // Keep this from original
+            this.currentDataTypeSelection = null;
+            this.currentAddItemContext = { phaseId: null, boxId: null };
+
+            this.previewState = { scale: 1, offsetX: 0, offsetY: 0, isDragging: false, lastMouseX: 0, lastMouseY: 0, minScale: 0.1, maxScale: 5.0 };
+
+            this.dom = {
+                // Preview
+                previewViewport: document.getElementById('previewViewport'),
+                previewContent: document.getElementById('previewContent'),
+                previewPlaceholder: document.getElementById('previewPlaceholder'),
+                previewFitBtn: document.getElementById('previewFitBtn'),
+                previewResetBtn: document.getElementById('previewResetBtn'),
+                previewZoomInBtn: document.getElementById('previewZoomInBtn'),
+                previewZoomOutBtn: document.getElementById('previewZoomOutBtn'),
+                previewZoomDisplay: document.getElementById('previewZoomDisplay'),
+                panIndicator: document.getElementById('panIndicator'),
+                // Global Settings
+                globalTestItemName: document.getElementById('globalTestItemName'),
+                globalDataBoxBg: document.getElementById('globalDataBoxBg'),
+                globalDataBoxBorder: document.getElementById('globalDataBoxBorder'),
+                globalDataBoxText: document.getElementById('globalDataBoxText'),
+                // Templates
+                loadThermostatTemplateBtn: document.getElementById('loadThermostatTemplate'),
+                loadEmptyTemplateBtn: document.getElementById('loadEmptyTemplate'),
+                // Actions
+                generateEulerDiagramButton: document.getElementById('generateEulerDiagramButton'),
+                clearEulerConfigButton: document.getElementById('clearEulerConfigButton'),
+                exportEulerConfigButton: document.getElementById('exportEulerConfigButton'),
+                importEulerConfigButton: document.getElementById('importEulerConfigButton'),
+                importFileInput: document.getElementById('importFileInput'),
+                // Phases
+                phasesListContainer: document.getElementById('phasesListContainer'),
+                addPhaseButton: document.getElementById('addPhaseButton'),
+                // Output
+                dynamicEulerDiagramOutput: document.getElementById('dynamicEulerDiagramOutput'),
+                dynamicEulerDiagramContent: document.getElementById('dynamicEulerDiagramContent'),
+                // Modals (Data Type Only)
+                dataTypeModal: document.getElementById('dataTypeModal'),
+                dataTypeOptionsContainer: document.getElementById('dataTypeOptionsContainer'),
+                dataTypeConfirmBtn: document.getElementById('dataTypeConfirmBtn'),
+                dataTypeCancelBtn: document.getElementById('dataTypeCancelBtn'),
+                // Conceptual Image
+                conceptualRepresentationSection: document.getElementById('conceptualRepresentationSection')
+            };
+            this.dom.embeddedTemplatesData = {
+                "thermostat": {
+                    "testItemName": "Thermostat", "phases": [
+                        {"id": 1, "title": "Conceptual Representation", "color": "#009900", "flex": 1, "boxes": [{"id": 1, "title": "Test Item Blueprint", "color": "#009900", "backgroundColor": "#ffffff", "dataItems": [{"type": "image", "content": "../images/blueprint.png", "fileName": "blueprint.png", "id": 1}], "children": []}]},
+                        {"id": 2, "title": "Input Processing", "color": "#35489D", "flex": 2, "boxes": [{"id": 2, "title": "Thermostat Inputs", "color": "#29ABE2", "backgroundColor": "#ffffff", "dataItems": [], "children": [
+                            {"id": 3, "title": "Valid Inputs", "color": "#146735", "backgroundColor": "#ffffff", "dataItems": [], "children": [{"id": 4, "title": "Integers", "color": "#6E3A96", "backgroundColor": "#ffffff", "dataItems": [{"type": "text", "content": "In range", "id": 2}], "children": []}]},
+                            {"id": 5, "title": "Invalid Inputs", "color": "#BE2327", "backgroundColor": "#ffffff", "dataItems": [], "children": [
+                                {"id": 6, "title": "Integers", "color": "#6E3A96", "backgroundColor": "#ffffff", "dataItems": [{"type": "text", "content": "Too low", "id": 3}, {"type": "text", "content": "Too high", "id": 4}], "children": []},
+                                {"id": 7, "title": "Non-integers", "color": "#FFA500", "backgroundColor": "#ffffff", "dataItems": [{"type": "text", "content": "Real", "id": 5}, {"type": "text", "content": "Alpha", "id": 6}, {"type": "text", "content": "Special", "id": 7}], "children": []}
+                            ]}
+                        ]}]},
+                        {"id": 3, "title": "Internal Processing", "color": "#29ABE2", "flex": 2, "boxes": [{"id": 8, "title": "Specified Functions", "color": "#BE2327", "backgroundColor": "#ffffff", "dataItems": [], "children": [{"id": 9, "title": "Input Field Result", "color": "#403151", "backgroundColor": "#ffffff", "dataItems": [{"type": "code", "content": "IF (-10 ≤ Ambient ≤ 50) AND (10 ≤ Set-point ≤ 30) THEN\n    → Accept  // system may heat/cool to reach set-point\nELSE\n    → Reject   // display error (\"OUT OF RANGE\")", "id": 8}], "children": []}]}]},
+                        {"id": 4, "title": "Output Processing", "color": "#146735", "flex": 1.5, "boxes": [{"id": 10, "title": "Output Generated", "color": "#29ABE2", "backgroundColor": "#ffffff", "dataItems": [{"type": "text", "content": "Input field result = Accept or Reject", "id": 9}], "children": []}]}
+                ]}, "empty": {"testItemName": "New System", "phases": []}
+            };
+            this._init();
+        }
+
+        async _init() {
+            this._setupEventListeners();
+            await this._loadTemplatesFromJSON();
+            this.loadTemplate('thermostat'); // Load default template
+        }
+
+        _setupEventListeners() {
+            // Preview Controls
+            this.dom.previewViewport.addEventListener('wheel', (e) => this._handlePreviewWheel(e));
+            this.dom.previewViewport.addEventListener('mousedown', (e) => this._startPreviewDrag(e));
+            this.dom.previewViewport.addEventListener('mouseleave', () => this._endPreviewDrag()); // Ensure drag ends if mouse leaves viewport
+            this.dom.previewFitBtn.addEventListener('click', () => this.fitPreviewToContainer());
+            this.dom.previewResetBtn.addEventListener('click', () => this.resetPreviewView());
+            this.dom.previewZoomInBtn.addEventListener('click', () => this.zoomPreview(1.2));
+            this.dom.previewZoomOutBtn.addEventListener('click', () => this.zoomPreview(0.8));
+            // Removed openPreviewModalButton listener
+
+            // Templates
+            this.dom.loadThermostatTemplateBtn.addEventListener('click', (e) => this.loadTemplate(e.target.dataset.templateName));
+            this.dom.loadEmptyTemplateBtn.addEventListener('click', (e) => this.loadTemplate(e.target.dataset.templateName));
+            
+            // Global Settings - update preview on change
+            this.dom.globalTestItemName.addEventListener('change', () => this.updateLivePreview());
+            this.dom.globalDataBoxBg.addEventListener('change', () => this.updateLivePreview());
+            this.dom.globalDataBoxBorder.addEventListener('change', () => this.updateLivePreview());
+            this.dom.globalDataBoxText.addEventListener('change', () => this.updateLivePreview());
+
+            // Actions
+            this.dom.generateEulerDiagramButton.addEventListener('click', () => this.generateFinalDiagram());
+            this.dom.clearEulerConfigButton.addEventListener('click', () => this.clearConfiguration());
+            this.dom.exportEulerConfigButton.addEventListener('click', () => this.exportConfiguration());
+            this.dom.importEulerConfigButton.addEventListener('click', () => this.dom.importFileInput.click());
+            this.dom.importFileInput.addEventListener('change', (e) => this._handleImportFile(e));
+
+            // Phases
+            this.dom.addPhaseButton.addEventListener('click', () => this.addPhase());
+
+            // Modals (Data Type only)
+            this.dom.dataTypeOptionsContainer.querySelectorAll('.data-type-option-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    this.dom.dataTypeOptionsContainer.querySelectorAll('.data-type-option-btn').forEach(b => b.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                    this.currentDataTypeSelection = e.target.dataset.type;
+                });
+            });
+            this.dom.dataTypeConfirmBtn.addEventListener('click', () => this._handleDataTypeConfirm());
+            this.dom.dataTypeCancelBtn.addEventListener('click', () => this.closeDataTypeModal());
+            this.dom.dataTypeModal.addEventListener('click', (e) => { if (e.target === this.dom.dataTypeModal) this.closeDataTypeModal(); });
+        }
+
+        // Phase Management
+        addPhase() {
+            const phaseId = ++this.phaseIdCounter;
+            const phase = { id: phaseId, title: `Phase ${phaseId}`, color: '#007bff', flex: 1, boxes: [] };
+            this.config.phases.push(phase);
+            this._renderPhasesList();
+            this.updateLivePreview();
+        }
+        removePhase(phaseId) {
+            this.config.phases = this.config.phases.filter(p => p.id !== phaseId);
+            this._renderPhasesList();
+            this.updateLivePreview();
+        }
+        updatePhaseProperty(phaseId, property, value) {
+            const phase = this.config.phases.find(p => p.id === phaseId);
+            if (phase) {
+                if (property === 'flex') phase[property] = parseFloat(value);
+                else phase[property] = value;
+                if (property === 'color') this._renderPhasesList(); // Re-render for color picker
+                this.updateLivePreview();
+            }
+        }
+
+        // Box Management
+        addBox(phaseId, parentBoxId = null) {
+            const boxId = ++this.boxIdCounter;
+            const box = { id: boxId, title: `Box ${boxId}`, color: '#28a745', backgroundColor: '#ffffff', dataItems: [], children: [], parentId: parentBoxId };
+            const phase = this.config.phases.find(p => p.id === phaseId);
+            if (parentBoxId) {
+                const parentBox = this._findBoxByIdRecursive(phase.boxes, parentBoxId);
+                if (parentBox) parentBox.children.push(box);
+            } else {
+                phase.boxes.push(box);
+            }
+            this._renderPhasesList();
+            this.updateLivePreview();
+        }
+        removeBox(phaseId, boxId) {
+            const phase = this.config.phases.find(p => p.id === phaseId);
+            this._removeBoxRecursive(phase.boxes, boxId);
+            this._renderPhasesList();
+            this.updateLivePreview();
+        }
+        _removeBoxRecursive(boxes, boxId) {
+            for (let i = 0; i < boxes.length; i++) {
+                if (boxes[i].id === boxId) {
+                    boxes.splice(i, 1);
+                    return true;
+                }
+                if (this._removeBoxRecursive(boxes[i].children, boxId)) return true;
+            }
+            return false;
+        }
+        _findBoxByIdRecursive(boxes, boxId) {
+            for (const box of boxes) {
+                if (box.id === boxId) return box;
+                const found = this._findBoxByIdRecursive(box.children, boxId);
+                if (found) return found;
+            }
+            return null;
+        }
+        updateBoxProperty(phaseId, boxId, property, value) {
+            const phase = this.config.phases.find(p => p.id === phaseId);
+            const box = this._findBoxByIdRecursive(phase.boxes, boxId);
+            if (box) {
+                box[property] = value;
+                 if (property === 'color' || property === 'backgroundColor') this._renderPhasesList(); // Re-render for color picker
+                this.updateLivePreview();
+            }
+        }
+        
+        // Data Item Management
+        _openDataTypeModal(phaseId, boxId) {
+            this.currentAddItemContext = { phaseId, boxId };
+            this.currentDataTypeSelection = 'text'; // Default
+            this.dom.dataTypeOptionsContainer.querySelectorAll('.data-type-option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.dataset.type === this.currentDataTypeSelection) btn.classList.add('selected');
+            });
+            this.dom.dataTypeModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        closeDataTypeModal() {
+            this.dom.dataTypeModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            this.currentDataTypeSelection = null;
+            this.currentAddItemContext = { phaseId: null, boxId: null };
+        }
+        _handleDataTypeConfirm() {
+            if (!this.currentDataTypeSelection) { alert('Please select a data type.'); return; }
+            const { phaseId, boxId } = this.currentAddItemContext;
+            if (phaseId === null || boxId === null) return;
+
+            const phase = this.config.phases.find(p => p.id === phaseId);
+            const box = this._findBoxByIdRecursive(phase.boxes, boxId);
+            let newItem;
+            const baseContent = box.dataItems.length + 1;
+
+            switch(this.currentDataTypeSelection) {
+                case 'multiline': newItem = { type: 'multiline', content: `Multi-line text ${baseContent}`, id: Date.now() }; break;
+                case 'code': newItem = { type: 'code', content: `IF (condition) THEN\\n    → Action\\nELSE\\n    → Alternative`, id: Date.now() }; break;
+                default: newItem = { type: 'text', content: `Item ${baseContent}`, id: Date.now() }; break;
+            }
+            box.dataItems.push(newItem);
+            this._renderPhasesList();
+            this.updateLivePreview();
+            this.closeDataTypeModal();
+        }
+        _addImageItem(phaseId, boxId) {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.style.display = 'none';
+            document.body.appendChild(fileInput);
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (re) => {
+                        const phase = this.config.phases.find(p => p.id === phaseId);
+                        const box = this._findBoxByIdRecursive(phase.boxes, boxId);
+                        if (box) {
+                            box.dataItems.push({ type: 'image', content: re.target.result, fileName: file.name, id: Date.now() });
+                            this._renderPhasesList();
+                            this.updateLivePreview();
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+                document.body.removeChild(fileInput);
+            };
+            fileInput.click();
+        }
+        _removeDataItem(phaseId, boxId, itemIndex) {
+            const phase = this.config.phases.find(p => p.id === phaseId);
+            const box = this._findBoxByIdRecursive(phase.boxes, boxId);
+            if (box) {
+                box.dataItems.splice(itemIndex, 1);
+                this._renderPhasesList();
+                this.updateLivePreview();
+            }
+        }
+        _updateDataItemContent(phaseId, boxId, itemIndex, value) {
+            const phase = this.config.phases.find(p => p.id === phaseId);
+            const box = this._findBoxByIdRecursive(phase.boxes, boxId);
+            if (box && box.dataItems[itemIndex]) {
+                box.dataItems[itemIndex].content = value;
+                // No need to re-render phase list, only live preview
+                this.updateLivePreview();
+            }
+        }
+
+
+        // Rendering Configuration UI
+        _renderPhasesList() {
+            this.dom.phasesListContainer.innerHTML = '';
+            this.config.phases.forEach(phase => {
+                const phaseDiv = document.createElement('div');
+                // phaseDiv.style.cssText = 'margin-bottom: 15px; padding: 15px; border: 2px solid #ddd; border-radius: 8px; background: white;'; // Handled by #phasesListContainer > div
+                const escapeAttr = (str) => str.toString().replace(/"/g, '&quot;').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                
+                phaseDiv.innerHTML = `
+                    <div class="phase-controls">
+                        <input type="text" value="${escapeAttr(phase.title)}" data-phase-id="${phase.id}" data-action="updatePhaseTitle" title="Phase Title">
+                        <input type="color" value="${escapeAttr(phase.color)}" data-phase-id="${phase.id}" data-action="updatePhaseColor" title="Phase color">
+                        <input type="number" value="${escapeAttr(phase.flex)}" min="0.5" max="5" step="0.1" data-phase-id="${phase.id}" data-action="updatePhaseFlex" title="Flex size">
+                        <button data-phase-id="${phase.id}" data-action="removePhase" title="Remove Phase">×</button>
+                    </div>
+                    <div style="margin-left: 20px;">
+                        <div class="phase-boxes-container" data-phase-id="${phase.id}"></div>
+                        <button data-phase-id="${phase.id}" data-action="addBoxToPhase">+ Add Box</button>
+                    </div>`;
+                this.dom.phasesListContainer.appendChild(phaseDiv);
+                this._renderBoxesForPhase(phase, phaseDiv.querySelector('.phase-boxes-container'), phase.boxes, 0);
+            });
+            this._attachDynamicEventListeners(this.dom.phasesListContainer); // This might need adjustment if events are delegated differently
+        }
+        _renderBoxesForPhase(phase, container, boxes, depth) {
+            container.innerHTML = '';
+            boxes.forEach(box => {
+                const boxDiv = document.createElement('div');
+                // boxDiv.style.cssText = `margin: 8px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #f9f9f9; margin-left: ${depth * 15}px;`; // Handled by CSS
+                boxDiv.style.marginLeft = `${depth * 15}px`; // Keep dynamic indent
+                boxDiv.className = 'box-config-item'; // Add a class for styling this box container
+
+                const escapeAttr = (str) => str.toString().replace(/"/g, '&quot;').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                
+                boxDiv.innerHTML = `
+                    <div class="box-controls">
+                        <input type="text" value="${escapeAttr(box.title)}" data-phase-id="${phase.id}" data-box-id="${box.id}" data-action="updateBoxTitle" title="Box Title">
+                        <input type="color" value="${escapeAttr(box.color)}" data-phase-id="${phase.id}" data-box-id="${box.id}" data-action="updateBoxColor" title="Border color">
+                        <input type="color" value="${escapeAttr(box.backgroundColor)}" data-phase-id="${phase.id}" data-box-id="${box.id}" data-action="updateBoxBgColor" title="Background color">
+                        <button data-phase-id="${phase.id}" data-box-id="${box.id}" data-action="addBoxToBox" title="Add Child Box">+</button>
+                        <button data-phase-id="${phase.id}" data-box-id="${box.id}" data-action="removeBox" title="Remove Box">×</button>
+                    </div>
+                    <div class="box-item-controls-header"> 
+                        <label class="data-item-label-static">Data Items:</label> 
+                    </div>
+                    <div class="data-items-container" data-phase-id="${phase.id}" data-box-id="${box.id}"></div>
+                    <div class="box-item-buttons"> 
+                         <button data-phase-id="${phase.id}" data-box-id="${box.id}" data-action="addDataItem">+ Data</button>
+                         <button data-phase-id="${phase.id}" data-box-id="${box.id}" data-action="addImageItem">+ Image</button>
+                    </div>
+                    <div class="child-boxes-container" data-phase-id="${phase.id}" data-box-id="${box.id}"></div>
+                `;
+                container.appendChild(boxDiv);
+                this._renderDataItemsForBox(phase, box, boxDiv.querySelector('.data-items-container'));
+                if (box.children.length > 0) {
+                    this._renderBoxesForPhase(phase, boxDiv.querySelector('.child-boxes-container'), box.children, depth + 1);
+                }
+            });
+        }
+        _renderDataItemsForBox(phase, box, container) {
+            container.innerHTML = '';
+            box.dataItems.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'data-item-entry'; // Apply the main class for styling
+
+                const content = item.content;
+                const type = item.type;
+                const escapeHTML = (str) => str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/`/g, '\\`');
+                
+                let itemHTML = '';
+
+                if (type === 'multiline' || type === 'code') {
+                    const isCode = type === 'code';
+                    itemHTML = `
+                        <span class="data-item-label-static">${isCode ? 'CODE:' : 'TEXT:'}</span>
+                        <textarea data-phase-id="${phase.id}" data-box-id="${box.id}" data-item-index="${index}" data-action="updateDataItemContent" 
+                            style="min-height: ${isCode ? '80px' : '60px'}; font-family: ${isCode ? 'monospace' : 'inherit'};">${escapeHTML(content)}</textarea>
+                        <button data-phase-id="${phase.id}" data-box-id="${box.id}" data-item-index="${index}" data-action="removeDataItem" title="Remove Data Item">×</button>
+                    `;
+                } else if (type === 'image') {
+                    itemHTML = `
+                        <span class="data-item-label-static">IMAGE:</span>
+                        <span class="data-item-filename">${item.fileName || 'image'}</span>
+                        <img src="${escapeHTML(content)}" alt="${item.fileName || 'Image'}">
+                        <button data-phase-id="${phase.id}" data-box-id="${box.id}" data-item-index="${index}" data-action="removeDataItem" title="Remove Image">×</button>
+                    `;
+                } else { // text
+                    itemHTML = `
+                        <span class="data-item-label-static">TEXT:</span>
+                        <input type="text" value="${escapeHTML(content)}" data-phase-id="${phase.id}" data-box-id="${box.id}" data-item-index="${index}" data-action="updateDataItemContent">
+                        <button data-phase-id="${phase.id}" data-box-id="${box.id}" data-item-index="${index}" data-action="removeDataItem" title="Remove Text Item">×</button>
+                    `;
+                }
+                itemDiv.innerHTML = itemHTML;
+                container.appendChild(itemDiv);
+            });
+        }
+        _attachDynamicEventListeners(container) {
+            container.addEventListener('click', (e) => {
+                const target = e.target.closest('[data-action]');
+                if (!target) return;
+
+                const action = target.dataset.action;
+                const phaseId = parseInt(target.dataset.phaseId);
+                const boxId = target.dataset.boxId ? parseInt(target.dataset.boxId) : null;
+                const itemIndex = target.dataset.itemIndex ? parseInt(target.dataset.itemIndex) : null;
+
+                switch (action) {
+                    case 'removePhase': this.removePhase(phaseId); break;
+                    case 'addBoxToPhase': this.addBox(phaseId); break;
+                    case 'updatePhaseTitle': case 'updatePhaseColor': case 'updatePhaseFlex': /* Handled by change listener */ break;
+                    case 'removeBox': this.removeBox(phaseId, boxId); break;
+                    case 'addBoxToBox': this.addBox(phaseId, boxId); break;
+                    case 'updateBoxTitle': case 'updateBoxColor': case 'updateBoxBgColor': /* Handled by change listener */ break;
+                    case 'addDataItem': this._openDataTypeModal(phaseId, boxId); break;
+                    case 'addImageItem': this._addImageItem(phaseId, boxId); break;
+                    case 'removeDataItem': this._removeDataItem(phaseId, boxId, itemIndex); break;
+                }
+            });
+            container.addEventListener('change', (e) => {
+                const target = e.target.closest('[data-action]');
+                if (!target) return;
+                const action = target.dataset.action;
+                const phaseId = parseInt(target.dataset.phaseId);
+                const boxId = target.dataset.boxId ? parseInt(target.dataset.boxId) : null;
+                const itemIndex = target.dataset.itemIndex ? parseInt(target.dataset.itemIndex) : null;
+                const value = target.value;
+
+                switch (action) {
+                    case 'updatePhaseTitle': this.updatePhaseProperty(phaseId, 'title', value); break;
+                    case 'updatePhaseColor': this.updatePhaseProperty(phaseId, 'color', value); break;
+                    case 'updatePhaseFlex': this.updatePhaseProperty(phaseId, 'flex', value); break;
+                    case 'updateBoxTitle': this.updateBoxProperty(phaseId, boxId, 'title', value); break;
+                    case 'updateBoxColor': this.updateBoxProperty(phaseId, boxId, 'color', value); break;
+                    case 'updateBoxBgColor': this.updateBoxProperty(phaseId, boxId, 'backgroundColor', value); break;
+                    case 'updateDataItemContent': this._updateDataItemContent(phaseId, boxId, itemIndex, value); break;
+                }
+            });
+        }
+
+
+        // Live Preview
+        updateLivePreview() {
+            if (!this.dom.previewViewport || !this.dom.previewContent) return;
+            const existingDiagram = this.dom.previewContent.querySelector('.preview-diagram');
+            if (existingDiagram) existingDiagram.remove();
+
+            if (this.config.phases.length === 0) {
+                this.dom.previewPlaceholder.style.display = 'block';
+                this._updatePreviewZoomDisplay();
+                return;
+            }
+            this.dom.previewPlaceholder.style.display = 'none';
+            const diagramHTML = this._generateDynamicEulerHTML(true);
+            const diagramWrapper = document.createElement('div');
+            diagramWrapper.className = 'preview-diagram';
+            diagramWrapper.innerHTML = diagramHTML;
+            this.dom.previewContent.appendChild(diagramWrapper);
+            // Fit if it's the first time or if explicitly requested to.
+            // For now, let's call fit every time to ensure it looks good.
+            setTimeout(() => this.fitPreviewToContainer(), 50);
+        }
+
+        fitPreviewToContainer() {
+            const diagram = this.dom.previewContent.querySelector('.preview-diagram');
+            if (!this.dom.previewViewport || !diagram) return;
+            const viewportRect = this.dom.previewViewport.getBoundingClientRect();
+            const diagramRect = diagram.getBoundingClientRect(); 
+            if (diagramRect.width === 0 || diagramRect.height === 0) return;
+
+            const padding = 0.025; // 2.5% padding on each side
+            const targetWidth = viewportRect.width * (1 - 2 * padding);
+            const targetHeight = viewportRect.height * (1 - 2 * padding);
+
+            const scaleX = targetWidth / diagramRect.width;
+            const scaleY = targetHeight / diagramRect.height;
+            
+            let fitScale = Math.min(scaleX, scaleY);
+            // Don't scale up beyond 100% of its natural size unless it's smaller than viewport
+            if (diagramRect.width * fitScale > targetWidth && diagramRect.height * fitScale > targetHeight) {
+                 fitScale = Math.min(fitScale, 1.0);
+            }
+            fitScale = Math.max(fitScale, this.previewState.minScale); // Respect minScale
+
+            const scaledWidth = diagramRect.width * fitScale;
+            const scaledHeight = diagramRect.height * fitScale;
+            
+            this.previewState.scale = fitScale;
+            this.previewState.offsetX = (viewportRect.width - scaledWidth) / 2;
+            this.previewState.offsetY = (viewportRect.height - scaledHeight) / 2;
+            this._applyPreviewTransform();
+        }
+        resetPreviewView() {
+            this.previewState.scale = 1; this.previewState.offsetX = 0; this.previewState.offsetY = 0;
+            this._applyPreviewTransform();
+            // If diagram is small, fit it after reset
+             setTimeout(() => {
+                const diagram = this.dom.previewContent.querySelector('.preview-diagram');
+                if (diagram && (diagram.offsetWidth * this.previewState.scale < this.dom.previewViewport.offsetWidth * 0.5 ||
+                                diagram.offsetHeight * this.previewState.scale < this.dom.previewViewport.offsetHeight * 0.5)) {
+                    this.fitPreviewToContainer();
+                }
+            }, 0);
+        }
+        zoomPreview(factor) {
+            const viewportRect = this.dom.previewViewport.getBoundingClientRect();
+            const centerX = viewportRect.width / 2; const centerY = viewportRect.height / 2;
+            const oldScale = this.previewState.scale;
+            const newScale = Math.max(this.previewState.minScale, Math.min(this.previewState.maxScale, oldScale * factor));
+            if (newScale !== oldScale) {
+                this.previewState.offsetX = centerX - (centerX - this.previewState.offsetX) * (newScale / oldScale);
+                this.previewState.offsetY = centerY - (centerY - this.previewState.offsetY) * (newScale / oldScale);
+                this.previewState.scale = newScale;
+                this._applyPreviewTransform();
+            }
+        }
+        _handlePreviewWheel(event) {
+            event.preventDefault(); event.stopPropagation();
+            const rect = this.dom.previewViewport.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left; const mouseY = event.clientY - rect.top;
+            const oldScale = this.previewState.scale;
+            const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
+            const newScale = Math.max(this.previewState.minScale, Math.min(this.previewState.maxScale, oldScale * zoomFactor));
+            if (newScale !== oldScale) {
+                this.previewState.offsetX = mouseX - (mouseX - this.previewState.offsetX) * (newScale / oldScale);
+                this.previewState.offsetY = mouseY - (mouseY - this.previewState.offsetY) * (newScale / oldScale);
+                this.previewState.scale = newScale;
+                this._applyPreviewTransform();
+            }
+        }
+        _startPreviewDrag(event) {
+            event.preventDefault(); event.stopPropagation();
+            if (!this.dom.previewContent.querySelector('.preview-diagram')) return;
+            this.previewState.isDragging = true;
+            this.previewState.lastMouseX = event.clientX; this.previewState.lastMouseY = event.clientY;
+            this.dom.previewViewport.style.cursor = 'grabbing'; this.dom.panIndicator.style.opacity = '1';
+            document.addEventListener('mousemove', this._boundHandlePreviewDrag = this._boundHandlePreviewDrag || this._handlePreviewDrag.bind(this));
+            document.addEventListener('mouseup', this._boundEndPreviewDrag = this._boundEndPreviewDrag || this._endPreviewDrag.bind(this));
+        }
+        _handlePreviewDrag(event) {
+            if (!this.previewState.isDragging) return;
+            this.previewState.offsetX += event.clientX - this.previewState.lastMouseX;
+            this.previewState.offsetY += event.clientY - this.previewState.lastMouseY;
+            this.previewState.lastMouseX = event.clientX; this.previewState.lastMouseY = event.clientY;
+            this._applyPreviewTransform();
+        }
+        _endPreviewDrag() {
+            if (!this.previewState.isDragging) return;
+            this.previewState.isDragging = false;
+            this.dom.previewViewport.style.cursor = 'grab'; this.dom.panIndicator.style.opacity = '0';
+            document.removeEventListener('mousemove', this._boundHandlePreviewDrag);
+            document.removeEventListener('mouseup', this._boundEndPreviewDrag);
+        }
+        _applyPreviewTransform() {
+            const scale = Math.max(this.previewState.minScale, Math.min(this.previewState.maxScale, this.previewState.scale || 1));
+            this.dom.previewContent.style.transform = `translate(${this.previewState.offsetX || 0}px, ${this.previewState.offsetY || 0}px) scale(${scale})`;
+            this._updatePreviewZoomDisplay();
+        }
+        _updatePreviewZoomDisplay() {
+            if (this.dom.previewZoomDisplay) {
+                this.dom.previewZoomDisplay.textContent = `${Math.round((this.previewState.scale || 1) * 100)}%`;
+            }
+        }
+
+        // Euler Diagram HTML Generation
+        _generateDynamicEulerHTML(isPreview = false) {
+            const testItemName = this.dom.globalTestItemName.value || this.config.testItemName;
+            const dataBoxBg = this.dom.globalDataBoxBg.value;
+            const dataBoxBorder = this.dom.globalDataBoxBorder.value;
+            const dataBoxText = this.dom.globalDataBoxText.value;
+            
+            const phasesHTML = this.config.phases.map(phase => {
+                const boxesHTML = this._renderBoxesHTMLRecursive(phase.boxes, dataBoxBg, dataBoxBorder, dataBoxText);
+                return `
+                    <div style="flex: ${phase.flex}; border: 2px solid ${phase.color}; border-radius: 10px; padding: 10px; background: white; margin: 0 3px;">
+                        <h4 style="color: ${phase.color}; margin-top: 0; font-size: 14px; text-align: center; font-weight: bold;">${phase.title}</h4>
+                        ${boxesHTML}
+                    </div>`;
+            }).join('');
+            
+            return `
+                <div style="border: 3px solid #000; border-radius: 15px; padding: 10px; background: white; font-family: Arial, sans-serif;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0; font-size: 16px; font-weight: bold;">${testItemName} Test Model</h3>
+                        <p style="margin: 5px 0 0 0; font-size: 12px;">(The test model in this figure is an Euler diagram showing the equivalence partitions.)</p>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: stretch;">${phasesHTML}</div>
+                </div>`;
+        }
+        _renderBoxesHTMLRecursive(boxes, dataBoxBg, dataBoxBorder, dataBoxText) {
+            if (boxes.length === 0) return '';
+            return boxes.map(box => {
+                const childrenHTML = this._renderBoxesHTMLRecursive(box.children, dataBoxBg, dataBoxBorder, dataBoxText);
+                const dataItemsHTML = box.dataItems.map(item => {
+                    const escapeHTML = (str) => str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/`/g, '\\`');
+                    const content = item.content; 
+                    const type = item.type;
+                    
+                    if (type === 'code') return `<div style="background: ${dataBoxBg}; border: 1px solid ${dataBoxBorder}; border-radius: 3px; padding: 5px; font-size: 9px; color: ${dataBoxText}; margin: 2px; font-family: monospace; white-space: pre-wrap; line-height: 1.3;">${escapeHTML(content)}</div>`;
+                    if (type === 'multiline') return `<div style="background: ${dataBoxBg}; border: 1px solid ${dataBoxBorder}; border-radius: 3px; padding: 5px; font-size: 9px; color: ${dataBoxText}; margin: 2px; white-space: pre-wrap; line-height: 1.3;">${escapeHTML(content)}</div>`;
+                    if (type === 'image') return `<div style="margin: 2px; text-align: center;"><img src="${escapeHTML(item.content)}" style="max-width: 120px; max-height: 80px; border: 1px solid ${dataBoxBorder}; border-radius: 5px;" alt="${item.fileName || 'Image'}"></div>`;
+                    return `<span style="background: ${dataBoxBg}; border: 1px solid ${dataBoxBorder}; border-radius: 3px; padding: 3px 6px; font-size: 9px; color: ${dataBoxText}; margin: 2px; display: inline-block; white-space: normal; overflow-wrap: break-word; max-width: 100%; vertical-align: top;">${escapeHTML(content)}</span>`;
+                }).join(' ');
+                
+                return `
+                    <div style="border: 2px solid ${box.color}; border-radius: 8px; padding: 6px; background: ${box.backgroundColor}; margin: 5px 0;">
+                        <h5 style="color: ${box.color}; margin: 0 0 4px 0; font-size: 12px; font-weight: bold;">${box.title}</h5>
+                        ${dataItemsHTML ? `<div style="text-align: center; margin-bottom: 4px;">${dataItemsHTML}</div>` : ''}
+                        ${childrenHTML}
+                    </div>`;
+            }).join('');
+        }
+
+        // Final Diagram
+        generateFinalDiagram() {
+            const finalHTML = this._generateDynamicEulerHTML(false);
+            this.dom.dynamicEulerDiagramContent.innerHTML = finalHTML;
+            this.dom.dynamicEulerDiagramOutput.style.display = 'block';
+        }
+        
+        // Config Management (Clear, Export, Import)
+        clearConfiguration() {
+            this.config = { testItemName: 'New System', phases: [] };
+            this.phaseIdCounter = 0; this.boxIdCounter = 0;
+            this._renderPhasesList(); this.updateLivePreview();
+            this.dom.globalTestItemName.value = 'New System';
+            this.dom.dynamicEulerDiagramOutput.style.display = 'none';
+            this.toggleConceptualRepresentationSection(false);
+        }
+        exportConfiguration() {
+            this.config.testItemName = this.dom.globalTestItemName.value;
+            this.config.globalSettings = {
+                dataBoxBg: this.dom.globalDataBoxBg.value,
+                dataBoxBorder: this.dom.globalDataBoxBorder.value,
+                dataBoxText: this.dom.globalDataBoxText.value
+            };
+            const jsonString = JSON.stringify(this.config, null, 4);
+            const blob = new Blob([jsonString], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'dynamic_euler_config.json';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        _handleImportFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e_reader) => {
+                    try {
+                        const importedConfig = JSON.parse(e_reader.target.result);
+                        this.config = importedConfig;
+                        this.phaseIdCounter = Math.max(0, ...this.config.phases.map(p => p.id));
+                        this.boxIdCounter = Math.max(0, ...this._getAllBoxesRecursive(this.config.phases).map(b => b.id));
+                        
+                        this.dom.globalTestItemName.value = this.config.testItemName || 'Imported System';
+                        if (this.config.globalSettings) {
+                            this.dom.globalDataBoxBg.value = this.config.globalSettings.dataBoxBg || '#F4F5F6';
+                            this.dom.globalDataBoxBorder.value = this.config.globalSettings.dataBoxBorder || '#000000';
+                            this.dom.globalDataBoxText.value = this.config.globalSettings.dataBoxText || '#000000';
+                        }
+                        this._renderPhasesList(); this.updateLivePreview();
+                         this.toggleConceptualRepresentationSection(this.config.testItemName === 'Thermostat'); // or based on some flag in config
+                    } catch (error) { alert('Error importing configuration: ' + error.message); }
+                };
+                reader.readAsText(file);
+            }
+             event.target.value = null; // Reset file input
+        }
+        _getAllBoxesRecursive(phasesOrBoxes) {
+            let allBoxes = [];
+            (Array.isArray(phasesOrBoxes) ? phasesOrBoxes : phasesOrBoxes.boxes || []).forEach(item => {
+                if (item.boxes) { // It's a phase, recurse on its boxes
+                    allBoxes = allBoxes.concat(this._getAllBoxesRecursive(item.boxes));
+                } else { // It's a box
+                    allBoxes.push(item);
+                    if (item.children) {
+                        allBoxes = allBoxes.concat(this._getAllBoxesRecursive(item.children));
+                    }
+                }
+            });
+            return allBoxes;
+        }
+
+
+        // Templates
+        async _loadTemplatesFromJSON() {
+            try {
+                const response = await fetch('../data/templates.json');
+                if (response.ok) {
+                    this.templatesData = await response.json();
+                } else {
+                    console.warn('Could not load templates.json, using embedded fallback');
+                    this.templatesData = this.dom.embeddedTemplatesData;
+                }
+            } catch (error) {
+                console.warn('Error loading templates.json (likely CORS), using embedded fallback:', error.message);
+                this.templatesData = this.dom.embeddedTemplatesData;
+            }
+        }
+        loadTemplate(templateName) {
+            if (!this.templatesData[templateName]) {
+                alert(`Template '${templateName}' not found.`); return;
+            }
+            this.config = JSON.parse(JSON.stringify(this.templatesData[templateName])); // Deep copy
+            this.phaseIdCounter = Math.max(0, ...this.config.phases.map(p => p.id));
+            this.boxIdCounter = Math.max(0, ...this._getAllBoxesRecursive(this.config.phases).map(b => b.id));
+            this._renderPhasesList();
+            this.updateLivePreview();
+            this.dom.globalTestItemName.value = this.config.testItemName;
+            // Restore any global settings from template if they exist
+            if (this.config.globalSettings) {
+                this.dom.globalDataBoxBg.value = this.config.globalSettings.dataBoxBg || '#F4F5F6';
+                this.dom.globalDataBoxBorder.value = this.config.globalSettings.dataBoxBorder || '#000000';
+                this.dom.globalDataBoxText.value = this.config.globalSettings.dataBoxText || '#000000';
+            }
+            this.toggleConceptualRepresentationSection(templateName === 'thermostat');
+        }
+        toggleConceptualRepresentationSection(show) {
+            if (this.dom.conceptualRepresentationSection) {
+                this.dom.conceptualRepresentationSection.style.display = show ? 'block' : 'none';
+            }
+        }
+
+        handleKeyDown(event) { // To be called by BVAApp for preview keyboard shortcuts
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || this.dom.dataTypeModal.style.display === 'block') return;
+            
+            switch(event.key) {
+                case '+': case '=': event.preventDefault(); this.zoomPreview(1.2); break;
+                case '-': event.preventDefault(); this.zoomPreview(0.8); break;
+                case '0': event.preventDefault(); this.fitPreviewToContainer(); break;
+                case 'r': case 'R': event.preventDefault(); this.resetPreviewView(); break;
+            }
+        }
+    }
+
+
+    class BVAApp {
+        constructor() {
+            this.dom = {
+                // Inputs
+                integerLower: document.getElementById('integerLower'),
+                integerUpper: document.getElementById('integerUpper'),
+                floatLower: document.getElementById('floatLower'),
+                floatUpper: document.getElementById('floatUpper'),
+                charLower: document.getElementById('charLower'),
+                charUpper: document.getElementById('charUpper'),
+                numPartitions: document.getElementById('numPartitions'),
+                twoPointBva: document.getElementById('twoPointBva'),
+                threePointBva: document.getElementById('threePointBva'),
+                // Controls
+                generateButton: document.getElementById('generateButton'),
+                clearButton: document.getElementById('clearButton'),
+                saveButton: document.getElementById('saveButton'),
+                // Output Tabs
+                outputTabsContainer: document.getElementById('outputTabs'),
+                equivalenceTabContent: document.getElementById('equivalenceTab'),
+                twoPointTabContent: document.getElementById('twoPointTab'),
+                threePointTabContent: document.getElementById('threePointTab'),
+                // Output Tables
+                equivalenceTable: document.getElementById('equivalenceTable'),
+                twoPointTable: document.getElementById('twoPointTable'),
+                threePointTable: document.getElementById('threePointTable'),
+                // Conceptual Image
+                referenceImage: document.getElementById('referenceImage')
+            };
+            this.bvaResults = [];
+            this.bvaGenerator = null; // Will be initialized with numPartitions
+            
+            this.imageZoomModal = new ImageZoomModal('imageZoomModal', 'imageZoomModalImg', 'imageZoomModalClose', 'imageZoomModalZoomIn', 'imageZoomModalZoomOut', 'imageZoomModalResetZoom', 'imageZoomModalZoomInfo');
+            this.eulerDiagramManager = new EulerDiagramManager(this);
+
+            this._init();
+        }
+
+        _init() {
+            this._populateCharDropdowns();
+            this._setupEventListeners();
+            this._showTab('equivalence'); // Show first tab by default
+        }
+
+        _populateCharDropdowns() {
+            const charDropdowns = [this.dom.charLower, this.dom.charUpper];
+            charDropdowns.forEach(dropdown => {
+                if (!dropdown) return;
+                for (let i = 48; i <= 122; i++) { // 0-9, A-Z, a-z (some symbols in between)
+                    const char = String.fromCharCode(i);
+                    // Filter to keep only alphanumeric for simplicity, or adjust as needed
+                    if (char.match(/[0-9a-zA-Z]/)) {
+                         const option = document.createElement('option');
+                         option.value = char;
+                         option.textContent = char;
+                         dropdown.appendChild(option);
+                    }
+                }
+            });
+            if (this.dom.charLower) this.dom.charLower.value = '0';
+            if (this.dom.charUpper) this.dom.charUpper.value = 'z';
+        }
+
+        _setupEventListeners() {
+            this.dom.generateButton.addEventListener('click', () => this._generateTestCases());
+            this.dom.clearButton.addEventListener('click', () => this._clearAll());
+            this.dom.saveButton.addEventListener('click', () => this._saveFile());
+
+            this.dom.outputTabsContainer.addEventListener('click', (event) => {
+                if (event.target.tagName === 'BUTTON') {
+                    this._showTab(event.target.dataset.tabName, event.target);
+                }
             });
             
-            // If called from a button click, buttonElement will be event.target
-            // If called programmatically, find the button by its onclick attribute
-            if (buttonElement) {
-                buttonElement.classList.add('active');
-            } else {
-                const targetButton = document.querySelector(`#outputTabs button[onclick*="${tabName}"]`);
-                if (targetButton) {
-                    targetButton.classList.add('active');
-                }
-            }
-        }
-    
-        let results = [];
-
-        class BoundaryValueAnalysisGenerator {
-            constructor(numPartitions) {
-                this.numPartitions = numPartitions;
+            if (this.dom.referenceImage) {
+                this.dom.referenceImage.addEventListener('click', () => this.imageZoomModal.open(this.dom.referenceImage));
             }
 
-            _nextValue(value, dataType) {
-                if (dataType === "integer") {
-                    return value + 1;
-                } else if (dataType === "float") {
-                    return Math.round((value + 0.1) * 10) / 10; // Use round for consistency with Python
-                } else if (dataType === "char") {
-                    return String.fromCharCode(value.charCodeAt(0) + 1);
-                }
-            }
-
-            _prevValue(value, dataType) {
-                if (dataType === "integer") {
-                    return value - 1;
-                } else if (dataType === "float") {
-                    return Math.round((value - 0.1) * 10) / 10; // Use round for consistency with Python
-                } else if (dataType === "char") {
-                    return String.fromCharCode(value.charCodeAt(0) - 1);
-                }
-            }
-
-            generateEquivalenceClasses(partition) {
-                const lower = partition.lower;
-                const upper = partition.upper;
-                const dataType = partition.dataType;
-
-                let midPoints = [];
-
-                if (dataType === "char") {
-                    // Calculate the total range
-                    const range = upper.charCodeAt(0) - lower.charCodeAt(0);
-                    
-                    // Calculate step size, ensuring it's at least 1
-                    const step = Math.max(1, Math.floor(range / (this.numPartitions + 1)));
-                    
-                    for (let i = 1; i <= this.numPartitions; i++) {
-                        let point = lower.charCodeAt(0) + step * i;
-                        
-                        midPoints.push(String.fromCharCode(point));
-                    }
-                } else {
-                    // Calculate the total range
-                    const range = upper - lower;
-                    
-                    // Calculate step size
-                    const step = range / (this.numPartitions + 1);
-                    
-                    for (let i = 1; i <= this.numPartitions; i++) {
-                        let point = lower + step * i;
-                        
-                        if (dataType === "integer") {
-                            if (i === 1) { // First partition point
-                                midPoints.push(Math.round(point)); 
-                            } else { // Subsequent partition points
-                                midPoints.push(Math.floor(point));
-                            }
-                        } else { // Float
-                            midPoints.push(pythonicRound(point, 1));
-                        }
-                    }
-                }
-
-                return midPoints;
-            }
-
-            generateBoundaryTestCases(partition, bvaType) {
-                const lower = partition.lower;
-                const upper = partition.upper;
-                const dataType = partition.dataType;
-
-                const midPoints = this.generateEquivalenceClasses(partition);
-                let testCases = [];
-
-                if (bvaType === 2) {
-                    testCases.push([
-                        { "below_boundary": this._prevValue(lower, dataType) },
-                        { "on_boundary": lower }
-                    ]);
-                    
-                    let midTestCases = [];
-                    for (let i = 0; i < midPoints.length; i++) {
-                        let point = midPoints[i];
-                        
-                        if (dataType === 'char' && midPoints.length === 3) {
-                            if (i === 0) { // First char mid-point (e.g., G)
-                                midTestCases.push([
-                                    { "on_boundary": point },
-                                    { "above_boundary": this._nextValue(point, dataType) }
-                                ]);
-                            } else { // Second (e.g., M) and Third (e.g., S) char mid-points
-                                midTestCases.push([
-                                    { "below_boundary": this._prevValue(point, dataType) },
-                                    { "on_boundary": point }
-                                ]);
-                            }
-                        } else { // Logic for int, float, or char not having exactly 3 mid-points
-                            if (i < midPoints.length -1) { // For all mid-points except the last one
-                                midTestCases.push([
-                                    { "on_boundary": point },
-                                    { "above_boundary": this._nextValue(point, dataType) }
-                                ]);
-                            } else { // For the last mid-point
-                                midTestCases.push([
-                                    { "below_boundary": this._prevValue(point, dataType) },
-                                    { "on_boundary": point }
-                                ]);
-                            }
-                        }
-                    }
-                    testCases.push(midTestCases);
-                    testCases.push([
-                        { "on_boundary": upper },
-                        { "above_boundary": this._nextValue(upper, dataType) }
-                    ]);
-                } else if (bvaType === 3) {
-                    testCases.push([
-                        { "below_boundary": this._prevValue(lower, dataType) },
-                        { "on_boundary": lower },
-                        { "above_boundary": this._nextValue(lower, dataType) }
-                    ]);
-                    let midTestCases = [];
-                    for (let point of midPoints) {
-                        midTestCases.push([
-                            { "below_boundary": this._prevValue(point, dataType) },
-                            { "on_boundary": point },
-                            { "above_boundary": this._nextValue(point, dataType) }
-                        ]);
-                    }
-                    testCases.push(midTestCases);
-                    testCases.push([
-                        { "below_boundary": this._prevValue(upper, dataType) },
-                        { "on_boundary": upper },
-                        { "above_boundary": this._nextValue(upper, dataType) }
-                    ]);
-                }
-
-                return testCases;
-            }
+            // Global listeners for modals and specific keyboard shortcuts
+            document.addEventListener('keydown', (event) => {
+                this.imageZoomModal.handleKeyDown(event);
+                this.eulerDiagramManager.handleKeyDown(event); // Euler manager handles its own preview shortcuts and Escape for its modal
+            });
+            document.addEventListener('wheel', (event) => {
+                this.imageZoomModal.handleWheel(event); // Only if modal is active
+                // Euler preview wheel is handled by its own viewport listener
+            }, { passive: false }); // Allow preventDefault for wheel
         }
 
-        function generateTestCases() {
+        _generateTestCases() {
+            const numPartitions = parseInt(this.dom.numPartitions.value);
+            if (isNaN(numPartitions) || numPartitions <=0) {
+                alert("Number of partitions must be a positive integer.");
+                return;
+            }
+            this.bvaGenerator = new BoundaryValueAnalysisGenerator(numPartitions);
+            
             const config = {
                 partitions: [
-                    {lower: parseInt(document.getElementById('integerLower').value), 
-                    upper: parseInt(document.getElementById('integerUpper').value), 
-                    dataType: "integer"},
-                    {lower: parseFloat(document.getElementById('floatLower').value), 
-                    upper: parseFloat(document.getElementById('floatUpper').value), 
-                    dataType: "float"},
-                    {lower: document.getElementById('charLower').value, 
-                    upper: document.getElementById('charUpper').value, 
-                    dataType: "char"}
+                    {lower: parseInt(this.dom.integerLower.value), upper: parseInt(this.dom.integerUpper.value), dataType: "integer"},
+                    {lower: parseFloat(this.dom.floatLower.value), upper: parseFloat(this.dom.floatUpper.value), dataType: "float"},
+                    {lower: this.dom.charLower.value, upper: this.dom.charUpper.value, dataType: "char"}
                 ],
-                numPartitions: parseInt(document.getElementById('numPartitions').value),
                 bvaTypes: [
-                    document.getElementById('twoPointBva').checked ? 2 : null,
-                    document.getElementById('threePointBva').checked ? 3 : null
+                    this.dom.twoPointBva.checked ? 2 : null,
+                    this.dom.threePointBva.checked ? 3 : null
                 ].filter(type => type !== null)
             };
+            
+            // Basic validation
+            for (let p of config.partitions) {
+                if ( (p.dataType === 'integer' || p.dataType === 'float') && (isNaN(p.lower) || isNaN(p.upper) || p.lower >= p.upper) ) {
+                     alert(`Invalid range for ${p.dataType}: lower (${p.lower}) must be less than upper (${p.upper}).`); return;
+                }
+                 if (p.dataType === 'char' && (p.lower >= p.upper) ){
+                     alert(`Invalid range for char: lower ('${p.lower}') must be less than upper ('${p.upper}').`); return;
+                 }
+            }
 
-            const generator = new BoundaryValueAnalysisGenerator(config.numPartitions);
-            results = config.partitions.map(partition => ({
+
+            this.bvaResults = config.partitions.map(partition => ({
                 dataType: partition.dataType,
                 lower: partition.lower,
                 upper: partition.upper,
-                equivalenceClasses: generator.generateEquivalenceClasses(partition),
+                equivalenceClasses: this.bvaGenerator.generateEquivalenceClasses(partition),
                 boundaryTestCases: Object.fromEntries(
                     config.bvaTypes.map(type => [
                         type, 
-                        generator.generateBoundaryTestCases(partition, type)
+                        this.bvaGenerator.generateBoundaryTestCases(partition, type)
                     ])
                 )
             }));
 
-            populateTables(results);
-        }
-
-        function populateTables(results) {
-            populateEquivalenceTable(results);
-            populateBoundaryTable(results, 2);
-            populateBoundaryTable(results, 3);
-            // Set the first tab (Equivalence Classes) as active by default if results are populated
-            if (results && results.length > 0) {
-                showTab('equivalence'); // This will now work properly
-            } else {
-                 // If no results, ensure no tab is marked active and all are hidden initially
-                document.querySelectorAll('#outputTabs button').forEach(button => button.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-                 // Except for the first one that we want to show by default before generation
-                document.getElementById('equivalenceTab').style.display = 'block';
-                // And mark its button as active
-                const eqButton = document.querySelector('#outputTabs button[onclick*="equivalence"]');
-                if(eqButton) eqButton.classList.add('active');
+            this._populateAllTables();
+            if (this.bvaResults.length > 0) {
+                const activeTabButton = this.dom.outputTabsContainer.querySelector('button.active');
+                if (activeTabButton) {
+                    this._showTab(activeTabButton.dataset.tabName, activeTabButton);
+                } else {
+                    this._showTab('equivalence');
+                }
             }
         }
 
-        function populateEquivalenceTable(results) {
-            const table = document.getElementById('equivalenceTable');
-            clearTable(table);
+        _populateAllTables() {
+            this._populateEquivalenceTable();
+            this._populateBoundaryTable(2); // Two-point
+            this._populateBoundaryTable(3); // Three-point
+        }
+        
+        _clearTable(tableElement) {
+            if (!tableElement) return;
+            while (tableElement.rows.length > 1) {
+                tableElement.deleteRow(1);
+            }
+        }
 
-            results.forEach(result => {
-                const row = table.insertRow();
+        _populateEquivalenceTable() {
+            this._clearTable(this.dom.equivalenceTable);
+            this.bvaResults.forEach(result => {
+                const row = this.dom.equivalenceTable.insertRow();
                 row.insertCell().textContent = result.dataType;
-                // Format float lower/upper for display
-                if (result.dataType === 'float' && Number.isInteger(result.lower)) {
-                    row.insertCell().textContent = result.lower.toFixed(1);
-                } else {
-                    row.insertCell().textContent = result.lower;
-                }
-                if (result.dataType === 'float' && Number.isInteger(result.upper)) {
-                    row.insertCell().textContent = result.upper.toFixed(1);
-                } else {
-                    row.insertCell().textContent = result.upper;
-                }
+                row.insertCell().textContent = (result.dataType === 'float' && Number.isInteger(result.lower)) ? result.lower.toFixed(1) : result.lower;
+                row.insertCell().textContent = (result.dataType === 'float' && Number.isInteger(result.upper)) ? result.upper.toFixed(1) : result.upper;
                 row.insertCell().textContent = result.equivalenceClasses.join(', ');
             });
         }
 
-        function populateBoundaryTable(results, bvaType) {
-            const table = document.getElementById(`${bvaType === 2 ? 'twoPoint' : 'threePoint'}Table`);
-            clearTable(table);
+        _populateBoundaryTable(bvaType) {
+            const table = (bvaType === 2) ? this.dom.twoPointTable : this.dom.threePointTable;
+            this._clearTable(table);
 
-            results.forEach(result => {
+            const formatSingleTestCaseValues = (testCaseObjectArray, dataType) => {
+                return testCaseObjectArray.map(obj => {
+                    let val = Object.values(obj)[0];
+                    return (dataType === 'float' && Number.isInteger(val)) ? val.toFixed(1) : val;
+                }).join(', ');
+            };
+
+            this.bvaResults.forEach(result => {
                 if (result.boundaryTestCases[bvaType]) {
                     const testCasesForType = result.boundaryTestCases[bvaType];
-
-                    // New helper to format a single test case object array into comma-separated values
-                    const formatSingleTestCaseValues = (testCaseObjectArray, dataType) => {
-                        return testCaseObjectArray.map(obj => {
-                            let val = Object.values(obj)[0];
-                            if (dataType === 'float' && Number.isInteger(val)) {
-                                return val.toFixed(1);
-                            }
-                            return val;
-                        }).join(', ');
-                    };
-
+                    // testCasesForType is [lowerBoundaryTests, midPointTestsArrayOfArrays, upperBoundaryTests]
+                    
                     // Lower boundary
                     if (testCasesForType[0]) {
                         const row = table.insertRow();
                         row.insertCell().textContent = result.dataType;
-                        // Format float lower/upper for display
-                        if (result.dataType === 'float' && Number.isInteger(result.lower)) {
-                            row.insertCell().textContent = result.lower.toFixed(1);
-                        } else {
-                            row.insertCell().textContent = result.lower;
-                        }
-                        if (result.dataType === 'float' && Number.isInteger(result.upper)) {
-                            row.insertCell().textContent = result.upper.toFixed(1);
-                        } else {
-                            row.insertCell().textContent = result.upper;
-                        }
+                        row.insertCell().textContent = (result.dataType === "float" && Number.isInteger(result.lower)) ? result.lower.toFixed(1) : result.lower;
+                        row.insertCell().textContent = (result.dataType === "float" && Number.isInteger(result.upper)) ? result.upper.toFixed(1) : result.upper;
                         row.insertCell().textContent = formatSingleTestCaseValues(testCasesForType[0], result.dataType);
                     }
 
-                    // Mid-points
+                    // Mid-points (now consolidated into one row per data type for mid-points)
                     if (testCasesForType[1] && testCasesForType[1].length > 0) {
-                        const row = table.insertRow(); // One row for all mid-point test cases of a data type
+                        const row = table.insertRow();
                         row.insertCell().textContent = result.dataType;
-                        // Format float lower/upper for display
-                        if (result.dataType === 'float' && Number.isInteger(result.lower)) {
-                            row.insertCell().textContent = result.lower.toFixed(1);
-                        } else {
-                            row.insertCell().textContent = result.lower;
-                        }
-                        if (result.dataType === 'float' && Number.isInteger(result.upper)) {
-                            row.insertCell().textContent = result.upper.toFixed(1);
-                        } else {
-                            row.insertCell().textContent = result.upper;
-                        }
+                        row.insertCell().textContent = (result.dataType === "float" && Number.isInteger(result.lower)) ? result.lower.toFixed(1) : result.lower;
+                        row.insertCell().textContent = (result.dataType === "float" && Number.isInteger(result.upper)) ? result.upper.toFixed(1) : result.upper;
                         
-                        const midPointValuesString = testCasesForType[1].map(midTestCaseGroup => {
-                            const values = midTestCaseGroup.map(obj => {
+                        const midPointValuesString = testCasesForType[1].map(midPointTestArray => {
+                            // midTestCaseGroup is like [ {on_boundary:G}, {above_boundary:H} ] OR for 3-point [ {below:F}, {on:G}, {above:H} ]
+                            const values = midPointTestArray.map(obj => {
                                 let val = Object.values(obj)[0];
-                                if (result.dataType === 'float' && Number.isInteger(val)) {
-                                    return val.toFixed(1);
-                                }
-                                return val;
+                                return (result.dataType === "float" && Number.isInteger(val)) ? val.toFixed(1) : val;
                             });
                             return `[${values.join(', ')}]`;
                         }).join(', ');
@@ -903,139 +2136,109 @@
                     if (testCasesForType[2]) {
                         const row = table.insertRow();
                         row.insertCell().textContent = result.dataType;
-                         // Format float lower/upper for display
-                        if (result.dataType === 'float' && Number.isInteger(result.lower)) {
-                            row.insertCell().textContent = result.lower.toFixed(1);
-                        } else {
-                            row.insertCell().textContent = result.lower;
-                        }
-                        if (result.dataType === 'float' && Number.isInteger(result.upper)) {
-                            row.insertCell().textContent = result.upper.toFixed(1);
-                        } else {
-                            row.insertCell().textContent = result.upper;
-                        }
+                        row.insertCell().textContent = (result.dataType === "float" && Number.isInteger(result.lower)) ? result.lower.toFixed(1) : result.lower;
+                        row.insertCell().textContent = (result.dataType === "float" && Number.isInteger(result.upper)) ? result.upper.toFixed(1) : result.upper;
                         row.insertCell().textContent = formatSingleTestCaseValues(testCasesForType[2], result.dataType);
                     }
                 }
             });
         }
 
-        function clearTable(table) {
-            while (table.rows.length > 1) {
-                table.deleteRow(1);
-            }
-        }
-    
-        function formatOutput(results) {
-            const outputs = {
-                "two_point_bva": [],
-                "three_point_bva": []
-            };
+        _formatOutputForSave() {
+            const outputs = { "two_point_bva": [], "three_point_bva": [] };
             const floatPlaceholders = new Map();
             let placeholderId = 0;
 
-            // Helper to format numbers for JSON: if float and whole, use placeholder for later replacement to "1.0" format
             function formatJsonNumber(value, dataType) {
                 if (dataType === "float" && Number.isFinite(value) && Number.isInteger(value)) {
                     const placeholder = `__FLOAT_PLACEHOLDER_${placeholderId++}__`;
-                    floatPlaceholders.set(placeholder, value.toFixed(1)); // Store target string like "1.0"
-                    return placeholder; // Return placeholder string for initial JSON stringify
+                    floatPlaceholders.set(placeholder, value.toFixed(1));
+                    return placeholder;
                 }
-                return value; // Return as is for other cases (actual floats with decimals, integers, chars)
+                return value;
             }
 
-            results.forEach(result => {
-                for (const [bvaType, testCases] of Object.entries(result.boundaryTestCases)) {
+            this.bvaResults.forEach(result => {
+                for (const [bvaTypeKey, testCases] of Object.entries(result.boundaryTestCases)) {
+                    const outputKey = bvaTypeKey === "2" ? 'two_point_bva' : 'three_point_bva';
                     const entry = {
                         "data_type": result.dataType,
                         "lower": formatJsonNumber(result.lower, result.dataType),
                         "upper": formatJsonNumber(result.upper, result.dataType),
-                        "equivalence_classes": result.equivalenceClasses.map(ec =>
-                            formatJsonNumber(ec, result.dataType)
-                        ),
-                        "boundary_test_cases": testCases.map((testCaseGroup, index) => { // testCases is [lowerTests, midTestsArray, upperTests]
-                            if (index === 1) { // This is mid_tests_array_of_arrays (array of arrays of objects)
-                                return testCaseGroup.map(midPointTestArray => { // midPointTestArray is like [ {on_boundary:G}, {above_boundary:H} ]
-                                    return midPointTestArray.map(testObject => {
-                                        const key = Object.keys(testObject)[0];
-                                        return { [key]: formatJsonNumber(testObject[key], result.dataType) };
-                                    });
-                                });
-                            } else { // This is lower_boundary_array or upper_boundary_array (array of objects)
-                                return testCaseGroup.map(testObject => { 
-                                    const key = Object.keys(testObject)[0];
-                                    return { [key]: formatJsonNumber(testObject[key], result.dataType) };
-                                });
+                        "equivalence_classes": result.equivalenceClasses.map(ec => formatJsonNumber(ec, result.dataType)),
+                        "boundary_test_cases": testCases.map((testCaseGroup, index) => {
+                            if (index === 1) { // Mid-points array of arrays
+                                return testCaseGroup.map(midPointTestArray => 
+                                    midPointTestArray.map(testObject => ({ [Object.keys(testObject)[0]]: formatJsonNumber(Object.values(testObject)[0], result.dataType) }))
+                                );
+                            } else { // Lower or Upper boundary array
+                                return testCaseGroup.map(testObject => ({ [Object.keys(testObject)[0]]: formatJsonNumber(Object.values(testObject)[0], result.dataType) }));
                             }
                         })
                     };
-                    outputs[`${bvaType === "2" ? 'two' : 'three'}_point_bva`].push(entry);
+                    outputs[outputKey].push(entry);
                 }
             });
             
-            // First, stringify the object structure that includes placeholders, using 4 spaces for indent
             let jsonString = JSON.stringify(outputs, null, 4);
-
-            // Then, replace the stringified placeholders with their target numeric strings (e.g., "__PLACEHOLDER__" -> 1.0)
             for (const [placeholder, replacement] of floatPlaceholders) {
-                const placeholderInJson = JSON.stringify(placeholder); // Creates "__FLOAT_PLACEHOLDER_n__"
-                // Escape placeholder for regex and replace. The replacement is a numeric string, not a JSON string.
-                jsonString = jsonString.replace(new RegExp(placeholderInJson.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&'), 'g'), replacement);
+                jsonString = jsonString.replace(new RegExp(JSON.stringify(placeholder), 'g'), replacement);
             }
-
-            // Collapse simple 3-line objects like { "key": value } into a single line, matching target style.
-            // This regex looks for an opening brace with its indentation, the key-value pair on the next line (indented further),
-            // and the closing brace on the third line (matching initial indentation), optionally followed by a comma.
-            // It replaces this 3-line structure with a single line: <initial_indent>{ <key_value_pair> }<optional_comma>
-            const objectCollapseRegex = /^(\s*){\s*\n\s*(\s*)("[\w_]+":\s*(?:\d+(?:\.\d+)?|"[^"\\]*(?:\\.[^"\\]*)*"|true|false|null))\s*\n\s*\1}(\s*,)?$/gm;
-            jsonString = jsonString.replace(objectCollapseRegex, '$1{ $3 }$4');
-
-            return jsonString; // Return the final JSON string
+            // Simple regex to collapse single-key objects to one line
+            jsonString = jsonString.replace(/{\s*\n\s*("[^"]+"\s*:\s*[^,\n}]+)\s*\n\s*}/g, '{ $1 }');
+            return jsonString;
         }
 
-        function clearInputs() {
-            document.getElementById('integerLower').value = -10;
-            document.getElementById('integerUpper').value = 50;
-            document.getElementById('floatLower').value = -10.0;
-            document.getElementById('floatUpper').value = 50.0;
-            document.getElementById('charLower').value = '0';
-            document.getElementById('charUpper').value = 'z';
-            document.getElementById('numPartitions').value = 3;
-            document.getElementById('twoPointBva').checked = true;
-            document.getElementById('threePointBva').checked = true;
+        _clearAll() {
+            this.dom.integerLower.value = -10; this.dom.integerUpper.value = 50;
+            this.dom.floatLower.value = -10.0; this.dom.floatUpper.value = 50.0;
+            this.dom.charLower.value = '0'; this.dom.charUpper.value = 'z';
+            this.dom.numPartitions.value = 3;
+            this.dom.twoPointBva.checked = true; this.dom.threePointBva.checked = true;
             
-            // Clear tables
-            clearTable(document.getElementById('equivalenceTable'));
-            clearTable(document.getElementById('twoPointTable'));
-            clearTable(document.getElementById('threePointTable'));
+            this._clearTable(this.dom.equivalenceTable);
+            this._clearTable(this.dom.twoPointTable);
+            this._clearTable(this.dom.threePointTable);
             
-            results = [];
-            // Reset tabs to default state
-            document.querySelectorAll('#outputTabs button').forEach(button => button.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-            document.getElementById('equivalenceTab').style.display = 'block'; // Show equivalence tab
-            const eqButton = document.querySelector('#outputTabs button[onclick*="equivalence"]');
-            if(eqButton) eqButton.classList.add('active'); // Mark its button as active
+            this.bvaResults = [];
+            this._showTab('equivalence');
         }
 
-        function saveFile() {
-            if (!results || results.length === 0) {
+        _saveFile() {
+            if (!this.bvaResults || this.bvaResults.length === 0) {
                 alert('No data to save. Please generate test cases first.');
                 return;
             }
-
-            const jsonString = formatOutput(results); // formatOutput now returns the final JSON string
+            const jsonString = this._formatOutputForSave();
             const blob = new Blob([jsonString], {type: "application/json"});
             const url = URL.createObjectURL(blob);
-
             const a = document.createElement('a');
-            a.href = url;
-            a.download = 'boundary_value_analysis.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            a.href = url; a.download = 'boundary_value_analysis.json';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
+
+        _showTab(tabName, buttonElement = null) {
+            [this.dom.equivalenceTabContent, this.dom.twoPointTabContent, this.dom.threePointTabContent]
+                .forEach(tab => { if(tab) tab.style.display = 'none';});
+            
+            const tabToShow = document.getElementById(tabName + 'Tab');
+            if (tabToShow) tabToShow.style.display = 'block';
+
+            this.dom.outputTabsContainer.querySelectorAll('button').forEach(button => button.classList.remove('active'));
+            
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            } else {
+                const targetButton = this.dom.outputTabsContainer.querySelector(`button[data-tab-name="${tabName}"]`);
+                if (targetButton) targetButton.classList.add('active');
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        window.bvaApp = new BVAApp();
+    });
     </script>
 </body>
-</html>
+</html> 

@@ -1,0 +1,179 @@
+{
+    "thermostat": {
+        "testItemName": "Thermostat",
+        "phases": [
+            {
+                "id": 1,
+                "title": "Conceptual Representation",
+                "color": "#009900",
+                "flex": 1,
+                "boxes": [
+                    {
+                        "id": 1,
+                        "title": "Test Item Blueprint",
+                        "color": "#009900",
+                        "backgroundColor": "#ffffff",
+                        "dataItems": [
+                            {
+                                "type": "image",
+                                "content": "../images/blueprint.png",
+                                "fileName": "blueprint.png",
+                                "id": 1
+                            }
+                        ],
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "title": "Input Processing",
+                "color": "#35489D",
+                "flex": 2,
+                "boxes": [
+                    {
+                        "id": 2,
+                        "title": "Thermostat Inputs",
+                        "color": "#29ABE2",
+                        "backgroundColor": "#ffffff",
+                        "dataItems": [],
+                        "children": [
+                            {
+                                "id": 3,
+                                "title": "Valid Inputs",
+                                "color": "#146735",
+                                "backgroundColor": "#ffffff",
+                                "dataItems": [],
+                                "children": [
+                                    {
+                                        "id": 4,
+                                        "title": "Integers",
+                                        "color": "#6E3A96",
+                                        "backgroundColor": "#ffffff",
+                                        "dataItems": [
+                                            {
+                                                "type": "text",
+                                                "content": "In range",
+                                                "id": 2
+                                            }
+                                        ],
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "id": 5,
+                                "title": "Invalid Inputs",
+                                "color": "#BE2327",
+                                "backgroundColor": "#ffffff",
+                                "dataItems": [],
+                                "children": [
+                                    {
+                                        "id": 6,
+                                        "title": "Integers",
+                                        "color": "#6E3A96",
+                                        "backgroundColor": "#ffffff",
+                                        "dataItems": [
+                                            {
+                                                "type": "text",
+                                                "content": "Too low",
+                                                "id": 3
+                                            },
+                                            {
+                                                "type": "text",
+                                                "content": "Too high",
+                                                "id": 4
+                                            }
+                                        ],
+                                        "children": []
+                                    },
+                                    {
+                                        "id": 7,
+                                        "title": "Non-integers",
+                                        "color": "#FFA500",
+                                        "backgroundColor": "#ffffff",
+                                        "dataItems": [
+                                            {
+                                                "type": "text",
+                                                "content": "Real",
+                                                "id": 5
+                                            },
+                                            {
+                                                "type": "text",
+                                                "content": "Alpha",
+                                                "id": 6
+                                            },
+                                            {
+                                                "type": "text",
+                                                "content": "Special",
+                                                "id": 7
+                                            }
+                                        ],
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "title": "Internal Processing",
+                "color": "#29ABE2",
+                "flex": 2,
+                "boxes": [
+                    {
+                        "id": 8,
+                        "title": "Specified Functions",
+                        "color": "#BE2327",
+                        "backgroundColor": "#ffffff",
+                        "dataItems": [],
+                        "children": [
+                            {
+                                "id": 9,
+                                "title": "Input Field Result",
+                                "color": "#403151",
+                                "backgroundColor": "#ffffff",
+                                "dataItems": [
+                                    {
+                                        "type": "code",
+                                        "content": "IF (−10 ≤ Ambient ≤ 50) AND (10 ≤ Set-point ≤ 30) THEN\n    → Accept  // system may heat/cool to reach set-point\nELSE\n    → Reject   // display error (\"OUT OF RANGE\")",
+                                        "id": 8
+                                    }
+                                ],
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "title": "Output Processing",
+                "color": "#146735",
+                "flex": 1.5,
+                "boxes": [
+                    {
+                        "id": 10,
+                        "title": "Output Generated",
+                        "color": "#29ABE2",
+                        "backgroundColor": "#ffffff",
+                        "dataItems": [
+                            {
+                                "type": "text",
+                                "content": "Accept or Reject",
+                                "id": 9
+                            }
+                        ],
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "empty": {
+        "testItemName": "New System",
+        "phases": []
+    }
+} 
