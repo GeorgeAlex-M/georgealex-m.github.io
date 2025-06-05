@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pattern Testing Challenge</title>
+<style>
+  body {
+    font-family: Calibri, Arial, sans-serif;
+  }
+
+  h1 {
+    align-content: center;
+    text-align: center;
+    font-size: xx-large;
+  }
+
+  .centercontainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: xx-large;
+    border-width: 2px;
+    margin-block-end: 10px;
+  }
+
+  .inputtext {
+    height: 75px;
+    padding: 5px;
+    font-size: 55px;
+    width: 60%;
+  }
+
+  .instructions {
+    font-size: xx-large;
+  }
+
+  .instructions_button {
+    font-size: xx-large;
+    padding: 5px;
+    margin: 5px;
+    position: relative;
+  }
+
+  .submit_button {
+    display: flex;
+    justify-content: center;
+    font-size: xx-large;
+    text-align: center;
+    height: 75px;
+    margin: 0px;
+    padding: 5px;
+  }
+
+  table.resulttable {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+    font-size: x-large;
+    text-justify: inter-character;
+  }
+
+  label {
+    padding-right: 10px;
+    font-weight: bold;
+  }
+
+  th {
+    background-color: royalblue;
+    color: white;
+    padding: 5px;
+    font-size: xx-large;
+  }
+
+  td {
+    padding: 5px;
+    font-size: xx-large;
+    text-justify: inter-character;
+    word-break: break-all;
+  }
+
+  .admin-link {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+</style>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+  // Firebase configuration - replace with your actual config
+  var firebaseConfig = {
+    apiKey: "AIzaSyDIEIGoQIcvTsnGWiA_H6tEOgCwGGk7F7M",
+    authDomain: "pattern-testing-3980e.firebaseapp.com",
+    databaseURL: "https://pattern-testing-3980e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "pattern-testing-3980e",
+    storageBucket: "pattern-testing-3980e.firebasestorage.app",
+    messagingSenderId: "633904453209",
+    appId: "1:633904453209:web:ee99e29bdccba358fe8348",
+    measurementId: "G-67KPTGF8Z2"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+
+  var total_tries = 0;
+
+  function hide_instructions() {
+    document.getElementById("instructions").style.display = "none";
+    var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    document.getElementById("show_button").style.display = "block";
+    var bw = document.getElementById("show_button").clientWidth;
+    document.getElementById("show_button").style.left = (w/2)-(bw/2);
+    document.getElementById("hide_button").style.visibility = "hidden";
+    document.getElementById("hide_button").style.display = "none";
+    document.getElementById("show_button").style.visibility = "visible";
+  }
+
+  function show_instructions() {
+    document.getElementById("instructions").style.display = "inline";
+    var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    document.getElementById("hide_button").style.display = "inline";
+    var bw = document.getElementById("hide_button").clientWidth;
+    document.getElementById("hide_button").style.left = (w/2)-(bw/2);
+    document.getElementById("show_button").style.visibility = "hidden";
+    document.getElementById("show_button").style.display = "none";
+    document.getElementById("hide_button").style.visibility = "visible";
+  }
+
+  function pattern() {
+    var username = encodeURIComponent(document.getElementById("user").value);
+    if (username == "") {
+      alert("The name field is blank. Please enter your name in the field at the top of the instructions.")
+    } else {
+      var inputtext = document.inputform.input.value;
+      
+      // Check pattern locally instead of remote server call
+      var isMatch = checkPattern(inputtext);
+      var responseText = isMatch ? "true" : "false";
+      
+      // Mimic the original XMLHttpRequest response handling
+      var table = document.getElementById("resulttable");
+      var newrow = document.createElement("tr");
+      newrow.innerHTML = "<td>" + (++total_tries) + "</td><td>" + inputtext + "</td><td>" + (responseText == "true" ? "matches pattern" : "doesn't match") + "</td>";
+      if (responseText == "true") {
+        newrow.style.backgroundColor = "#C0FFC0";
+      } else {
+        newrow.style.backgroundColor = "#FFC0C0";
+      }
+      table.appendChild(newrow);
+      document.inputform.input.value = "";
+      
+      // Log to Firebase instead of localStorage
+      logAttemptToFirebase(decodeURIComponent(username), inputtext, isMatch);
+    }
+  }
+
+  function checkPattern(input) {
+    // Allow leading/trailing whitespace (rule 5)
+    var trimmed = input.trim();
+    
+    if (trimmed === '') return false;
+    
+    // Split by delimiters: whitespace, comma, period, or colon (rule 4)
+    var parts = trimmed.split(/[\s,.:]+/);
+    
+    // Remove empty parts
+    parts = parts.filter(function(part) { return part !== ''; });
+    
+    // Need exactly 3 parts
+    if (parts.length !== 3) return false;
+    
+    var numbers = [];
+    
+    for (var i = 0; i < 3; i++) {
+      var part = parts[i].trim();
+      
+      // Handle multiple +/- signs (rule 7)
+      var signMatch = part.match(/^([+-]*)/);
+      var signs = signMatch ? signMatch[1] : '';
+      var numberPart = part.substring(signs.length);
+      
+      // Multiple +/- in a row = zero
+      if (signs.length > 1) {
+        numbers.push(0);
+        continue;
+      }
+      
+      // Check if it's a valid hex number
+      if (!/^[0-9a-fA-F]+$/.test(numberPart)) {
+        return false;
+      }
+      
+      // Parse as hexadecimal
+      var value = parseInt(numberPart, 16);
+      
+      // Apply sign
+      if (signs === '-') {
+        value = -value;
+      }
+      
+      numbers.push(value);
+    }
+    
+    // Check if they ascend in value (rule 2)
+    return numbers[0] < numbers[1] && numbers[1] < numbers[2];
+  }
+
+  function logAttemptToFirebase(username, input, isMatch) {
+    var timestamp = new Date().toLocaleTimeString();
+    var logEntry = {
+      timestamp: timestamp,
+      user: username,
+      input: input,
+      result: isMatch ? "match" : "no match",
+      date: new Date().toISOString()
+    };
+    
+    // Add to logs
+    database.ref('logs').push(logEntry);
+    
+    // Update user stats
+    updateUserStatsInFirebase(username, isMatch);
+  }
+
+  function updateUserStatsInFirebase(username, isMatch) {
+    var userRef = database.ref('stats/' + username);
+    
+    userRef.once('value').then(function(snapshot) {
+      var stats = snapshot.val() || { 
+        entries: 0, 
+        matches: 0, 
+        nonMatches: 0, 
+        longest: 0, 
+        currentStreak: 0 
+      };
+      
+      stats.entries++;
+      if (isMatch) {
+        stats.matches++;
+        stats.currentStreak++;
+        stats.longest = Math.max(stats.longest, stats.currentStreak);
+      } else {
+        stats.nonMatches++;
+        stats.currentStreak = 0;
+      }
+      
+      userRef.set(stats);
+    });
+  }
+</script>
+</head>
+<body onload="show_instructions();">
+<h1>What is the pattern? Find using minimum tests.</h1>
+<input type="button" id="show_button" class="instructions_button" value="Show Instructions" onclick="show_instructions();" style="visibility:hidden;display:inline">
+<input type="button" id="hide_button" class="instructions_button" value="Hide Instructions" onclick="hide_instructions();" style="visibility:hidden;display:inline">
+<div id="instructions" class="instructions">
+  <div><b>Enter Name: </b><input type="text" id="user" class="usertext" name="username" value="" style="font-size:x-large;padding:2px;margin-bottom:10px"></div>
+    <p>This app is looking for a particular pattern in the input you provide to it. Your mission is to use testing to identify and describe that pattern. You must do this in the minimum possible number of tests.</p>
+
+    <p>A test consists of a line of text that you enter into the field and submit by pressing the button.</p>
+
+    <p>The program will log each test and tell you whether or not your input matches the pattern it is looking for.</p>
+
+    <p>To get you started, here are three test cases that each match the pattern:</p>
+    <p>2, 4, 6<br />
+        4, 6, 8<br />
+        6, 8, 10</p>
+	<p></p>
+</div>
+
+<form name="inputform" class="centercontainer" action="javascript:pattern()">
+  <label>Input:</label>
+  <input type="text" id="input" class="inputtext" name="input" value="">
+  <input class="submit_button" type="submit" value="Submit"></form>
+
+<table id="resulttable" class="resulttable">
+  <tr><th style="width:15%">Tests</th><th>Input</th><th style="width:20%" class="result">Result</th></tr>
+  <tr><td></td><td></td><td></td></tr>
+</table>
+</body>
+</html> 

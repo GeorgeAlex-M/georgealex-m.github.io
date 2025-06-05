@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pattern Admin Dashboard</title>
+<style>
+  body {
+    font-family: Calibri, Arial, sans-serif;
+    margin: 20px;
+    background-color: #f5f5f5;
+  }
+
+  h1 {
+    text-align: center;
+    color: #333;
+    margin-top: 60px;
+    margin-bottom: 30px;
+  }
+
+  .dashboard-section {
+    background: white;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .timeline-container {
+    height: 300px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    position: relative;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  .timeline-controls {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    display: flex;
+    gap: 10px;
+  }
+
+  .timeline-control {
+    background: white;
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .timeline-control.active {
+    background: #4CAF50;
+    color: white;
+  }
+
+  .timeline-info {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    z-index: 100;
+  }
+
+  .timeline-axis {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: white;
+    border-top: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+    color: #666;
+  }
+
+  .timeline-tick {
+    flex: 1;
+    text-align: center;
+    border-right: 1px solid #eee;
+    padding: 2px;
+  }
+
+  .timeline-events {
+    position: absolute;
+    top: 50px;
+    bottom: 35px;
+    left: 0;
+    right: 0;
+  }
+
+  .timeline-event {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    transition: all 0.2s ease;
+  }
+
+  .timeline-event:hover {
+    transform: scale(1.5);
+    z-index: 10;
+  }
+
+  .timeline-event.match {
+    background-color: #4CAF50;
+  }
+
+  .timeline-event.no-match {
+    background-color: #f44336;
+  }
+
+  .user-lane {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 24px;
+    border-bottom: 1px solid #eee;
+    font-size: 10px;
+    color: #666;
+    padding-left: 5px;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.8);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .timeline-tooltip {
+    position: absolute;
+    background: rgba(0,0,0,0.9);
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    pointer-events: none;
+    z-index: 1000;
+    display: none;
+    min-width: 200px;
+  }
+
+  .stats-table, .log-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+
+  .stats-table th, .stats-table td,
+  .log-table th, .log-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  .stats-table th, .log-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+
+  .stats-table tr:nth-child(even),
+  .log-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .log-table tr.match {
+    background-color: #C0FFC0 !important;
+  }
+
+  .log-table tr.no-match {
+    background-color: #FFC0C0 !important;
+  }
+
+  .controls {
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    margin: 0 10px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .btn:hover {
+    background: #45a049;
+  }
+
+  .btn.danger {
+    background: #f44336;
+  }
+
+  .btn.danger:hover {
+    background: #da190b;
+  }
+
+  .back-link {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: #2196F3;
+    color: white;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 1000;
+  }
+
+  .time-display {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 1000;
+  }
+
+  .connection-panel {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 12px;
+    z-index: 1000;
+    min-width: 200px;
+    border-left: 4px solid #4CAF50;
+  }
+
+  .connection-panel.disconnected {
+    border-left-color: #f44336;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .connection-status {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    margin-right: 8px;
+    animation: connected-pulse 2s infinite;
+  }
+
+  .status-dot.disconnected {
+    background-color: #f44336;
+    animation: disconnected-pulse 1s infinite;
+  }
+
+  @keyframes connected-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  @keyframes disconnected-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(1.2); }
+  }
+
+  .status-text {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .status-details {
+    font-size: 11px;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  .time-info {
+    font-size: 11px;
+    color: #888;
+    font-family: monospace;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid #eee;
+  }
+
+  .red-spec {
+    color: #d32f2f;
+    font-weight: 500;
+  }
+
+  .pattern-specs {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 6px;
+    border-left: 4px solid #2196F3;
+    display: none;
+  }
+
+  .pattern-specs.show {
+    display: block;
+  }
+
+  .pattern-specs ol {
+    margin: 0;
+    padding-left: 20px;
+  }
+
+  .pattern-specs li {
+    margin-bottom: 8px;
+    line-height: 1.4;
+    font-size: 14px;
+  }
+
+  .pattern-toggle {
+    background: #2196F3;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 15px;
+    transition: background-color 0.2s ease;
+  }
+
+  .pattern-toggle:hover {
+    background: #1976D2;
+  }
+
+  .pattern-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+</style>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body>
+<a href="index.html" class="back-link">Back to Pattern Test</a>
+
+<div class="connection-panel" id="connectionPanel">
+  <div class="connection-status">
+    <div class="status-dot" id="statusDot"></div>
+    <div class="status-text" id="statusText">Connecting to Firebase...</div>
+  </div>
+  <div class="status-details" id="statusDetails">Initializing Firebase Realtime Database</div>
+  <div class="time-info" id="currentTime">Time: --:--:--</div>
+</div>
+
+<h1>Pattern Admin</h1>
+
+<div class="dashboard-section">
+  <div class="pattern-header">
+    <h2>Pattern Specifications</h2>
+    <button class="pattern-toggle" onclick="togglePatternSpecs()">Show Specifications</button>
+  </div>
+  <div class="pattern-specs" id="patternSpecs">
+    <ol>
+      <li>Accept three hexadecimal integers (including positive and negative)...</li>
+      <li>...that ascend in value from left to right.</li>
+      <li>There may be a "+" symbol preceding positive numbers.</li>
+      <li>The integers must be delimited by whitespace, comma, period, or colon.</li>
+      <li>There also may be leading or trailing whitespace on the test case string.</li>
+      <li class="red-spec">If a non-whitespace delimiter is used, there may also be leading (but not trailing) whitespace on each of the three integers in the string. This is the Pattern</li>
+      <li class="red-spec">More than one "-" or "+" in a row causes number to be treated as a zero.</li>
+      <li class="red-spec">Encoded characters are transformed by HTTP (e.g. %20 is turned into a space).</li>
+      <li class="red-spec">HTML is not stripped out, which can disrupt the front end.</li>
+      <li class="red-spec">Any text appended to the end of a test case string will be ignored if it starts with whitespace.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="dashboard-section">
+  <h2>Timeline View</h2>
+  <div class="timeline-container">
+    <div class="timeline-controls">
+      <button class="timeline-control active" onclick="setTimeRange('today')">Today</button>
+      <button class="timeline-control" onclick="setTimeRange('yesterday')">Yesterday</button>
+      <button class="timeline-control" onclick="setTimeRange('week')">This Week</button>
+      <button class="timeline-control" onclick="setTimeRange('month')">This Month</button>
+    </div>
+    <div class="timeline-info" id="timelineInfo">Loading...</div>
+    <div class="timeline-events" id="timelineEvents"></div>
+    <div class="timeline-axis" id="timelineAxis">
+      <div class="timeline-tick">Loading...</div>
+    </div>
+    <div class="timeline-tooltip" id="timelineTooltip"></div>
+  </div>
+</div>
+
+<div class="dashboard-section">
+  <h2>User Statistics</h2>
+  <table class="stats-table">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Entries</th>
+        <th>Matches</th>
+        <th>Non-Matches</th>
+        <th>Longest</th>
+      </tr>
+    </thead>
+    <tbody id="statsTableBody">
+    </tbody>
+  </table>
+</div>
+
+<div class="dashboard-section">
+  <h2>Recent Activity Log</h2>
+  <table class="log-table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>User</th>
+        <th>Result</th>
+        <th>Input</th>
+      </tr>
+    </thead>
+    <tbody id="logTableBody">
+    </tbody>
+  </table>
+</div>
+
+<div class="controls">
+  <button class="btn" onclick="refreshData()">Refresh Data</button>
+  <button class="btn danger" onclick="clearAllData()">Clear All Data</button>
+</div>
+
+<script>
+// Firebase configuration - replace with your config (same as index.html)
+var firebaseConfig = {
+  apiKey: "AIzaSyDIEIGoQIcvTsnGWiA_H6tEOgCwGGk7F7M",
+  authDomain: "pattern-testing-3980e.firebaseapp.com",
+  databaseURL: "https://pattern-testing-3980e-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "pattern-testing-3980e",
+  storageBucket: "pattern-testing-3980e.firebasestorage.app",
+  messagingSenderId: "633904453209",
+  appId: "1:633904453209:web:ee99e29bdccba358fe8348",
+  measurementId: "G-67KPTGF8Z2"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+var database = firebase.database();
+
+// Global data storage
+var allLogs = {};
+var allStats = {};
+var lastUpdateTime = null;
+var dataCount = 0;
+var currentTimeRange = 'today';
+
+function updateTime() {
+  const now = new Date();
+  document.getElementById('currentTime').textContent = 
+    'Time: ' + now.toLocaleTimeString();
+}
+
+function updateConnectionStatus(connected) {
+  const panel = document.getElementById('connectionPanel');
+  const dot = document.getElementById('statusDot');
+  const text = document.getElementById('statusText');
+  const details = document.getElementById('statusDetails');
+  
+  if (connected) {
+    panel.className = 'connection-panel';
+    dot.className = 'status-dot';
+    text.textContent = 'Firebase Connected';
+    details.textContent = `Real-time database sync • ${dataCount} entries loaded`;
+  } else {
+    panel.className = 'connection-panel disconnected';
+    dot.className = 'status-dot disconnected';
+    text.textContent = 'Firebase Disconnected';
+    details.textContent = 'Lost connection to Firebase • Attempting to reconnect...';
+  }
+}
+
+function loadStatsFromFirebase() {
+  database.ref('stats').on('value', function(snapshot) {
+    allStats = snapshot.val() || {};
+    displayStats();
+  });
+}
+
+function displayStats() {
+  const tbody = document.getElementById('statsTableBody');
+  tbody.innerHTML = '';
+  
+  // Calculate totals
+  let totalEntries = 0, totalMatches = 0, totalNonMatches = 0, maxLongest = 0;
+  
+  Object.keys(allStats).forEach(username => {
+    const userStats = allStats[username];
+    totalEntries += userStats.entries;
+    totalMatches += userStats.matches;
+    totalNonMatches += userStats.nonMatches;
+    maxLongest = Math.max(maxLongest, userStats.longest);
+  });
+  
+  // Add ALL USERS row
+  if (totalEntries > 0) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><strong>ALL USERS</strong></td>
+      <td>${totalEntries}</td>
+      <td>${totalMatches}</td>
+      <td>${totalNonMatches}</td>
+      <td>${maxLongest}</td>
+    `;
+    tbody.appendChild(row);
+  }
+  
+  // Add individual users
+  Object.keys(allStats).forEach(username => {
+    const userStats = allStats[username];
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${username}</td>
+      <td>${userStats.entries}</td>
+      <td>${userStats.matches}</td>
+      <td>${userStats.nonMatches}</td>
+      <td>${userStats.longest}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function loadLogsFromFirebase() {
+  database.ref('logs').on('value', function(snapshot) {
+    allLogs = snapshot.val() || {};
+    dataCount = Object.keys(allLogs).length;
+    lastUpdateTime = new Date();
+    displayLogs();
+    displayTimeline();
+    updateConnectionStatus(true); // Update with current data count
+  });
+}
+
+function displayLogs() {
+  const tbody = document.getElementById('logTableBody');
+  tbody.innerHTML = '';
+  
+  // Convert to array and sort by date
+  const logsArray = Object.keys(allLogs).map(key => ({
+    id: key,
+    ...allLogs[key]
+  })).sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  // Show most recent 20 entries
+  const recentLogs = logsArray.slice(0, 20);
+  
+  recentLogs.forEach(log => {
+    const row = document.createElement('tr');
+    
+    // Apply CSS class based on exact stored value
+    if (log.result === 'match') {
+      row.className = 'match';
+    } else if (log.result === 'no match') {
+      row.className = 'no-match';
+    } else {
+      row.className = 'no-match'; // fallback
+    }
+    
+    row.innerHTML = `
+      <td>${log.timestamp}</td>
+      <td>${log.user}</td>
+      <td>${log.result}</td>
+      <td>${log.input}</td>
+    `;
+    tbody.appendChild(row);
+  });
+  
+  // Update status details with last update info
+  if (lastUpdateTime) {
+    const details = document.getElementById('statusDetails');
+    details.textContent = `Firebase realtime sync • ${dataCount} entries • Updated ${lastUpdateTime.toLocaleTimeString()}`;
+  }
+}
+
+function displayTimeline() {
+  const container = document.getElementById('timelineEvents');
+  const axis = document.getElementById('timelineAxis');
+  const info = document.getElementById('timelineInfo');
+  const tooltip = document.getElementById('timelineTooltip');
+  
+  // Clear everything completely
+  container.innerHTML = '';
+  axis.innerHTML = '';
+  tooltip.style.display = 'none';
+  
+  if (Object.keys(allLogs).length === 0) {
+    info.textContent = 'No data available';
+    axis.innerHTML = '<div class="timeline-tick">No data</div>';
+    return;
+  }
+  
+  const { startTime, endTime } = getTimeRangeData(currentTimeRange);
+  
+  // Filter logs for time range
+  const filteredLogs = Object.values(allLogs).filter(log => {
+    const logDate = new Date(log.date);
+    return logDate >= startTime && logDate <= endTime;
+  });
+  
+  if (filteredLogs.length === 0) {
+    info.textContent = `No activity in ${currentTimeRange}`;
+    axis.innerHTML = '<div class="timeline-tick">No activity</div>';
+    return;
+  }
+  
+  // Group by users and sort chronologically
+  const userGroups = {};
+  filteredLogs.forEach(log => {
+    if (!userGroups[log.user]) {
+      userGroups[log.user] = [];
+    }
+    userGroups[log.user].push(log);
+  });
+  
+  // Sort users by activity count
+  const sortedUsers = Object.keys(userGroups).sort((a, b) => 
+    userGroups[b].length - userGroups[a].length
+  );
+  
+  // Create user lanes
+  const laneHeight = 25;
+  const containerHeight = container.offsetHeight || 200;
+  const availableHeight = containerHeight - 50;
+  const maxLanes = Math.floor(availableHeight / laneHeight);
+  const displayUsers = sortedUsers.slice(0, maxLanes);
+  
+  displayUsers.forEach((user, laneIndex) => {
+    // Create user lane background
+    const lane = document.createElement('div');
+    lane.className = 'user-lane';
+    lane.style.top = (laneIndex * laneHeight + 10) + 'px';
+    lane.style.height = (laneHeight - 1) + 'px';
+    lane.textContent = `${user} (${userGroups[user].length})`;
+    container.appendChild(lane);
+    
+    // Add events for this user
+    userGroups[user].forEach(log => {
+      const logDate = new Date(log.date);
+      const timePercent = Math.max(0, Math.min(95, ((logDate - startTime) / (endTime - startTime)) * 100));
+      
+      const event = document.createElement('div');
+      event.className = `timeline-event ${log.result.replace(' ', '-')}`;
+      event.style.left = timePercent + '%';
+      event.style.top = (laneIndex * laneHeight + 15) + 'px';
+      event.style.position = 'absolute';
+      
+      // Enhanced tooltip with proper cleanup
+      event.addEventListener('mouseenter', (e) => {
+        const rect = container.getBoundingClientRect();
+        tooltip.innerHTML = `
+          <strong>${log.user}</strong><br>
+          Input: "${log.input}"<br>
+          Result: ${log.result}<br>
+          Time: ${log.timestamp}<br>
+          Date: ${logDate.toLocaleDateString()}
+        `;
+        tooltip.style.display = 'block';
+        tooltip.style.left = Math.min(e.clientX + 10, window.innerWidth - 220) + 'px';
+        tooltip.style.top = (e.clientY - 60) + 'px';
+        tooltip.style.position = 'fixed';
+      });
+      
+      event.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+      });
+      
+      container.appendChild(event);
+    });
+  });
+  
+  // Update info display
+  const matches = filteredLogs.filter(log => log.result === 'match').length;
+  const totalUsers = Object.keys(userGroups).length;
+  info.textContent = `${filteredLogs.length} tests • ${matches} matches • ${totalUsers} users`;
+  
+  // Create intelligent time axis
+  createTimeAxis(startTime, endTime, currentTimeRange);
+}
+
+function createTimeAxis(startTime, endTime, range) {
+  const axis = document.getElementById('timelineAxis');
+  const tickCount = 6;
+  
+  for (let i = 0; i <= tickCount; i++) {
+    const tick = document.createElement('div');
+    tick.className = 'timeline-tick';
+    
+    const timePos = startTime.getTime() + (i / tickCount) * (endTime.getTime() - startTime.getTime());
+    const tickTime = new Date(timePos);
+    
+    if (range === 'today' || range === 'yesterday') {
+      tick.textContent = tickTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+    } else if (range === 'week') {
+      tick.textContent = tickTime.toLocaleDateString([], {weekday: 'short', day: 'numeric'});
+    } else {
+      tick.textContent = tickTime.toLocaleDateString([], {month: 'short', day: 'numeric'});
+    }
+    
+    axis.appendChild(tick);
+  }
+}
+
+function refreshData() {
+  // Data auto-refreshes via Firebase listeners
+  console.log('Data is automatically updated in real-time');
+}
+
+function clearAllData() {
+  if (confirm('Are you sure you want to clear ALL logs and statistics? This cannot be undone!')) {
+    database.ref('logs').remove();
+    database.ref('stats').remove();
+  }
+}
+
+// Connection status monitoring
+database.ref('.info/connected').on('value', function(snapshot) {
+  updateConnectionStatus(snapshot.val() === true);
+});
+
+// Initialize
+setInterval(updateTime, 1000);
+updateTime();
+
+// Load data with real-time listeners
+loadStatsFromFirebase();
+loadLogsFromFirebase();
+
+function setTimeRange(range) {
+  currentTimeRange = range;
+  
+  // Update active button
+  document.querySelectorAll('.timeline-control').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  displayTimeline();
+}
+
+function getTimeRangeData(range) {
+  const now = new Date();
+  let startTime, endTime;
+  
+  switch(range) {
+    case 'today':
+      startTime = new Date(now);
+      startTime.setHours(0, 0, 0, 0);
+      endTime = new Date(now);
+      endTime.setHours(23, 59, 59, 999);
+      break;
+    case 'yesterday':
+      startTime = new Date(now);
+      startTime.setDate(now.getDate() - 1);
+      startTime.setHours(0, 0, 0, 0);
+      endTime = new Date(now);
+      endTime.setDate(now.getDate() - 1);
+      endTime.setHours(23, 59, 59, 999);
+      break;
+    case 'week':
+      startTime = new Date(now);
+      startTime.setDate(now.getDate() - 7);
+      startTime.setHours(0, 0, 0, 0);
+      endTime = new Date(now);
+      break;
+    case 'month':
+      startTime = new Date(now);
+      startTime.setDate(now.getDate() - 30);
+      startTime.setHours(0, 0, 0, 0);
+      endTime = new Date(now);
+      break;
+  }
+  
+  return { startTime, endTime };
+}
+
+function togglePatternSpecs() {
+  const patternSpecs = document.getElementById('patternSpecs');
+  const button = document.querySelector('.pattern-toggle');
+  
+  if (patternSpecs.classList.contains('show')) {
+    patternSpecs.classList.remove('show');
+    button.textContent = 'Show Specifications';
+  } else {
+    patternSpecs.classList.add('show');
+    button.textContent = 'Hide Specifications';
+  }
+}
+</script>
+
+</body>
+</html> 
