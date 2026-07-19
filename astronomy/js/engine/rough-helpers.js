@@ -8,45 +8,50 @@
 //
 // `rough` is the UMD global loaded from the CDN in index.html.
 
-import { COLORS } from './palette.js';
+(() => {
+  const A = (window.Astro = window.Astro || {});
+  const { COLORS } = A;
 
-export const ROUGHNESS = 1.2;
-export const BOWING = 1.5;
+  const ROUGHNESS = 1.2;
+  const BOWING = 1.5;
 
-export function roughCanvas(canvasEl) {
-  return rough.canvas(canvasEl);
-}
-
-// Standard options for a hand-drawn stroke. `seed` MUST be a positive integer.
-export function opts(seed, extra = {}) {
-  return {
-    seed,
-    roughness: ROUGHNESS,
-    bowing: BOWING,
-    stroke: COLORS.ink,
-    strokeWidth: 2,
-    ...extra,
-  };
-}
-
-// Cache of rough Drawables keyed by string. Invalidate on resize/param change.
-export class SketchCache {
-  constructor(rc) {
-    this.rc = rc;
-    this.map = new Map();
+  function roughCanvas(canvasEl) {
+    return rough.canvas(canvasEl);
   }
 
-  // draw('horizon', g => g.circle(x, y, d, opts(1))) — builds once, replays after.
-  draw(key, build) {
-    let d = this.map.get(key);
-    if (!d) {
-      d = build(this.rc.generator);
-      this.map.set(key, d);
+  // Standard options for a hand-drawn stroke. `seed` MUST be a positive integer.
+  function opts(seed, extra = {}) {
+    return {
+      seed,
+      roughness: ROUGHNESS,
+      bowing: BOWING,
+      stroke: COLORS.ink,
+      strokeWidth: 2,
+      ...extra,
+    };
+  }
+
+  // Cache of rough Drawables keyed by string. Invalidate on resize/param change.
+  class SketchCache {
+    constructor(rc) {
+      this.rc = rc;
+      this.map = new Map();
     }
-    this.rc.draw(d);
+
+    // draw('horizon', g => g.circle(x, y, d, opts(1))) — builds once, replays after.
+    draw(key, build) {
+      let d = this.map.get(key);
+      if (!d) {
+        d = build(this.rc.generator);
+        this.map.set(key, d);
+      }
+      this.rc.draw(d);
+    }
+
+    invalidate() {
+      this.map.clear();
+    }
   }
 
-  invalidate() {
-    this.map.clear();
-  }
-}
+  Object.assign(A, { ROUGHNESS, BOWING, roughCanvas, opts, SketchCache });
+})();
