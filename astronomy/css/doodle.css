@@ -1,0 +1,423 @@
+/* ==========================================================================
+   doodle.css — Excalidraw-dark hand-drawn theme for The Doodle Universe
+   Shared by astronomy/index.html and the root hub page.
+   ========================================================================== */
+
+:root {
+  --bg: #1e1e1e;
+  --grid: rgba(255, 255, 255, 0.055);
+  --ink: #f8f9fa;
+  --muted: #adb5bd;
+  --cyan: #04d9ff;
+  --green: #69db7c;
+  --orange: #ffa94d;
+  --pink: #f783ac;
+  --yellow: #ffd43b;
+  --red: #ff8787;
+  --font-hand: 'Gochi Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+  --font-body: 'Patrick Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+  /* Uneven radii make straight CSS borders read as hand-drawn strokes */
+  --wobble: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  --wobble-alt: 15px 225px 15px 255px / 255px 15px 225px 15px;
+  --wobble-soft: 45px 12px 35px 14px / 12px 38px 14px 42px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 1.5rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  line-height: 1.55;
+}
+
+main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 1.25rem 6rem;
+}
+
+a { color: var(--cyan); }
+a:hover { color: var(--yellow); }
+:focus-visible { outline: 2px dashed var(--cyan); outline-offset: 3px; }
+
+/* --------------------------------------------------------------------------
+   Site header / hero
+   -------------------------------------------------------------------------- */
+
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem 0 0;
+}
+.site-header img.logo { height: 46px; width: auto; }
+.site-header .site-name {
+  font-family: var(--font-hand);
+  font-size: 1.15rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+.site-header .site-name:hover { color: var(--cyan); }
+
+.hero {
+  text-align: center;
+  padding: 2.5rem 0 1rem;
+}
+.hero h1 {
+  font-family: var(--font-hand);
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  margin: 0 0 0.4rem;
+  letter-spacing: 0.02em;
+}
+.hero .tagline {
+  color: var(--muted);
+  font-size: 1.25rem;
+  margin: 0 auto 1rem;
+  max-width: 40em;
+}
+.hero .hero-sketch { margin: 1rem auto 0; max-width: 420px; }
+.hero .hero-sketch svg { width: 100%; height: auto; }
+
+/* --------------------------------------------------------------------------
+   Table of contents
+   -------------------------------------------------------------------------- */
+
+.doodle-toc {
+  margin: 2.5rem 0 1rem;
+  padding: 1.2rem 1.4rem 1.5rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--wobble);
+}
+.doodle-toc > h2 {
+  font-family: var(--font-hand);
+  margin: 0 0 0.4rem;
+  font-size: 1.7rem;
+}
+.toc-chapter { margin: 0.9rem 0 0; }
+.toc-chapter h3 {
+  font-family: var(--font-hand);
+  font-size: 1.2rem;
+  margin: 0 0 0.35rem;
+  color: var(--muted);
+  font-weight: normal;
+}
+.toc-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.6rem;
+}
+.toc-items a,
+.toc-items .soon {
+  display: inline-block;
+  padding: 0.15rem 0.75rem 0.25rem;
+  border: 1.6px solid currentColor;
+  border-radius: var(--wobble-soft);
+  text-decoration: none;
+  font-size: 1.02rem;
+}
+.toc-items a { color: var(--ink); }
+.toc-items a:hover { color: var(--yellow); transform: rotate(-1deg); }
+.toc-items a .n { font-family: var(--font-hand); margin-right: 0.35em; }
+.toc-items .soon {
+  color: var(--muted);
+  opacity: 0.55;
+  border-style: dashed;
+}
+.toc-items .soon::after {
+  content: 'soon';
+  font-size: 0.72em;
+  color: var(--yellow);
+  opacity: 0.9;
+  margin-left: 0.45em;
+  vertical-align: super;
+}
+
+/* --------------------------------------------------------------------------
+   Simulation sections
+   -------------------------------------------------------------------------- */
+
+.sim-section {
+  margin: 4.5rem 0 0;
+  --accent: var(--cyan);
+}
+.sim-section > h2 {
+  font-family: var(--font-hand);
+  font-size: clamp(1.7rem, 4vw, 2.3rem);
+  margin: 0 0 0.3rem;
+}
+.sim-section > h2 .secnum { color: var(--accent); margin-right: 0.4rem; }
+.sim-section .kicker {
+  color: var(--muted);
+  margin: 0 0 1rem;
+  font-size: 1.08rem;
+}
+
+.sim-canvas-wrap {
+  position: relative;
+  border: 2px solid var(--ink);
+  border-radius: var(--wobble-alt);
+  overflow: hidden;
+  background: var(--bg);
+}
+.sim-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 480px;
+  touch-action: pan-y;
+}
+.sim-canvas-wrap.short canvas { height: 400px; }
+
+/* Play overlay for paused sims (reduced motion / before first interaction) */
+.sim-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(30, 30, 30, 0.45);
+}
+.sim-overlay[hidden] { display: none; }
+.sim-overlay button {
+  font-family: var(--font-hand);
+  font-size: 1.5rem;
+  color: var(--ink);
+  background: var(--bg);
+  border: 2px solid var(--ink);
+  border-radius: var(--wobble-soft);
+  padding: 0.5rem 1.6rem;
+  cursor: pointer;
+}
+.sim-overlay button:hover { color: var(--yellow); border-color: var(--yellow); }
+
+/* --------------------------------------------------------------------------
+   Controls
+   -------------------------------------------------------------------------- */
+
+.sim-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.6rem;
+  align-items: flex-end;
+  margin: 0.9rem 0 0;
+  padding: 0.9rem 1.1rem 1rem;
+  border: 1.6px solid var(--muted);
+  border-radius: var(--wobble-soft);
+}
+.ctl { display: flex; flex-direction: column; gap: 0.15rem; min-width: 150px; flex: 1 1 150px; max-width: 300px; }
+.ctl > label { font-size: 0.98rem; color: var(--muted); }
+.ctl > label .val { color: var(--ink); margin-left: 0.4em; }
+.ctl input[type='range'] {
+  width: 100%;
+  accent-color: var(--cyan);
+  cursor: pointer;
+  background: transparent;
+}
+.ctl-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; flex: 0 1 auto; }
+.doodle-btn {
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  color: var(--ink);
+  background: transparent;
+  border: 1.7px solid var(--ink);
+  border-radius: var(--wobble-soft);
+  padding: 0.22rem 0.9rem 0.3rem;
+  cursor: pointer;
+}
+.doodle-btn:hover { color: var(--yellow); border-color: var(--yellow); }
+.doodle-btn.active {
+  color: var(--bg);
+  background: var(--cyan);
+  border-color: var(--cyan);
+}
+.doodle-btn.active:hover { color: var(--bg); }
+
+/* Live readouts under a sim */
+.sim-readout {
+  margin: 0.7rem 0 0;
+  font-size: 1.06rem;
+  line-height: 1.7;
+}
+.sim-readout .r-cyan { color: var(--cyan); }
+.sim-readout .r-green { color: var(--green); }
+.sim-readout .r-orange { color: var(--orange); }
+.sim-readout .r-pink { color: var(--pink); }
+.sim-readout .r-yellow { color: var(--yellow); }
+.sim-readout .r-red { color: var(--red); }
+
+/* --------------------------------------------------------------------------
+   Equations, citations, prose, quotes
+   -------------------------------------------------------------------------- */
+
+.equations {
+  margin: 1.4rem 0 0;
+  padding: 0.8rem 1rem;
+  border: 1.6px solid var(--muted);
+  border-radius: var(--wobble);
+  overflow-x: auto;
+  text-align: center;
+}
+.equations .katex-display { margin: 0.4rem 0; }
+.equations .eq-note { color: var(--muted); font-size: 0.98rem; margin: 0.3rem 0 0; }
+
+.citation-box {
+  margin: 1rem 0 0;
+  padding: 0.55rem 0.9rem 0.6rem;
+  border: 1.6px solid var(--orange);
+  border-left-width: 6px;
+  border-radius: var(--wobble-soft);
+  color: var(--ink);
+  font-size: 1rem;
+}
+.citation-box .cit-label {
+  display: block;
+  color: var(--orange);
+  font-family: var(--font-hand);
+  font-size: 0.95rem;
+  margin-bottom: 0.15rem;
+}
+.citation-box .cit { display: block; padding: 0.08rem 0; }
+
+.prose { margin: 1.2rem 0 0; color: #e9ecef; }
+.prose p { margin: 0.7rem 0; }
+.prose strong { color: var(--yellow); font-weight: normal; }
+.prose em { color: var(--cyan); font-style: normal; }
+
+.quote-box {
+  margin: 1.6rem auto 0;
+  max-width: 34em;
+  padding: 0.8rem 1.2rem;
+  border: 1.6px solid var(--muted);
+  border-radius: var(--wobble);
+  font-style: italic;
+  color: #e9ecef;
+}
+.quote-box .attrib {
+  display: block;
+  margin-top: 0.35rem;
+  text-align: right;
+  font-style: normal;
+  color: var(--cyan);
+  font-family: var(--font-hand);
+}
+
+/* --------------------------------------------------------------------------
+   Library / further reading
+   -------------------------------------------------------------------------- */
+
+.library-list { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.6rem; }
+.library-list li {
+  border: 1.6px solid var(--muted);
+  border-radius: var(--wobble-soft);
+  padding: 0.5rem 0.9rem 0.55rem;
+  font-size: 1.02rem;
+}
+.library-list li .yr { color: var(--orange); font-family: var(--font-hand); margin-right: 0.5em; }
+
+/* --------------------------------------------------------------------------
+   Footer (Patreon convention) + back-to-top
+   -------------------------------------------------------------------------- */
+
+.site-footer {
+  margin-top: 5rem;
+  text-align: center;
+  color: var(--muted);
+}
+.site-footer .patreon img { width: 190px; height: auto; }
+.site-footer p { font-size: 1rem; }
+
+.backtop {
+  position: fixed;
+  right: 1.1rem;
+  bottom: 1.1rem;
+  width: 52px;
+  height: 52px;
+  font-family: var(--font-hand);
+  font-size: 1.5rem;
+  color: var(--ink);
+  background: var(--bg);
+  border: 2px solid var(--ink);
+  border-radius: 55% 45% 48% 52% / 48% 52% 45% 55%;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+  z-index: 10;
+}
+.backtop.show { opacity: 1; pointer-events: auto; }
+.backtop:hover { color: var(--yellow); border-color: var(--yellow); }
+
+/* --------------------------------------------------------------------------
+   Hub page cards (root index.html)
+   -------------------------------------------------------------------------- */
+
+.hub-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.4rem;
+  margin: 2.5rem 0;
+}
+.hub-card {
+  display: block;
+  padding: 1.1rem 1.2rem 1.2rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--wobble);
+  text-decoration: none;
+  color: var(--ink);
+}
+.hub-card:hover { border-color: var(--yellow); color: var(--ink); transform: rotate(-0.6deg); }
+.hub-card h2 {
+  font-family: var(--font-hand);
+  margin: 0.5rem 0 0.3rem;
+  font-size: 1.55rem;
+}
+.hub-card h2 .arrow { color: var(--cyan); }
+.hub-card p { margin: 0; color: var(--muted); font-size: 1.02rem; }
+.hub-card .card-sketch svg { width: 100%; height: 120px; }
+.hub-sublinks {
+  list-style: none;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.hub-sublinks a {
+  display: inline-block;
+  font-size: 0.95rem;
+  padding: 0.08rem 0.6rem 0.14rem;
+  border: 1.4px solid var(--muted);
+  border-radius: var(--wobble-soft);
+  color: var(--muted);
+  text-decoration: none;
+}
+.hub-sublinks a:hover { color: var(--yellow); border-color: var(--yellow); }
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 620px) {
+  body { font-size: 1.06rem; }
+  .sim-canvas-wrap canvas { height: 360px; }
+  .sim-canvas-wrap.short canvas { height: 320px; }
+  .sim-controls { gap: 0.6rem 1rem; }
+  .ctl { min-width: 130px; }
+}

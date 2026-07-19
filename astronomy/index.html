@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    The Doodle Universe — hand-drawn, physically accurate astrophysics.
+    NOTE for local development: this page uses ES modules, so it must be served
+    over HTTP (from the repo root:  python -m http.server 8000  then open
+    http://localhost:8000/astronomy/ ). Opening the file directly via file://
+    will not load the simulations. GitHub Pages serves it correctly.
+  -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Doodle Universe — hand-drawn astrophysics</title>
+  <meta name="description" content="Interactive, physically accurate doodle simulations of black holes, relativity and the cosmos — every concept with its real equations and the original paper it came from.">
+  <meta name="author" content="George">
+  <link rel="icon" type="image/x-icon" href="../images/fav-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="css/doodle.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+<main>
+
+  <header class="site-header">
+    <img class="logo" src="../images/logo.png" alt="Unreal Software logo">
+    <a class="site-name" href="../index.html">&larr; unrealsoftware — home</a>
+  </header>
+
+  <div class="hero">
+    <h1>The Doodle Universe</h1>
+    <p class="tagline">Hand-drawn, physically accurate tours of spacetime.
+      Real equations, real constants, and the original paper behind every idea —
+      so you can go read the source.</p>
+    <div class="hero-sketch" aria-hidden="true">
+      <!-- static doodle: stick figure pointing at a black hole -->
+      <svg viewBox="0 0 420 150" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f8f9fa" stroke-width="2" stroke-linecap="round">
+        <!-- black hole: wobbly concentric rings -->
+        <path d="M300 75 c2 -26 22 -44 46 -42 c26 2 42 22 40 46 c-2 24 -22 40 -45 39 c-24 -1 -43 -19 -41 -43 z"/>
+        <path d="M316 75 c1 -16 13 -27 30 -26 c16 1 27 13 26 28 c-1 15 -13 26 -29 25 c-15 -1 -28 -12 -27 -27 z" stroke="#04d9ff" stroke-dasharray="6 5"/>
+        <circle cx="346" cy="76" r="3.5" fill="#f8f9fa"/>
+        <!-- stick figure -->
+        <circle cx="120" cy="52" r="13"/>
+        <path d="M120 65 l0 38"/>
+        <path d="M120 76 l-20 14"/>
+        <path d="M120 74 l26 -12"/>
+        <path d="M120 103 l-14 26"/>
+        <path d="M120 103 l14 26"/>
+        <path d="M114 49 a2 2 0 1 0 0.1 0 M126 48 a2 2 0 1 0 0.1 0" fill="#f8f9fa" stroke="none"/>
+        <path d="M114 58 q6 5 12 0"/>
+        <!-- pointing arrow -->
+        <path d="M158 62 q60 -28 128 4" stroke="#ffd43b"/>
+        <path d="M286 66 l-14 -8 M286 66 l-16 6" stroke="#ffd43b"/>
+        <!-- little stars -->
+        <path d="M40 30 l4 10 l10 3 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -3 z" stroke="#f783ac" stroke-width="1.5"/>
+        <path d="M230 120 l3 7 l7 2 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -2 z" stroke="#69db7c" stroke-width="1.5"/>
+      </svg>
+    </div>
+  </div>
+
+  <blockquote class="quote-box">
+    &ldquo;If I have seen further it is by standing on the shoulders of Giants.&rdquo;
+    <span class="attrib">* Isaac Newton</span>
+  </blockquote>
+
+  <!-- ======================================================================
+       Table of contents — the whole roadmap; unbuilt chapters marked "soon"
+       ====================================================================== -->
+  <nav class="doodle-toc" aria-label="Table of contents">
+    <h2>Map of the universe (this page)</h2>
+
+    <div class="toc-chapter">
+      <h3>Chapter I — Black Holes</h3>
+      <ul class="toc-items">
+        <li><a href="#black-hole"><span class="n" style="color:var(--cyan)">1</span>Anatomy of a black hole</a></li>
+        <li><a href="#falling-in"><span class="n" style="color:var(--pink)">2</span>A stick figure falls in</a></li>
+        <li><a href="#orbits"><span class="n" style="color:var(--green)">3</span>Orbits, ISCO &amp; Mercury</a></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter II — Energy &amp; Time</h3>
+      <ul class="toc-items">
+        <li><span class="soon">E = mc&sup2;</span></li>
+        <li><span class="soon">Bending time (Interstellar &amp; GPS)</span></li>
+        <li><span class="soon">Gravitational lensing</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter III — Newton's Universe</h3>
+      <ul class="toc-items">
+        <li><span class="soon">Escaping Earth's gravity</span></li>
+        <li><span class="soon">Kepler's laws</span></li>
+        <li><span class="soon">Lagrange points</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter IV — Cosmology</h3>
+      <ul class="toc-items">
+        <li><span class="soon">The Big Bang &amp; the expanding universe</span></li>
+        <li><span class="soon">Dark matter</span></li>
+        <li><span class="soon">Dark energy</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter V — Exotic Physics</h3>
+      <ul class="toc-items">
+        <li><span class="soon">Wormholes &amp; exotic matter</span></li>
+        <li><span class="soon">Hawking radiation</span></li>
+        <li><span class="soon">Gravitational waves</span></li>
+        <li><span class="soon">Spinning black holes</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter VI — Light &amp; the Color Spectrum</h3>
+      <ul class="toc-items">
+        <li><span class="soon">The electromagnetic spectrum</span></li>
+        <li><span class="soon">Why stars have colors</span></li>
+        <li><span class="soon">Spectroscopy — reading starlight</span></li>
+        <li><span class="soon">Redshift &amp; blueshift</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter VII — The Lives of Stars</h3>
+      <ul class="toc-items">
+        <li><span class="soon">Star birth &amp; fusion</span></li>
+        <li><span class="soon">The Hertzsprung&ndash;Russell diagram</span></li>
+        <li><span class="soon">How a black hole forms</span></li>
+        <li><span class="soon">Pulsars</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter VIII — Measuring the Universe</h3>
+      <ul class="toc-items">
+        <li><span class="soon">The cosmic distance ladder</span></li>
+        <li><span class="soon">Finding exoplanets</span></li>
+        <li><span class="soon">Looking back in time</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter IX — The Proof of Atoms &amp; the Restless Vacuum</h3>
+      <ul class="toc-items">
+        <li><span class="soon">Brownian motion</span></li>
+        <li><span class="soon">Absolute zero &amp; zero-point motion</span></li>
+        <li><span class="soon">The Casimir effect</span></li>
+        <li><span class="soon">The photoelectric effect</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter X — Great Experiments</h3>
+      <ul class="toc-items">
+        <li><span class="soon">Newton's prism</span></li>
+        <li><span class="soon">Cavendish weighs the Earth</span></li>
+        <li><span class="soon">Michelson&ndash;Morley</span></li>
+        <li><span class="soon">The equivalence principle</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter XI — The Quantum Corner</h3>
+      <ul class="toc-items">
+        <li><span class="soon">The double slit</span></li>
+        <li><span class="soon">Rutherford's gold foil</span></li>
+        <li><span class="soon">Spooky action at a distance</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>&mdash;</h3>
+      <ul class="toc-items">
+        <li><a href="#library"><span class="n" style="color:var(--orange)">&#9733;</span>The Library — every paper cited here</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       Sim 1 — Anatomy of a black hole
+       ====================================================================== -->
+  <section class="sim-section" id="black-hole" style="--accent: var(--cyan)">
+    <h2><span class="secnum">1.</span>Anatomy of a black hole</h2>
+    <p class="kicker">Event horizon, photon sphere, ISCO, singularity — and the point
+      where orbiting stops working.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="blackHole" aria-label="Interactive diagram of a black hole's regions"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="blackHole"></div>
+    <div class="sim-readout" data-readout="blackHole" aria-live="polite"></div>
+
+    <div class="equations">
+      $$ r_s = \frac{2GM}{c^2} \qquad
+         r_{\text{photon}} = \frac{3GM}{c^2} = 1.5\,r_s \qquad
+         r_{\text{ISCO}} = \frac{6GM}{c^2} = 3\,r_s $$
+      <p class="eq-note">Schwarzschild (non-spinning) black hole. G = 6.674&times;10&#8315;&sup1;&sup1; m&sup3; kg&#8315;&sup1; s&#8315;&sup2;, c = 299,792,458 m/s.</p>
+    </div>
+
+    <div class="citation-box">
+      <span class="cit-label">where this comes from — search these in your library:</span>
+      <span class="cit">1916 Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</span>
+      <span class="cit">1965 Penrose - Gravitational Collapse and Space-Time Singularities</span>
+    </div>
+
+    <div class="prose">
+      <p>A black hole is not a vacuum cleaner — it is a region where gravity has won so
+      completely that spacetime itself folds shut. The <strong>event horizon</strong> at
+      radius <em>r<sub>s</sub></em> is the point of no return: inside it, every possible
+      path leads inward, so not even light escapes. Karl Schwarzschild found this radius
+      in 1915&ndash;16, solving Einstein's brand-new field equations while serving on the
+      Russian front of World War I.</p>
+      <p>Outside the horizon there are two more famous circles. At <strong>1.5&nbsp;r<sub>s</sub></strong>
+      light itself can orbit — the <em>photon sphere</em>. And at <strong>3&nbsp;r<sub>s</sub></strong>
+      sits the <em>ISCO</em>, the innermost stable circular orbit: the closest distance at
+      which matter can circle forever. Anything nudged inside the ISCO can no longer
+      orbit — it spirals in and is captured. That's why real accretion disks have an inner
+      edge. Try the "nudge a particle" button and watch it happen.</p>
+      <p>At the very center the equations predict a <strong>singularity</strong> — a point of
+      (formally) infinite density where general relativity stops making predictions. Roger
+      Penrose proved in 1965 that once a horizon forms, a singularity is not optional but
+      inevitable — work that earned the 2020 Nobel Prize in Physics.</p>
+      <p>Notice that when you change the mass, the picture doesn't change shape — only the
+      scale bar does. A black hole's geometry is self-similar: the Sun squeezed into a black
+      hole would have a horizon radius of just 2.95&nbsp;km (about 6&nbsp;km across), while M87*'s
+      horizon is wider than our whole planetary solar system — yet they are the same drawing.</p>
+    </div>
+
+    <blockquote class="quote-box">
+      &ldquo;Spacetime tells matter how to move; matter tells spacetime how to curve.&rdquo;
+      <span class="attrib">* John Archibald Wheeler</span>
+    </blockquote>
+  </section>
+
+  <!-- ======================================================================
+       Sim 2 — A stick figure falls in
+       ====================================================================== -->
+  <section class="sim-section" id="falling-in" style="--accent: var(--pink)">
+    <h2><span class="secnum">2.</span>A stick figure falls in</h2>
+    <p class="kicker">Spaghettification, and why the outside universe sees you frozen
+      forever while you sail right through.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="fallingIn" aria-label="Simulation of a stick figure falling into a black hole with two clocks"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="fallingIn"></div>
+    <div class="sim-readout" data-readout="fallingIn" aria-live="polite"></div>
+
+    <div class="equations">
+      $$ \Delta a = \frac{2GM\,L}{r^3} \qquad
+         \Delta t_{\infty} = \frac{\Delta\tau}{\sqrt{1 - r_s/r}} \qquad
+         1+z = \frac{1}{\sqrt{1 - r_s/r}} $$
+      <p class="eq-note">Tidal stretch across a body of length L; gravitational time dilation; gravitational redshift.</p>
+    </div>
+
+    <div class="citation-box">
+      <span class="cit-label">where this comes from — search these in your library:</span>
+      <span class="cit">1916 Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</span>
+      <span class="cit">1973 Misner, Thorne, Wheeler - Gravitation</span>
+    </div>
+
+    <div class="prose">
+      <p>Meet Alice (falling) and Bob (watching from far away). Gravity pulls harder on
+      Alice's feet than on her head, because her feet are closer — and near a black hole
+      that difference becomes monstrous. The stretch grows like <em>1/r&sup3;</em>, which is why
+      physicists genuinely call it <strong>spaghettification</strong>.</p>
+      <p>Here is the surprise: around a <strong>small</strong> black hole (10 solar masses) the
+      tides at the horizon reach tens of millions of g — Alice is shredded long before
+      she arrives. Around a <strong>supermassive</strong> one like Sgr&nbsp;A* (4.15 million solar
+      masses, the black hole at the center of our galaxy) the horizon tide is roughly a
+      ten-thousandth of Earth's gravity — she crosses the point of no return without feeling
+      a thing. Bigger is gentler.</p>
+      <p>Meanwhile the two clocks disagree ever more violently. Alice's own (proper) time
+      ticks normally and she reaches the horizon in finite time. But every second of hers
+      takes <em>1/&radic;(1&minus;r<sub>s</sub>/r)</em> of Bob's seconds — a factor that blows up to
+      infinity at the horizon. Bob sees her slow down, freeze, and redden (her light is
+      gravitationally redshifted) — an image fading forever at the edge, like the tesseract
+      scene's premise in <em>Interstellar</em>. Both stories are true. That is general
+      relativity.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 3 — Orbits, ISCO & Mercury's precession
+       ====================================================================== -->
+  <section class="sim-section" id="orbits" style="--accent: var(--green)">
+    <h2><span class="secnum">3.</span>Orbits, ISCO &amp; Mercury's wobble</h2>
+    <p class="kicker">Newton vs Einstein, side by side — the 43 arcseconds that
+      proved general relativity.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="orbits" aria-label="Side-by-side Newtonian and relativistic orbit simulation"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="orbits"></div>
+    <div class="sim-readout" data-readout="orbits" aria-live="polite"></div>
+
+    <div class="equations">
+      $$ \frac{d^2u}{d\varphi^2} + u = \frac{GM}{L^2} + \frac{3GM}{c^2}\,u^2
+         \qquad\text{with } u = 1/r $$
+      $$ \Delta\varphi = \frac{6\pi GM}{c^2\,a\,(1-e^2)} \;\text{per orbit} $$
+      <p class="eq-note">The orbit equation in Schwarzschild spacetime. Newton's version is the same
+        without the u&sup2; term — the sim integrates both and the difference you see is exactly that term.</p>
+    </div>
+
+    <div class="citation-box">
+      <span class="cit-label">where this comes from — search these in your library:</span>
+      <span class="cit">1859 Le Verrier - Lettre de M. Le Verrier &agrave; M. Faye sur la th&eacute;orie de Mercure et sur le mouvement du p&eacute;rih&eacute;lie de cette plan&egrave;te (Letter on the Theory of Mercury and the Motion of its Perihelion)</span>
+      <span class="cit">1915 Einstein - Erkl&auml;rung der Perihelbewegung des Merkur aus der allgemeinen Relativit&auml;tstheorie (Explanation of the Perihelion Motion of Mercury from the General Theory of Relativity)</span>
+      <span class="cit">1916 Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</span>
+    </div>
+
+    <div class="prose">
+      <p>Ever since Urbain Le Verrier's celestial-mechanics work of 1859, astronomers had
+      known something was subtly wrong with Mercury. Its elliptical orbit slowly rotates
+      (precesses), and after subtracting the tugs of every other planet there remained a
+      stubborn, unexplained <strong>43 arcseconds per century</strong> — about the width of a
+      small coin seen from a hundred meters away, accumulated over a whole century. Tiny,
+      but real, and Newton's gravity could not produce it (Le Verrier even proposed a new
+      planet, "Vulcan", to explain it — it does not exist).</p>
+      <p>In November 1915 Einstein applied his brand-new field equations to Mercury and the
+      missing 43&Prime; fell out <em>exactly</em>. No tuning, no new constants. He told
+      colleagues the discovery gave him heart palpitations.</p>
+      <p>The left panel integrates Newton's orbit equation; the right adds the single extra
+      term general relativity demands (the u&sup2; in the equation above). For Mercury the
+      effect is microscopic — use the exaggeration slider to see the rosette it draws over
+      millennia; the number printed below is always the <em>true</em> computed value. Then try
+      the black-hole preset: close to the horizon the same term becomes overwhelming.
+      Dip below the ISCO and the relativistic orbit does something Newton's never can —
+      it stops orbiting and plunges.</p>
+    </div>
+
+    <blockquote class="quote-box">
+      &ldquo;For a few days, I was beside myself with joyous excitement.&rdquo;
+      <span class="attrib">* Albert Einstein, letter to Paul Ehrenfest (January 1916), on explaining Mercury's orbit</span>
+    </blockquote>
+  </section>
+
+  <!-- ======================================================================
+       The Library
+       ====================================================================== -->
+  <section class="sim-section" id="library" style="--accent: var(--orange)">
+    <h2><span class="secnum">&#9733;</span>The Library — every paper cited here</h2>
+    <p class="kicker">The original sources, in the exact <em>YEAR Author - Title</em> form,
+      so you can find them in a reference manager or archive. This list grows with every
+      new section of the page.</p>
+    <ul class="library-list">
+      <li><span class="yr">1859</span>Le Verrier - Lettre de M. Le Verrier &agrave; M. Faye sur la th&eacute;orie de Mercure et sur le mouvement du p&eacute;rih&eacute;lie de cette plan&egrave;te (Letter on the Theory of Mercury and the Motion of its Perihelion)</li>
+      <li><span class="yr">1915</span>Einstein - Erkl&auml;rung der Perihelbewegung des Merkur aus der allgemeinen Relativit&auml;tstheorie (Explanation of the Perihelion Motion of Mercury from the General Theory of Relativity)</li>
+      <li><span class="yr">1916</span>Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</li>
+      <li><span class="yr">1965</span>Penrose - Gravitational Collapse and Space-Time Singularities</li>
+      <li><span class="yr">1973</span>Misner, Thorne, Wheeler - Gravitation</li>
+    </ul>
+  </section>
+
+  <footer class="site-footer">
+    <p>Drawn and computed by hand(ish). Found a mistake in the physics? Good — that's how
+      science works. Tell me.</p>
+    <a class="patreon" href="https://www.patreon.com/GeoQuasar" target="_blank" rel="noopener">
+      <img src="../images/patreon.png" alt="Support on Patreon">
+    </a>
+  </footer>
+
+</main>
+
+<button class="backtop" id="backtop" aria-label="Back to top" title="Back to top">&uarr;</button>
+
+</body>
+</html>
