@@ -45,6 +45,14 @@ function commander(cmd) {
     case "help":
       loopLines(help, "color2 margin", 80);
       break;
+    case "astronomy":
+      addLine("Opening the Doodle Universe...", "color2", 80);
+      newTab("astronomy/index.html");
+      break;
+    case "hub":
+      addLine("Heading back to the hub...", "color2", 80);
+      newTab("index.html");
+      break;
     case "whois":
       loopLines(whois, "color2 margin", 80);
       break;

@@ -36,6 +36,8 @@ projects = [
 
 help = [
   "<br>",
+  '<span class="command">astronomy</span>       Enter the Doodle Universe',
+  '<span class="command">hub</span>             Back to the site hub',
   '<span class="command">whois</span>           Who is George?',
   '<span class="command">banner</span>          Display the header,',
   '<span class="command">clear</span>           Clear terminal',
