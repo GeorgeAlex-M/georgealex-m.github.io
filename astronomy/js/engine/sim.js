@@ -51,6 +51,8 @@
     get h() { return this.canvas.h; }
 
     renderFrame() {
+      // layout may not have happened at boot (slow first paint) — retry lazily
+      if (this.canvas.w === 0) this.canvas._resize();
       if (this.canvas.w === 0) return;
       this.canvas.clear();
       this.render();

@@ -206,14 +206,55 @@
        ====================================================================== -->
   <section class="sim-section" id="black-hole" style="--accent: var(--cyan)">
     <h2><span class="secnum">1.</span>Anatomy of a black hole</h2>
-    <p class="kicker">Event horizon, photon sphere, ISCO, singularity — and the point
-      where orbiting stops working.</p>
+    <p class="kicker">Event horizon, photon sphere, ISCO, singularity — and a free
+      playground: <em>click</em> to drop a particle into orbit, <em>drag</em> to fling one,
+      and let the real equations decide its fate.</p>
 
     <div class="sim-canvas-wrap">
-      <canvas data-sim="blackHole" aria-label="Interactive diagram of a black hole's regions"></canvas>
+      <canvas data-sim="blackHole" aria-label="Interactive black hole sandbox — click or drag to launch particles"></canvas>
     </div>
     <div class="sim-controls" data-controls="blackHole"></div>
     <div class="sim-readout" data-readout="blackHole" aria-live="polite"></div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--ink)">event horizon</dt>
+        <dd>The one-way surface around a black hole: at radius r<sub>s</sub> = 2GM/c&sup2; the
+          escape speed reaches the speed of light, so from inside, every possible direction
+          leads further in. Nothing that crosses it — light included — ever comes back out.</dd>
+        <dt style="color:var(--ink)">Schwarzschild radius (r_s)</dt>
+        <dd>The size you would have to squeeze a mass down to for it to become a black hole.
+          Every object has one: Earth's is 9&nbsp;mm (a marble), the Sun's is 2.95&nbsp;km. An object
+          only <em>is</em> a black hole if all its mass actually sits inside that radius.</dd>
+        <dt style="color:var(--cyan)">photon sphere (1.5 r_s)</dt>
+        <dd>The distance at which gravity bends light into a closed circle — photons literally
+          orbit the hole. The orbit is unstable: the slightest wobble sends light spiralling
+          in or flying off.</dd>
+        <dt style="color:var(--green)">ISCO (3 r_s)</dt>
+        <dd>The <em>innermost stable circular orbit</em>. Outside it, matter can circle forever.
+          Inside it, no amount of sideways speed produces a stable orbit — everything spirals
+          in. That is why real accretion disks have a sharp inner edge.</dd>
+        <dt style="color:var(--orange)">accretion disk</dt>
+        <dd>A ring of gas spiralling inward, heated by friction to millions of degrees until it
+          glows in X-rays. Most of what we actually <em>see</em> of a black hole is its disk —
+          the hole itself emits (almost) nothing.</dd>
+        <dt style="color:var(--ink)">singularity</dt>
+        <dd>The central point where general relativity predicts infinite density and curvature —
+          in other words, where the theory stops making sense. Most physicists read it as the
+          place where an undiscovered theory of quantum gravity must take over.</dd>
+        <dt style="color:var(--red)">X-rays (how we actually spot black holes)</dt>
+        <dd>Light with wavelengths thousands of times shorter than what eyes can see, emitted
+          by gas heated to millions of degrees — exactly the temperature of the inner accretion
+          disk. Earth's atmosphere blocks X-rays, so this astronomy is done from space; the
+          X-ray source Cygnus&nbsp;X-1 was the first black hole ever identified.</dd>
+        <dt style="color:var(--cyan)">photon ring &amp; shadow</dt>
+        <dd>Light bent around the hole piles up into a bright ring of apparent radius
+          &asymp;2.6&nbsp;r<sub>s</sub>, framing a dark central "shadow" &asymp;5.2&nbsp;r<sub>s</sub>
+          across — that ring-with-a-hole is literally what the Event Horizon Telescope
+          photographed in 2019.</dd>
+      </dl>
+    </details>
 
     <div class="equations">
       $$ r_s = \frac{2GM}{c^2} \qquad
@@ -226,6 +267,8 @@
       <span class="cit-label">where this comes from — search these in your library:</span>
       <span class="cit">1916 Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</span>
       <span class="cit">1965 Penrose - Gravitational Collapse and Space-Time Singularities</span>
+      <span class="cit">1972 Webster, Murdin - Cygnus X-1&mdash;a Spectroscopic Binary with a Heavy Companion?</span>
+      <span class="cit">2019 Event Horizon Telescope Collaboration - First M87 Event Horizon Telescope Results. I. The Shadow of the Supermassive Black Hole</span>
     </div>
 
     <div class="prose">
@@ -238,17 +281,35 @@
       <p>Outside the horizon there are two more famous circles. At <strong>1.5&nbsp;r<sub>s</sub></strong>
       light itself can orbit — the <em>photon sphere</em>. And at <strong>3&nbsp;r<sub>s</sub></strong>
       sits the <em>ISCO</em>, the innermost stable circular orbit: the closest distance at
-      which matter can circle forever. Anything nudged inside the ISCO can no longer
-      orbit — it spirals in and is captured. That's why real accretion disks have an inner
-      edge. Try the "nudge a particle" button and watch it happen.</p>
+      which matter can circle forever. Don't take my word for it — <strong>click anywhere</strong>
+      in the sandbox to drop a particle into a circular orbit, or <strong>drag</strong> to fling
+      one with your own aim. The dot's fate is computed from the exact Schwarzschild geodesic
+      equation, not scripted: outside the ISCO your particles circle (and visibly precess, if
+      the orbit is eccentric); inside it they spiral in no matter what you try. That's why real
+      accretion disks have an inner edge.</p>
       <p>At the very center the equations predict a <strong>singularity</strong> — a point of
       (formally) infinite density where general relativity stops making predictions. Roger
       Penrose proved in 1965 that once a horizon forms, a singularity is not optional but
       inevitable — work that earned the 2020 Nobel Prize in Physics.</p>
-      <p>Notice that when you change the mass, the picture doesn't change shape — only the
-      scale bar does. A black hole's geometry is self-similar: the Sun squeezed into a black
-      hole would have a horizon radius of just 2.95&nbsp;km (about 6&nbsp;km across), while M87*'s
-      horizon is wider than our whole planetary solar system — yet they are the same drawing.</p>
+      <p>But wait — if not even light escapes, <strong>how do we see black holes at all?</strong>
+      We don't, directly: we see what they do to their surroundings. Gas spiralling through the
+      accretion disk is friction-heated to <em>millions of degrees</em>, and matter that hot
+      shines in <strong>X-rays</strong> — light far beyond what eyes detect. That is how the
+      first black hole was found: Cygnus&nbsp;X-1, a fierce X-ray source whose invisible partner
+      turned out to be too heavy to be anything else (Webster &amp; Murdin, 1972). Since then
+      we've learned to "see" them two more ways: the Event Horizon Telescope photographed the
+      glowing photon ring around M87*'s dark shadow in radio waves (2019), and LIGO hears them
+      collide in gravitational waves. Flip the sim to <em>telescope view</em> to compare what
+      your eye would catch with what an X-ray telescope catches.</p>
+      <p>Now try the <strong>Earth</strong> and <strong>Sun</strong> buttons. They are drawn as
+      what they really are — ordinary bodies, <em>not</em> black holes — because a mass only
+      becomes a black hole if it is squeezed entirely inside its own r<sub>s</sub>. Earth's is
+      9&nbsp;mm (crush the planet smaller than a marble); the Sun's is 2.95&nbsp;km, about
+      236,000&times; smaller than the Sun actually is — and no force in the Sun's future will
+      ever compress it that far. For the real black holes (Sgr&nbsp;A*, M87*) notice that
+      changing the mass never changes the drawing's shape, only the scale bar: black hole
+      geometry is self-similar, from city-sized stellar holes to M87*, whose horizon is wider
+      than our whole planetary solar system.</p>
     </div>
 
     <blockquote class="quote-box">
@@ -270,6 +331,29 @@
     </div>
     <div class="sim-controls" data-controls="fallingIn"></div>
     <div class="sim-readout" data-readout="fallingIn" aria-live="polite"></div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--pink)">proper time (τ)</dt>
+        <dd>The time measured by your own wristwatch, along your own path through spacetime.
+          Alice's proper time is what <em>she</em> experiences — and it is perfectly normal
+          to her all the way down.</dd>
+        <dt style="color:var(--cyan)">gravitational time dilation</dt>
+        <dd>Clocks deep in gravity genuinely run slower than clocks far away, by the factor
+          &radic;(1&minus;r<sub>s</sub>/r). It is not an illusion: GPS satellites must correct
+          for it every day or maps would drift by kilometers.</dd>
+        <dt style="color:var(--red)">tidal force &amp; spaghettification</dt>
+        <dd>Gravity pulls harder on your near side than your far side; the <em>difference</em>
+          stretches you. It grows like 1/r&sup3;, so near a small black hole it becomes
+          violent enough to pull a body into a noodle — the actual astrophysics term is
+          spaghettification.</dd>
+        <dt style="color:var(--orange)">gravitational redshift</dt>
+        <dd>Light climbing out of a gravity well loses energy, so its wavelength stretches
+          toward the red. Light from something at the horizon is stretched infinitely — which
+          is why Bob sees Alice fade and redden instead of vanish.</dd>
+      </dl>
+    </details>
 
     <div class="equations">
       $$ \Delta a = \frac{2GM\,L}{r^3} \qquad
@@ -318,6 +402,26 @@
     </div>
     <div class="sim-controls" data-controls="orbits"></div>
     <div class="sim-readout" data-readout="orbits" aria-live="polite"></div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--orange)">perihelion</dt>
+        <dd>The point of an orbit closest to the Sun (from Greek <em>peri</em>, near +
+          <em>helios</em>, Sun). For orbits around anything else the general word is
+          periapsis. The orange dots in the sim mark it on every pass.</dd>
+        <dt style="color:var(--green)">precession</dt>
+        <dd>The slow rotation of the orbit's ellipse itself — the oval keeps its shape but
+          its long axis swings around, drawing a rosette over many orbits.</dd>
+        <dt style="color:var(--cyan)">arcsecond (&Prime;)</dt>
+        <dd>1/3600 of a degree — the units astronomers use for very small angles. Mercury's
+          famous anomaly is 43 of these per <em>century</em>.</dd>
+        <dt style="color:var(--pink)">angular momentum (L)</dt>
+        <dd>The conserved "sideways-ness" of an orbit. In the equation on this page, L is what
+          keeps the planet from falling straight in — unless it dips below the ISCO, where
+          even angular momentum stops helping.</dd>
+      </dl>
+    </details>
 
     <div class="equations">
       $$ \frac{d^2u}{d\varphi^2} + u = \frac{GM}{L^2} + \frac{3GM}{c^2}\,u^2
@@ -373,7 +477,9 @@
       <li><span class="yr">1915</span>Einstein - Erkl&auml;rung der Perihelbewegung des Merkur aus der allgemeinen Relativit&auml;tstheorie (Explanation of the Perihelion Motion of Mercury from the General Theory of Relativity)</li>
       <li><span class="yr">1916</span>Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</li>
       <li><span class="yr">1965</span>Penrose - Gravitational Collapse and Space-Time Singularities</li>
+      <li><span class="yr">1972</span>Webster, Murdin - Cygnus X-1&mdash;a Spectroscopic Binary with a Heavy Companion?</li>
       <li><span class="yr">1973</span>Misner, Thorne, Wheeler - Gravitation</li>
+      <li><span class="yr">2019</span>Event Horizon Telescope Collaboration - First M87 Event Horizon Telescope Results. I. The Shadow of the Supermassive Black Hole</li>
     </ul>
   </section>
 
