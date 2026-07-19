@@ -37,6 +37,9 @@
   <script defer src="js/sims/black-hole.js"></script>
   <script defer src="js/sims/falling-in.js"></script>
   <script defer src="js/sims/orbits-precession.js"></script>
+  <script defer src="js/sims/emc2.js"></script>
+  <script defer src="js/sims/time-dilation.js"></script>
+  <script defer src="js/sims/lensing.js"></script>
   <script defer src="js/main.js"></script>
 </head>
 <body>
@@ -101,9 +104,9 @@
     <div class="toc-chapter">
       <h3>Chapter II — Energy &amp; Time</h3>
       <ul class="toc-items">
-        <li><span class="soon">E = mc&sup2;</span></li>
-        <li><span class="soon">Bending time (Interstellar &amp; GPS)</span></li>
-        <li><span class="soon">Gravitational lensing</span></li>
+        <li><a href="#emc2"><span class="n" style="color:var(--yellow)">4</span>E = mc&sup2;</a></li>
+        <li><a href="#bending-time"><span class="n" style="color:var(--orange)">5</span>Bending time (Interstellar &amp; GPS)</a></li>
+        <li><a href="#lensing"><span class="n" style="color:var(--pink)">6</span>Gravitational lensing</a></li>
       </ul>
     </div>
 
@@ -465,6 +468,209 @@
   </section>
 
   <!-- ======================================================================
+       Sim 4 — E = mc²
+       ====================================================================== -->
+  <section class="sim-section" id="emc2" style="--accent: var(--yellow)">
+    <h2><span class="secnum">4.</span>E = mc&sup2; — mass is frozen energy</h2>
+    <p class="kicker">Pick something ordinary, annihilate it, and see why a paperclip
+      outguns an atomic bomb. Click the object itself to set it off.</p>
+
+    <div class="sim-canvas-wrap short">
+      <canvas data-sim="emc2" aria-label="Interactive mass-energy converter with real-world energy comparisons"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="emc2"></div>
+    <div class="sim-readout" data-readout="emc2" aria-live="polite"></div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--yellow)">mass–energy equivalence</dt>
+        <dd>Mass and energy are the same physical quantity in different costumes: every kilogram
+          of matter <em>is</em> 9&times;10&sup1;&#8310; joules, whether or not you ever cash it in.
+          Even a stretched spring or a hot cup of tea weighs (immeasurably) more than a relaxed,
+          cold one.</dd>
+        <dt style="color:var(--pink)">annihilation</dt>
+        <dd>When matter meets antimatter, 100% of both masses converts to light. It is the only
+          process that cashes in the full E&nbsp;=&nbsp;mc&sup2; — which is why this sim has to say
+          "if it met its antimatter twin".</dd>
+        <dt style="color:var(--orange)">nuclear fusion</dt>
+        <dd>Squeezing light nuclei together into heavier ones. The product weighs ~0.7% less than
+          the ingredients, and that missing mass leaves as energy — it is how the Sun has shone
+          for 4.6 billion years on a "mere" 0.7% exchange rate.</dd>
+        <dt style="color:var(--cyan)">kiloton (kt)</dt>
+        <dd>The energy of a thousand tons of TNT exploding: 4.184&times;10&sup1;&sup2; joules. The
+          Hiroshima bomb was about 15 kt — released from converting roughly <em>0.7 grams</em>
+          of mass.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ E = mc^2 \qquad c^2 = 8.99\times 10^{16}\ \text{m}^2/\text{s}^2 $$
+      <p class="eq-note">The c&sup2; is the exchange rate between kilograms and joules — and it is enormous.</p>
+    </div>
+
+    <div class="citation-box">
+      <span class="cit-label">where this comes from — search these in your library:</span>
+      <span class="cit">1905 Einstein - Ist die Tr&auml;gheit eines K&ouml;rpers von seinem Energieinhalt abh&auml;ngig? (Does the Inertia of a Body Depend Upon Its Energy Content?)</span>
+      <span class="cit">1932 Cockcroft, Walton - Experiments with High Velocity Positive Ions. II. The Disintegration of Elements by High Velocity Protons</span>
+    </div>
+
+    <div class="prose">
+      <p>In September 1905 — the same miracle year as special relativity — Einstein published a
+      three-page afterthought asking whether a body's inertia depends on its energy content. The
+      answer, <strong>E&nbsp;=&nbsp;mc&sup2;</strong>, says mass and energy are one thing. The
+      reason nobody noticed for all of human history is the exchange rate: multiply kilograms by
+      <em>c&sup2; ≈ 90,000,000,000,000,000</em> to get joules.</p>
+      <p>That's why "inside a small mass there is enormous energy": one gram — a paperclip —
+      holds 8.99&times;10&sup1;&sup3; joules, more than the Hiroshima bomb released. The bomb
+      itself converted less than a gram of its 64&nbsp;kg of uranium. The Sun converts about
+      0.7% of the hydrogen mass it fuses, four million tons of mass into light <em>every
+      second</em> — and that 0.7% is enough to warm a planet 150 million km away.</p>
+      <p>The equation was confirmed in the laboratory in 1932, when Cockcroft and Walton split
+      lithium nuclei and found the fragments' energy matched the missing mass exactly. It is
+      probably the most-tested formula in physics.</p>
+    </div>
+
+    <blockquote class="quote-box">
+      &ldquo;Mass and energy are both but different manifestations of the same thing.&rdquo;
+      <span class="attrib">* Albert Einstein</span>
+    </blockquote>
+  </section>
+
+  <!-- ======================================================================
+       Sim 5 — Bending time
+       ====================================================================== -->
+  <section class="sim-section" id="bending-time" style="--accent: var(--orange)">
+    <h2><span class="secnum">5.</span>Bending time</h2>
+    <p class="kicker">A bouncing photon shows why moving clocks tick slowly — then
+      Interstellar's planet and your phone's GPS make it real.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="timeDilation" aria-label="Light-clock time dilation simulation with Miller's planet and GPS scenarios"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="timeDilation"></div>
+    <div class="sim-readout" data-readout="timeDilation" aria-live="polite"></div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">light clock</dt>
+        <dd>The simplest clock imaginable: a photon bouncing between two mirrors, one tick per
+          bounce. Because <em>everyone</em> measures light at the same speed c, watching a moving
+          light clock forces time dilation on you — the photon's zigzag path is longer, so the
+          moving clock's ticks come slower.</dd>
+        <dt style="color:var(--orange)">Lorentz factor (&gamma;)</dt>
+        <dd>The stretch factor of time (and squeeze factor of length): &gamma; = 1/&radic;(1&minus;v&sup2;/c&sup2;).
+          It is 1.005 at 10% of light speed, 2.29 at 90%, 22.4 at 99.9% — it only bites when
+          you go <em>really</em> fast.</dd>
+        <dt style="color:var(--pink)">frame of reference</dt>
+        <dd>A point of view moving at some velocity. Relativity's deal: physics looks the same in
+          every non-accelerating frame, and nobody's frame is "the correct one" — the traveler
+          genuinely experiences less time, and both descriptions are right.</dd>
+        <dt style="color:var(--green)">gravitational vs velocity time dilation</dt>
+        <dd>Two separate effects that both slow clocks: moving fast (special relativity) and
+          sitting deep in gravity (general relativity). GPS satellites feel BOTH — speed slows
+          their clocks by 7 &mu;s/day, weaker gravity speeds them by 46 &mu;s/day, and engineers
+          must correct the difference daily.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \gamma = \frac{1}{\sqrt{1-v^2/c^2}} \qquad
+         \frac{\Delta t_{\text{far}}}{\Delta \tau} = \frac{1}{\sqrt{1-r_s/r}} $$
+      <p class="eq-note">Left: moving clocks (special relativity). Right: clocks in gravity (general relativity).</p>
+    </div>
+
+    <div class="citation-box">
+      <span class="cit-label">where this comes from — search these in your library:</span>
+      <span class="cit">1905 Einstein - Zur Elektrodynamik bewegter K&ouml;rper (On the Electrodynamics of Moving Bodies)</span>
+      <span class="cit">2003 Ashby - Relativity in the Global Positioning System</span>
+      <span class="cit">2015 James, von Tunzelmann, Franklin, Thorne - Gravitational Lensing by Spinning Black Holes in Astrophysics, and in the Movie Interstellar</span>
+    </div>
+
+    <div class="prose">
+      <p>Time is not a universal drumbeat — it is personal. The light clock shows why with
+      nothing but geometry: the moving clock's photon must travel a longer zigzag, light speed
+      is the same for everyone (that is Einstein's 1905 axiom), so the moving clock simply
+      ticks less often. Slide the speed up and watch the traveler's clock fall behind.</p>
+      <p>In <em>Interstellar</em>, one hour on Miller's planet costs seven years outside — a
+      factor of 61,362. That is <em>gravitational</em> time dilation, and Kip Thorne (who got a
+      Nobel Prize two years after the film) checked the numbers: it requires orbiting just above
+      the horizon of a black hole spinning within one part in 10&sup1;&#8308; of the maximum.
+      Extreme — but not wrong. The movie is a legitimate solution of Einstein's equations.</p>
+      <p>And it's not science fiction: <strong>your phone corrects for this every day</strong>.
+      GPS satellite clocks run fast by 45.7 &mu;s/day (weaker gravity) and slow by 7.2 &mu;s/day
+      (orbital speed), netting +38.5 &mu;s/day. Uncorrected, position fixes would drift by
+      <em>eleven kilometers every day</em>. Relativity is in your pocket.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 6 — Gravitational lensing
+       ====================================================================== -->
+  <section class="sim-section" id="lensing" style="--accent: var(--pink)">
+    <h2><span class="secnum">6.</span>Gravitational lensing</h2>
+    <p class="kicker">Mass bends light. Drag an invisible heavy thing across a starfield
+      and watch the sky warp — the experiment that made Einstein famous.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="lensing" aria-label="Interactive gravitational lensing — drag the lens mass across a starfield"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="lensing"></div>
+    <div class="sim-readout" data-readout="lensing" aria-live="polite"></div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--pink)">gravitational lens</dt>
+        <dd>Any mass — a star, a galaxy, a clump of dark matter — whose gravity bends passing
+          light like a (badly made) glass lens. The sky behind it gets displaced, stretched,
+          brightened, and sometimes multiplied.</dd>
+        <dt style="color:var(--cyan)">Einstein ring (&theta;_E)</dt>
+        <dd>When source, lens and observer line up perfectly, the source's light is smeared into
+          a full circle of angular radius &theta;<sub>E</sub>. Dozens of real ones have been
+          photographed — the sim draws arcs when a star gets close to alignment.</dd>
+        <dt style="color:var(--orange)">deflection angle (&alpha;)</dt>
+        <dd>How much a light ray bends: &alpha; = 4GM/(c&sup2;b), where b is how close the ray
+          skims the mass. Grazing the Sun: 1.75 arcseconds — exactly double what Newtonian
+          physics predicts, which is what made the 1919 test decisive.</dd>
+        <dt style="color:var(--green)">microlensing</dt>
+        <dd>Lensing by a single star: the images are separated by only ~a milliarcsecond — far
+          too close to see apart — but the brightening is detectable. It is one of the ways we
+          hunt exoplanets and dark compact objects.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \alpha = \frac{4GM}{c^2 b} \qquad
+         \theta_E = \sqrt{\frac{4GM}{c^2}\,\frac{D_{LS}}{D_L D_S}} \qquad
+         \beta = \theta - \frac{\theta_E^2}{\theta} $$
+      <p class="eq-note">Deflection; the Einstein radius; and the point-lens equation the sim solves for every star — its two solutions are the two images you see.</p>
+    </div>
+
+    <div class="citation-box">
+      <span class="cit-label">where this comes from — search these in your library:</span>
+      <span class="cit">1920 Dyson, Eddington, Davidson - A Determination of the Deflection of Light by the Sun's Gravitational Field, from Observations Made at the Total Eclipse of May 29, 1919</span>
+      <span class="cit">1936 Einstein - Lens-Like Action of a Star by the Deviation of Light in the Gravitational Field</span>
+    </div>
+
+    <div class="prose">
+      <p>General relativity says mass curves spacetime, and light follows the curves — so a
+      heavy object displaces the images of everything behind it. In the sandbox, the blob you
+      drag is <strong>invisible</strong>: you only know it's there because the stars behind it
+      split into pairs of shifted images (faint &times; marks show where each star truly is).
+      Line one up and it smears into an <strong>Einstein ring</strong>.</p>
+      <p>This is the effect that made Einstein a household name. In May 1919, Eddington's
+      expeditions photographed stars beside the eclipsed Sun and measured their displacement:
+      <strong>1.75&Prime;</strong>, Einstein's number, twice Newton's. "LIGHTS ALL ASKEW IN THE
+      HEAVENS," ran the New York Times headline. Einstein himself thought star-on-star lensing
+      would never be observable (his 1936 paper politely says so) — today, lensing maps dark
+      matter, magnifies the most distant galaxies we know, and finds planets. We will meet it
+      again in the dark matter chapter.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
        The Library
        ====================================================================== -->
   <section class="sim-section" id="library" style="--accent: var(--orange)">
@@ -474,11 +680,18 @@
       new section of the page.</p>
     <ul class="library-list">
       <li><span class="yr">1859</span>Le Verrier - Lettre de M. Le Verrier &agrave; M. Faye sur la th&eacute;orie de Mercure et sur le mouvement du p&eacute;rih&eacute;lie de cette plan&egrave;te (Letter on the Theory of Mercury and the Motion of its Perihelion)</li>
+      <li><span class="yr">1905</span>Einstein - Zur Elektrodynamik bewegter K&ouml;rper (On the Electrodynamics of Moving Bodies)</li>
+      <li><span class="yr">1905</span>Einstein - Ist die Tr&auml;gheit eines K&ouml;rpers von seinem Energieinhalt abh&auml;ngig? (Does the Inertia of a Body Depend Upon Its Energy Content?)</li>
       <li><span class="yr">1915</span>Einstein - Erkl&auml;rung der Perihelbewegung des Merkur aus der allgemeinen Relativit&auml;tstheorie (Explanation of the Perihelion Motion of Mercury from the General Theory of Relativity)</li>
       <li><span class="yr">1916</span>Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</li>
+      <li><span class="yr">1920</span>Dyson, Eddington, Davidson - A Determination of the Deflection of Light by the Sun's Gravitational Field, from Observations Made at the Total Eclipse of May 29, 1919</li>
+      <li><span class="yr">1932</span>Cockcroft, Walton - Experiments with High Velocity Positive Ions. II. The Disintegration of Elements by High Velocity Protons</li>
+      <li><span class="yr">1936</span>Einstein - Lens-Like Action of a Star by the Deviation of Light in the Gravitational Field</li>
       <li><span class="yr">1965</span>Penrose - Gravitational Collapse and Space-Time Singularities</li>
       <li><span class="yr">1972</span>Webster, Murdin - Cygnus X-1&mdash;a Spectroscopic Binary with a Heavy Companion?</li>
       <li><span class="yr">1973</span>Misner, Thorne, Wheeler - Gravitation</li>
+      <li><span class="yr">2003</span>Ashby - Relativity in the Global Positioning System</li>
+      <li><span class="yr">2015</span>James, von Tunzelmann, Franklin, Thorne - Gravitational Lensing by Spinning Black Holes in Astrophysics, and in the Movie Interstellar</li>
       <li><span class="yr">2019</span>Event Horizon Telescope Collaboration - First M87 Event Horizon Telescope Results. I. The Shadow of the Supermassive Black Hole</li>
     </ul>
   </section>
