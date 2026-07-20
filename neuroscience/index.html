@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Doodle Neuroscience — hand-drawn, evidence-labelled brain science.
+    Classic scripts sharing window.Astro (shared engine in ../doodle/), so it
+    works opened directly from disk (file://) as well as on GitHub Pages.
+  -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doodle Neuroscience — how a brain learns</title>
+  <meta name="description" content="Interactive, evidence-labelled doodle simulations of how the brain learns, judges, and remembers — from a stick figure's action down to the neuron, the synapse, and DNA, with the original papers behind each finding.">
+  <meta name="author" content="George">
+  <link rel="icon" type="image/x-icon" href="../images/fav-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="../doodle/doodle.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="../doodle/engine/palette.js"></script>
+  <script defer src="../doodle/engine/constants.js"></script>
+  <script defer src="../doodle/engine/canvas.js"></script>
+  <script defer src="../doodle/engine/rough-helpers.js"></script>
+  <script defer src="../doodle/engine/sketch.js"></script>
+  <script defer src="../doodle/engine/controls.js"></script>
+  <script defer src="../doodle/engine/integrators.js"></script>
+  <script defer src="../doodle/engine/sim.js"></script>
+  <script defer src="sims/learning.js"></script>
+  <script defer src="main.js"></script>
+</head>
+<body>
+<main>
+
+  <header class="site-header">
+    <img class="logo" src="../images/logo.png" alt="Unreal Software logo">
+    <a class="site-name" href="../index.html">&larr; unrealsoftware — home</a>
+  </header>
+
+  <div class="hero">
+    <h1>Doodle Neuroscience</h1>
+    <p class="tagline">Watch a stick figure learn — and zoom all the way in, from the
+      whole brain down to the neuron, the synapse, and the DNA, to see exactly what
+      changes. Real science, the original papers, and an honest label on how firmly
+      each part is proven.</p>
+  </div>
+
+  <blockquote class="quote-box">
+    &ldquo;The chief function of the body is to carry the brain around.&rdquo;
+    <span class="attrib">* Thomas Edison</span>
+  </blockquote>
+
+  <nav class="doodle-toc" aria-label="Table of contents">
+    <h2>Map of the mind (this page)</h2>
+    <div class="toc-chapter">
+      <h3>Chapter I — How Learning Works</h3>
+      <ul class="toc-items">
+        <li><a href="#learning"><span class="n" style="color:var(--cyan)">1</span>The anatomy of learning</a></li>
+        <li><span class="soon">Synapses that learn — Hebb's rule</span></li>
+        <li><span class="soon">Dopamine = prediction error, not pleasure</span></li>
+        <li><span class="soon">Memory &amp; the hippocampus — the lesson of H.M.</span></li>
+        <li><span class="soon">Why brains are fallible — efficiency's price</span></li>
+      </ul>
+    </div>
+    <div class="toc-chapter">
+      <h3>&mdash;</h3>
+      <ul class="toc-items">
+        <li><a href="#library"><span class="n" style="color:var(--orange)">&#9733;</span>The Library — every paper cited here</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       Sim 1 — The anatomy of learning
+       ====================================================================== -->
+  <section class="sim-section" id="learning" style="--accent: var(--cyan)">
+    <h2><span class="secnum">1.</span>The anatomy of learning</h2>
+    <p class="kicker">Give the stick figure something to do, then zoom in: whole brain
+      &rarr; neuron &rarr; synapse &rarr; DNA. Every level shows what actually changes
+      when you learn — and it changes as you practise.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      neurons, action potentials, synaptic strengthening (LTP), the memory role of the
+      hippocampus, dopamine reward-prediction signals, and gene expression for long-term
+      memory are all directly measured, some Nobel-winning. The "brain as a prediction
+      machine" framing (how it judges from priors) is a well-supported theory, labelled as
+      such in the readout.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="learning" aria-label="Multi-scale simulation of how the brain learns, from a stick figure's action down to DNA"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="learning"></div>
+    <div class="sim-readout" data-readout="learning" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1894 Cajal - The Croonian Lecture: La Fine Structure des Centres Nerveux</span>
+      <span class="cit">1906 Sherrington - The Integrative Action of the Nervous System</span>
+      <span class="cit">1949 Hebb - The Organization of Behavior: A Neuropsychological Theory</span>
+      <span class="cit">1952 Hodgkin, Huxley - A Quantitative Description of Membrane Current and Its Application to Conduction and Excitation in Nerve</span>
+      <span class="cit">1957 Scoville, Milner - Loss of Recent Memory after Bilateral Hippocampal Lesions</span>
+      <span class="cit">1973 Bliss, L&oslash;mo - Long-Lasting Potentiation of Synaptic Transmission in the Dentate Area of the Anaesthetized Rabbit Following Stimulation of the Perforant Path</span>
+      <span class="cit">1997 Schultz, Dayan, Montague - A Neural Substrate of Prediction and Reward</span>
+      <span class="cit">2001 Kandel - The Molecular Biology of Memory Storage: A Dialogue Between Genes and Synapses</span>
+      <span class="cit">2005 Bengtsson et al. - Extensive Piano Practicing Has Regionally Specific Effects on White Matter Development</span>
+      <span class="cit">2009 Herculano-Houzel - The Human Brain in Numbers: A Linearly Scaled-up Primate Brain</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--ink)">neuron</dt>
+        <dd>The brain's basic cell — you have about 86 billion of them. Each gathers signals
+          on its branching <em>dendrites</em>, and if the sum is strong enough it fires an
+          electrical spike down its <em>axon</em> to other neurons. Ram&oacute;n y Cajal proved
+          in the 1890s that these are separate cells, not one continuous web.</dd>
+        <dt style="color:var(--cyan)">action potential (the spike)</dt>
+        <dd>A ~1 ms electrical pulse: the neuron's voltage flips from about &minus;70 mV to
+          +40 mV and races down the axon. Hodgkin and Huxley worked out the exact ion currents
+          in 1952 (on a giant squid axon) — Nobel Prize.</dd>
+        <dt style="color:var(--green)">synapse &amp; neurotransmitter</dt>
+        <dd>The tiny gap (~20 nm) between two neurons. The spike can't jump it, so the sending
+          side squirts chemical <em>neurotransmitter</em> across; the receiving side has
+          <em>receptors</em> that catch it. You have on the order of 100 trillion synapses —
+          this is where nearly all learning is stored.</dd>
+        <dt style="color:var(--pink)">plasticity &amp; LTP</dt>
+        <dd>Synapses get stronger or weaker with use — that's <em>plasticity</em>. When two
+          neurons fire together repeatedly, their synapse strengthens (Long-Term Potentiation,
+          discovered 1973). Hebb's slogan: "cells that fire together, wire together."</dd>
+        <dt style="color:var(--yellow)">myelin</dt>
+        <dd>A fatty insulation wrapped around axons that lets spikes jump between gaps, speeding
+          them from ~1 m/s up to ~120 m/s. Practice literally thickens the myelin on the
+          circuits you use — measured in the brains of pianists.</dd>
+        <dt style="color:var(--orange)">dopamine (reward prediction error)</dt>
+        <dd>A chemical the brain releases not for pleasure itself, but to signal
+          <em>surprise</em> — "that went better than expected, do more of that." As you learn,
+          the surprise shrinks to zero. This exact signal is also the heart of how AI learns
+          by reinforcement (see the AI page).</dd>
+        <dt style="color:var(--muted)">DNA &amp; gene expression</dt>
+        <dd>DNA is not where memories are written. It plays two other roles: it is the
+          <em>blueprint</em> that builds your baseline brain wiring before you learn anything
+          (innate priors, reflexes, instincts), AND, when a synapse is strongly and repeatedly
+          used, it triggers <em>gene expression</em> — the cell reads the relevant genes and
+          builds new proteins that make the change permanent. That is how a fleeting
+          short-term memory becomes a lasting one (Kandel, Nobel Prize 2000).</dd>
+        <dt style="color:var(--cyan)">hippocampus, amygdala, cortex, cerebellum</dt>
+        <dd>Brain regions with jobs: the <em>hippocampus</em> files new facts and events; the
+          <em>amygdala</em> tags things with emotion (especially fear); the <em>prefrontal
+          cortex</em> weighs options and decides; the <em>cerebellum</em> fine-tunes movement
+          and timing. Learning recruits different ones depending on what you're learning.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \text{Hebb: } \Delta w_{ij} \;\propto\; x_i\,x_j \qquad\qquad
+         \text{Dopamine: } \delta \;=\; r - \hat{r} $$
+      <p class="eq-note">Left: a synapse's strength w grows when both neurons (x_i, x_j) are active together.
+        Right: the dopamine burst equals actual reward r minus the reward you expected — it fades to zero once you've learned. The same two ideas power machine learning.</p>
+    </div>
+
+    <div class="prose">
+      <p>Learning is not the brain "filling up" — it is the brain <strong>physically
+      rewiring itself</strong>. Pick an activity for the stick figure and follow the signal.
+      Touch a hot stove and the hand pulls back before you even feel it: that's a
+      <em>spinal reflex</em>, no brain required (Sherrington mapped these in 1906) — while a
+      slower signal climbs to the brain to register pain and, crucially, to <em>remember</em>
+      so you're wary next time.</p>
+      <p>Zoom in and you see where "next time" lives. A memory is a set of synapses that got
+      stronger. Fire two connected neurons together enough and their synapse potentiates
+      (LTP) — Hebb predicted it in 1949, Bliss and Lømo measured it in 1973. Practise a
+      motor skill and, on top of that, the axons carrying it get wrapped in more myelin, so
+      the whole circuit runs faster and smoother. That's why the tenth free-throw feels
+      different from the first.</p>
+      <p>So how does the brain <strong>judge</strong>, and on what? Every decision is a
+      prediction built from four ingredients: what your senses report right now, the
+      <em>priors</em> stored as synaptic weights from everything you've learned, the innate
+      priors your DNA built in before birth, and your current bodily state (hunger, fear,
+      fatigue). The prefrontal cortex weighs them; dopamine scores whether the outcome beat
+      the prediction; and the difference updates the weights for next time. The brain is,
+      literally, a prediction machine that never stops editing itself — and DNA is both the
+      original blueprint and the print shop that makes the important edits permanent.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       The Library
+       ====================================================================== -->
+  <section class="sim-section" id="library" style="--accent: var(--orange)">
+    <h2><span class="secnum">&#9733;</span>The Library — every paper cited here</h2>
+    <p class="kicker">The original sources, in <em>YEAR Author - Title</em> form, so you can
+      find them in a reference manager or archive. This list grows with every new section.</p>
+    <ul class="library-list">
+      <li><span class="yr">1894</span>Cajal - The Croonian Lecture: La Fine Structure des Centres Nerveux</li>
+      <li><span class="yr">1906</span>Sherrington - The Integrative Action of the Nervous System</li>
+      <li><span class="yr">1949</span>Hebb - The Organization of Behavior: A Neuropsychological Theory</li>
+      <li><span class="yr">1952</span>Hodgkin, Huxley - A Quantitative Description of Membrane Current and Its Application to Conduction and Excitation in Nerve</li>
+      <li><span class="yr">1957</span>Scoville, Milner - Loss of Recent Memory after Bilateral Hippocampal Lesions</li>
+      <li><span class="yr">1973</span>Bliss, L&oslash;mo - Long-Lasting Potentiation of Synaptic Transmission in the Dentate Area of the Anaesthetized Rabbit Following Stimulation of the Perforant Path</li>
+      <li><span class="yr">1997</span>Schultz, Dayan, Montague - A Neural Substrate of Prediction and Reward</li>
+      <li><span class="yr">2001</span>Kandel - The Molecular Biology of Memory Storage: A Dialogue Between Genes and Synapses</li>
+      <li><span class="yr">2005</span>Bengtsson et al. - Extensive Piano Practicing Has Regionally Specific Effects on White Matter Development</li>
+      <li><span class="yr">2009</span>Herculano-Houzel - The Human Brain in Numbers: A Linearly Scaled-up Primate Brain</li>
+    </ul>
+  </section>
+
+  <footer class="site-footer">
+    <p>Drawn and researched by hand(ish). Spotted a mistake in the neuroscience? Tell me —
+      that's the scientific method working.</p>
+    <a class="patreon" href="https://www.patreon.com/GeoQuasar" target="_blank" rel="noopener">
+      <img src="../images/patreon.png" alt="Support on Patreon">
+    </a>
+  </footer>
+
+</main>
+
+<button class="backtop" id="backtop" aria-label="Back to top" title="Back to top">&uarr;</button>
+
+</body>
+</html>
