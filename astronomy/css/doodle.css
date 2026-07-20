@@ -266,6 +266,33 @@ a:hover { color: var(--yellow); }
    Equations, citations, prose, quotes
    -------------------------------------------------------------------------- */
 
+/* evidence badges — how solidly does reality back this simulation? */
+.evidence {
+  margin: 0.2rem 0 1rem;
+  padding: 0.35rem 0.8rem 0.4rem;
+  border: 1.4px solid var(--muted);
+  border-radius: var(--wobble-soft);
+  font-size: 0.98rem;
+  color: var(--muted);
+}
+.evidence strong { font-weight: normal; text-transform: uppercase; letter-spacing: 0.04em; }
+.ev-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 55% 45% 48% 52%;
+  margin-right: 0.5em;
+  vertical-align: baseline;
+}
+.ev-measured .ev-dot { background: var(--green); }
+.ev-measured strong { color: var(--green); }
+.ev-theory .ev-dot { background: var(--cyan); }
+.ev-theory strong { color: var(--cyan); }
+.ev-partial .ev-dot { background: var(--yellow); }
+.ev-partial strong { color: var(--yellow); }
+.ev-speculative .ev-dot { background: var(--orange); }
+.ev-speculative strong { color: var(--orange); }
+
 /* "doodle dictionary" definition blocks */
 .defs {
   margin: 1.1rem 0 0;

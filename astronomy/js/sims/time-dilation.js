@@ -30,6 +30,20 @@
   const GPS_NET = GPS_GRAV - GPS_VEL;
   const GPS_KM_PER_DAY = (GPS_NET * 1e-6 * C) / 1000;                     // ~11.5
 
+  // Net clock rate vs a person on the ground, μs/day, for altitude h and speed v
+  // (simplified: non-rotating Earth — the real 1972 flights also had to book-keep
+  // Earth's rotation, which is why eastward and westward planes differed)
+  function rateVsGround(h, v) {
+    const grav = (GM / C2) * (1 / R_EARTH - 1 / (R_EARTH + h));
+    const vel = (v * v) / (2 * C2);
+    return (grav - vel) * 86400 * 1e6;
+  }
+  const PLANE_RATE = rateVsGround(1e4, 250);      // ≈ +0.06 μs/day (+64 ns)
+  const ISS_RATE = rateVsGround(4.2e5, 7660);     // ≈ −25 μs/day
+  const ISS_6MO_MS = (ISS_RATE * 182.6) / 1000;   // ≈ −4.5 ms per 6 months
+  // crossover: gravity gain = speed loss for a circular orbit at r = 1.5 R⊕
+  const CROSSOVER_KM = (0.5 * R_EARTH) / 1000;    // ≈ 3,186 km altitude
+
   class TimeDilationSim extends Sim {
     init() {
       this.v = 0.6;            // v/c
@@ -67,6 +81,7 @@
       });
       this.scenarioBtns = buttonRow(c, [
         { label: 'free play', value: 'play' },
+        { label: 'Earth, plane & ISS', value: 'space' },
         { label: "Miller's planet", value: 'miller' },
         { label: 'GPS in your pocket', value: 'gps' },
       ], {
@@ -77,6 +92,8 @@
             this.cite('2015 James, von Tunzelmann, Franklin, Thorne - Gravitational Lensing by Spinning Black Holes in Astrophysics, and in the Movie Interstellar');
           } else if (v === 'gps') {
             this.cite('2003 Ashby - Relativity in the Global Positioning System');
+          } else if (v === 'space') {
+            this.cite('1972 Hafele, Keating - Around-the-World Atomic Clocks: Observed Relativistic Time Gains');
           } else {
             this.cite('1905 Einstein - Zur Elektrodynamik bewegter Körper');
           }
@@ -104,6 +121,20 @@
           ['7 years', 'orange'],
           [` outside — a factor of ${fmtNum(MILLER, 0)}. Gravitational, not speed: it needs an orbit skimming a black hole spinning within 1 part in 10¹⁴ of the maximum. Checked by Kip Thorne — the movie is a real solution of Einstein's equations.`, null],
         ]);
+      } else if (this.scenario === 'space') {
+        lines.push([
+          ['vs you standing on Earth — airliner (10 km, 250 m/s): ', null],
+          [`${fmtNum(PLANE_RATE * 1000, 0)} ns/day faster`, 'green'],
+          ['  ·  ISS astronaut (420 km, 7.66 km/s): ', null],
+          [`${fmtNum(ISS_RATE, 1)} μs/day`, 'red'],
+          [` (speed wins — ~${fmtNum(-ISS_6MO_MS, 1)} ms YOUNGER after 6 months)  ·  GPS (20,200 km): `, null],
+          [`+${fmtNum(GPS_NET, 1)} μs/day`, 'yellow'],
+          [' (gravity wins)', null],
+        ]);
+        lines.push([[
+          `the flip happens at ~${fmtNum(CROSSOVER_KM, 0)} km altitude: below it a circular orbit's speed beats the weaker gravity and clocks run SLOW; above it, gravity wins and they run FAST. All three numbers are computed from the same two formulas above. (Simplified: Earth's rotation ignored — the 1972 flights had to count it, which is why their eastward and westward planes aged differently.)`,
+          null,
+        ]]);
       } else if (this.scenario === 'gps') {
         lines.push([
           ['GPS satellite clocks: gravity makes them run fast by ', null],
@@ -209,6 +240,42 @@
         ));
         label(ctx, "Miller's planet", cx, cy + 58, { color: COLORS.cyan, size: 14, align: 'center' });
         label(ctx, '1 hr = 7 yr', cx, cy + 76, { color: COLORS.orange, size: 14, align: 'center' });
+      } else if (!compact && this.scenario === 'space') {
+        const cx = w * 0.85;
+        const cy = h * 0.62;
+        // Earth + you
+        this.cache.draw(`sEarth-${w}x${h}`, (g) => g.circle(cx, cy, 68, opts(330, {
+          stroke: COLORS.green, strokeWidth: 2,
+          fill: COLORS.green, fillStyle: 'hachure', fillWeight: 0.5, hachureGap: 10,
+        })));
+        stickFigure(rc, cx, cy - 52, { scale: 0.42, seed: 331, color: COLORS.ink });
+        // orbits (not to scale): plane / ISS / GPS
+        for (const [rr, seed] of [[52, 332], [70, 333], [96, 334]]) {
+          this.cache.draw(`sOrb-${rr}-${w}x${h}`, (g) => g.circle(cx, cy, rr * 2, opts(seed, {
+            stroke: COLORS.muted, strokeWidth: 1, strokeLineDash: [4, 6],
+          })));
+        }
+        const aP = this.phaseRest * 1.4;
+        const aI = this.phaseRest * 1.0 + 2;
+        const aG = this.phaseRest * 0.5 + 4;
+        // plane (little dart)
+        const px2 = cx + Math.cos(aP) * 52;
+        const py2 = cy + Math.sin(aP) * 52;
+        rc.path(`M ${px2 - 8} ${py2} l 14 -4 l -4 4 l 4 4 z`, opts(335, { stroke: COLORS.green, strokeWidth: 1.4 }));
+        // ISS (box with panels)
+        const ix = cx + Math.cos(aI) * 70;
+        const iy = cy + Math.sin(aI) * 70;
+        rc.rectangle(ix - 5, iy - 4, 10, 8, opts(336, { stroke: COLORS.red, strokeWidth: 1.4 }));
+        rc.line(ix - 12, iy, ix + 12, iy, opts(337, { stroke: COLORS.red, strokeWidth: 1.2 }));
+        // GPS satellite
+        const gx = cx + Math.cos(aG) * 96;
+        const gy = cy + Math.sin(aG) * 96;
+        rc.rectangle(gx - 5, gy - 4, 10, 8, opts(338, { stroke: COLORS.yellow, strokeWidth: 1.4 }));
+        label(ctx, `plane +${fmtNum(PLANE_RATE * 1000, 0)} ns/day`, cx - 120, cy - 66, { color: COLORS.green, size: 12.5, align: 'right' });
+        label(ctx, `ISS ${fmtNum(ISS_RATE, 0)} μs/day`, cx - 120, cy - 44, { color: COLORS.red, size: 12.5, align: 'right' });
+        label(ctx, `GPS +${fmtNum(GPS_NET, 0)} μs/day`, cx - 120, cy - 22, { color: COLORS.yellow, size: 12.5, align: 'right' });
+        label(ctx, `flip at ~${fmtNum(CROSSOVER_KM, 0)} km up`, cx, cy + 118, { color: COLORS.muted, size: 12, align: 'center' });
+        label(ctx, '(not to scale)', cx, cy + 134, { color: COLORS.muted, size: 11, align: 'center' });
       } else if (!compact && this.scenario === 'gps') {
         const cx = w * 0.86;
         const cy = h * 0.62;
