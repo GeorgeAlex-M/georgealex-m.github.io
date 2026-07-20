@@ -74,7 +74,11 @@
         onSelect: (v) => { this.mode = v; this.reset(); this.poke(); },
       });
       actionButton(c, 'drop Alice!', () => {
-        if (!this.running && !this.crossed) { this.running = true; this.poke(); }
+        if (!this.running && !this.crossed) {
+          this.running = true;
+          this.cite('1916 Schwarzschild - Über das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie');
+          this.poke();
+        }
       });
       actionButton(c, 'reset', () => { this.reset(); this.poke(); });
     }
@@ -195,6 +199,10 @@
       const aG = this.tidal(this.rho) / G_EARTH;
       const stretch = Math.min(3, 1 + Math.max(0, Math.log10(Math.max(aG, 0.1)) + 1) * 0.55);
       const broken = aG > BREAK_G;
+      if (broken && this.running && !this._citedTides) {
+        this._citedTides = true;
+        this.cite('1973 Misner, Thorne, Wheeler - Gravitation');
+      }
       const y = this.yOfRho(this.rho, ys, ye);
       let color = COLORS.ink;
       let alpha = 1;

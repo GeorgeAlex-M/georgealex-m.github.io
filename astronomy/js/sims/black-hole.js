@@ -148,6 +148,9 @@
           this.M = this.obj.M;
           this.massSlider.set(this.M / M_SUN);
           if (this.kind === 'body') this.parts.length = 0;
+          this.cite(v === 'm87'
+            ? '2019 Event Horizon Telescope Collaboration - First M87 Event Horizon Telescope Results. I.'
+            : '1916 Schwarzschild - Über das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie');
           this.updateReadout();
           this.poke();
         },
@@ -157,7 +160,13 @@
         { label: 'telescope view (X-ray)', value: 'telescope' },
       ], {
         initial: 'diagram',
-        onSelect: (v) => { this.view = v; this.poke(); },
+        onSelect: (v) => {
+          this.view = v;
+          if (v === 'telescope') {
+            this.cite('1972 Webster, Murdin - Cygnus X-1—a Spectroscopic Binary with a Heavy Companion?');
+          }
+          this.poke();
+        },
       });
       actionButton(c, 'clear particles', () => {
         this.parts.length = 0;
@@ -282,6 +291,10 @@
           if (p.r <= CAPTURE_R) {
             p.state = 'captured';
             p.stateAt = this.t;
+            if (!this._citedCapture) {
+              this._citedCapture = true;
+              this.cite('1965 Penrose - Gravitational Collapse and Space-Time Singularities');
+            }
             break;
           }
         }

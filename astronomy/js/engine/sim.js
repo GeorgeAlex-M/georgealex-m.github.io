@@ -56,6 +56,43 @@
       if (this.canvas.w === 0) return;
       this.canvas.clear();
       this.render();
+      this._drawCite();
+      this._hasRendered = true;
+    }
+
+    // Contextual citation: shows the paper behind what the sim just did,
+    // right on the canvas, at the moment it happens (e.g. run the Penrose
+    // process → "1969 Penrose - …"). Same exact YYYY Author - Title strings
+    // as the citation boxes, so they stay searchable.
+    cite(text, seconds = 7) {
+      this._cite = { text, until: performance.now() + seconds * 1000 };
+      // don't force a draw mid-init — sims may cite before their state exists;
+      // the chip appears on the first (or next) rendered frame either way
+      if (this._hasRendered) this.renderFrame();
+    }
+
+    _drawCite() {
+      const c = this._cite;
+      if (!c || performance.now() > c.until) return;
+      const { ctx } = this;
+      const w = this.canvas.w;
+      const h = this.canvas.h;
+      ctx.save();
+      ctx.font = "12.5px 'Gochi Hand', 'Segoe Print', cursive";
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'alphabetic';
+      let text = `source: ${c.text}`;
+      // if the full title doesn't fit, fall back to "YYYY Authors"
+      if (ctx.measureText(text).width > w - 24) {
+        const short = c.text.split(' - ')[0];
+        text = `source: ${short}`;
+      }
+      const tw = ctx.measureText(text).width;
+      ctx.fillStyle = 'rgba(30, 30, 30, 0.88)';
+      ctx.fillRect(w - tw - 20, h - 26, tw + 14, 20);
+      ctx.fillStyle = '#ffa94d';
+      ctx.fillText(text, w - 12, h - 12);
+      ctx.restore();
     }
 
     // Request a redraw + loop wake-up (e.g. after a control changed while paused).

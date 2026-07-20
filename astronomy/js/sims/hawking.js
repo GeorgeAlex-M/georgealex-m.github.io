@@ -57,6 +57,10 @@
         oninput: (v) => {
           this.M = v;
           this.presets.select(null);
+          if (!this._citedSlider) {
+            this._citedSlider = true;
+            this.cite('1975 Hawking - Particle Creation by Black Holes');
+          }
           this.updateReadout();
           this.poke();
         },
@@ -70,7 +74,11 @@
         },
       });
       actionButton(c, 'fast-forward the evaporation', () => {
-        if (!this.ff) { this.ff = { t0: this.t }; this.poke(); }
+        if (!this.ff) {
+          this.ff = { t0: this.t };
+          this.cite('1974 Hawking - Black Hole Explosions?');
+          this.poke();
+        }
       });
     }
 

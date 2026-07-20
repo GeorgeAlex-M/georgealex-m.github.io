@@ -50,10 +50,19 @@
         step: 0.001,
         value: this.a,
         format: (v) => fmtNum(v, 3),
-        oninput: (v) => { this.a = v; this.updateReadout(); this.poke(); },
+        oninput: (v) => {
+          this.a = v;
+          if (!this._citedSpin) {
+            this._citedSpin = true;
+            this.cite('1963 Kerr - Gravitational Field of a Spinning Mass as an Example of Algebraically Special Metrics');
+          }
+          this.updateReadout();
+          this.poke();
+        },
       });
       actionButton(c, 'run the Penrose process', () => {
         this.penrose = { stage: 'in', x: 1.2, y: 0.35, t: 0 }; // in fractions of w/h-ish
+        this.cite('1969 Penrose - Gravitational Collapse: The Role of General Relativity');
         this.poke();
       });
       actionButton(c, 'clear particles', () => { this.parts.length = 0; this.poke(); });

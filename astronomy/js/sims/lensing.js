@@ -72,6 +72,10 @@
         this.dragging = true;
         [this.lens.fx, this.lens.fy] = pos(e);
         try { cv.setPointerCapture(e.pointerId); } catch (_) { /* synthetic */ }
+        if (!this._citedDrag) {
+          this._citedDrag = true;
+          this.cite('1920 Dyson, Eddington, Davidson - A Determination of the Deflection of Light by the Sun\'s Gravitational Field');
+        }
         this.poke();
       });
       cv.addEventListener('pointermove', (e) => {
@@ -157,6 +161,10 @@
           }
           ctx.globalAlpha = 1;
           label(ctx, 'Einstein ring!', lx + tE * 0.72, ly - tE * 0.72, { color: COLORS.yellow, size: 13 });
+          if (!this._citedRing) {
+            this._citedRing = true;
+            this.cite('1936 Einstein - Lens-Like Action of a Star by the Deviation of Light in the Gravitational Field');
+          }
           continue;
         }
 

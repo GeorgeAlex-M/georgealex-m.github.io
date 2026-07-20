@@ -90,6 +90,11 @@
 
     applyPreset(key) {
       this.presetKey = key;
+      if (key === 'mercury') {
+        this.cite('1915 Einstein - Erklärung der Perihelbewegung des Merkur aus der allgemeinen Relativitätstheorie');
+      } else {
+        this.cite('1916 Schwarzschild - Über das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie');
+      }
       const p = PRESETS[key];
       this.M = p.M;
       this.rs = schwarzschildRadius(p.M);

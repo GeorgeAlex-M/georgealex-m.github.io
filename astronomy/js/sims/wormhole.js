@@ -39,7 +39,15 @@
         { label: 'Morris–Thorne + exotic matter (1988)', value: 'mt' },
       ], {
         initial: 'er',
-        onSelect: (v) => { this.mode = v; this.resetTraveler(); this.updateReadout(); this.poke(); },
+        onSelect: (v) => {
+          this.mode = v;
+          this.cite(v === 'mt'
+            ? '1988 Morris, Thorne - Wormholes in Spacetime and Their Use for Interstellar Travel: A Tool for Teaching General Relativity'
+            : '1935 Einstein, Rosen - The Particle Problem in the General Theory of Relativity');
+          this.resetTraveler();
+          this.updateReadout();
+          this.poke();
+        },
       });
       this.b0Slider = slider(c, {
         label: 'throat radius b₀',
@@ -107,6 +115,7 @@
           if (this.pinch <= 0.07 && Math.abs(t.y) < 0.3) {
             t.state = 'stuck';
             t.doneAt = 0;
+            this.cite('1962 Fuller, Wheeler - Causality and Multiply Connected Space-Time');
           }
         }
         if (Math.abs(t.y) >= 1) {

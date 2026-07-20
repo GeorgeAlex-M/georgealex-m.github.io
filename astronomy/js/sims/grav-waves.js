@@ -60,7 +60,14 @@
         { label: 'GW170817 (neutron stars)', value: 'gw170817' },
       ], {
         initial: 'gw150914',
-        onSelect: (v) => { this.presetKey = v; this.replay(); this.poke(); },
+        onSelect: (v) => {
+          this.presetKey = v;
+          this.cite(v === 'gw170817'
+            ? '2017 Abbott et al. - GW170817: Observation of Gravitational Waves from a Binary Neutron Star Inspiral'
+            : '2016 Abbott et al. (LIGO Scientific Collaboration and Virgo Collaboration) - Observation of Gravitational Waves from a Binary Black Hole Merger');
+          this.replay();
+          this.poke();
+        },
       });
       actionButton(c, 'replay the merger', () => { this.replay(); this.poke(); });
     }

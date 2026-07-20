@@ -73,6 +73,13 @@
         initial: 'play',
         onSelect: (v) => {
           this.scenario = v;
+          if (v === 'miller') {
+            this.cite('2015 James, von Tunzelmann, Franklin, Thorne - Gravitational Lensing by Spinning Black Holes in Astrophysics, and in the Movie Interstellar');
+          } else if (v === 'gps') {
+            this.cite('2003 Ashby - Relativity in the Global Positioning System');
+          } else {
+            this.cite('1905 Einstein - Zur Elektrodynamik bewegter Körper');
+          }
           this.updateReadout();
           this.poke();
         },

@@ -58,6 +58,7 @@
 
     annihilate() {
       this.boomT = this.t;
+      this.cite('1905 Einstein - Ist die Trägheit eines Körpers von seinem Energieinhalt abhängig?');
       this.poke();
     }
 
