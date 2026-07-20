@@ -40,6 +40,10 @@
   <script defer src="js/sims/emc2.js"></script>
   <script defer src="js/sims/time-dilation.js"></script>
   <script defer src="js/sims/lensing.js"></script>
+  <script defer src="js/sims/wormhole.js"></script>
+  <script defer src="js/sims/hawking.js"></script>
+  <script defer src="js/sims/grav-waves.js"></script>
+  <script defer src="js/sims/kerr.js"></script>
   <script defer src="js/main.js"></script>
 </head>
 <body>
@@ -131,10 +135,10 @@
     <div class="toc-chapter">
       <h3>Chapter V — Exotic Physics</h3>
       <ul class="toc-items">
-        <li><span class="soon">Wormholes &amp; exotic matter</span></li>
-        <li><span class="soon">Hawking radiation</span></li>
-        <li><span class="soon">Gravitational waves</span></li>
-        <li><span class="soon">Spinning black holes</span></li>
+        <li><a href="#wormholes"><span class="n" style="color:var(--pink)">13</span>Wormholes &amp; exotic matter</a></li>
+        <li><a href="#hawking"><span class="n" style="color:var(--orange)">14</span>Hawking radiation</a></li>
+        <li><a href="#grav-waves"><span class="n" style="color:var(--cyan)">15</span>Gravitational waves</a></li>
+        <li><a href="#kerr"><span class="n" style="color:var(--green)">16</span>Spinning black holes</a></li>
       </ul>
     </div>
 
@@ -671,6 +675,282 @@
   </section>
 
   <!-- ======================================================================
+       Sim 13 — Wormholes & exotic matter
+       ====================================================================== -->
+  <section class="sim-section" id="wormholes" style="--accent: var(--pink)">
+    <h2><span class="secnum">13.</span>Wormholes &amp; exotic matter</h2>
+    <p class="kicker">Two mouths, one throat, and the impossible stuff needed to keep it
+      open. Click either mouth to send a traveler through.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="wormhole" aria-label="Wormhole embedding diagram — Einstein-Rosen bridge versus traversable Morris-Thorne wormhole"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="wormhole"></div>
+    <div class="sim-readout" data-readout="wormhole" aria-live="polite"></div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--pink)">wormhole (Einstein&ndash;Rosen bridge)</dt>
+        <dd>A tunnel connecting two distant regions of spacetime — mathematically, the
+          Schwarzschild solution continued "through" the hole. Einstein and Rosen found it in
+          1935 while trying to build a model of elementary particles, of all things.</dd>
+        <dt style="color:var(--cyan)">throat</dt>
+        <dd>The narrowest cross-section of the tunnel, radius b&#8320;. In the natural
+          Einstein&ndash;Rosen version the throat is dynamic: it pinches shut so fast that not
+          even light gets across (Fuller &amp; Wheeler proved it in 1962).</dd>
+        <dt style="color:var(--yellow)">exotic matter</dt>
+        <dd>Material with <em>negative</em> energy density (as measured by light rays crossing
+          the throat) — it would "fall up". General relativity demands it to hold a throat
+          open; quantum physics grudgingly allows tiny amounts (the Casimir vacuum — Chapter IX)
+          but nobody knows how to get a Jupiter's worth.</dd>
+        <dt style="color:var(--green)">traversable wormhole</dt>
+        <dd>One you could actually cross and survive: no horizon, tides you can live through,
+          two-way traffic. Morris &amp; Thorne wrote down the requirements in 1988 — as a
+          physics <em>teaching exercise</em>, sparked by Carl Sagan's novel Contact.</dd>
+        <dt style="color:var(--muted)">embedding diagram</dt>
+        <dd>The funnel picture: 2D space curvature drawn as a 3D surface so we can see it.
+          The funnel is not "in" space — it IS space.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ z^2 = 4\,r_s\,(r - r_s) \qquad
+         ds^2 = -c^2 dt^2 + dl^2 + (b_0^2 + l^2)\,d\Omega^2 \qquad
+         \rho c^2 + p < 0 $$
+      <p class="eq-note">Flamm's funnel (1916); the Morris&ndash;Thorne metric; and the exotic-matter
+        condition the flare-out of the throat forces on you.</p>
+    </div>
+
+    <div class="citation-box">
+      <span class="cit-label">where this comes from — search these in your library:</span>
+      <span class="cit">1935 Einstein, Rosen - The Particle Problem in the General Theory of Relativity</span>
+      <span class="cit">1962 Fuller, Wheeler - Causality and Multiply Connected Space-Time</span>
+      <span class="cit">1988 Morris, Thorne - Wormholes in Spacetime and Their Use for Interstellar Travel: A Tool for Teaching General Relativity</span>
+    </div>
+
+    <div class="prose">
+      <p>Fold a piece of paper and punch through: that's the wormhole idea, and it is as old
+      as general relativity itself. The 1935 <strong>Einstein&ndash;Rosen bridge</strong> is
+      hiding inside the ordinary Schwarzschild black hole solution — but it is a trap. Fuller
+      and Wheeler showed the throat slams shut faster than light can cross it: fly in, and you
+      meet the singularity, not the other side. Watch it happen in the sim.</p>
+      <p>In 1985 Carl Sagan asked Kip Thorne how to get his heroine across the galaxy without
+      breaking physics. Thorne turned the question into a homework problem — "what does
+      general relativity require of a wormhole you could actually traverse?" — and the 1988
+      <strong>Morris&ndash;Thorne</strong> paper answered: it works, <em>if</em> the throat is
+      threaded with matter of negative energy density. Flip the sim to their mode and the
+      pink exotic matter props the funnel open; the readout computes just how much you'd
+      need — roughly a Jupiter of "negative mass" for a one-meter throat.</p>
+      <p>Does exotic matter exist? In whispers: the Casimir effect really does produce negative
+      energy densities between metal plates (we'll build it in Chapter IX). Whether nature
+      allows enough of it, in the right shape, without a horizon — that is an open question,
+      which is the honest and exciting answer.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 14 — Hawking radiation
+       ====================================================================== -->
+  <section class="sim-section" id="hawking" style="--accent: var(--orange)">
+    <h2><span class="secnum">14.</span>Hawking radiation — black holes evaporate</h2>
+    <p class="kicker">The smaller the hole, the hotter it burns. Fast-forward one to its
+      final flash.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="hawking" aria-label="Hawking radiation simulation — particle pairs at the horizon and black hole evaporation"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="hawking"></div>
+    <div class="sim-readout" data-readout="hawking" aria-live="polite"></div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--orange)">Hawking radiation</dt>
+        <dd>A faint glow every black hole must emit, discovered by Stephen Hawking in 1974 when
+          he applied quantum theory near a horizon. The energy comes out of the hole's own
+          mass — so, absurdly but inevitably, black holes <em>evaporate</em>.</dd>
+        <dt style="color:var(--cyan)">virtual particle pairs</dt>
+        <dd>The popular picture (Hawking's own, with his warning that it's heuristic): pairs of
+          particles constantly pop in and out of the vacuum; at a horizon, one partner can fall
+          in carrying negative energy while the other escapes for real. The exact calculation
+          uses quantum fields in curved spacetime — the answer is the same.</dd>
+        <dt style="color:var(--yellow)">black hole temperature</dt>
+        <dd>T = &#8463;c&sup3;/(8&pi;GMk<sub>B</sub>) — <em>inversely</em> proportional to mass. A solar-mass
+          hole sits at 60 billionths of a kelvin (colder than space itself, so today it still
+          grows); a mountain-mass hole would blaze hotter than any star.</dd>
+        <dt style="color:var(--pink)">primordial black holes</dt>
+        <dd>Hypothetical small holes forged in the Big Bang's density ripples. One born at
+          about 1.7&times;10&sup1;&sup1; kg would be finishing its evaporation — exploding —
+          right about now. Telescopes are genuinely looking for the flashes.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ T_H = \frac{\hbar c^3}{8\pi G M k_B} \qquad
+         t_{\text{evap}} = \frac{5120\,\pi\,G^2 M^3}{\hbar c^4} $$
+      <p class="eq-note">Temperature and lifetime. Note the M in the denominator of one and M&sup3; in the numerator of the other: small holes are hot and brief.</p>
+    </div>
+
+    <div class="citation-box">
+      <span class="cit-label">where this comes from — search these in your library:</span>
+      <span class="cit">1974 Hawking - Black Hole Explosions?</span>
+      <span class="cit">1975 Hawking - Particle Creation by Black Holes</span>
+    </div>
+
+    <div class="prose">
+      <p>In 1974 Hawking asked what quantum field theory does at an event horizon, and got an
+      answer nobody wanted: black holes glow. Not metaphorically — with an honest temperature,
+      an honest spectrum, and a mass that slowly ticks down as the radiation carries energy
+      away. The 1974 Nature letter is charmingly titled with a question mark.</p>
+      <p>The catch is the timescale. A solar-mass hole radiates at 10&#8315;&sup2;&#8312; watts and would
+      need ~10&#8310;&#8311; years to evaporate — 10&#8309;&#8311; times the current age of the universe — and for
+      now it can't even start, because it drinks more from the cosmic microwave background
+      (2.7 K) than it emits at 10&#8315;&#8312; K. But evaporation accelerates viciously as the
+      hole shrinks: the final second alone releases ~2&times;10&sup2;&sup2; J — millions of
+      megatons. Press <em>fast-forward</em> to skip the boring 10&#8310;&#8311; years.</p>
+      <p>Hawking radiation also opened physics' deepest active wound: if the hole evaporates
+      away completely, what happened to the information that fell in? That "information
+      paradox" is still being fought over, and whoever settles it will probably be explaining
+      quantum gravity while they're at it.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 15 — Gravitational waves
+       ====================================================================== -->
+  <section class="sim-section" id="grav-waves" style="--accent: var(--cyan)">
+    <h2><span class="secnum">15.</span>Gravitational waves — hearing spacetime</h2>
+    <p class="kicker">Two black holes spiral in, spacetime rings like a struck bell, and a
+      detector on Earth flinches by a fraction of a proton.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="gravWaves" aria-label="Binary black hole inspiral with gravitational wave chirp waveform"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="gravWaves"></div>
+    <div class="sim-readout" data-readout="gravWaves" aria-live="polite"></div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">gravitational wave</dt>
+        <dd>A ripple in spacetime itself, travelling at the speed of light, predicted by
+          Einstein in 1916. Masses in violent asymmetric motion — like two orbiting black
+          holes — shake the geometry around them the way a flicked bedsheet shakes.</dd>
+        <dt style="color:var(--yellow)">strain (h)</dt>
+        <dd>The fractional stretch-and-squeeze the wave causes: h = &Delta;L/L. GW150914 hit
+          Earth at h &asymp; 10&#8315;&sup2;&sup1; — LIGO's 4-km arms breathed by 1/200th of a
+          proton's width, and the machine heard it.</dd>
+        <dt style="color:var(--pink)">chirp</dt>
+        <dd>The signature sound of an inspiral: as the orbit shrinks, both the frequency and
+          the loudness rise — literally a rising "whoop" when converted to audio. The wave
+          frequency is exactly twice the orbital frequency.</dd>
+        <dt style="color:var(--green)">ringdown</dt>
+        <dd>After merging, the single lopsided hole vibrates its bumps away in a few
+          milliseconds, ringing like a struck bell at a pitch set by its mass and spin — the
+          final flourish of the waveform.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ f_{GW} = 2\,f_{\text{orb}} \qquad
+         h \sim \frac{2G}{c^4}\,\frac{\ddot{Q}}{r} \sim 10^{-21} $$
+      <p class="eq-note">Twice the orbital frequency (the mass pattern repeats every half orbit); strain from the changing quadrupole. The drawn chirp uses the Newtonian-order inspiral — real detection templates add full GR corrections.</p>
+    </div>
+
+    <div class="citation-box">
+      <span class="cit-label">where this comes from — search these in your library:</span>
+      <span class="cit">1975 Hulse, Taylor - Discovery of a Pulsar in a Binary System</span>
+      <span class="cit">2016 Abbott et al. (LIGO Scientific Collaboration and Virgo Collaboration) - Observation of Gravitational Waves from a Binary Black Hole Merger</span>
+      <span class="cit">2017 Abbott et al. - GW170817: Observation of Gravitational Waves from a Binary Neutron Star Inspiral</span>
+    </div>
+
+    <div class="prose">
+      <p>For sixty years gravitational waves were theory. Then came the drumroll: Hulse and
+      Taylor's binary pulsar (1975) was found to be losing orbital energy at <em>exactly</em>
+      the rate wave emission predicts — an indirect detection worth a Nobel. And at 09:50:45
+      UTC on 14 September 2015, both LIGO detectors twitched in unison: two black holes of 36
+      and 29 solar masses, 1.3 billion light-years away, had merged into one of 62.</p>
+      <p>Do the arithmetic: 36 + 29 = 65, not 62. The missing <strong>3 solar masses became
+      gravitational waves in about 0.2 seconds</strong> — a peak power greater than the light
+      of every star in the observable universe combined. E = mc&sup2; again, at full volume.</p>
+      <p>Two years later GW170817 merged two <em>neutron stars</em>: seventeen seconds of chirp,
+      then — 1.7 s after the gravitational wave — a gamma-ray burst from the same spot, then a
+      weeks-long glow showing freshly forged gold and platinum. One event: proof that gravity
+      and light travel equally fast, and that your jewelry was smelted in colliding dead
+      stars.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 16 — Spinning black holes
+       ====================================================================== -->
+  <section class="sim-section" id="kerr" style="--accent: var(--green)">
+    <h2><span class="secnum">16.</span>Spinning black holes — the ergosphere</h2>
+    <p class="kicker">Real black holes spin — and spinning ones drag spacetime around like
+      honey on a mixer. Click near one to feel it.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="kerr" aria-label="Kerr black hole — frame dragging, ergosphere, and the Penrose process"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="kerr"></div>
+    <div class="sim-readout" data-readout="kerr" aria-live="polite"></div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--green)">Kerr black hole</dt>
+        <dd>The exact solution for a <em>rotating</em> black hole, found by Roy Kerr in 1963 —
+          47 years after Schwarzschild's non-spinning one, because the math is savage. Since
+          real stars spin, real black holes are Kerr holes.</dd>
+        <dt style="color:var(--pink)">frame dragging</dt>
+        <dd>Rotating mass drags spacetime around with it. It's not a black-hole exclusive:
+          Earth does it too, and the Gravity Probe B satellite measured our planet's feeble
+          version (about 39 milliarcseconds per year) with gyroscopes in 2011.</dd>
+        <dt style="color:var(--yellow)">ergosphere</dt>
+        <dd>The region outside the horizon where dragging becomes irresistible: standing still
+          is impossible — you MUST co-rotate, even firing rockets — yet you can still escape
+          outward. The name is Greek for "work", because energy can be mined there.</dd>
+        <dt style="color:var(--cyan)">Penrose process</dt>
+        <dd>Penrose's 1969 trick: drop an object into the ergosphere, split it, let one piece
+          fall in on a negative-energy orbit — the other piece exits with MORE energy than
+          went in, paid for by the hole's spin. Up to 29% of a maximally spinning hole's
+          mass-energy is extractable this way.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ r_\pm = \frac{GM}{c^2}\left(1 \pm \sqrt{1-a_*^2}\right) \qquad
+         r_E(\theta) = \frac{GM}{c^2}\left(1 + \sqrt{1-a_*^2\cos^2\theta}\right) $$
+      <p class="eq-note">Horizon(s) and ergosphere boundary of a Kerr hole; a&#8320; = a/M is the spin from 0 (Schwarzschild) to 1 (extremal). At the equator the ergosphere always sits at r_s while the horizon shrinks with spin.</p>
+    </div>
+
+    <div class="citation-box">
+      <span class="cit-label">where this comes from — search these in your library:</span>
+      <span class="cit">1963 Kerr - Gravitational Field of a Spinning Mass as an Example of Algebraically Special Metrics</span>
+      <span class="cit">1969 Penrose - Gravitational Collapse: The Role of General Relativity</span>
+      <span class="cit">2011 Everitt et al. - Gravity Probe B: Final Results of a Space Experiment to Test General Relativity</span>
+    </div>
+
+    <div class="prose">
+      <p>Everything in the sky spins, so when a star collapses, its black hole inherits the
+      rotation — sped up like a figure skater pulling in her arms. Astronomers routinely
+      measure spins near the limit: Cygnus X-1 is above 0.9 of maximum, and the hole that
+      makes Interstellar's time trick work needs 1 &minus; 10&#8315;&sup1;&#8308; of it.</p>
+      <p>Spin changes the anatomy you met in section 1. The horizon shrinks (drag the slider),
+      and a new region appears — the <strong>ergosphere</strong> — where spacetime rotates so
+      strongly that "hovering in place" would require moving backwards faster than light.
+      Drop test particles near the hole and watch them get swept into rotation no matter how
+      they arrive.</p>
+      <p>Strangest of all, the ergosphere is a power station. Run the <strong>Penrose
+      process</strong> in the sim: the escaping fragment leaves faster than the whole package
+      arrived, and the black hole slows down to pay the bill. Astrophysicists suspect related
+      mechanisms (magnetic versions of the same bookkeeping) launch the jets of quasars —
+      black holes as the engines of the brightest objects in the universe.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
        The Library
        ====================================================================== -->
   <section class="sim-section" id="library" style="--accent: var(--orange)">
@@ -686,12 +966,23 @@
       <li><span class="yr">1916</span>Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</li>
       <li><span class="yr">1920</span>Dyson, Eddington, Davidson - A Determination of the Deflection of Light by the Sun's Gravitational Field, from Observations Made at the Total Eclipse of May 29, 1919</li>
       <li><span class="yr">1932</span>Cockcroft, Walton - Experiments with High Velocity Positive Ions. II. The Disintegration of Elements by High Velocity Protons</li>
+      <li><span class="yr">1935</span>Einstein, Rosen - The Particle Problem in the General Theory of Relativity</li>
       <li><span class="yr">1936</span>Einstein - Lens-Like Action of a Star by the Deviation of Light in the Gravitational Field</li>
+      <li><span class="yr">1962</span>Fuller, Wheeler - Causality and Multiply Connected Space-Time</li>
+      <li><span class="yr">1963</span>Kerr - Gravitational Field of a Spinning Mass as an Example of Algebraically Special Metrics</li>
       <li><span class="yr">1965</span>Penrose - Gravitational Collapse and Space-Time Singularities</li>
+      <li><span class="yr">1969</span>Penrose - Gravitational Collapse: The Role of General Relativity</li>
       <li><span class="yr">1972</span>Webster, Murdin - Cygnus X-1&mdash;a Spectroscopic Binary with a Heavy Companion?</li>
       <li><span class="yr">1973</span>Misner, Thorne, Wheeler - Gravitation</li>
+      <li><span class="yr">1974</span>Hawking - Black Hole Explosions?</li>
+      <li><span class="yr">1975</span>Hawking - Particle Creation by Black Holes</li>
+      <li><span class="yr">1975</span>Hulse, Taylor - Discovery of a Pulsar in a Binary System</li>
+      <li><span class="yr">1988</span>Morris, Thorne - Wormholes in Spacetime and Their Use for Interstellar Travel: A Tool for Teaching General Relativity</li>
       <li><span class="yr">2003</span>Ashby - Relativity in the Global Positioning System</li>
+      <li><span class="yr">2011</span>Everitt et al. - Gravity Probe B: Final Results of a Space Experiment to Test General Relativity</li>
       <li><span class="yr">2015</span>James, von Tunzelmann, Franklin, Thorne - Gravitational Lensing by Spinning Black Holes in Astrophysics, and in the Movie Interstellar</li>
+      <li><span class="yr">2016</span>Abbott et al. (LIGO Scientific Collaboration and Virgo Collaboration) - Observation of Gravitational Waves from a Binary Black Hole Merger</li>
+      <li><span class="yr">2017</span>Abbott et al. - GW170817: Observation of Gravitational Waves from a Binary Neutron Star Inspiral</li>
       <li><span class="yr">2019</span>Event Horizon Telescope Collaboration - First M87 Event Horizon Telescope Results. I. The Shadow of the Supermassive Black Hole</li>
     </ul>
   </section>
