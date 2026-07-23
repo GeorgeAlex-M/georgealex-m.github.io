@@ -40,6 +40,9 @@
   <script defer src="js/sims/emc2.js"></script>
   <script defer src="js/sims/time-dilation.js"></script>
   <script defer src="js/sims/lensing.js"></script>
+  <script defer src="js/sims/big-bang.js"></script>
+  <script defer src="js/sims/dark-matter.js"></script>
+  <script defer src="js/sims/dark-energy.js"></script>
   <script defer src="js/sims/wormhole.js"></script>
   <script defer src="js/sims/hawking.js"></script>
   <script defer src="js/sims/grav-waves.js"></script>
@@ -126,9 +129,9 @@
     <div class="toc-chapter">
       <h3>Chapter IV — Cosmology</h3>
       <ul class="toc-items">
-        <li><span class="soon">The Big Bang &amp; the expanding universe</span></li>
-        <li><span class="soon">Dark matter</span></li>
-        <li><span class="soon">Dark energy</span></li>
+        <li><a href="#big-bang"><span class="n" style="color:var(--orange)">10</span>The Big Bang &amp; the expanding universe</a></li>
+        <li><a href="#dark-matter"><span class="n" style="color:var(--cyan)">11</span>Dark matter</a></li>
+        <li><a href="#dark-energy"><span class="n" style="color:var(--pink)">12</span>Dark energy</a></li>
       </ul>
     </div>
 
@@ -699,6 +702,245 @@
   </section>
 
   <!-- ======================================================================
+       Sim 10 — The Big Bang & the expanding universe
+       ====================================================================== -->
+  <section class="sim-section" id="big-bang" style="--accent: var(--orange)">
+    <h2><span class="secnum">10.</span>The Big Bang &amp; the expanding universe</h2>
+    <p class="kicker">Drag the clock from the hot dense start to today. Every galaxy sees
+      all the others flee — click any one to make it "home" and prove there is no center.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      the expansion (Hubble 1929), the leftover heat glow of the hot early universe (the CMB,
+      1965, now mapped to millionths of a degree), and the abundances of light elements all
+      independently confirm a hot dense beginning ~13.8 billion years ago. What happened in the
+      first instant, and what "banged", remain open.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="bigBang" aria-label="Expanding universe — a grid of galaxies scaled by the cosmic scale factor, with a CMB thermometer"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="bigBang"></div>
+    <div class="sim-readout" data-readout="bigBang" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1922 Friedmann - &Uuml;ber die Kr&uuml;mmung des Raumes (On the Curvature of Space)</span>
+      <span class="cit">1927 Lema&icirc;tre - Un Univers homog&egrave;ne de masse constante et de rayon croissant rendant compte de la vitesse radiale des n&eacute;buleuses extra-galactiques</span>
+      <span class="cit">1929 Hubble - A Relation between Distance and Radial Velocity among Extra-Galactic Nebulae</span>
+      <span class="cit">1965 Penzias, Wilson - A Measurement of Excess Antenna Temperature at 4080 Mc/s</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--orange)">the Big Bang</dt>
+        <dd>Not an explosion <em>in</em> space, but an expansion <em>of</em> space from a hot,
+          dense state ~13.8 billion years ago. Run the movie backwards and everything crowds
+          together and heats up; it does <em>not</em> converge on a point you could stand next
+          to. Lema&icirc;tre called the start the "primeval atom".</dd>
+        <dt style="color:var(--cyan)">the scale factor a(t)</dt>
+        <dd>One number describing the size of the universe. a = 1 today; a = 0.5 means all
+          cosmic distances were half as big. Space stretches by growing a — galaxies barely
+          move <em>through</em> space, space itself gets bigger between them.</dd>
+        <dt style="color:var(--green)">Hubble's law (v = H&#8320;d)</dt>
+        <dd>The farther a galaxy, the faster it recedes — and every observer, anywhere, sees
+          exactly this. That is what "no center" means: expansion looks the same from every
+          raisin in the rising loaf.</dd>
+        <dt style="color:var(--pink)">redshift (z)</dt>
+        <dd>Light stretched by the expansion it crossed: 1 + z = 1/a. A galaxy we see at
+          z = 1 emitted its light when the universe was half its present size.</dd>
+        <dt style="color:var(--yellow)">the cosmic microwave background (CMB)</dt>
+        <dd>When the universe had cooled to ~3000 K (at a &asymp; 1/1100), it became transparent
+          and released a flash of light. Stretched by expansion, that flash is now a 2.725 K
+          microwave glow filling the whole sky — the oldest light there is, and the strongest
+          evidence for the hot Big Bang.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \left(\frac{\dot a}{a}\right)^2 = H_0^2\!\left(\frac{\Omega_m}{a^3} + \Omega_\Lambda\right)
+         \qquad 1+z = \frac{1}{a} \qquad T = \frac{2.725\ \text{K}}{a} $$
+      <p class="eq-note">The Friedmann equation (flat universe, &Omega;_m = 0.315 matter, &Omega;_&Lambda; = 0.685 dark energy) — the sim integrates it to get a(t); redshift and CMB temperature follow. H&#8320; &asymp; 67&ndash;73 km/s/Mpc (the "Hubble tension" is a live research puzzle).</p>
+    </div>
+
+    <div class="prose">
+      <p>In 1929 Edwin Hubble noticed that nearly every galaxy is racing away from us, and the
+      farther one is, the faster it goes. The naive reading — "we're at the center of an
+      explosion" — is wrong, and the sim shows why: <strong>click any galaxy to make it
+      home</strong>, and it sees precisely the same law. Space itself is expanding, like dots
+      on an inflating balloon; there is no special dot.</p>
+      <p>Wind the clock back and the galaxies pile together and the temperature climbs. Georges
+      Lema&icirc;tre — a Belgian priest and physicist — worked this out from Einstein's equations
+      in 1927, two years before Hubble's data, and proposed the universe began from a hot,
+      dense "primeval atom". Einstein initially told him "your calculations are correct, but
+      your physics is abominable." Lema&icirc;tre was right.</p>
+      <p>The clincher came by accident in 1965: Penzias and Wilson, hunting for the source of a
+      persistent hiss in their antenna, had stumbled onto the <strong>cosmic microwave
+      background</strong> — the cooled-down flash from when the universe first turned
+      transparent. Drag the clock to a &asymp; 1/1100 and watch the thermometer hit ~3000 K:
+      that is the moment that glow was set free, now stretched to a chilly 2.725 K. It is the
+      baby photo of the cosmos, and it matches the hot Big Bang to extraordinary precision.</p>
+    </div>
+
+    <blockquote class="quote-box">
+      &ldquo;The evolution of the world can be compared to a display of fireworks that has just
+      ended: some few red wisps, ashes and smoke.&rdquo;
+      <span class="attrib">* Georges Lema&icirc;tre</span>
+    </blockquote>
+  </section>
+
+  <!-- ======================================================================
+       Sim 11 — Dark matter
+       ====================================================================== -->
+  <section class="sim-section" id="dark-matter" style="--accent: var(--cyan)">
+    <h2><span class="secnum">11.</span>Dark matter</h2>
+    <p class="kicker">Galaxies spin far too fast for the stuff we can see. Toggle the invisible
+      halo and watch the outer stars fall into line.</p>
+
+    <p class="evidence ev-partial"><span class="ev-dot"></span><strong>measured effect, unknown identity</strong> —
+      that galaxies and clusters contain ~5&times; more gravitating mass than their visible
+      matter is measured many independent ways (rotation curves, lensing, the CMB, colliding
+      clusters). <em>What</em> dark matter is made of is still unknown — no particle has been
+      caught. Alternative-gravity theories exist but fit the full evidence worse.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="darkMatter" aria-label="Galaxy rotation curve — visible-matter prediction versus the flat observed curve with a dark-matter halo"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="darkMatter"></div>
+    <div class="sim-readout" data-readout="darkMatter" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1933 Zwicky - Die Rotverschiebung von extragalaktischen Nebeln (The Redshift of Extragalactic Nebulae)</span>
+      <span class="cit">1970 Rubin, Ford - Rotation of the Andromeda Nebula from a Spectroscopic Survey of Emission Regions</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">rotation curve</dt>
+        <dd>A plot of how fast stars orbit versus their distance from the galaxy's center. It's
+          the galaxy's speedometer — and reading it is how the missing mass was found.</dd>
+        <dt style="color:var(--orange)">Keplerian falloff</dt>
+        <dd>What you'd expect if a galaxy's mass sat in its bright middle: outer stars, like
+          outer planets, should orbit slower with distance (v &prop; 1/&radic;r). Real galaxies
+          refuse to do this.</dd>
+        <dt style="color:var(--cyan)">flat rotation curve</dt>
+        <dd>The shocking observation: orbital speed stays roughly constant (~220 km/s for the
+          Milky Way) way out past the visible stars. That needs far more mass, spread far
+          wider, than anything glowing.</dd>
+        <dt style="color:var(--pink)">dark-matter halo</dt>
+        <dd>A vast, roughly spherical cloud of unseen mass enveloping each galaxy, five times
+          heavier than all its stars and gas. It doesn't emit, absorb, or reflect light — we
+          know it only by its gravity.</dd>
+        <dt style="color:var(--muted)">gravitational evidence</dt>
+        <dd>Dark matter also bends light (lensing), shapes the CMB's pattern, and stayed behind
+          when two galaxy clusters collided (the Bullet Cluster) — several independent
+          fingerprints of the same missing mass.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ v(r) = \sqrt{\frac{G\,M(<r)}{r}} \qquad
+         M_{\text{halo}}(<r) = 4\pi \rho_0 r_c^2\!\left(r - r_c\arctan\frac{r}{r_c}\right) $$
+      <p class="eq-note">Orbital speed depends only on the mass enclosed within the orbit. Adding a pseudo-isothermal dark halo makes M keep growing with r, which flattens v(r) — exactly what's observed.</p>
+    </div>
+
+    <div class="prose">
+      <p>In 1933 Fritz Zwicky clocked galaxies whipping around inside the Coma Cluster so fast
+      that the cluster's visible mass could never hold them — it should have flown apart. He
+      coined <em>dunkle Materie</em>, dark matter, and was mostly ignored for forty years.</p>
+      <p>Then in the 1970s Vera Rubin measured the speedometer of the Andromeda galaxy star by
+      star, expecting the outer stars to lag like distant planets. They didn't: the curve went
+      <strong>flat</strong> and stayed flat, far beyond the glowing disk. Toggle the halo off in
+      the sim and the orange curve dives (that's all the visible matter can do); toggle it on
+      and the outer tracer stars speed up to match the flat observed curve. The only way to
+      hold a galaxy together spinning like that is a huge halo of invisible mass — about five
+      times all the stars combined.</p>
+      <p>Honest status: the <em>gravity</em> is beyond doubt and confirmed five independent
+      ways. But every attempt to catch a dark-matter particle has so far come up empty, and
+      that is one of the biggest open questions in physics — exactly the kind of frontier where
+      the next real discovery is hiding.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 12 — Dark energy
+       ====================================================================== -->
+  <section class="sim-section" id="dark-energy" style="--accent: var(--pink)">
+    <h2><span class="secnum">12.</span>Dark energy — the accelerating universe</h2>
+    <p class="kicker">Dial up the matter and the dark energy and watch the universe's whole
+      future change — expand forever, coast, accelerate, or crunch.</p>
+
+    <p class="evidence ev-partial"><span class="ev-dot"></span><strong>measured effect, unknown identity</strong> —
+      that the expansion is <em>speeding up</em> was measured with distant supernovae in 1998&ndash;99
+      (Nobel Prize 2011) and confirmed by the CMB and galaxy surveys. The cause — a "dark energy"
+      making up ~68% of the universe — is real in its effects but deeply mysterious in its nature.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="darkEnergy" aria-label="Scale-factor histories for different universes, showing acceleration, coasting, and recollapse"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="darkEnergy"></div>
+    <div class="sim-readout" data-readout="darkEnergy" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1998 Riess et al. - Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant</span>
+      <span class="cit">1999 Perlmutter et al. - Measurements of &Omega; and &Lambda; from 42 High-Redshift Supernovae</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--pink)">dark energy</dt>
+        <dd>A form of energy filling empty space itself that pushes the expansion to accelerate.
+          It's about 68% of everything, yet its density is fantastically small — it only wins on
+          the largest scales, over billions of years.</dd>
+        <dt style="color:var(--yellow)">the cosmological constant (&Lambda;)</dt>
+        <dd>The simplest dark energy: a constant energy of the vacuum. Einstein added &Lambda; in
+          1917 to keep the universe static, dropped it as his "biggest blunder" when Hubble
+          found expansion — and it came roaring back in 1998 as the driver of acceleration.</dd>
+        <dt style="color:var(--cyan)">&Omega;_m and &Omega;_&Lambda;</dt>
+        <dd>The fractions of the universe's contents that are matter (&Omega;_m) versus dark
+          energy (&Omega;_&Lambda;). Ours is measured near &Omega;_m = 0.31, &Omega;_&Lambda; = 0.69,
+          and they sum to ~1 (a geometrically flat universe).</dd>
+        <dt style="color:var(--orange)">Big Crunch vs Big Freeze</dt>
+        <dd>Fate depends on the mix. Enough matter and no dark energy: gravity wins, everything
+          recollapses (Big Crunch). Dark energy dominating (our case): expansion accelerates
+          forever toward a cold, empty, dark future (the Big Freeze).</dd>
+        <dt style="color:var(--green)">standard candle</dt>
+        <dd>A Type Ia supernova — an exploding white dwarf with a known true brightness. Compare
+          apparent to true brightness and you get its distance; its redshift gives the expansion
+          then. That's how the acceleration was caught.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \frac{\ddot a}{a} = -\frac{4\pi G}{3}\!\left(\rho + \frac{3p}{c^2}\right)
+         \qquad a_{\text{accel}} = \left(\frac{\Omega_m}{2\,\Omega_\Lambda}\right)^{1/3} $$
+      <p class="eq-note">The acceleration equation: ordinary matter (p &asymp; 0) decelerates, but dark energy has negative pressure and pushes. Acceleration begins once the universe grows past a_accel — for our values, around redshift z &asymp; 0.6.</p>
+    </div>
+
+    <div class="prose">
+      <p>By the 1990s two rival teams were measuring the expansion's history with exploding
+      stars, fully expecting to see it <em>slowing down</em> — gravity should be putting on the
+      brakes. In 1998 they found the opposite: distant supernovae were fainter, hence farther,
+      than a decelerating universe allowed. The expansion is <strong>speeding up</strong>. It
+      won both teams the 2011 Nobel Prize and rewrote the cosmos: something with anti-gravity
+      pressure, "dark energy", dominates it.</p>
+      <p>Play with the two dials. Matter always pulls the curves down; dark energy curves them
+      up. With enough matter and no dark energy the universe turns around and <strong>recollapses
+      into a Big Crunch</strong>; with our measured mix (&Omega;_m &asymp; 0.31,
+      &Omega;_&Lambda; &asymp; 0.69) it coasts, then — around redshift z &asymp; 0.6, roughly 6
+      billion years ago — tips into <strong>acceleration</strong> and runs away forever. The sim
+      marks that hand-off on our curve.</p>
+      <p>Take it seriously and it's humbling: the matter you can see is under 5% of the universe.
+      About 27% is dark matter and 68% is dark energy — 95% of reality is made of things we can
+      measure the gravity of but cannot yet name. Which is not a failure; it's the map of where
+      the undiscovered country begins.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
        Sim 13 — Wormholes & exotic matter
        ====================================================================== -->
   <section class="sim-section" id="wormholes" style="--accent: var(--pink)">
@@ -997,13 +1239,19 @@
       <li><span class="yr">1915</span>Einstein - Erkl&auml;rung der Perihelbewegung des Merkur aus der allgemeinen Relativit&auml;tstheorie (Explanation of the Perihelion Motion of Mercury from the General Theory of Relativity)</li>
       <li><span class="yr">1916</span>Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</li>
       <li><span class="yr">1920</span>Dyson, Eddington, Davidson - A Determination of the Deflection of Light by the Sun's Gravitational Field, from Observations Made at the Total Eclipse of May 29, 1919</li>
+      <li><span class="yr">1922</span>Friedmann - &Uuml;ber die Kr&uuml;mmung des Raumes (On the Curvature of Space)</li>
+      <li><span class="yr">1927</span>Lema&icirc;tre - Un Univers homog&egrave;ne de masse constante et de rayon croissant rendant compte de la vitesse radiale des n&eacute;buleuses extra-galactiques</li>
+      <li><span class="yr">1929</span>Hubble - A Relation between Distance and Radial Velocity among Extra-Galactic Nebulae</li>
+      <li><span class="yr">1933</span>Zwicky - Die Rotverschiebung von extragalaktischen Nebeln (The Redshift of Extragalactic Nebulae)</li>
       <li><span class="yr">1932</span>Cockcroft, Walton - Experiments with High Velocity Positive Ions. II. The Disintegration of Elements by High Velocity Protons</li>
       <li><span class="yr">1935</span>Einstein, Rosen - The Particle Problem in the General Theory of Relativity</li>
       <li><span class="yr">1936</span>Einstein - Lens-Like Action of a Star by the Deviation of Light in the Gravitational Field</li>
       <li><span class="yr">1962</span>Fuller, Wheeler - Causality and Multiply Connected Space-Time</li>
       <li><span class="yr">1963</span>Kerr - Gravitational Field of a Spinning Mass as an Example of Algebraically Special Metrics</li>
       <li><span class="yr">1965</span>Penrose - Gravitational Collapse and Space-Time Singularities</li>
+      <li><span class="yr">1965</span>Penzias, Wilson - A Measurement of Excess Antenna Temperature at 4080 Mc/s</li>
       <li><span class="yr">1969</span>Penrose - Gravitational Collapse: The Role of General Relativity</li>
+      <li><span class="yr">1970</span>Rubin, Ford - Rotation of the Andromeda Nebula from a Spectroscopic Survey of Emission Regions</li>
       <li><span class="yr">1972</span>Hafele, Keating - Around-the-World Atomic Clocks: Observed Relativistic Time Gains</li>
       <li><span class="yr">1972</span>Webster, Murdin - Cygnus X-1&mdash;a Spectroscopic Binary with a Heavy Companion?</li>
       <li><span class="yr">1973</span>Misner, Thorne, Wheeler - Gravitation</li>
@@ -1011,6 +1259,8 @@
       <li><span class="yr">1975</span>Hawking - Particle Creation by Black Holes</li>
       <li><span class="yr">1975</span>Hulse, Taylor - Discovery of a Pulsar in a Binary System</li>
       <li><span class="yr">1988</span>Morris, Thorne - Wormholes in Spacetime and Their Use for Interstellar Travel: A Tool for Teaching General Relativity</li>
+      <li><span class="yr">1998</span>Riess et al. - Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant</li>
+      <li><span class="yr">1999</span>Perlmutter et al. - Measurements of &Omega; and &Lambda; from 42 High-Redshift Supernovae</li>
       <li><span class="yr">2003</span>Ashby - Relativity in the Global Positioning System</li>
       <li><span class="yr">2011</span>Everitt et al. - Gravity Probe B: Final Results of a Space Experiment to Test General Relativity</li>
       <li><span class="yr">2015</span>James, von Tunzelmann, Franklin, Thorne - Gravitational Lensing by Spinning Black Holes in Astrophysics, and in the Movie Interstellar</li>
