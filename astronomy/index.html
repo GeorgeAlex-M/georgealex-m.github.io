@@ -47,6 +47,10 @@
   <script defer src="js/sims/hawking.js"></script>
   <script defer src="js/sims/grav-waves.js"></script>
   <script defer src="js/sims/kerr.js"></script>
+  <script defer src="js/sims/godel.js"></script>
+  <script defer src="js/sims/grandfather.js"></script>
+  <script defer src="js/sims/many-worlds.js"></script>
+  <script defer src="js/sims/laplace.js"></script>
   <script defer src="js/main.js"></script>
 </head>
 <body>
@@ -207,10 +211,10 @@
     <div class="toc-chapter">
       <h3>Chapter XII — Time, Determinism &amp; Many Worlds</h3>
       <ul class="toc-items">
-        <li><span class="soon">G&ouml;del's rotating universe — time loops in Einstein's equations</span></li>
-        <li><span class="soon">The grandfather paradox: Novikov vs many worlds</span></li>
-        <li><span class="soon">Everett's many worlds</span></li>
-        <li><span class="soon">Laplace's demon — can a computer calculate the past or future?</span></li>
+        <li><a href="#godel"><span class="n" style="color:var(--orange)">40</span>G&ouml;del's rotating universe</a></li>
+        <li><a href="#grandfather"><span class="n" style="color:var(--red)">41</span>The grandfather paradox</a></li>
+        <li><a href="#many-worlds"><span class="n" style="color:var(--cyan)">42</span>Everett's many worlds</a></li>
+        <li><a href="#laplace"><span class="n" style="color:var(--green)">43</span>Laplace's demon &amp; the Devs question</a></li>
       </ul>
     </div>
 
@@ -1231,6 +1235,329 @@
   </section>
 
   <!-- ======================================================================
+       Sim 40 — Gödel's rotating universe
+       ====================================================================== -->
+  <section class="sim-section" id="godel" style="--accent: var(--orange)">
+    <h2><span class="secnum">40.</span>G&ouml;del's rotating universe — time loops in Einstein's equations</h2>
+    <p class="kicker">In 1949, Einstein's closest colleague found a universe — allowed by
+      Einstein's own equations — where flying in a big enough circle lands you in your own
+      past. Click anywhere to probe the light cones; send the ship around.</p>
+
+    <p class="evidence ev-speculative"><span class="ev-dot"></span><strong>speculative</strong> —
+      the G&ouml;del metric is an exact, mathematically valid solution of the tested Einstein
+      field equations. But it is NOT our universe: ours expands and shows no global rotation
+      (the CMB is isotropic to 1 part in 10&#8309;). It proves general relativity <em>permits</em>
+      time loops — not that any exist.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="godel" aria-label="Gödel rotating universe — light cones tilting until circles become closed timelike curves"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="godel"></div>
+    <div class="sim-readout" data-readout="godel" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1949 G&ouml;del - An Example of a New Type of Cosmological Solutions of Einstein's Field Equations of Gravitation</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">light cone</dt>
+        <dd>At every event, the set of directions a flash of light can take — your absolute
+          speed limit drawn as a cone. Your entire possible future lies INSIDE your light
+          cone; you cannot steer out of it, only tilt it by traveling through curved
+          spacetime.</dd>
+        <dt style="color:var(--pink)">closed timelike curve (CTC)</dt>
+        <dd>A path through spacetime that always moves slower than light — perfectly legal
+          motion — yet loops back to its own starting <em>event</em>: same place AND same
+          time. Physics' polite term for a time machine.</dd>
+        <dt style="color:var(--orange)">the G&ouml;del universe</dt>
+        <dd>An exact solution where matter everywhere rotates. The rotation tilts light cones
+          more and more with distance from any axis, until beyond a critical radius the cones
+          tip past horizontal — and ordinary circular flight becomes travel into the past.</dd>
+        <dt style="color:var(--green)">why ours isn't it</dt>
+        <dd>The G&ouml;del universe doesn't expand (ours does) and rotates (ours doesn't —
+          any global spin would smear a pattern into the CMB, and none is seen). G&ouml;del's
+          point was deeper: if EINSTEIN'S equations allow universes where time loops, what
+          exactly IS time? Einstein admitted the papers "disturbed" him.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ ds^2 = \frac{1}{2\omega^2}\left[-(dt + e^{x}dz)^2 + dx^2 + \tfrac{1}{2}e^{2x}dz^2 + dy^2\right] $$
+      <p class="eq-note">The G&ouml;del metric (one standard form): a homogeneous, rotating dust universe with cosmological constant. The critical radius where circles turn timelike scales as 1/&omega; — spin the universe faster and the time-loop zone closes in.</p>
+    </div>
+
+    <div class="prose">
+      <p>Kurt G&ouml;del — the logician who broke mathematics with incompleteness — gave
+      Einstein a 70th-birthday present nobody wanted: a universe obeying general relativity
+      in which <strong>closed timelike curves pass through every point</strong>. No rockets
+      breaking light speed, no exotic tricks — just ordinary matter, globally rotating, and
+      the geometry does the rest. The sim shows the mechanism: rotation drags light cones
+      over sideways, and once a cone tips past "horizontal", moving <em>forward</em> in your
+      own time can mean moving <em>backward</em> in the universe's.</p>
+      <p>Watch the readout when the ship completes its loop: its own clock only ever ticked
+      forward. Every second felt normal on board. It simply arrived at the event where it
+      started — before it left, according to the rest of the cosmos. That is what makes CTCs
+      philosophically vicious: nothing locally illegal ever happens.</p>
+      <p>G&ouml;del's actual point was not "let's build a time machine" — it was an attack on
+      the reality of time itself: if the equations of our best theory of spacetime permit
+      worlds where "earlier" and "later" lose global meaning, then time's flow may not be a
+      fundamental feature of reality. Einstein took the point seriously, and modern physics
+      still argues about it. Honest status: a real solution, a real philosophical wound — and
+      almost certainly not our cosmos.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 41 — The grandfather paradox
+       ====================================================================== -->
+  <section class="sim-section" id="grandfather" style="--accent: var(--red)">
+    <h2><span class="secnum">41.</span>The grandfather paradox — Novikov vs many worlds</h2>
+    <p class="kicker">Physics' cleanest version uses a billiard ball: it exits the time
+      machine, then knocks its younger self away from the entrance. Paradox? Aim the ball
+      yourself and see how each theory escapes.</p>
+
+    <p class="evidence ev-speculative"><span class="ev-dot"></span><strong>speculative</strong> —
+      no time machine exists, and Hawking's chronology protection conjecture argues nature
+      forbids building one. What IS solid mathematics: for billiard balls entering wormhole
+      time machines, self-consistent trajectories were proven to exist for every initial aim
+      (1990) — general relativity never actually generates a contradiction.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="grandfather" aria-label="Billiard-ball grandfather paradox — self-consistent Novikov loop versus many-worlds branching"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="grandfather"></div>
+    <div class="sim-readout" data-readout="grandfather" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1990 Friedman, Morris, Novikov, Echeverria, Klinkhammer, Thorne, Yurtsever - Cauchy Problem in Spacetimes with Closed Timelike Curves</span>
+      <span class="cit">1991 Deutsch - Quantum Mechanics near Closed Timelike Lines</span>
+      <span class="cit">1992 Hawking - Chronology Protection Conjecture</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--red)">the grandfather paradox</dt>
+        <dd>Go back in time, prevent your grandfather from meeting your grandmother — then who
+          went back? Popularized by 1940s science fiction (not Einstein, despite the legend);
+          physics inherited it once G&ouml;del and wormholes made time loops a serious
+          mathematical question.</dd>
+        <dt style="color:var(--green)">Novikov self-consistency principle</dt>
+        <dd>Igor Novikov's answer: the universe permits only <em>self-consistent</em>
+          histories. You can visit the past — you cannot change it, because your visit was
+          always part of it. For the billiard ball this was proven, not assumed: every aim has
+          a consistent solution (often a glancing blow that redirects the young ball INTO the
+          machine, causing exactly the trip that caused the blow).</dd>
+        <dt style="color:var(--cyan)">the many-worlds escape (Deutsch)</dt>
+        <dd>David Deutsch's quantum answer: the traveler emerges in a DIFFERENT branch of the
+          universe. You can happily "prevent" the trip there — no contradiction, because the
+          branch where the trip happened still exists. Grandfather-safe, at the price of
+          buying the whole many-worlds picture (sim 42).</dd>
+        <dt style="color:var(--orange)">chronology protection conjecture</dt>
+        <dd>Hawking's proposal that the laws of physics conspire to prevent macroscopic time
+          machines from ever forming — quantum effects blow up any would-be CTC region ("to
+          make the world safe for historians"). Unproven; awaits quantum gravity.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ x(t_{\text{exit}}) = x(t_{\text{entry}} - \Delta t) \qquad
+         \text{consistency: the loop must solve } f(x) = x $$
+      <p class="eq-note">A time machine imposes a boundary condition on history: whatever exits at the earlier mouth must be exactly what later enters. Solutions are fixed points — histories that cause themselves.</p>
+    </div>
+
+    <div class="prose">
+      <p>To strip the paradox of free-will confusion, Thorne's group replaced the time
+      traveler with a billiard ball and a wormhole whose far mouth exits five minutes in the
+      past. Aim the ball at the entrance and its older self can emerge <em>first</em> and
+      knock the younger ball off course — apparently preventing the very trip that produced
+      it. That is the grandfather paradox with no grandfather, just Newtonian mechanics plus
+      one time loop.</p>
+      <p>The 1990 result is the surprise: work out the mechanics honestly and <strong>a
+      self-consistent solution always exists</strong> — typically the emerging ball strikes a
+      <em>glancing</em> blow that deflects the young ball so it still enters the machine, on
+      exactly the trajectory needed to deliver that glancing blow. History books stay
+      consistent without anyone enforcing it. (For some aims there are even <em>several</em>
+      consistent solutions — and classical physics is silent on which one happens.)</p>
+      <p>Deutsch's 1991 alternative dissolves the paradox differently: quantum mechanics near
+      a time loop naturally sends the traveler into another Everett branch, where changing
+      "the past" changes <em>a</em> past, not <em>your</em> past. And looming over both:
+      Hawking's conjecture that nature never lets the loop form at all. Three live answers,
+      zero experiments — flagged accordingly.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 42 — Everett's many worlds
+       ====================================================================== -->
+  <section class="sim-section" id="many-worlds" style="--accent: var(--cyan)">
+    <h2><span class="secnum">42.</span>Everett's many worlds</h2>
+    <p class="kicker">One quantum coin, two stories: the universe rolls dice — or the
+      universe splits, and a copy of you sees each result. Same math, measure it yourself.</p>
+
+    <p class="evidence ev-partial"><span class="ev-dot"></span><strong>measured math, unresolved story</strong> —
+      the quantum statistics (the Born rule) are among the most precisely confirmed facts in
+      science, and this sim reproduces them. Whether outcomes COLLAPSE (Copenhagen) or BRANCH
+      (Everett) is an interpretation question: both predict identical experiments, and none
+      performed to date can tell them apart.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="manyWorlds" aria-label="Quantum measurement — Copenhagen collapse statistics versus the Everett branching world-tree"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="manyWorlds"></div>
+    <div class="sim-readout" data-readout="manyWorlds" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1935 Schr&ouml;dinger - Die gegenw&auml;rtige Situation in der Quantenmechanik (The Present Situation in Quantum Mechanics)</span>
+      <span class="cit">1957 Everett - "Relative State" Formulation of Quantum Mechanics</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">superposition</dt>
+        <dd>A quantum system genuinely occupying a blend of states — &alpha;|&uarr;&#10217; + &beta;|&darr;&#10217; —
+          until measured. Not "we don't know which": interference experiments prove the blend
+          is physically real (that's Chapter XI's double slit).</dd>
+        <dt style="color:var(--yellow)">the Born rule</dt>
+        <dd>The probability of seeing each outcome equals the amplitude squared: P(&uarr;) = |&alpha;|&sup2;.
+          Set the slider, measure many times, and watch your tally converge to it — this part
+          is measured fact, whatever story you attach.</dd>
+        <dt style="color:var(--pink)">collapse (Copenhagen)</dt>
+        <dd>The textbook story: measurement makes the superposition randomly "snap" to one
+          outcome, and the rest simply stops existing. Simple, effective — and silent about
+          what counts as a "measurement" or why. Schr&ouml;dinger built his cat to mock
+          exactly this vagueness.</dd>
+        <dt style="color:var(--cyan)">branching (Everett)</dt>
+        <dd>Hugh Everett's 1957 story: nothing ever collapses. The measuring device — and you —
+          join the superposition, so after the measurement there are two non-communicating
+          branches, each containing a you certain of "their" result. Randomness is what a
+          branch feels from inside. The price: an unimaginably vast multiverse. The prize: no
+          special "measurement" magic.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ |\psi\rangle = \alpha|\!\uparrow\rangle + \beta|\!\downarrow\rangle
+         \quad\xrightarrow{\ \text{measure}\ }\quad
+         P(\uparrow) = |\alpha|^2 \;\;\text{(collapse?)}
+         \quad\text{or}\quad
+         \alpha\,|\!\uparrow\rangle|Y_\uparrow\rangle + \beta\,|\!\downarrow\rangle|Y_\downarrow\rangle \;\;\text{(branch)} $$
+      <p class="eq-note">Left of the "or": Copenhagen keeps one term. Right: Everett keeps both — Y is you, entangled with the outcome. Every experiment ever performed is consistent with both readings.</p>
+    </div>
+
+    <div class="prose">
+      <p>Quantum mechanics hands you probabilities with unearthly precision but refuses to say
+      what <em>happens</em> when you look. In 1957 Hugh Everett — a 27-year-old student of
+      Wheeler — proposed the most economical and most extravagant answer at once: take the
+      equations literally, never add a collapse. Then the equations say the measuring
+      apparatus, the lab, and you yourself join the superposition — the world
+      <strong>branches</strong>.</p>
+      <p>Run the sim both ways. In Copenhagen mode you get a random tally that converges to
+      |&alpha;|&sup2; — the Born rule, verified in every quantum lab on Earth. In Everett mode
+      the tree grows instead: after ten measurements there are 1,024 branches, each holding a
+      copy of you with a different record — and each copy's record <em>still</em> shows
+      Born-rule statistics. The math is identical; only the ontology differs. That is why
+      this is called an interpretation, and why the sim's evidence badge refuses to pick a
+      winner.</p>
+      <p>Everett's idea was ridiculed into obscurity (he left physics for the Pentagon);
+      today it is a leading contender, partly because cosmology and quantum computing find
+      collapse increasingly awkward. If it is right, your "paralel universes with another
+      version of yourself" are not science fiction — they are the plain reading of equations
+      you can test on this page. If it is wrong, nobody has yet caught the equations
+      collapsing. Either way: measured math, open story.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 43 — Laplace's demon
+       ====================================================================== -->
+  <section class="sim-section" id="laplace" style="--accent: var(--green)">
+    <h2><span class="secnum">43.</span>Laplace's demon — can a computer calculate the past or the future?</h2>
+    <p class="kicker">The Devs question, made rigorous: two pendulums differing by one part
+      in a billion, a demon that must predict a quantum coin, and the theorem that says you
+      can't even copy the input.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      chaotic divergence and irreducible quantum randomness are experimental facts (this sim's
+      pendulums integrate real mechanics; you can watch the Lyapunov slope). Exact computation
+      of the universe's past or future is physically impossible — while STATISTICAL inference
+      about the past (cosmology, geology) demonstrably works.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="laplace" aria-label="Two nearly identical double pendulums diverging chaotically, with a prediction-horizon meter"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="laplace"></div>
+    <div class="sim-readout" data-readout="laplace" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1814 Laplace - Essai philosophique sur les probabilit&eacute;s (A Philosophical Essay on Probabilities)</span>
+      <span class="cit">1963 Lorenz - Deterministic Nonperiodic Flow</span>
+      <span class="cit">1982 Wootters, Zurek - A Single Quantum Cannot Be Cloned</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--green)">Laplace's demon</dt>
+        <dd>Laplace's 1814 thought experiment: an intellect knowing every particle's position
+          and momentum could compute the entire past and future — "nothing would be uncertain."
+          The dream behind Devs' machine. Three discoveries killed it.</dd>
+        <dt style="color:var(--orange)">chaos &amp; the Lyapunov time</dt>
+        <dd>In chaotic systems (double pendulums, weather, planetary orbits) tiny input errors
+          grow EXPONENTIALLY: &delta;(t) &asymp; &delta;&#8320;e^{&lambda;t}. Making your
+          knowledge 1000&times; better buys you only ln(1000)/&lambda; more prediction time —
+          a few seconds here, about two weeks for weather, ~5 Myr for the Solar System. You can
+          never win by measuring harder.</dd>
+        <dt style="color:var(--pink)">quantum randomness</dt>
+        <dd>Measurement outcomes are not merely unknown, they are undetermined — no hidden
+          ledger exists to read (Bell tests, Chapter XI). A demon predicting quantum coins is
+          stuck at 50% forever, and the sim keeps score.</dd>
+        <dt style="color:var(--cyan)">the no-cloning theorem</dt>
+        <dd>1982: an unknown quantum state cannot be copied, even in principle. The demon
+          cannot even ASSEMBLE its input — scanning the universe's exact state is forbidden by
+          the universe. (This same theorem is why quantum encryption works.)</dd>
+        <dt style="color:var(--yellow)">statistical retrodiction (what DOES work)</dt>
+        <dd>Distributions are computable even when trajectories aren't: we reconstruct the
+          universe's first minutes from the CMB, Earth's history from rocks, climate from ice
+          cores. Science computes the past — statistically, honestly, with error bars.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \delta(t) \approx \delta_0\, e^{\lambda t} \qquad
+         t_{\text{predict}} \approx \frac{1}{\lambda}\ln\frac{\delta_{\max}}{\delta_0} $$
+      <p class="eq-note">Exponential error growth, and the prediction horizon it buys you. The sim MEASURES &lambda; live from the two pendulums' separation — check the log-plot's straight slope.</p>
+    </div>
+
+    <div class="prose">
+      <p>In Devs, a quantum computer replays the crucifixion and previews its own future. It
+      is wonderful television and impossible physics — impossible <em>in principle</em>, not
+      merely in practice, and this sim shows all three assassins of Laplace's demon at work.</p>
+      <p><strong>Chaos:</strong> the two pendulums start identical to one part in a billion —
+      far better than any real measurement — and the log-plot of their separation climbs as a
+      straight line: exponential divergence. Press "×1000 better knowledge" and watch the
+      horizon extend by only a few seconds. Determinism without predictability, discovered by
+      Lorenz in 1963 in a weather model. <strong>Quantum:</strong> even perfect knowledge of
+      a quantum state yields only probabilities for what you'll see — the demon's coin-guess
+      tally hovers at 50%. <strong>No-cloning:</strong> and the state itself cannot be read
+      out or copied to feed the computer in the first place.</p>
+      <p>The honest flip side: statistical retrodiction is real and glorious — the CMB is us
+      computing the universe's state 13.8 billion years ago, with error bars. So Devs got the
+      dream half-right: the past IS recoverable — as a distribution, never as a movie. If
+      determinism survives, it does so unobservably: chaos hides it, quantum mechanics rations
+      it, and no-cloning locks the input. Free will's status? The only honest label:
+      still argued.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
        The Library
        ====================================================================== -->
   <section class="sim-section" id="library" style="--accent: var(--orange)">
@@ -1239,6 +1566,7 @@
       so you can find them in a reference manager or archive. This list grows with every
       new section of the page.</p>
     <ul class="library-list">
+      <li><span class="yr">1814</span>Laplace - Essai philosophique sur les probabilit&eacute;s (A Philosophical Essay on Probabilities)</li>
       <li><span class="yr">1859</span>Le Verrier - Lettre de M. Le Verrier &agrave; M. Faye sur la th&eacute;orie de Mercure et sur le mouvement du p&eacute;rih&eacute;lie de cette plan&egrave;te (Letter on the Theory of Mercury and the Motion of its Perihelion)</li>
       <li><span class="yr">1905</span>Einstein - Zur Elektrodynamik bewegter K&ouml;rper (On the Electrodynamics of Moving Bodies)</li>
       <li><span class="yr">1905</span>Einstein - Ist die Tr&auml;gheit eines K&ouml;rpers von seinem Energieinhalt abh&auml;ngig? (Does the Inertia of a Body Depend Upon Its Energy Content?)</li>
@@ -1251,9 +1579,13 @@
       <li><span class="yr">1933</span>Zwicky - Die Rotverschiebung von extragalaktischen Nebeln (The Redshift of Extragalactic Nebulae)</li>
       <li><span class="yr">1932</span>Cockcroft, Walton - Experiments with High Velocity Positive Ions. II. The Disintegration of Elements by High Velocity Protons</li>
       <li><span class="yr">1935</span>Einstein, Rosen - The Particle Problem in the General Theory of Relativity</li>
+      <li><span class="yr">1935</span>Schr&ouml;dinger - Die gegenw&auml;rtige Situation in der Quantenmechanik (The Present Situation in Quantum Mechanics)</li>
       <li><span class="yr">1936</span>Einstein - Lens-Like Action of a Star by the Deviation of Light in the Gravitational Field</li>
+      <li><span class="yr">1949</span>G&ouml;del - An Example of a New Type of Cosmological Solutions of Einstein's Field Equations of Gravitation</li>
+      <li><span class="yr">1957</span>Everett - "Relative State" Formulation of Quantum Mechanics</li>
       <li><span class="yr">1962</span>Fuller, Wheeler - Causality and Multiply Connected Space-Time</li>
       <li><span class="yr">1963</span>Kerr - Gravitational Field of a Spinning Mass as an Example of Algebraically Special Metrics</li>
+      <li><span class="yr">1963</span>Lorenz - Deterministic Nonperiodic Flow</li>
       <li><span class="yr">1965</span>Penrose - Gravitational Collapse and Space-Time Singularities</li>
       <li><span class="yr">1965</span>Penzias, Wilson - A Measurement of Excess Antenna Temperature at 4080 Mc/s</li>
       <li><span class="yr">1969</span>Penrose - Gravitational Collapse: The Role of General Relativity</li>
@@ -1264,7 +1596,11 @@
       <li><span class="yr">1974</span>Hawking - Black Hole Explosions?</li>
       <li><span class="yr">1975</span>Hawking - Particle Creation by Black Holes</li>
       <li><span class="yr">1975</span>Hulse, Taylor - Discovery of a Pulsar in a Binary System</li>
+      <li><span class="yr">1982</span>Wootters, Zurek - A Single Quantum Cannot Be Cloned</li>
       <li><span class="yr">1988</span>Morris, Thorne - Wormholes in Spacetime and Their Use for Interstellar Travel: A Tool for Teaching General Relativity</li>
+      <li><span class="yr">1990</span>Friedman, Morris, Novikov, Echeverria, Klinkhammer, Thorne, Yurtsever - Cauchy Problem in Spacetimes with Closed Timelike Curves</li>
+      <li><span class="yr">1991</span>Deutsch - Quantum Mechanics near Closed Timelike Lines</li>
+      <li><span class="yr">1992</span>Hawking - Chronology Protection Conjecture</li>
       <li><span class="yr">1998</span>Riess et al. - Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant</li>
       <li><span class="yr">1999</span>Perlmutter et al. - Measurements of &Omega; and &Lambda; from 42 High-Redshift Supernovae</li>
       <li><span class="yr">2003</span>Ashby - Relativity in the Global Positioning System</li>
