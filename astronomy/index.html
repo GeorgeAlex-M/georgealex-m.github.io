@@ -51,6 +51,10 @@
   <script defer src="js/sims/blackbody.js"></script>
   <script defer src="js/sims/spectroscopy.js"></script>
   <script defer src="js/sims/redshift.js"></script>
+  <script defer src="js/sims/star-birth.js"></script>
+  <script defer src="js/sims/hr-diagram.js"></script>
+  <script defer src="js/sims/stellar-death.js"></script>
+  <script defer src="js/sims/pulsar.js"></script>
   <script defer src="js/sims/godel.js"></script>
   <script defer src="js/sims/grandfather.js"></script>
   <script defer src="js/sims/many-worlds.js"></script>
@@ -166,10 +170,10 @@
     <div class="toc-chapter">
       <h3>Chapter VII — The Lives of Stars</h3>
       <ul class="toc-items">
-        <li><span class="soon">Star birth &amp; fusion</span></li>
-        <li><span class="soon">The Hertzsprung&ndash;Russell diagram</span></li>
-        <li><span class="soon">How a black hole forms</span></li>
-        <li><span class="soon">Pulsars</span></li>
+        <li><a href="#star-birth"><span class="n" style="color:var(--orange)">21</span>Star birth &amp; fusion</a></li>
+        <li><a href="#hr-diagram"><span class="n" style="color:var(--yellow)">22</span>The Hertzsprung&ndash;Russell diagram</a></li>
+        <li><a href="#stellar-death"><span class="n" style="color:var(--red)">23</span>How a black hole forms</a></li>
+        <li><a href="#pulsar"><span class="n" style="color:var(--cyan)">24</span>Pulsars</a></li>
       </ul>
     </div>
 
@@ -1528,6 +1532,325 @@
   </section>
 
   <!-- ======================================================================
+       Sim 21 — Star birth & fusion
+       ====================================================================== -->
+  <section class="sim-section" id="star-birth" style="--accent: var(--orange)">
+    <h2><span class="secnum">21.</span>Star birth &amp; fusion</h2>
+    <p class="kicker">A cold cloud collapses until its core hits ten million degrees and
+      ignites. Watch four hydrogen nuclei become one helium — and 0.7% of their mass become
+      sunlight.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      the proton&ndash;proton chain is confirmed directly: we detect the exact neutrinos it
+      predicts streaming out of the Sun's core, and the 0.7% mass-to-energy conversion matches
+      the Sun's measured output. Brown dwarfs (failed stars below the fusion threshold) are
+      observed too.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="starBirth" aria-label="A gas cloud collapsing and igniting, with the proton-proton fusion chain and the gravity-vs-pressure balance"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="starBirth"></div>
+    <div class="sim-readout" data-readout="starBirth" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1920 Eddington - The Internal Constitution of the Stars</span>
+      <span class="cit">1939 Bethe - Energy Production in Stars</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--orange)">gravitational collapse</dt>
+        <dd>A cold cloud of gas (mostly hydrogen) big enough to overcome its own pressure falls
+          inward under gravity, and squeezing a gas heats it. If the core reaches ~10 million K,
+          hydrogen fusion ignites and a star is born.</dd>
+        <dt style="color:var(--yellow)">nuclear fusion &amp; the proton–proton chain</dt>
+        <dd>The Sun's power source: four hydrogen nuclei (protons) fuse, through several steps,
+          into one helium nucleus. The helium weighs 0.7% <em>less</em> than the four protons,
+          and that missing mass leaves as energy — E = &Delta;mc&sup2;, about 26.7 MeV per helium.</dd>
+        <dt style="color:var(--cyan)">hydrostatic equilibrium</dt>
+        <dd>A star is a permanent tug-of-war: gravity pulling every layer inward, and the
+          pressure of hot gas and radiation pushing outward. When they balance exactly, the star
+          is stable — for billions of years.</dd>
+        <dt style="color:var(--pink)">the fusion threshold (brown dwarfs)</dt>
+        <dd>Below about 0.08 solar masses (~80 Jupiters) a collapsing ball never gets hot enough
+          to sustain hydrogen fusion. It becomes a <em>brown dwarf</em> — a "failed star" that
+          just glows faintly and cools. Mass decides everything.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ 4\,^1\text{H} \rightarrow\ ^4\text{He} + 2e^+ + 2\nu + \gamma \qquad
+         \frac{\Delta m}{m} \approx 0.71\% \qquad E = \Delta m c^2 \approx 26.7\ \text{MeV} $$
+      <p class="eq-note">Net reaction of the proton–proton chain. The Sun runs it ~10&sup3;&#8312; times a second, turning ~600 million tonnes of hydrogen into ~596 million tonnes of helium each second — the 4-million-tonne difference is the sunlight.</p>
+    </div>
+
+    <div class="prose">
+      <p>For most of history nobody knew what powered the Sun; chemical burning would have
+      lasted only a few thousand years. In 1920 Arthur Eddington guessed the answer — subatomic
+      energy, hydrogen fusing into helium, the tiny mass difference feeding the stars for eons.
+      He was mocked, and told the interior of a star could never be hot enough. His reply: "I
+      am aware that many critics consider the stars are not hot enough. We do not argue with the
+      critic who urges that the stars are not hot enough for this process; we tell him to go and
+      find a hotter place."</p>
+      <p>He was right. In 1939 Hans Bethe worked out the exact reaction chains. Set the cloud
+      mass and press collapse: below 0.08 M☉ the core never ignites and you get a brown dwarf;
+      above it, fusion switches on and the tug-of-war settles into equilibrium — gravity in,
+      pressure out, balanced. The proton-proton chain panel shows the real steps: two protons
+      fuse to deuterium, grab another proton to make helium-3, and pairs of helium-3 combine
+      into helium-4, spitting protons back.</p>
+      <p>The magic number is 0.7%. That's how much of the hydrogen's mass becomes energy — the
+      same E = mc&sup2; from section 4, running in every star. It is enough to make the Sun shine
+      for ten billion years on a fuel tank it converts four million tonnes of at a time, every
+      single second. And we can prove it: the fusion produces neutrinos, ghostly particles that
+      fly straight out of the core, and we catch exactly the number predicted, arriving from the
+      Sun right now.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 22 — The Hertzsprung–Russell diagram
+       ====================================================================== -->
+  <section class="sim-section" id="hr-diagram" style="--accent: var(--yellow)">
+    <h2><span class="secnum">22.</span>The Hertzsprung&ndash;Russell diagram</h2>
+    <p class="kicker">The single most important chart in astronomy: plot stars by colour and
+      brightness and their whole life story appears. Drop in a star of any mass and watch it
+      live and die.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      the H&ndash;R diagram is built from real measured temperatures (colours) and luminosities of
+      hundreds of thousands of stars; the main sequence, giant branch and white-dwarf clump are
+      observed facts. The mass&ndash;luminosity and lifetime relations are well-established stellar
+      physics.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="hrDiagram" aria-label="The Hertzsprung-Russell diagram with real stars and an animated life track"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="hrDiagram"></div>
+    <div class="sim-readout" data-readout="hrDiagram" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1913 Russell - "Giant" and "Dwarf" Stars</span>
+      <span class="cit">1926 Eddington - The Internal Constitution of the Stars (mass&ndash;luminosity relation)</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--yellow)">the H–R diagram</dt>
+        <dd>A scatter plot of stars: temperature across (hot on the LEFT, by tradition), luminosity
+          up. Stars don't fall randomly — they cluster into a diagonal band and a few other regions,
+          and that pattern <em>is</em> the story of how stars work.</dd>
+        <dt style="color:var(--cyan)">the main sequence</dt>
+        <dd>The diagonal band where ~90% of stars live, quietly fusing hydrogen. A star's spot on it
+          is fixed by its mass: heavy stars sit hot, blue and brilliant at the top-left; light stars
+          sit cool, red and dim at the bottom-right.</dd>
+        <dt style="color:var(--orange)">giants &amp; white dwarfs</dt>
+        <dd>When a star exhausts its core hydrogen it swells into a cool, huge, luminous <em>giant</em>
+          (upper right), then sheds its layers to leave a tiny hot <em>white dwarf</em> (lower left).
+          Those regions are the retirement homes of stars.</dd>
+        <dt style="color:var(--pink)">mass decides lifetime</dt>
+        <dd>Luminosity climbs steeply with mass (L &prop; M&sup3;&#183;&#8309;), so massive stars burn their
+          fuel absurdly fast: a 20 M☉ star lasts ~10 million years, the Sun ~10 billion, a red dwarf
+          trillions. The brightest stars die youngest.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \frac{L}{L_\odot} \approx \left(\frac{M}{M_\odot}\right)^{3.5} \qquad
+         t_{\text{life}} \approx 10\ \text{Gyr}\times\left(\frac{M}{M_\odot}\right)^{-2.5} $$
+      <p class="eq-note">The mass&ndash;luminosity relation and the main-sequence lifetime it implies. Fuel goes as M, burn-rate as L &prop; M&sup3;&#183;&#8309;, so lifetime falls steeply with mass.</p>
+    </div>
+
+    <div class="prose">
+      <p>Around 1910 Ejnar Hertzsprung and Henry Norris Russell independently had the same idea:
+      plot every star you can by its brightness and its colour. The result was one of the great
+      "aha" charts of science — stars aren't scattered everywhere, they fall onto a narrow
+      diagonal (the <strong>main sequence</strong>) with a few outlying groups. That structure
+      turned out to be the map of stellar life itself.</p>
+      <p>Slide the mass dial and drop your star onto the diagram. Its position isn't a choice —
+      mass alone fixes its temperature and luminosity on the main sequence. Then press "age it"
+      and watch the track: hydrogen runs out, the star swells and cools into a red giant
+      (up and right), then collapses to a white dwarf (down and left) or, if heavy enough,
+      explodes (next section). The whole biography, drawn as a path across one chart.</p>
+      <p>The cruel twist is in the lifetimes. Because luminosity rises as roughly the 3.5 power
+      of mass, the most massive, brilliant blue stars devour their fuel in a few million years,
+      while red dwarfs will still be quietly fusing hydrogen long after the last galaxies fade.
+      The stars that shine hardest die youngest — a fact you can read straight off the diagram.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 23 — How a black hole forms (stellar death)
+       ====================================================================== -->
+  <section class="sim-section" id="stellar-death" style="--accent: var(--red)">
+    <h2><span class="secnum">23.</span>How a black hole forms</h2>
+    <p class="kicker">A star's mass at birth writes its death certificate. Dial it from a
+      feeble red dwarf to a hundred-solar-mass monster and run its whole life — to a white
+      dwarf, a neutron star, or a black hole.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      all three endpoints are observed: white dwarfs by the thousand, neutron stars as pulsars
+      (next section), stellar black holes by their X-rays and gravitational waves. The mass
+      limits (Chandrasekhar 1.4 M☉, the neutron-star limit ~2.2 M☉) are measured, and supernova
+      nucleosynthesis is confirmed by the elements themselves.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="stellarDeath" aria-label="A star's full life cycle from birth to its final remnant, chosen by initial mass"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="stellarDeath"></div>
+    <div class="sim-readout" data-readout="stellarDeath" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1931 Chandrasekhar - The Maximum Mass of Ideal White Dwarfs</span>
+      <span class="cit">1934 Baade, Zwicky - On Super-Novae</span>
+      <span class="cit">1939 Oppenheimer, Volkoff - On Massive Neutron Cores</span>
+      <span class="cit">1939 Oppenheimer, Snyder - On Continued Gravitational Contraction</span>
+      <span class="cit">1957 Burbidge, Burbidge, Fowler, Hoyle - Synthesis of the Elements in Stars</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--green)">white dwarf &amp; the Chandrasekhar limit</dt>
+        <dd>What a low-mass star (like the Sun) leaves behind: an Earth-sized ember held up not by
+          heat but by <em>electron degeneracy pressure</em> (a quantum rule that electrons refuse to
+          be squeezed together). Chandrasekhar showed in 1931 that no white dwarf can exceed
+          <strong>1.4 M☉</strong> — beyond that, electrons can't hold it up.</dd>
+        <dt style="color:var(--cyan)">neutron star &amp; the TOV limit</dt>
+        <dd>When a heavier core collapses past the white-dwarf limit, electrons and protons merge
+          into neutrons, and <em>neutron</em> degeneracy pressure halts the fall — at a city-sized
+          ball (~20 km) so dense a teaspoon weighs a billion tonnes. There is a limit here too
+          (Tolman&ndash;Oppenheimer&ndash;Volkoff, ~2.2&ndash;2.9 M☉); above it, nothing can stop the collapse.</dd>
+        <dt style="color:var(--red)">core collapse &amp; the black hole</dt>
+        <dd>For the heaviest stars, no pressure can win. The core implodes past its Schwarzschild
+          radius and an event horizon forms — Oppenheimer &amp; Snyder worked out this "continued
+          gravitational contraction" in 1939. From outside, the collapsing surface freezes and
+          redshifts away (section 2), leaving a black hole.</dd>
+        <dt style="color:var(--orange)">supernova &amp; the element factory</dt>
+        <dd>Fusion builds elements up to iron in a massive star's core; iron can't fuse to release
+          energy, so the core collapses and rebounds as a <em>supernova</em>, forging the heavier
+          elements — gold, uranium — and blasting them into space. Every atom in you heavier than
+          hydrogen was made in a star. We are, literally, star stuff.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ M < 8\,M_\odot \rightarrow \text{white dwarf}\ (\le 1.4\,M_\odot) \qquad
+         8\text{–}20\,M_\odot \rightarrow \text{neutron star} \qquad
+         \gtrsim 20\,M_\odot \rightarrow \text{black hole}\ (r_s = 2GM/c^2) $$
+      <p class="eq-note">Approximate birth-mass thresholds (there is real scatter, and metallicity matters). The remnant's fate is set by whether degeneracy pressure can beat gravity — and past ~2.2 M☉ of remnant, nothing can.</p>
+    </div>
+
+    <div class="prose">
+      <p>Everything about a star's death was decided at its birth, by one number: its mass. Dial
+      it and press "run its life." A Sun-like star (under ~8 M☉) swells to a red giant, puffs off
+      a glowing <strong>planetary nebula</strong>, and leaves a <strong>white dwarf</strong> — an
+      Earth-sized diamond-like ember cooling forever, held up by a quantum rule that stops
+      electrons from merging. In 1931 a 20-year-old Subrahmanyan Chandrasekhar calculated, on the
+      boat to England, that this trick fails above 1.4 solar masses. Eddington ridiculed him
+      publicly. Chandrasekhar was right, and won the Nobel Prize for it 52 years later.</p>
+      <p>Push the mass to 8&ndash;20 M☉ and the star ends as a <strong>supernova</strong> — for a few
+      weeks outshining its entire galaxy — leaving a <strong>neutron star</strong>: the collapsed
+      core, all its protons and electrons crushed into neutrons, a whole Sun's worth of mass
+      packed into a ball the size of a city. Baade and Zwicky predicted these in 1934, two years
+      after the neutron was discovered; a teaspoon of one would weigh as much as a mountain.</p>
+      <p>Past about 20 solar masses, gravity wins completely. No pressure known can hold the core
+      up; it collapses straight through its own Schwarzschild radius and a <strong>black hole</strong>
+      forms — the "continued gravitational contraction" Oppenheimer and Snyder computed in 1939,
+      the same year and author as the first serious neutron-star limit. That is the honest answer
+      to "how does a black hole form": not built, but <em>left behind</em>, when a giant star runs
+      out of fuel and its own weight finishes it. And the supernovae along the way forged the
+      calcium in your bones and the iron in your blood.</p>
+    </div>
+
+    <blockquote class="quote-box">
+      &ldquo;The nitrogen in our DNA, the calcium in our teeth, the iron in our blood… were made
+      in the interiors of collapsing stars. We are made of starstuff.&rdquo;
+      <span class="attrib">* Carl Sagan</span>
+    </blockquote>
+  </section>
+
+  <!-- ======================================================================
+       Sim 24 — Pulsars
+       ====================================================================== -->
+  <section class="sim-section" id="pulsar" style="--accent: var(--cyan)">
+    <h2><span class="secnum">24.</span>Pulsars — cosmic lighthouses</h2>
+    <p class="kicker">A city-sized neutron star spinning hundreds of times a second, sweeping a
+      beam past Earth like a lighthouse. Recreate the 1967 signal that was almost mistaken for
+      aliens.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      over 3,000 pulsars are catalogued; their clock-like pulses are timed to nanosecond
+      precision (one binary pulsar confirmed gravitational waves before LIGO). The lighthouse
+      model and the spin-up by angular-momentum conservation are established neutron-star physics.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="pulsar" aria-label="A spinning neutron star sweeping a beam past Earth, with a chart-recorder trace of the pulses"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="pulsar"></div>
+    <div class="sim-readout" data-readout="pulsar" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1968 Hewish, Bell, Pilkington, Scott, Collins - Observation of a Rapidly Pulsating Radio Source</span>
+      <span class="cit">1934 Baade, Zwicky - On Super-Novae</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">pulsar</dt>
+        <dd>A rapidly spinning neutron star whose intense magnetic field channels radiation into
+          two narrow beams. If a beam sweeps across Earth, we see a pulse each rotation — a natural
+          clock, ticking anywhere from ~700 times a second to once every several seconds.</dd>
+        <dt style="color:var(--pink)">the lighthouse model</dt>
+        <dd>The beams point along the magnetic axis, which is tilted from the spin axis — so as the
+          star rotates, each beam sweeps the sky like a lighthouse lamp. We only see pulsars whose
+          beam happens to cross our line of sight.</dd>
+        <dt style="color:var(--yellow)">spin-up by angular momentum</dt>
+        <dd>When a stellar core collapses from roughly Earth-sized to ~20 km, conservation of
+          angular momentum spins it up enormously — the same reason a skater speeds up pulling
+          their arms in. A core turning once a day becomes a neutron star turning many times a
+          second.</dd>
+        <dt style="color:var(--green)">"LGM-1"</dt>
+        <dd>When Jocelyn Bell found the first pulsar in 1967 — an impossibly regular 1.337-second
+          tick — the team half-jokingly labelled it "LGM-1", for "Little Green Men", before
+          realising it was a natural beacon. It remains one of astronomy's great discovery stories.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ L = I\omega = \text{const} \;\Rightarrow\; \omega_f = \omega_i\left(\frac{R_i}{R_f}\right)^2
+         \qquad P_{\text{pulsar}} \approx 1.4\ \text{ms} \text{ to } 8\ \text{s} $$
+      <p class="eq-note">Angular momentum conservation spins the collapsing core up by the square of the size ratio. Fastest known pulsars rotate 716 times a second — with a surface moving at a good fraction of light speed.</p>
+    </div>
+
+    <div class="prose">
+      <p>In November 1967 a Cambridge PhD student named Jocelyn Bell noticed "a bit of scruff" on
+      her chart-recorder paper — a radio signal pulsing every 1.337 seconds with uncanny regularity.
+      Nothing natural was supposed to tick that fast and that precisely. Half seriously, the team
+      labelled it <strong>LGM-1</strong>, for Little Green Men, and quietly worried they'd found an
+      alien beacon. Drag the period slider down to hers and watch the chart-recorder trace build,
+      pulse by pulse, exactly as it did on that roll of paper.</p>
+      <p>The truth was stranger than aliens: a <strong>neutron star</strong> — a collapsed stellar
+      core, city-sized, spinning on its axis and sweeping a beam of radio waves past Earth like a
+      lighthouse. Each time the beam crosses us, we see a pulse. When the core collapsed, angular
+      momentum conservation spun it up ferociously; the fastest pulsars turn 716 times every
+      second, their surfaces whirling at a fair fraction of light speed, yet keeping time better
+      than an atomic clock.</p>
+      <p>Bell's supervisor received the Nobel Prize; her exclusion remains one of the sport's most
+      debated snubs. But pulsars became one of physics' finest tools: a pair of them orbiting each
+      other was seen to lose energy at exactly the rate gravitational-wave emission predicts (the
+      Hulse&ndash;Taylor pulsar, section 15) — proving Einstein right decades before LIGO heard a
+      wave directly. Aliens would have been simpler; the universe gave us something better.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
        Sim 40 — Gödel's rotating universe
        ====================================================================== -->
   <section class="sim-section" id="godel" style="--accent: var(--orange)">
@@ -1870,25 +2193,34 @@
       <li><span class="yr">1905</span>Einstein - Zur Elektrodynamik bewegter K&ouml;rper (On the Electrodynamics of Moving Bodies)</li>
       <li><span class="yr">1905</span>Einstein - Ist die Tr&auml;gheit eines K&ouml;rpers von seinem Energieinhalt abh&auml;ngig? (Does the Inertia of a Body Depend Upon Its Energy Content?)</li>
       <li><span class="yr">1913</span>Bohr - On the Constitution of Atoms and Molecules</li>
+      <li><span class="yr">1913</span>Russell - "Giant" and "Dwarf" Stars</li>
       <li><span class="yr">1915</span>Einstein - Erkl&auml;rung der Perihelbewegung des Merkur aus der allgemeinen Relativit&auml;tstheorie (Explanation of the Perihelion Motion of Mercury from the General Theory of Relativity)</li>
       <li><span class="yr">1916</span>Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</li>
       <li><span class="yr">1920</span>Dyson, Eddington, Davidson - A Determination of the Deflection of Light by the Sun's Gravitational Field, from Observations Made at the Total Eclipse of May 29, 1919</li>
+      <li><span class="yr">1920</span>Eddington - The Internal Constitution of the Stars</li>
       <li><span class="yr">1922</span>Friedmann - &Uuml;ber die Kr&uuml;mmung des Raumes (On the Curvature of Space)</li>
       <li><span class="yr">1925</span>Payne - Stellar Atmospheres: A Contribution to the Observational Study of High Temperature in the Reversing Layers of Stars</li>
       <li><span class="yr">1927</span>Lema&icirc;tre - Un Univers homog&egrave;ne de masse constante et de rayon croissant rendant compte de la vitesse radiale des n&eacute;buleuses extra-galactiques</li>
       <li><span class="yr">1929</span>Hubble - A Relation between Distance and Radial Velocity among Extra-Galactic Nebulae</li>
+      <li><span class="yr">1931</span>Chandrasekhar - The Maximum Mass of Ideal White Dwarfs</li>
       <li><span class="yr">1933</span>Zwicky - Die Rotverschiebung von extragalaktischen Nebeln (The Redshift of Extragalactic Nebulae)</li>
+      <li><span class="yr">1934</span>Baade, Zwicky - On Super-Novae</li>
       <li><span class="yr">1932</span>Cockcroft, Walton - Experiments with High Velocity Positive Ions. II. The Disintegration of Elements by High Velocity Protons</li>
       <li><span class="yr">1935</span>Einstein, Rosen - The Particle Problem in the General Theory of Relativity</li>
       <li><span class="yr">1935</span>Schr&ouml;dinger - Die gegenw&auml;rtige Situation in der Quantenmechanik (The Present Situation in Quantum Mechanics)</li>
       <li><span class="yr">1936</span>Einstein - Lens-Like Action of a Star by the Deviation of Light in the Gravitational Field</li>
+      <li><span class="yr">1939</span>Bethe - Energy Production in Stars</li>
+      <li><span class="yr">1939</span>Oppenheimer, Volkoff - On Massive Neutron Cores</li>
+      <li><span class="yr">1939</span>Oppenheimer, Snyder - On Continued Gravitational Contraction</li>
       <li><span class="yr">1949</span>G&ouml;del - An Example of a New Type of Cosmological Solutions of Einstein's Field Equations of Gravitation</li>
+      <li><span class="yr">1957</span>Burbidge, Burbidge, Fowler, Hoyle - Synthesis of the Elements in Stars</li>
       <li><span class="yr">1957</span>Everett - "Relative State" Formulation of Quantum Mechanics</li>
       <li><span class="yr">1962</span>Fuller, Wheeler - Causality and Multiply Connected Space-Time</li>
       <li><span class="yr">1963</span>Kerr - Gravitational Field of a Spinning Mass as an Example of Algebraically Special Metrics</li>
       <li><span class="yr">1963</span>Lorenz - Deterministic Nonperiodic Flow</li>
       <li><span class="yr">1965</span>Penrose - Gravitational Collapse and Space-Time Singularities</li>
       <li><span class="yr">1965</span>Penzias, Wilson - A Measurement of Excess Antenna Temperature at 4080 Mc/s</li>
+      <li><span class="yr">1968</span>Hewish, Bell, Pilkington, Scott, Collins - Observation of a Rapidly Pulsating Radio Source</li>
       <li><span class="yr">1969</span>Penrose - Gravitational Collapse: The Role of General Relativity</li>
       <li><span class="yr">1970</span>Rubin, Ford - Rotation of the Andromeda Nebula from a Spectroscopic Survey of Emission Regions</li>
       <li><span class="yr">1972</span>Hafele, Keating - Around-the-World Atomic Clocks: Observed Relativistic Time Gains</li>
