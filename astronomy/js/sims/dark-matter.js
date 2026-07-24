@@ -1,33 +1,44 @@
-// Sim 11 — Dark matter (galaxy rotation curves).
+// Sim 11 — Dark matter (remake): FIT THE TELESCOPE DATA.
 //
-// Physics: orbital speed depends only on the mass enclosed, v(r) = √(GM(<r)/r).
-//  - Visible matter: an exponential disk, M_disk(<r) = M_d·[1 − (1+r/R_d)e^(−r/R_d)].
-//    Alone, this gives a Keplerian-ish FALLOFF past a few R_d.
-//  - Dark halo: pseudo-isothermal, M_halo(<r) = 4πρ₀r_c²(r − r_c·arctan(r/r_c)),
-//    whose enclosed mass keeps growing ∝ r at large r, so v → const (FLAT).
-// Parameters are tuned to a Milky-Way-like galaxy: flat curve ≈ 220 km/s,
-// disk mass ~6×10¹⁰ M_sun, R_d ≈ 3 kpc. Tracer stars orbit at the model's v(r),
-// so toggling the halo visibly speeds up the outer stars.
+// Epistemically honest structure: the white points are the DATA — a
+// Rubin-style measured rotation curve (rising, then stubbornly flat ~220 km/s,
+// with error bars). The curve is your MODEL:
+//   v(r) = √(G·M(<r)/r)
+//   visible: exponential disk, M(<r) = M_d[1 − (1+r/R_d)e^(−r/R_d)]
+//            (M_d = 6×10¹⁰ M_sun, R_d = 3 kpc — Milky-Way-like)
+//   halo:    pseudo-isothermal, M(<r) = 4πρ₀r_c²(r − r_c·arctan(r/r_c))
+// Start with visible matter only: the model misses the data badly (RMS ~90
+// km/s). Turn the halo on and tune it: the fit locks in — you just discovered
+// that ~5× the visible mass is invisible. The fit meter (RMS of residuals) is
+// the same logic astronomers actually use.
+// NB: engine reserves this.rc for the RoughCanvas — halo core is this.rCore.
 
 (() => {
   const A = (window.Astro = window.Astro || {});
   const {
-    Sim, opts, COLORS, label, doodleArrow, sparkle,
-    slider, buttonRow, setReadout, fmtNum,
+    Sim, opts, COLORS, label, sparkle,
+    slider, buttonRow, setReadout, fmtNum, sci,
   } = A;
 
-  const G = 4.30091e-6;        // kpc·(km/s)²/M_sun  (galactic-unit gravitational constant)
-  const R_MAX = 30;            // kpc, plotted radius
+  const G = 4.30091e-6;        // kpc·(km/s)²/M_sun
+  const R_MAX = 30;            // kpc
   const M_DISK = 6e10;         // M_sun
-  const R_D = 3.0;             // kpc, disk scale length
+  const R_D = 3.0;             // kpc
   const N_STARS = 9;
+
+  // "Telescope data": deterministic Rubin-style flat curve + scatter ±~6 km/s
+  const DATA = [];
+  for (let i = 0; i < 10; i++) {
+    const r = 4 + i * 2.7;
+    const jitter = (((i * 0.6180339) % 1) - 0.5) * 11;
+    DATA.push({ r, v: 222 * (1 - Math.exp(-r / 2.5)) + jitter, err: 10 });
+  }
 
   class DarkMatterSim extends Sim {
     init() {
-      this.halo = true;
-      this.rho0 = 0.013;        // scaled halo density (slider); default → flat ~220 km/s
-      this.rCore = 4.0;         // kpc, halo core radius (slider). NB: NOT this.rc —
-                                // the engine uses this.rc for the RoughCanvas.
+      this.halo = false;         // start honest: visible matter only → bad fit
+      this.rho0 = 0.013;
+      this.rCore = 4.0;
       this.t = 0;
       this.stars = [];
       for (let i = 0; i < N_STARS; i++) {
@@ -38,28 +49,30 @@
       this.updateReadout();
     }
 
-    // enclosed masses (M_sun)
     diskMass(r) { return M_DISK * (1 - (1 + r / R_D) * Math.exp(-r / R_D)); }
     haloMass(r) {
-      // 4π ρ0 rc² (r − rc·atan(r/rc)); ρ0 scaled so the default gives a flat
-      // ~220 km/s Milky-Way-like curve (verified against v(r) at 10–30 kpc)
       const k = 4 * Math.PI * this.rho0 * 4.5e9 * this.rCore * this.rCore;
       return k * (r - this.rCore * Math.atan(r / this.rCore));
     }
     vVisible(r) { return r > 0.01 ? Math.sqrt(G * this.diskMass(r) / r) : 0; }
-    vTotal(r) {
+    vModel(r) {
       const m = this.diskMass(r) + (this.halo ? this.haloMass(r) : 0);
       return r > 0.01 ? Math.sqrt(G * m / r) : 0;
     }
-    vObserved(r) { return this.halo ? this.vTotal(r) : this.vVisible(r); }
+    // RMS misfit of the model against the data — the fit meter
+    rms() {
+      let s = 0;
+      for (const d of DATA) { const e = this.vModel(d.r) - d.v; s += e * e; }
+      return Math.sqrt(s / DATA.length);
+    }
 
     buildControls() {
       const c = this.controlsEl;
       this.haloBtns = buttonRow(c, [
         { label: 'visible matter only', value: false },
-        { label: '+ dark-matter halo', value: true },
+        { label: '+ invisible halo', value: true },
       ], {
-        initial: true,
+        initial: false,
         onSelect: (v) => {
           this.halo = v;
           this.cite(v
@@ -69,128 +82,170 @@
           this.poke();
         },
       });
+      this.rhoSlider = slider(c, {
+        label: 'halo density ρ₀',
+        min: 0.004, max: 0.03, step: 0.001, value: this.rho0,
+        format: (v) => `${fmtNum(v * 1000, 0)}`,
+        oninput: (v) => { this.rho0 = v; this.updateReadout(); this.poke(); },
+      });
       this.rcSlider = slider(c, {
         label: 'halo core radius',
         min: 1.5, max: 9, step: 0.1, value: this.rCore,
         format: (v) => `${fmtNum(v, 1)} kpc`,
         oninput: (v) => { this.rCore = v; this.updateReadout(); this.poke(); },
       });
-      this.rhoSlider = slider(c, {
-        label: 'halo density',
-        min: 0.004, max: 0.03, step: 0.001, value: this.rho0,
-        format: (v) => `${fmtNum(v * 1000, 1)}`,
-        oninput: (v) => { this.rho0 = v; this.updateReadout(); this.poke(); },
-      });
+    }
+
+    verdict() {
+      const e = this.rms();
+      if (e <= 15) return { txt: `FITS! (off by only ${fmtNum(e, 0)} km/s on average)`, cls: 'green', col: COLORS.green };
+      if (e <= 40) return { txt: `getting closer — off by ${fmtNum(e, 0)} km/s`, cls: 'yellow', col: COLORS.yellow };
+      return { txt: `way off — misses the data by ${fmtNum(e, 0)} km/s`, cls: 'red', col: COLORS.red };
     }
 
     updateReadout() {
-      const vOut = this.vObserved(R_MAX);
-      const vVisOut = this.vVisible(R_MAX);
-      const totM = this.diskMass(R_MAX) + (this.halo ? this.haloMass(R_MAX) : 0);
-      const darkFrac = this.halo ? this.haloMass(R_MAX) / totM : 0;
+      const vd = this.verdict();
+      const mVis = this.diskMass(R_MAX);
+      const mHalo = this.halo ? this.haloMass(R_MAX) : 0;
       const lines = [
         [
-          ['at the edge (r = 30 kpc): visible matter alone predicts ', null],
-          [`${fmtNum(vVisOut, 0)} km/s`, 'orange'],
-          ['. Observed: ', null],
-          [`${fmtNum(vOut, 0)} km/s`, 'cyan'],
+          ['white points = what telescopes measure. Curve = YOUR model.  → ', null],
+          [vd.txt, vd.cls],
         ],
-        this.halo
-          ? [['the halo holds ', null], [`${fmtNum(darkFrac * 100, 0)}%`, 'pink'], [' of the enclosed mass — the flat curve is the fingerprint of unseen matter.', null]]
-          : [['the outer stars are orbiting far too fast for the light we see — the curve should have fallen off. It doesn\'t. Toggle the halo on.', 'yellow']],
-        [['the gravity is measured many ways; WHAT the dark matter is remains unknown (no particle caught yet).', 'green']],
       ];
+      if (!this.halo) {
+        lines.push([[
+          'all the stars, gas and dust we can see cannot spin a galaxy this fast at the edge — the model has to fall off, the data refuses to. Try "+ invisible halo".',
+          null,
+        ]]);
+      } else {
+        lines.push([
+          ['mass inside 30 kpc — visible: ', null], [`${sci(mVis, 1)} M☉`, 'orange'],
+          ['   invisible halo: ', null], [`${sci(mHalo, 1)} M☉`, 'pink'],
+          [`   →  ${fmtNum(mHalo / mVis, 1)}× more dark than visible (and halos extend far beyond the plot)`, null],
+        ]);
+        if (this.rms() <= 15) {
+          lines.push([['this is Rubin & Ford\'s discovery: the fit REQUIRES unseen mass. Its gravity is confirmed many ways — its identity is still unknown.', 'green']]);
+        }
+      }
       setReadout(this.readoutEl, lines);
     }
 
     update(dt) {
       this.t += dt;
       for (const s of this.stars) {
-        // angular speed ω = v/r; scale so it animates nicely
-        const v = this.vObserved(s.r);
-        s.phi += dt * (v / s.r) * 0.06;
+        s.phi += dt * (this.vModel(s.r) / s.r) * 0.06;
       }
     }
 
     render() {
       const { rc, ctx, w, h } = this;
       const compact = w < 700;
-      // left: doodle galaxy with tracer stars; right: the rotation curve plot
-      const galW = compact ? w : w * 0.44;
-      const gcx = galW * 0.5;
-      const gcy = h * 0.5;
-      const galR = Math.min(galW, h) * 0.4;
+      // layout: side-by-side on desktop, stacked on mobile — the PLOT always shows
+      const galX = 0;
+      const galY = 0;
+      const galW = compact ? w : w * 0.42;
+      const galH = compact ? h * 0.44 : h;
+      const gcx = galX + galW * 0.5;
+      const gcy = galY + galH * 0.52;
+      const galR = Math.min(galW, galH) * (compact ? 0.4 : 0.38);
 
-      // dark halo glow (if on)
+      // --- the galaxy ---
       if (this.halo) {
-        rc.circle(gcx, gcy, galR * 2.1, opts(380, { stroke: COLORS.pink, strokeWidth: 1.2, strokeLineDash: [4, 7] }));
-        label(ctx, 'dark-matter halo (invisible)', gcx, gcy - galR - 6, { color: COLORS.pink, size: 12.5, align: 'center' });
+        const hr = galR * (1.2 + this.rCore / 9);
+        rc.circle(gcx, gcy, hr * 2, opts(380, { stroke: COLORS.pink, strokeWidth: 1.2, strokeLineDash: [4, 7] }));
+        label(ctx, 'invisible halo', gcx, gcy - hr - 6, { color: COLORS.pink, size: 12, align: 'center' });
       }
-      // spiral galaxy body
-      this.cache.draw(`gcore-${galW | 0}`, (g) => g.circle(gcx, gcy, galR * 0.5, opts(381, {
-        stroke: COLORS.yellow, strokeWidth: 1.6, fill: COLORS.yellow, fillStyle: 'hachure', fillWeight: 0.6, hachureGap: 8,
+      this.cache.draw(`bulge-${galW | 0}-${galH | 0}`, (g) => g.circle(gcx, gcy, galR * 0.42, opts(381, {
+        stroke: COLORS.yellow, strokeWidth: 1.6, fill: COLORS.yellow, fillStyle: 'hachure', fillWeight: 0.6, hachureGap: 7,
       })));
-      for (const arm of [0, Math.PI]) {
-        let path = `M ${gcx} ${gcy}`;
-        for (let t = 0; t <= 1; t += 0.1) {
-          const ang = arm + t * 3.2;
-          const rr = t * galR;
-          path += ` L ${gcx + Math.cos(ang) * rr} ${gcy + Math.sin(ang) * rr}`;
+      // three log-spiral arms with star dots
+      for (let armI = 0; armI < 3; armI++) {
+        const arm = (armI * Math.PI * 2) / 3;
+        let path = '';
+        for (let t2 = 0.12; t2 <= 1; t2 += 0.08) {
+          const ang = arm + t2 * 2.6;
+          const rr = Math.pow(t2, 0.8) * galR;
+          const x = gcx + Math.cos(ang) * rr;
+          const y = gcy + Math.sin(ang) * rr * 0.82;
+          path += (path ? ' L' : 'M') + ` ${x} ${y}`;
         }
-        this.cache.draw(`arm-${arm}-${galW | 0}`, (g) => g.path(path, opts(382 + arm, { stroke: COLORS.muted, strokeWidth: 1.2 })));
+        this.cache.draw(`arm-${armI}-${galW | 0}-${galH | 0}`, (g) => g.path(path, opts(383 + armI, { stroke: COLORS.muted, strokeWidth: 1.3 })));
+        // stars sprinkled on the arm
+        for (let t2 = 0.2; t2 <= 1; t2 += 0.16) {
+          const ang = arm + t2 * 2.6 + 0.06;
+          const rr = Math.pow(t2, 0.8) * galR;
+          ctx.fillStyle = COLORS.ink;
+          ctx.globalAlpha = 0.7;
+          ctx.beginPath();
+          ctx.arc(gcx + Math.cos(ang) * rr, gcy + Math.sin(ang) * rr * 0.82, 1.4, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
       }
-      // tracer stars
+      // tracer stars with speed arrows
       for (const s of this.stars) {
         const rr = (s.r / R_MAX) * galR;
         const x = gcx + Math.cos(s.phi) * rr;
-        const y = gcy + Math.sin(s.phi) * rr;
-        ctx.fillStyle = s.r > 12 ? COLORS.cyan : COLORS.ink;
-        ctx.beginPath();
-        ctx.arc(x, y, 3, 0, Math.PI * 2);
-        ctx.fill();
-        // speed vector
-        const v = this.vObserved(s.r);
-        const vlen = (v / 250) * 16;
-        const tx = -Math.sin(s.phi); const ty = Math.cos(s.phi);
-        ctx.strokeStyle = s.r > 12 ? COLORS.cyan : COLORS.muted;
+        const y = gcy + Math.sin(s.phi) * rr * 0.82;
+        const outer = s.r > 12;
+        ctx.fillStyle = outer ? COLORS.cyan : COLORS.ink;
+        ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+        const v = this.vModel(s.r);
+        const vlen = (v / 250) * 17;
+        const tx = -Math.sin(s.phi); const ty = Math.cos(s.phi) * 0.82;
+        ctx.strokeStyle = outer ? COLORS.cyan : COLORS.muted;
         ctx.lineWidth = 1.3;
         ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + tx * vlen, y + ty * vlen); ctx.stroke();
       }
-      label(ctx, 'outer stars carry a speed arrow — watch them when you toggle the halo', gcx, h - 12, { color: COLORS.muted, size: compact ? 10.5 : 12, align: 'center' });
+      label(ctx, 'speed arrows respond to YOUR model', gcx, galY + galH - 8, { color: COLORS.muted, size: 11, align: 'center' });
 
-      if (compact) return;
-
-      // ---- rotation-curve plot ----
-      const px0 = galW + 40;
+      // --- the rotation-curve plot (always drawn) ---
+      const px0 = compact ? 46 : galW + 46;
       const px1 = w - 24;
-      const py0 = 40;
-      const py1 = h - 60;
+      const py0 = compact ? galH + 18 : 40;
+      const py1 = h - (compact ? 34 : 60);
       const vMax = 300;
       const X = (r) => px0 + (r / R_MAX) * (px1 - px0);
       const Y = (v) => py1 - (v / vMax) * (py1 - py0);
       this.cache.draw(`axes-${w}x${h}`, (g) => g.path(`M ${px0} ${py0} L ${px0} ${py1} L ${px1} ${py1}`, opts(390, { stroke: COLORS.muted, strokeWidth: 1.4 })));
-      label(ctx, 'orbital speed →', px0 - 8, py0 + 2, { color: COLORS.muted, size: 11.5, align: 'right' });
-      label(ctx, 'radius (kpc) →', (px0 + px1) / 2, py1 + 20, { color: COLORS.muted, size: 11.5, align: 'center' });
-      label(ctx, '220', px0 - 6, Y(220) + 4, { color: COLORS.muted, size: 10.5, align: 'right' });
+      label(ctx, 'orbital speed (km/s)', px0 + 4, py0 - 6, { color: COLORS.muted, size: 11, align: 'left' });
+      label(ctx, 'radius (kpc)', (px0 + px1) / 2, py1 + 18, { color: COLORS.muted, size: 11, align: 'center' });
+      label(ctx, '220', px0 - 5, Y(220) + 4, { color: COLORS.muted, size: 10.5, align: 'right' });
 
-      // visible-only curve (orange, falls off)
-      ctx.strokeStyle = COLORS.orange;
-      ctx.lineWidth = 1.8;
-      ctx.setLineDash([6, 5]);
-      ctx.beginPath();
-      for (let r = 0.2; r <= R_MAX; r += 0.4) { const x = X(r), y = Y(this.vVisible(r)); r === 0.2 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
-      ctx.stroke();
-      ctx.setLineDash([]);
-      // observed curve (cyan)
-      ctx.strokeStyle = COLORS.cyan;
+      // model curve (color = fit verdict)
+      const vd = this.verdict();
+      ctx.strokeStyle = vd.col;
       ctx.lineWidth = 2.2;
       ctx.beginPath();
-      for (let r = 0.2; r <= R_MAX; r += 0.4) { const x = X(r), y = Y(this.vObserved(r)); r === 0.2 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+      for (let r = 0.3; r <= R_MAX; r += 0.4) { const x = X(r), y = Y(Math.min(this.vModel(r), vMax)); r <= 0.35 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
       ctx.stroke();
-
-      label(ctx, 'visible matter (predicted)', X(20), Y(this.vVisible(20)) - 8, { color: COLORS.orange, size: 12, align: 'center' });
-      label(ctx, this.halo ? 'observed (flat!)' : 'observed = visible only', X(16), Y(this.vObserved(16)) - 10, { color: COLORS.cyan, size: 12.5, align: 'center' });
-      sparkle(rc, px1 - 14, py0 + 10, 5, { color: COLORS.pink, seed: 399 });
+      // visible-only reference (when halo is on, show what visible alone did)
+      if (this.halo) {
+        ctx.strokeStyle = COLORS.orange;
+        ctx.globalAlpha = 0.55;
+        ctx.setLineDash([6, 5]);
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        for (let r = 0.3; r <= R_MAX; r += 0.4) { const x = X(r), y = Y(this.vVisible(r)); r <= 0.35 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.globalAlpha = 1;
+        label(ctx, 'visible only', X(24), Y(this.vVisible(24)) + 16, { color: COLORS.orange, size: 11, align: 'center' });
+      }
+      // DATA points with error bars — drawn last, on top: data outranks models
+      for (const d of DATA) {
+        const x = X(d.r);
+        const y = Y(d.v);
+        ctx.strokeStyle = COLORS.ink;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(x, Y(d.v - d.err)); ctx.lineTo(x, Y(d.v + d.err)); ctx.stroke();
+        ctx.fillStyle = COLORS.ink;
+        ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+      }
+      label(ctx, 'MODEL: ' + vd.txt, (px0 + px1) / 2, py0 + 14, { color: vd.col, size: compact ? 11.5 : 13, align: 'center' });
+      label(ctx, 'white points = telescope data (Rubin-style)', (px0 + px1) / 2, py0 + 30, { color: COLORS.muted, size: 10.5, align: 'center' });
+      sparkle(rc, px1 - 12, py1 - 10, 5, { color: COLORS.pink, seed: 399 });
     }
   }
 
