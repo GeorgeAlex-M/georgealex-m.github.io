@@ -47,6 +47,10 @@
   <script defer src="js/sims/hawking.js"></script>
   <script defer src="js/sims/grav-waves.js"></script>
   <script defer src="js/sims/kerr.js"></script>
+  <script defer src="js/sims/spectrum.js"></script>
+  <script defer src="js/sims/blackbody.js"></script>
+  <script defer src="js/sims/spectroscopy.js"></script>
+  <script defer src="js/sims/redshift.js"></script>
   <script defer src="js/sims/godel.js"></script>
   <script defer src="js/sims/grandfather.js"></script>
   <script defer src="js/sims/many-worlds.js"></script>
@@ -152,10 +156,10 @@
     <div class="toc-chapter">
       <h3>Chapter VI — Light &amp; the Color Spectrum</h3>
       <ul class="toc-items">
-        <li><span class="soon">The electromagnetic spectrum</span></li>
-        <li><span class="soon">Why stars have colors</span></li>
-        <li><span class="soon">Spectroscopy — reading starlight</span></li>
-        <li><span class="soon">Redshift &amp; blueshift</span></li>
+        <li><a href="#spectrum"><span class="n" style="color:var(--cyan)">17</span>The electromagnetic spectrum</a></li>
+        <li><a href="#blackbody"><span class="n" style="color:var(--orange)">18</span>Why stars have colors</a></li>
+        <li><a href="#spectroscopy"><span class="n" style="color:var(--green)">19</span>Spectroscopy — reading starlight</a></li>
+        <li><a href="#redshift"><span class="n" style="color:var(--pink)">20</span>Redshift &amp; blueshift</a></li>
       </ul>
     </div>
 
@@ -1235,6 +1239,295 @@
   </section>
 
   <!-- ======================================================================
+       Sim 17 — The electromagnetic spectrum
+       ====================================================================== -->
+  <section class="sim-section" id="spectrum" style="--accent: var(--cyan)">
+    <h2><span class="secnum">17.</span>The electromagnetic spectrum</h2>
+    <p class="kicker">Radio, light and gamma rays are all the same thing — waving at different
+      speeds. Slide across the whole spectrum and see what our eyes (and our atmosphere) miss.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      that visible light is one octave of a single electromagnetic spectrum was predicted by
+      Maxwell (1865) and confirmed by Hertz's radio waves in 1887. Every wavelength here is
+      generated, detected and used by technology you own.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="spectrum" aria-label="The electromagnetic spectrum from radio to gamma with atmospheric opacity and a visible-light zoom"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="spectrum"></div>
+    <div class="sim-readout" data-readout="spectrum" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1865 Maxwell - A Dynamical Theory of the Electromagnetic Field</span>
+      <span class="cit">1888 Hertz - &Uuml;ber Strahlen elektrischer Kraft (On Electric Radiation)</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">electromagnetic wave</dt>
+        <dd>A self-propagating ripple of electric and magnetic fields, travelling at the speed
+          of light. Radio, microwaves, infrared, visible light, ultraviolet, X-rays and gamma
+          rays are all this same wave — they differ only in wavelength.</dd>
+        <dt style="color:var(--yellow)">wavelength, frequency, energy</dt>
+        <dd>Tied together by c = f&lambda; and E = hf = hc/&lambda;. Short waves = high frequency
+          = high-energy photons. A handy rule: photon energy in electron-volts &asymp;
+          1240 / (wavelength in nm).</dd>
+        <dt style="color:var(--pink)">the visible sliver</dt>
+        <dd>Human eyes see only ~380&ndash;750 nm — less than one "octave" of a spectrum that
+          spans a factor of 10&sup1;&sup5;. If the whole spectrum were a piano, we'd hear a
+          single key.</dd>
+        <dt style="color:var(--green)">atmospheric windows</dt>
+        <dd>Earth's air is transparent only to visible light and some radio; it blocks most
+          infrared, all ultraviolet, X-rays and gamma rays. That opacity is <em>why</em> we
+          launch space telescopes — to see the universe in the colours the ground can't.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ c = f\lambda \qquad E = hf = \frac{hc}{\lambda} \qquad
+         E[\text{eV}] \approx \frac{1240}{\lambda[\text{nm}]} $$
+      <p class="eq-note">c = 3&times;10&#8312; m/s, h = 6.626&times;10&#8315;&sup3;&#8308; J&middot;s. One equation family stretches from kilometre-long radio waves to gamma rays smaller than an atomic nucleus.</p>
+    </div>
+
+    <div class="prose">
+      <p>In 1865 James Clerk Maxwell wrote down four equations for electricity and magnetism,
+      and out fell a wave that travels at exactly the measured speed of light. His conclusion
+      was breathtaking: <strong>light is an electromagnetic wave</strong>, and there must be
+      others we can't see. Heinrich Hertz proved it in 1887 by making and catching radio
+      waves in his lab — then reportedly shrugged that it was "of no use whatsoever." It became
+      radio, radar, WiFi and your phone.</p>
+      <p>Slide the marker and watch the numbers: the same physics runs from kilometre radio
+      waves to gamma rays with more energy than a moving bullet, packed into a wave smaller
+      than an atom. Our eyes evolved to catch just the narrow band the Sun pours out most
+      strongly and the atmosphere lets through — a lucky coincidence the blackbody sim
+      (next) explains.</p>
+      <p>Notice the opacity strip: the ground can only see visible light and radio. Everything
+      else — the infrared glow of forming stars, the ultraviolet of hot young suns, the X-rays
+      of matter falling into black holes (section 1's telescope view) — is invisible from
+      Earth's surface. To see the universe in full colour, astronomy had to leave the planet.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 18 — Why stars have colors (blackbody)
+       ====================================================================== -->
+  <section class="sim-section" id="blackbody" style="--accent: var(--orange)">
+    <h2><span class="secnum">18.</span>Why stars have colors</h2>
+    <p class="kicker">A star's colour is a thermometer. Heat the doodle star and watch it glow
+      red, then white, then blue — with the real Planck curve behind it.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      the blackbody spectrum (Planck 1900), its peak-wavelength law (Wien 1893) and the
+      T&#8308; brightness law (Stefan&ndash;Boltzmann) are among the most precisely tested laws in
+      physics; astronomers read stellar temperatures straight off colours every night.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="blackbody" aria-label="Blackbody radiation — a star's colour and Planck curve as a function of temperature"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="blackbody"></div>
+    <div class="sim-readout" data-readout="blackbody" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1893 Wien - Eine neue Beziehung der Strahlung schwarzer K&ouml;rper zum zweiten Hauptsatz der W&auml;rmetheorie</span>
+      <span class="cit">1900 Planck - Zur Theorie des Gesetzes der Energieverteilung im Normalspektrum (On the Theory of the Energy Distribution Law of the Normal Spectrum)</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--orange)">blackbody radiation</dt>
+        <dd>The glow any warm object gives off simply from being warm. Its spectrum depends on
+          one thing only — temperature — so a star is very nearly a perfect blackbody, and its
+          colour betrays its heat.</dd>
+        <dt style="color:var(--yellow)">Planck's law</dt>
+        <dd>The exact shape of that glow, B&lambda;(T). Getting it right forced Max Planck in
+          1900 to assume energy comes in discrete lumps ("quanta") — reluctantly starting
+          quantum physics to fix a problem about light bulbs.</dd>
+        <dt style="color:var(--cyan)">Wien's displacement law</dt>
+        <dd>The peak wavelength is &lambda;_max = b/T (b = 2.898&times;10&#8315;&sup3; m&middot;K). Hotter =
+          bluer. The Sun (5772 K) peaks at 502 nm — right in the green, which is why our eyes
+          are most sensitive there.</dd>
+        <dt style="color:var(--pink)">Stefan&ndash;Boltzmann law</dt>
+        <dd>Total power radiated per area = &sigma;T&#8308;. Double the temperature and a surface glows
+          <em>sixteen</em> times brighter — colour and brightness both explode with heat.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ B_\lambda(T) = \frac{2hc^2}{\lambda^5}\,\frac{1}{e^{hc/\lambda k_B T}-1}
+         \qquad \lambda_{\max} = \frac{b}{T} \qquad \frac{L}{L_\odot}\Big|_{R=R_\odot} = \left(\frac{T}{5772}\right)^4 $$
+      <p class="eq-note">Planck's curve, Wien's peak, and (for a star the Sun's size) how brightness scales as T&#8308;. b = 2.898&times;10&#8315;&sup3; m&middot;K.</p>
+    </div>
+
+    <div class="prose">
+      <p>Why is a candle flame yellow, a stove element red, and the hottest stars blue? Because
+      colour <em>is</em> temperature. Every warm object radiates a smooth blackbody spectrum
+      whose peak slides to shorter (bluer) wavelengths as it heats up — Wien's law. Drag the
+      slider from a cool 3000 K red dwarf up to a 30,000 K blue giant and watch both the doodle
+      star's colour and the Planck curve's peak march to the blue.</p>
+      <p>The Sun sits at 5772 K and peaks at 502 nm — technically green — yet looks white,
+      because it pours out <em>all</em> the visible colours at once and our eyes blend them.
+      The presets are real stars: Betelgeuse (~3500 K, orange-red), the Sun (yellow-white),
+      Sirius (~9900 K, blue-white), a blue supergiant (~30,000 K).</p>
+      <p>Getting this curve right was a crisis. Classical physics predicted infinite energy at
+      short wavelengths (the "ultraviolet catastrophe"). In 1900 Planck fixed it only by
+      assuming light energy comes in discrete packets — quanta — a desperate mathematical
+      trick he disliked. It was the first crack of the quantum revolution, and it started with
+      the colour of hot things.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 19 — Spectroscopy — reading starlight
+       ====================================================================== -->
+  <section class="sim-section" id="spectroscopy" style="--accent: var(--green)">
+    <h2><span class="secnum">19.</span>Spectroscopy — reading starlight</h2>
+    <p class="kicker">Every element writes its own barcode in light. Shine starlight through a
+      gas and read off what it's made of — the trick behind knowing the stars.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      spectral lines are exact, reproducible fingerprints (Fraunhofer 1814); Bohr's 1913 model
+      predicts hydrogen's wavelengths to four figures; and reading composition from starlight is
+      routine science. The wavelengths in this sim are computed from the Rydberg formula.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="spectroscopy" aria-label="Spectroscopy — absorption and emission lines of hydrogen, helium and sodium, with a Bohr energy-level diagram"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="spectroscopy"></div>
+    <div class="sim-readout" data-readout="spectroscopy" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1814 Fraunhofer - Bestimmung des Brechungs- und Farbenzerstreuungs-Verm&ouml;gens verschiedener Glasarten</span>
+      <span class="cit">1913 Bohr - On the Constitution of Atoms and Molecules</span>
+      <span class="cit">1925 Payne - Stellar Atmospheres: A Contribution to the Observational Study of High Temperature in the Reversing Layers of Stars</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--green)">spectral lines</dt>
+        <dd>Sharp bright or dark lines at exact wavelengths. Each element has a unique set —
+          its barcode — because its electrons can only sit at certain energy levels.</dd>
+        <dt style="color:var(--pink)">absorption vs emission</dt>
+        <dd>Cool gas in front of a hot source removes its own colours → <em>dark</em> lines
+          (Fraunhofer's lines in the Sun). Hot gas alone glows at just those colours →
+          <em>bright</em> emission lines (a neon sign). Same wavelengths, opposite look.</dd>
+        <dt style="color:var(--cyan)">the Bohr model &amp; energy levels</dt>
+        <dd>Bohr's 1913 picture: electrons orbit only at fixed energies E_n = &minus;13.6/n&sup2; eV.
+          A jump between levels emits or absorbs a photon of exactly the energy gap — which
+          fixes its wavelength. The visible hydrogen lines are jumps ending on level 2 (the
+          Balmer series).</dd>
+        <dt style="color:var(--yellow)">what stars are made of</dt>
+        <dd>In 1925 Cecilia Payne read the Sun's barcode and concluded it is overwhelmingly
+          hydrogen — contradicting the experts, who thought stars matched Earth's rock. She was
+          right. Spectroscopy is how we know the composition of things we can never touch.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ E_n = -\frac{13.6\ \text{eV}}{n^2} \qquad
+         \frac{1}{\lambda} = R\left(\frac{1}{n_1^2}-\frac{1}{n_2^2}\right) \qquad
+         \lambda(\text{H}\alpha) = 656.3\ \text{nm} $$
+      <p class="eq-note">Bohr's energy levels and the Rydberg formula (R = 1.097&times;10&#8311; m&#8315;&sup1;). The Balmer series (n&#8321;=2) gives hydrogen's four visible lines: 656, 486, 434, 410 nm.</p>
+    </div>
+
+    <div class="prose">
+      <p>In 1814 Joseph von Fraunhofer, mapping the Sun's spectrum with the finest prisms ever
+      made, found it crossed by hundreds of dark lines. He had no idea what they were — but he
+      catalogued them so precisely that we still use his letters (the sodium "D" lines). They
+      are the fingerprints of the elements in the Sun's atmosphere, each absorbing its own
+      private set of colours.</p>
+      <p>Switch between hydrogen, helium and sodium and watch the barcode change. Toggle
+      absorption vs emission: cool gas in front of a hot star cuts dark gaps; hot gas alone
+      lights up at exactly the same wavelengths. Bohr's 1913 model explains why they're so
+      sharp — electrons can only occupy fixed energy rungs, so photons come in only fixed
+      sizes. The energy-level ladder on the right shows the Balmer jumps producing hydrogen's
+      red H&alpha; and blue H&beta;.</p>
+      <p>This is arguably astronomy's superpower. We will never visit a star, yet we know its
+      temperature (colour), composition (lines), motion (their shift — next section), even its
+      magnetic fields. Cecilia Payne's 1925 thesis — reading that the Sun is mostly hydrogen —
+      has been called the most brilliant PhD in astronomy. All of it rides on reading light.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 20 — Redshift & blueshift
+       ====================================================================== -->
+  <section class="sim-section" id="redshift" style="--accent: var(--pink)">
+    <h2><span class="secnum">20.</span>Redshift &amp; blueshift</h2>
+    <p class="kicker">Move a source, stretch space, or climb out of gravity — all three slide
+      the barcode. Watch hydrogen's lines shift and read the speed of the cosmos.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      Doppler shifts are measured daily (radar guns, exoplanet wobbles); cosmological redshift
+      is Hubble's law (section 10); gravitational redshift was measured in a Harvard tower
+      (Pound&ndash;Rebka) and runs your GPS. All three shift the same lines by computed amounts.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="redshift" aria-label="Redshift and blueshift of hydrogen spectral lines under Doppler, cosmological and gravitational shifts"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="redshift"></div>
+    <div class="sim-readout" data-readout="redshift" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1842 Doppler - &Uuml;ber das farbige Licht der Doppelsterne und einiger anderer Gestirne des Himmels (On the Coloured Light of the Binary Stars)</span>
+      <span class="cit">1929 Hubble - A Relation between Distance and Radial Velocity among Extra-Galactic Nebulae</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--pink)">redshift &amp; blueshift</dt>
+        <dd>Light stretched to longer (redder) wavelengths is redshifted; squeezed to shorter
+          (bluer) is blueshifted. Because every element's lines sit at known wavelengths, the
+          amount of shift is directly readable.</dd>
+        <dt style="color:var(--cyan)">the Doppler shift</dt>
+        <dd>A source moving away stretches its waves (like a receding siren dropping pitch),
+          moving toward you squeezes them. 1 + z = &radic;((1+&beta;)/(1&minus;&beta;)) for speed
+          &beta; = v/c. This finds exoplanets by the tiny wobble they give their star.</dd>
+        <dt style="color:var(--orange)">cosmological redshift</dt>
+        <dd>Not motion <em>through</em> space but the stretching <em>of</em> space while the
+          light was in flight: 1 + z = 1/a. A galaxy at z = 7 emitted its light when the
+          universe was 1/8 its present size.</dd>
+        <dt style="color:var(--green)">gravitational redshift</dt>
+        <dd>Light climbing out of gravity loses energy and reddens: 1 + z = 1/&radic;(1&minus;r_s/r).
+          Tiny for stars, infinite at a black hole's horizon (section 2), and just big enough on
+          Earth that GPS must correct for it.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ 1+z = \sqrt{\frac{1+\beta}{1-\beta}}\ \text{(Doppler)} \qquad
+         1+z = \frac{1}{a}\ \text{(cosmological)} \qquad
+         1+z = \frac{1}{\sqrt{1-r_s/r}}\ \text{(gravitational)} $$
+      <p class="eq-note">Three different physics, one observable: &lambda;_observed = (1+z)&thinsp;&lambda;_emitted. The sim slides real hydrogen Balmer lines by the z you dial in.</p>
+    </div>
+
+    <div class="prose">
+      <p>Christian Doppler realised in 1842 that a wave's pitch depends on the source's motion —
+      true for sound, and, he guessed, for the colour of stars. He was right in principle: a
+      star rushing toward us has its spectral lines shifted blue, one fleeing us shifts red. Pick
+      a mechanism and drag: the hydrogen barcode you learned in the last section slides bodily
+      along the spectrum, and the readout gives you z.</p>
+      <p>The three sliders are three different universes' worth of physics producing the same
+      visible effect. <em>Doppler</em> reveals orbital wobbles — how most exoplanets were found.
+      <em>Cosmological</em> shift is Hubble's discovery that space itself stretches, the
+      backbone of the expanding-universe sim; the most distant galaxies are shifted so far that
+      their ultraviolet arrives as infrared. <em>Gravitational</em> shift is general relativity
+      reddening light as it escapes a gravity well.</p>
+      <p>Redshift is the single most important number in observational cosmology: it is at once a
+      speed, a distance, and a look-back time. Every point on the cosmic distance ladder,
+      every map of the large-scale universe, every "we are seeing this galaxy as it was 13
+      billion years ago" — all of it is one shifted barcode, read with care.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
        Sim 40 — Gödel's rotating universe
        ====================================================================== -->
   <section class="sim-section" id="godel" style="--accent: var(--orange)">
@@ -1566,14 +1859,22 @@
       so you can find them in a reference manager or archive. This list grows with every
       new section of the page.</p>
     <ul class="library-list">
+      <li><span class="yr">1814</span>Fraunhofer - Bestimmung des Brechungs- und Farbenzerstreuungs-Verm&ouml;gens verschiedener Glasarten</li>
       <li><span class="yr">1814</span>Laplace - Essai philosophique sur les probabilit&eacute;s (A Philosophical Essay on Probabilities)</li>
+      <li><span class="yr">1842</span>Doppler - &Uuml;ber das farbige Licht der Doppelsterne und einiger anderer Gestirne des Himmels (On the Coloured Light of the Binary Stars)</li>
       <li><span class="yr">1859</span>Le Verrier - Lettre de M. Le Verrier &agrave; M. Faye sur la th&eacute;orie de Mercure et sur le mouvement du p&eacute;rih&eacute;lie de cette plan&egrave;te (Letter on the Theory of Mercury and the Motion of its Perihelion)</li>
+      <li><span class="yr">1865</span>Maxwell - A Dynamical Theory of the Electromagnetic Field</li>
+      <li><span class="yr">1888</span>Hertz - &Uuml;ber Strahlen elektrischer Kraft (On Electric Radiation)</li>
+      <li><span class="yr">1893</span>Wien - Eine neue Beziehung der Strahlung schwarzer K&ouml;rper zum zweiten Hauptsatz der W&auml;rmetheorie</li>
+      <li><span class="yr">1900</span>Planck - Zur Theorie des Gesetzes der Energieverteilung im Normalspektrum (On the Theory of the Energy Distribution Law of the Normal Spectrum)</li>
       <li><span class="yr">1905</span>Einstein - Zur Elektrodynamik bewegter K&ouml;rper (On the Electrodynamics of Moving Bodies)</li>
       <li><span class="yr">1905</span>Einstein - Ist die Tr&auml;gheit eines K&ouml;rpers von seinem Energieinhalt abh&auml;ngig? (Does the Inertia of a Body Depend Upon Its Energy Content?)</li>
+      <li><span class="yr">1913</span>Bohr - On the Constitution of Atoms and Molecules</li>
       <li><span class="yr">1915</span>Einstein - Erkl&auml;rung der Perihelbewegung des Merkur aus der allgemeinen Relativit&auml;tstheorie (Explanation of the Perihelion Motion of Mercury from the General Theory of Relativity)</li>
       <li><span class="yr">1916</span>Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</li>
       <li><span class="yr">1920</span>Dyson, Eddington, Davidson - A Determination of the Deflection of Light by the Sun's Gravitational Field, from Observations Made at the Total Eclipse of May 29, 1919</li>
       <li><span class="yr">1922</span>Friedmann - &Uuml;ber die Kr&uuml;mmung des Raumes (On the Curvature of Space)</li>
+      <li><span class="yr">1925</span>Payne - Stellar Atmospheres: A Contribution to the Observational Study of High Temperature in the Reversing Layers of Stars</li>
       <li><span class="yr">1927</span>Lema&icirc;tre - Un Univers homog&egrave;ne de masse constante et de rayon croissant rendant compte de la vitesse radiale des n&eacute;buleuses extra-galactiques</li>
       <li><span class="yr">1929</span>Hubble - A Relation between Distance and Radial Velocity among Extra-Galactic Nebulae</li>
       <li><span class="yr">1933</span>Zwicky - Die Rotverschiebung von extragalaktischen Nebeln (The Redshift of Extragalactic Nebulae)</li>
