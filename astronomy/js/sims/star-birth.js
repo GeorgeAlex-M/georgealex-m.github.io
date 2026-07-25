@@ -15,6 +15,9 @@
 
   const BROWN_DWARF = 0.08;   // M_sun — hydrogen-fusion threshold
   const IGNITE_T = 1e7;       // K
+  const L_SUN = 3.828e26;     // W (IAU nominal)
+  const EVEREST = 8.0e14;     // kg — the mass the fusion rate is quoted against
+  const { C2, M_SUN } = A;
 
   // rough main-sequence surface temperature for a given mass (K)
   function surfaceT(M) {
@@ -121,6 +124,50 @@
       }
     }
 
+    /* ---------------- what fusion actually costs ----------------
+       0.71% sounds tiny until you attach a mass to it. Luminosity from the
+       main-sequence relation L ≈ L_sun (M/M_sun)^3.5, then dm/dt = L/c² — the
+       rate at which the star is converting itself into light. Anchored to a
+       mountain because "4.26 million tonnes per second" is not a quantity
+       anybody can picture, whereas "Everest, every two days" is.             */
+
+    fusionBill() {
+      const L = L_SUN * Math.pow(this.mass, 3.5);   // W
+      const dmdt = L / C2;                          // kg/s
+      return {
+        L, dmdt,
+        everestSeconds: EVEREST / dmdt,
+        sunLifetimeLoss: (dmdt * 4.6e9 * 3.15576e7) / (this.mass * M_SUN),
+      };
+    }
+
+    drawFusionBill(cx, y) {
+      const { rc, ctx } = this;
+      const b = this.fusionBill();
+      // a mountain, drawn — the unit the number is quoted in
+      this.cache.draw(`mtn-${cx | 0}-${y | 0}`, (g) => g.path(
+        `M ${cx - 54} ${y + 30} L ${cx - 20} ${y - 12} L ${cx - 6} ${y + 6} L ${cx + 12} ${y - 20} L ${cx + 54} ${y + 30} Z`,
+        opts(292, { stroke: COLORS.muted, strokeWidth: 1.5 }),
+      ));
+      this.cache.draw(`snow-${cx | 0}-${y | 0}`, (g) => g.path(
+        `M ${cx + 12} ${y - 20} l -9 12 l 7 3 l 6 -6 l 6 5 Z`,
+        opts(293, { stroke: COLORS.ink, strokeWidth: 1.1 }),
+      ));
+      // the light leaving
+      for (let i = 0; i < 3; i++) {
+        rc.line(cx + 60 + i * 14, y + 22 - i * 8, cx + 76 + i * 14, y + 6 - i * 8,
+          opts(294 + i, { stroke: COLORS.yellow, strokeWidth: 1.3 }));
+      }
+      const t = b.everestSeconds;
+      const nice = t < 90 ? `${fmtNum(t, 0)} seconds`
+        : t < 5400 ? `${fmtNum(t / 60, 0)} minutes`
+          : t < 2 * 86400 ? `${fmtNum(t / 3600, 0)} hours`
+            : `${fmtNum(t / 86400, 1)} days`;
+      label(ctx, 'this star turns a mountain into light', cx, y - 34, { color: COLORS.yellow, size: 12.5, align: 'center' });
+      label(ctx, `every ${nice}`, cx, y + 50, { color: COLORS.yellow, size: 15, align: 'center' });
+      label(ctx, `${sci(b.dmdt, 2)} kg/s becomes energy`, cx, y + 68, { color: COLORS.muted, size: 11, align: 'center' });
+    }
+
     render() {
       const { rc, ctx, w, h } = this;
       const compact = w < 700;
@@ -200,6 +247,7 @@
         }
         if (this.stage !== 'star') label(ctx, '(ignite a star to run it)', px, py + 76, { color: COLORS.muted, size: 11.5, align: 'center' });
         sparkle(rc, px + 150, 30, 6, { color: COLORS.pink, seed: 290 });
+        if (this.stage === 'star') this.drawFusionBill(px, py + 92);
       } else if (this.stage === 'star') {
         label(ctx, '4 H → He  ·  0.71% of mass → light', w / 2, h - 16, { color: COLORS.yellow, size: 12.5, align: 'center' });
       }
