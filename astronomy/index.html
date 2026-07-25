@@ -39,6 +39,7 @@
   <script defer src="js/sims/orbits-precession.js"></script>
   <script defer src="js/sims/emc2.js"></script>
   <script defer src="js/sims/time-dilation.js"></script>
+  <script defer src="js/sims/everyday-time.js"></script>
   <script defer src="js/sims/lensing.js"></script>
   <script defer src="js/sims/light-speed.js"></script>
   <script defer src="js/sims/escape-velocity.js"></script>
@@ -130,6 +131,7 @@
       <ul class="toc-items">
         <li><a href="#emc2"><span class="n" style="color:var(--yellow)">4</span>E = mc&sup2;</a></li>
         <li><a href="#bending-time"><span class="n" style="color:var(--orange)">5</span>Bending time (Interstellar &amp; GPS)</a></li>
+        <li><a href="#everyday-time"><span class="n" style="color:var(--orange)">46</span>Time dilation you could measure</a></li>
         <li><a href="#lensing"><span class="n" style="color:var(--pink)">6</span>Gravitational lensing</a></li>
         <li><a href="#light-speed"><span class="n" style="color:var(--yellow)">44</span>Light &amp; the speed limit</a></li>
       </ul>
@@ -654,6 +656,112 @@
   </section>
 
   <!-- ======================================================================
+       Sim 46 — Time dilation you could actually measure
+       ====================================================================== -->
+  <section class="sim-section" id="everyday-time" style="--accent: var(--orange)">
+    <h2><span class="secnum">46.</span>Time dilation you could actually measure</h2>
+    <p class="kicker">No black holes, no starships. A stick figure stands on the pavement, a car drives
+      past, someone walks upstairs &mdash; and the clocks really do drift apart. Here is by how much.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+      Hafele and Keating flew caesium clocks around the world in 1972 and got the predicted nanoseconds
+      back. In 2010 NIST raised one optical clock about 33&nbsp;cm above another and watched the higher
+      one run fast. Every GPS satellite in the sky is corrected for both effects, continuously.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="everydayTime" aria-label="A standing stick figure compared with a moving vehicle, a raised clock, and the net clock drift for circular orbits"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="everydayTime"></div>
+    <div class="sim-readout" data-readout="everydayTime" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1905 Einstein - Zur Elektrodynamik bewegter K&ouml;rper (On the Electrodynamics of Moving Bodies)</span>
+      <span class="cit">1972 Hafele, Keating - Around-the-World Atomic Clocks: Observed Relativistic Time Gains</span>
+      <span class="cit">2003 Ashby - Relativity in the Global Positioning System</span>
+      <span class="cit">2010 Chou, Hume, Rosenband, Wineland - Optical Clocks and Relativity</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">proper time</dt>
+        <dd>The time a clock measures along its own path &mdash; what it personally experiences. Two
+          clocks that separate and meet again can disagree, and both are right. There is no universal
+          "now" to appeal to; there is only each clock's own accumulated total.</dd>
+        <dt style="color:var(--pink)">velocity time dilation</dt>
+        <dd>Moving clocks run slow, by the factor &gamma;. At everyday speeds the effect is
+          v&sup2;/2c&sup2; &mdash; about 4&times;10&#8315;&sup1;&#8309; for a car, meaning it loses
+          roughly 15 picoseconds an hour.</dd>
+        <dt style="color:var(--green)">gravitational time dilation</dt>
+        <dd>Clocks deeper in a gravity well run slow; clocks higher up run fast. Near the ground the
+          rate changes by about 1.09&times;10&#8315;&sup1;&#8310; per second for every metre you climb.
+          Your head genuinely ages faster than your feet.</dd>
+        <dt style="color:var(--yellow)">the two effects competing</dt>
+        <dd>A satellite is both moving fast (slowing its clock) and high up (speeding it up). Which wins
+          depends on altitude. They cancel exactly at r = 1.5 R<sub>&oplus;</sub> &mdash; about 3,185 km
+          up &mdash; a number that falls straight out of setting the two terms equal.</dd>
+        <dt style="color:var(--orange)">optical clock</dt>
+        <dd>A clock that ticks on an optical rather than microwave transition, roughly a hundred times
+          more precise than a caesium standard. Precise enough that lifting one onto a shelf changes its
+          reading measurably &mdash; which is how relativity became a tabletop experiment.</dd>
+        <dt style="color:var(--ink)">picosecond / nanosecond</dt>
+        <dd>10&#8315;&sup1;&sup2; and 10&#8315;&#8313; of a second. Light crosses about a third of a
+          millimetre in a picosecond, and about 30&nbsp;cm in a nanosecond &mdash; which is exactly why
+          a navigation system that mis-keeps time by nanoseconds mis-places you by metres.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \text{lag} = T\left(1 - \frac{1}{\gamma}\right) \qquad
+         \text{gain} = T\,\frac{GM}{c^2}\left(\frac{1}{R_\oplus} - \frac{1}{R_\oplus + h}\right) \qquad
+         \text{net}_{\text{orbit}} = \frac{GM}{c^2}\left[\frac{1}{R_\oplus} - \frac{3}{2r}\right] $$
+      <p class="eq-note">Exact forms, not the small-v approximation &mdash; so the same expressions stay valid from walking pace up to GPS altitude. GM<sub>&oplus;</sub> = 3.986&times;10&sup1;&#8308; m&sup3;/s&sup2;; GM/c&sup2; = 4.435 mm.</p>
+    </div>
+
+    <div class="prose">
+      <p>Section 5 does time dilation the traditional way: light clocks, Miller's planet, a black hole.
+      All true, all a long way from here. So this one stays on your street. A stick figure stands still
+      on the pavement holding a clock. Something ordinary goes past holding another one. When they
+      compare, how far apart are they?</p>
+
+      <p>Pick the car. 100&nbsp;km/h is 27.8&nbsp;m/s, &gamma; exceeds 1 by four parts in a thousand
+      trillion, and after an hour of driving the car's clock has lost about <strong>15
+      picoseconds</strong>. Not a metaphor, not an approximation of an approximation &mdash; the sim
+      computes T(1&nbsp;&minus;&nbsp;1/&gamma;) exactly. Walk instead and it is picoseconds per century.
+      Take the airliner and ten hours of flying costs you around 12 nanoseconds. Only when you get to
+      the ISS, at 7.66&nbsp;km/s, does it become tens of microseconds a day.</p>
+
+      <p>This is the honest shape of relativity in daily life: <em>completely real, and completely
+      irrelevant to you.</em> Hafele and Keating proved it in 1972 by putting caesium clocks in
+      economy seats and flying them around the world twice &mdash; east, then west. They came home
+      59 nanoseconds behind one way and 273 nanoseconds ahead the other. The asymmetry is Earth's own
+      rotation, adding to the aircraft's speed going east and subtracting from it going west.</p>
+
+      <p>Now the second panel, which is the one that changed how I think about this. Gravity slows
+      clocks, so a clock further from Earth's centre runs <em>fast</em> &mdash; and near the ground the
+      rate changes by about 10&#8315;&sup1;&#8310; per metre climbed. That sounds untouchably small
+      until you notice what it means: in 2010 a NIST team led by Chou raised one aluminium optical clock
+      roughly <strong>33 centimetres</strong> above an identical one and simply watched the higher one
+      pull ahead. A shelf. They also caught the velocity effect at 10&nbsp;m/s, jogging pace. Relativity
+      stopped being astronomy and became bench work.</p>
+
+      <p>Which licenses the strangest true sentence on this page: <strong>your head is ageing faster
+      than your feet.</strong> About 1.7 m of separation, about half a microsecond over a lifetime.
+      You are not one age. You are a smear of slightly different ages, arranged vertically.</p>
+
+      <p>The third panel puts the two effects in the ring together. A satellite is moving fast (clock
+      slow) and sitting high (clock fast), and which wins is purely a matter of altitude. Set the two
+      terms equal and they cancel at r&nbsp;=&nbsp;1.5&nbsp;R<sub>&oplus;</sub> &mdash; 3,185 km up.
+      The sim draws that crossing where the arithmetic puts it. Below the line, satellites age slower
+      than we do: the ISS loses about 25 microseconds a day, which is why an astronaut returns
+      measurably &mdash; if unnoticeably &mdash; younger. Above it they age faster: GPS gains
+      <strong>38.5 microseconds every day</strong>. Ignore that and the navigation error grows by about
+      eleven kilometres daily. Your phone knows where it is because somebody took Einstein seriously.</p>
+    </div>
+  </section>
+
+<!-- ======================================================================
        Sim 6 — Gravitational lensing
        ====================================================================== -->
   <section class="sim-section" id="lensing" style="--accent: var(--pink)">
@@ -2962,6 +3070,7 @@
       <li><span class="yr">1998</span>Riess et al. - Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant</li>
       <li><span class="yr">1999</span>Perlmutter et al. - Measurements of &Omega; and &Lambda; from 42 High-Redshift Supernovae</li>
       <li><span class="yr">2003</span>Ashby - Relativity in the Global Positioning System</li>
+      <li><span class="yr">2010</span>Chou, Hume, Rosenband, Wineland - Optical Clocks and Relativity</li>
       <li><span class="yr">2011</span>Everitt et al. - Gravity Probe B: Final Results of a Space Experiment to Test General Relativity</li>
       <li><span class="yr">2015</span>James, von Tunzelmann, Franklin, Thorne - Gravitational Lensing by Spinning Black Holes in Astrophysics, and in the Movie Interstellar</li>
       <li><span class="yr">2016</span>Abbott et al. (LIGO Scientific Collaboration and Virgo Collaboration) - Observation of Gravitational Waves from a Binary Black Hole Merger</li>
