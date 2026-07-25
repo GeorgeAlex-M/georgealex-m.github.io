@@ -40,6 +40,7 @@
   <script defer src="js/sims/emc2.js"></script>
   <script defer src="js/sims/time-dilation.js"></script>
   <script defer src="js/sims/lensing.js"></script>
+  <script defer src="js/sims/light-speed.js"></script>
   <script defer src="js/sims/escape-velocity.js"></script>
   <script defer src="js/sims/kepler.js"></script>
   <script defer src="js/sims/lagrange.js"></script>
@@ -129,6 +130,7 @@
         <li><a href="#emc2"><span class="n" style="color:var(--yellow)">4</span>E = mc&sup2;</a></li>
         <li><a href="#bending-time"><span class="n" style="color:var(--orange)">5</span>Bending time (Interstellar &amp; GPS)</a></li>
         <li><a href="#lensing"><span class="n" style="color:var(--pink)">6</span>Gravitational lensing</a></li>
+        <li><a href="#light-speed"><span class="n" style="color:var(--yellow)">44</span>Light &amp; the speed limit</a></li>
       </ul>
     </div>
 
@@ -713,6 +715,126 @@
       would never be observable (his 1936 paper politely says so) — today, lensing maps dark
       matter, magnifies the most distant galaxies we know, and finds planets. We will meet it
       again in the dark matter chapter.</p>
+    </div>
+  </section>
+
+<!-- ======================================================================
+       Sim 44 — Light, and the speed limit
+       ====================================================================== -->
+  <section class="sim-section" id="light-speed" style="--accent: var(--yellow)">
+    <h2><span class="secnum">44.</span>Light, and why the universe has a speed limit</h2>
+    <p class="kicker">Pour energy into a mass and watch it refuse to reach <em>c</em> — then send a
+      photon to the Sun, to Voyager, to Andromeda, and see how old the sky really is.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      R&oslash;mer timed light crossing Earth's orbit in 1676; Bertozzi accelerated electrons in 1964
+      and watched their speed flatten at <em>c</em> while their energy rose thirtyfold. Every particle
+      accelerator on Earth re-confirms it daily, and no experiment has ever found anything outrunning it.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="lightSpeed" aria-label="Two panels: energy versus speed showing the relativistic limit, and a photon's journey to astronomical destinations"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="lightSpeed"></div>
+    <div class="sim-readout" data-readout="lightSpeed" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1676 R&oslash;mer - D&eacute;monstration touchant le mouvement de la lumi&egrave;re trouv&eacute; par M. Roemer (Demonstration Concerning the Motion of Light)</span>
+      <span class="cit">1905 Einstein - Zur Elektrodynamik bewegter K&ouml;rper (On the Electrodynamics of Moving Bodies)</span>
+      <span class="cit">1905 Einstein - Ist die Tr&auml;gheit eines K&ouml;rpers von seinem Energieinhalt abh&auml;ngig? (Does the Inertia of a Body Depend Upon Its Energy Content?)</span>
+      <span class="cit">1964 Bertozzi - Speed and Kinetic Energy of Relativistic Electrons</span>
+      <span class="cit">1992 Mitalas, Sills - On the Photon Diffusion Time Scale for the Sun</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--yellow)">c (the speed of light)</dt>
+        <dd>299,792,458 metres per second &mdash; and since 1983 that is not a measurement but a
+          <em>definition</em>: the metre is defined as the distance light travels in 1/299,792,458 of a
+          second. We stopped measuring <em>c</em> and started measuring everything else with it.</dd>
+        <dt style="color:var(--cyan)">the invariant speed</dt>
+        <dd>The better name for <em>c</em>. It is the one speed every observer agrees on, no matter how
+          they are moving. That single fact &mdash; not anything about light &mdash; is what forces time
+          dilation, length contraction, and the speed limit itself.</dd>
+        <dt style="color:var(--ink)">massless</dt>
+        <dd>Having zero rest mass. A massless particle has no choice about its speed: it travels at
+          exactly <em>c</em>, always, and cannot be slowed down or sped up. Photons are massless; so are
+          gluons and gravitational waves. Anything <em>with</em> mass is permanently below <em>c</em>.</dd>
+        <dt style="color:var(--green)">&gamma; (the Lorentz factor)</dt>
+        <dd>&gamma; = 1/&radic;(1&minus;v&sup2;/c&sup2;), the number that measures how relativistic
+          something is. At walking pace &gamma; = 1.000000000000001. At 0.999&nbsp;c it is 22.37. As
+          v approaches c, &gamma; approaches infinity &mdash; and so does the energy you would need.</dd>
+        <dt style="color:var(--orange)">kinetic energy, relativistically</dt>
+        <dd>K = (&gamma;&minus;1)mc&sup2;, not &frac12;mv&sup2;. The two agree to a hair at everyday
+          speeds, which is why Newton's version worked for three centuries; they diverge catastrophically
+          near <em>c</em>, where Newton's formula cheerfully predicts speeds no object has ever reached.</dd>
+        <dt style="color:var(--pink)">light-time</dt>
+        <dd>How long light takes to cross a distance: t = d/c. It is why "now" is not a thing you can
+          share with anywhere else. The Sun's <em>now</em> reaches you 8 minutes 19 seconds late.</dd>
+        <dt style="color:var(--ink)">light-year</dt>
+        <dd>A distance, not a time: how far light travels in one year, 9.46&times;10&sup1;&sup5;&nbsp;m.
+          Saying a galaxy is 2.5 million light-years away is the same as saying you are seeing it as it
+          was 2.5 million years ago.</dd>
+        <dt style="color:var(--red)">causality</dt>
+        <dd>The rule that causes come before effects. This is what <em>c</em> actually protects: if
+          anything could outrun it, some observer would see the effect happen first. The speed limit is
+          less about light and more about the universe refusing to contradict itself.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ E = \gamma m c^2 \qquad \gamma = \frac{1}{\sqrt{1 - v^2/c^2}} \qquad
+         K = (\gamma - 1)mc^2 \;\Rightarrow\; \frac{v}{c} = \sqrt{1 - \frac{1}{\gamma^2}} \qquad t = \frac{d}{c} $$
+      <p class="eq-note">c = 299,792,458 m/s (exact, by definition since 1983). Newton's rival prediction, plotted in red, is K = &frac12;mv&sup2; &rArr; v = c&radic;(2K/mc&sup2;) &mdash; which passes c at K = &frac12;mc&sup2; and keeps going.</p>
+    </div>
+
+    <div class="prose">
+      <p>Here is the thing almost everyone gets backwards, including me the first time: the universe is
+      not limited to the speed of light <em>because</em> light is massless. It is the other way round.
+      Spacetime has one built-in speed &mdash; an <strong>invariant</strong> speed that every observer
+      measures the same, however fast they themselves are moving &mdash; and anything that happens to
+      have no mass is <em>obliged</em> to travel at exactly that speed. Light is simply the messenger we
+      noticed first. Gluons do it too. So do gravitational waves, which is how we know the speed of
+      gravity: when LIGO felt the neutron-star merger of 2017, the gamma rays arrived 1.7 seconds later
+      after a 130-million-year journey.</p>
+
+      <p>So drag the energy slider and watch two theories argue. Newton says kinetic energy is
+      &frac12;mv&sup2;, so speed should just keep climbing &mdash; his red curve sails through
+      <em>c</em> and off the top of the plot without noticing. Einstein says the energy is
+      (&gamma;&minus;1)mc&sup2;, and his green curve does something stranger: it rises fast, then bends
+      over and crawls along the light line forever. Pour in a thousand times the object's rest energy and
+      you get 0.9999995&nbsp;c. Pour in a million times and you get more nines. You never get
+      <em>c</em>, because the bill for the last sliver is infinite.</p>
+
+      <p>That is not a quirk of the equations; it was settled in a basement. In 1964 William Bertozzi
+      accelerated electrons and simply <em>timed them</em> over a measured distance. He raised their
+      kinetic energy by a factor of thirty. Their speed went up by about four percent and then stopped,
+      pinned under <em>c</em> &mdash; the shaded band on the plot is where his electrons lived. The energy
+      had to go somewhere, and it did: into momentum and mass&ndash;energy, not into speed.</p>
+
+      <p>Now switch panels and send a photon somewhere. This is where the speed limit stops being an
+      abstraction and starts being personal: <strong>every telescope is a time machine, and so are your
+      eyes</strong>. The Sun is 8 minutes 19 seconds away, so if it vanished you would keep feeling its
+      warmth &mdash; and its gravity &mdash; for eight more minutes. Jupiter is 43 minutes away, which is
+      why Rømer could catch light in the act at all: in 1676 he noticed that the eclipses of Io ran late
+      when Earth was on the far side of its orbit, and correctly blamed the extra 16.6 minutes light
+      needed to cross our orbit's diameter. It was the first proof that light travels rather than simply
+      arrives.</p>
+
+      <p>Push further out and the delay stops being an inconvenience and becomes the view itself.
+      Proxima Centauri is a four-year-old star. The centre of our galaxy is twenty-six thousand years
+      stale &mdash; older than agriculture. Andromeda, the furthest thing you can see without a
+      telescope, is showing you 2.5 million years ago, before our species existed. You cannot see the
+      universe as it is. You can only ever see it as it was, in a series of nested shells of the past,
+      and the further you look the deeper into history you are staring.</p>
+
+      <p>One last thing about that 8-minute sunlight, because it is a lovely correction to the usual
+      story: the trip from the Sun's surface takes 8 minutes, but the energy carrying it was released
+      by fusion in the core, and it spends something of order ten thousand to a few hundred thousand
+      years bouncing its way out through the plasma before it ever reaches the surface to begin the
+      easy part. The light warming your hands left the core around the time our ancestors were painting
+      caves.</p>
     </div>
   </section>
 
@@ -2637,6 +2759,7 @@
       <li><span class="yr">1602</span>Brahe - Astronomiae Instauratae Progymnasmata (Introductory Exercises Toward the Restoration of Astronomy)</li>
       <li><span class="yr">1609</span>Kepler - Astronomia Nova Aitiologetos, seu Physica Coelestis, tradita commentariis de motibus stellae Martis, ex observationibus G. V. Tychonis Brahe (New Astronomy, Based upon Causes, or Celestial Physics, Treated by Means of Commentaries on the Motions of the Star Mars, from the Observations of Tycho Brahe)</li>
       <li><span class="yr">1619</span>Kepler - Harmonices Mundi Libri V (The Five Books of the Harmony of the World)</li>
+      <li><span class="yr">1676</span>R&oslash;mer - D&eacute;monstration touchant le mouvement de la lumi&egrave;re trouv&eacute; par M. Roemer (Demonstration Concerning the Motion of Light)</li>
       <li><span class="yr">1687</span>Newton - Philosophiae Naturalis Principia Mathematica (Mathematical Principles of Natural Philosophy)</li>
       <li><span class="yr">1705</span>Halley - Astronomiae Cometicae Synopsis (A Synopsis of the Astronomy of Comets)</li>
       <li><span class="yr">1728</span>Newton - De mundi systemate (A Treatise of the System of the World)</li>
@@ -2686,6 +2809,7 @@
       <li><span class="yr">1962</span>Fuller, Wheeler - Causality and Multiply Connected Space-Time</li>
       <li><span class="yr">1963</span>Kerr - Gravitational Field of a Spinning Mass as an Example of Algebraically Special Metrics</li>
       <li><span class="yr">1963</span>Lorenz - Deterministic Nonperiodic Flow</li>
+      <li><span class="yr">1964</span>Bertozzi - Speed and Kinetic Energy of Relativistic Electrons</li>
       <li><span class="yr">1965</span>Penrose - Gravitational Collapse and Space-Time Singularities</li>
       <li><span class="yr">1965</span>Penzias, Wilson - A Measurement of Excess Antenna Temperature at 4080 Mc/s</li>
       <li><span class="yr">1968</span>Hewish, Bell, Pilkington, Scott, Collins - Observation of a Rapidly Pulsating Radio Source</li>
@@ -2702,6 +2826,7 @@
       <li><span class="yr">1990</span>Friedman, Morris, Novikov, Echeverria, Klinkhammer, Thorne, Yurtsever - Cauchy Problem in Spacetimes with Closed Timelike Curves</li>
       <li><span class="yr">1991</span>Deutsch - Quantum Mechanics near Closed Timelike Lines</li>
       <li><span class="yr">1992</span>Hawking - Chronology Protection Conjecture</li>
+      <li><span class="yr">1992</span>Mitalas, Sills - On the Photon Diffusion Time Scale for the Sun</li>
       <li><span class="yr">1998</span>Riess et al. - Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant</li>
       <li><span class="yr">1999</span>Perlmutter et al. - Measurements of &Omega; and &Lambda; from 42 High-Redshift Supernovae</li>
       <li><span class="yr">2003</span>Ashby - Relativity in the Global Positioning System</li>
