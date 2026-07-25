@@ -67,6 +67,9 @@
   <script defer src="js/sims/many-worlds.js"></script>
   <script defer src="js/sims/laplace.js"></script>
   <script defer src="js/sims/vacuum.js"></script>
+  <script defer src="js/sims/particle-creation.js"></script>
+  <script defer src="js/sims/information-paradox.js"></script>
+  <script defer src="js/sims/planck-scale.js"></script>
   <script defer src="js/main.js"></script>
 </head>
 <body>
@@ -242,9 +245,9 @@
       <h3>Chapter XIII &mdash; Quantum Fields &amp; Curved Spacetime</h3>
       <ul class="toc-items">
         <li><a href="#vacuum"><span class="n" style="color:var(--cyan)">48</span>The vacuum is a point of view</a></li>
-        <li><span class="soon">Particle creation in an expanding universe</span></li>
-        <li><span class="soon">The information paradox</span></li>
-        <li><span class="soon">Where quantum gravity has to take over</span></li>
+        <li><a href="#particle-creation"><span class="n" style="color:var(--green)">49</span>The expansion makes particles</a></li>
+        <li><a href="#information-paradox"><span class="n" style="color:var(--red)">50</span>The information paradox</a></li>
+        <li><a href="#planck-scale"><span class="n" style="color:var(--orange)">51</span>Where quantum gravity takes over</a></li>
       </ul>
     </div>
 
@@ -3281,6 +3284,372 @@
     </div>
   </section>
 
+<!-- ======================================================================
+       Sim 49 — Particle creation in an expanding universe
+       ====================================================================== -->
+  <section class="sim-section" id="particle-creation" style="--accent: var(--green)">
+    <h2><span class="secnum">49.</span>The expansion makes particles &mdash; and made everything</h2>
+    <p class="kicker">Stretch a quantum ripple faster than it can oscillate and it freezes, populated.
+      Watch a mode leave the horizon, then meet the photograph of the ones that did.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+      the mechanism is standard quantum field theory, and its cosmological consequence has been
+      photographed: COBE found the lumps in 1992, and Planck measured the spectrum's tilt,
+      n<sub>s</sub> = 0.9649 &plusmn; 0.0042 &mdash; measurably below the perfectly flat value of 1,
+      exactly as inflation predicted <em>before</em> it was measured. The inflationary origin itself
+      remains a model, not a certainty.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="creation" aria-label="A quantum mode stretched past the Hubble radius until it freezes, and the resulting pattern on the microwave sky"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="creation"></div>
+    <div class="sim-readout" data-readout="creation" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1968 Parker - Particle Creation in Expanding Universes</span>
+      <span class="cit">1969 Parker - Quantized Fields and Particle Creation in Expanding Universes. I</span>
+      <span class="cit">1981 Guth - Inflationary Universe: A Possible Solution to the Horizon and Flatness Problems</span>
+      <span class="cit">1981 Mukhanov, Chibisov - Quantum Fluctuation and "Nonsingular" Universe</span>
+      <span class="cit">1992 Smoot et al. - Structure in the COBE Differential Microwave Radiometer First-Year Maps</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--green)">adiabatic</dt>
+        <dd>Changing slowly enough that a system keeps up. A quantum mode deep inside the horizon
+          oscillates far faster than the universe expands, so it simply follows along and nothing
+          happens to it. Break that condition and the mode can no longer track the change &mdash; and
+          that is when particles appear.</dd>
+        <dt style="color:var(--cyan)">the Hubble radius</dt>
+        <dd>c/H, the distance light travels in roughly one expansion time. It is the yardstick that
+          decides everything here: ripples shorter than it oscillate normally; ripples longer than it
+          are frozen, because the two ends cannot talk to each other any more.</dd>
+        <dt style="color:var(--pink)">horizon exit and re-entry</dt>
+        <dd>During inflation the Hubble radius stays put while wavelengths stretch, so modes grow past
+          it and freeze. Afterwards the Hubble radius grows faster than wavelengths do, so the modes
+          come back inside &mdash; carrying the amplitude they froze with, now as real density
+          differences.</dd>
+        <dt style="color:var(--orange)">e-fold</dt>
+        <dd>One factor of e in the size of the universe. Inflation needs about 60 of them to explain
+          why opposite sides of the sky have the same temperature despite never having been in contact
+          under ordinary expansion.</dd>
+        <dt style="color:var(--yellow)">scale-invariant spectrum, n<sub>s</sub></dt>
+        <dd>If ripples of every size were frozen with equal strength the spectral index would be exactly
+          1. Inflation predicts <em>slightly</em> less, because the expansion rate drifts a little as it
+          proceeds. Measured: 0.9649 &plusmn; 0.0042 &mdash; about 8&sigma; below 1.</dd>
+        <dt style="color:var(--red)">conformal invariance</dt>
+        <dd>The honest caveat. A massless field with conformal coupling in a radiation universe does not
+          notice the expansion at all &mdash; the stretching can be mathematically transformed away, and
+          zero particles are created. Creation requires that symmetry to be broken: by mass, by a
+          different coupling, or by an epoch that is not radiation-dominated.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \omega = \frac{k}{a} \qquad
+         \left|\frac{\dot\omega}{\omega^2}\right| = \frac{aH}{k} = \frac{\lambda_{\text{phys}}}{c/H}
+         \qquad \text{particles created when } \frac{aH}{k} \gtrsim 1 $$
+      <p class="eq-note">The adiabaticity parameter and the horizon-crossing condition are the same quantity &mdash; which is why "the mode left the horizon" and "the expansion made particles" describe one event, not two.</p>
+    </div>
+
+    <div class="prose">
+      <p>Section 48 showed that different observers disagree about how many particles are present.
+      Leonard Parker asked the same question about <em>time</em>: if the universe is expanding, the
+      vacuum of the early epoch is not the vacuum of the late epoch. A field that begins empty does not
+      stay empty. Expansion creates particles, from nothing, for free.</p>
+
+      <p>The criterion is beautifully simple and the sim computes it directly. A mode's frequency is
+      &omega;&nbsp;=&nbsp;k/a, so as space stretches its pitch drops. Compare how fast the frequency is
+      changing with the frequency itself and you get |&omega;&#775;/&omega;&sup2;|&nbsp;=&nbsp;aH/k. When
+      that is small the mode oscillates many times per expansion time, keeps up effortlessly, and
+      nothing happens. When it reaches 1 the universe is expanding as fast as the ripple can vibrate,
+      the mode can no longer follow, and it <strong>freezes</strong> &mdash; stuck at whatever amplitude
+      it happened to have. And here is the pleasing part: aH/k&nbsp;=&nbsp;1 is exactly the statement
+      that the ripple's wavelength has grown to the size of the Hubble radius. <em>Horizon crossing and
+      particle creation are the same event.</em></p>
+
+      <p>Drag the time slider and watch it happen. Deep inside the horizon the wave oscillates happily,
+      drawn in green. Push past the crossing and it stops dead, drawn in pink, its wavelength now longer
+      than the distance light can cross. The lower plot is the diagram every cosmologist draws: the
+      cyan curve is the horizon, rising during inflation and falling afterwards, and your ripple is the
+      dashed line. It exits when the curves first meet and re-enters when they meet again. Anything
+      above the cyan curve is frozen.</p>
+
+      <p>One caveat the sim states rather than hides: this does not happen to everything. A massless,
+      conformally coupled field in a radiation-dominated universe experiences <em>no</em> particle
+      creation at all &mdash; the expansion can be transformed away entirely. You need that symmetry
+      broken, by a mass or a non-conformal coupling. Inflation happens to break it for precisely the
+      fields that matter, which is a large part of why the idea is taken seriously.</p>
+
+      <p>Now the part that turns this from elegant mathematics into physics. Those frozen ripples do not
+      stay abstract. They re-enter the horizon later as genuine density differences &mdash; slightly more
+      matter here, slightly less there &mdash; and gravity spends the next thirteen billion years
+      amplifying them into galaxies. <strong>Every structure you have ever seen began as a quantum
+      fluctuation that the expansion froze and enlarged.</strong></p>
+
+      <p>And we have the photograph. In 1992 COBE found the pattern: temperature differences of about
+      one part in 100,000 across the microwave sky. Then Planck measured the <em>shape</em> of the
+      spectrum. If every size of ripple had frozen with equal strength the spectral index would be
+      exactly 1. The measured value is 0.9649&nbsp;&plusmn;&nbsp;0.0042 &mdash; about eight standard
+      deviations below 1, a small tilt that is definitely there. Inflation predicted a slight tilt in
+      that direction, for a specific reason (the expansion rate drifts slowly as inflation ends), before
+      anybody could measure it. That is the strongest quantitative success this entire story has, and it
+      is why the picture is taken seriously despite the inflationary epoch itself remaining a model
+      rather than an observation.</p>
+
+      <p>The test still outstanding is gravitational waves. The same mechanism should have frozen in
+      ripples of spacetime itself &mdash; gravitons produced by expansion. Finding them would be
+      indirect evidence that <em>gravity is quantised</em>, which is precisely the question the last
+      section of this chapter is about. So far: r&nbsp;&lt;&nbsp;0.036, and nothing.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 50 — The information paradox
+       ====================================================================== -->
+  <section class="sim-section" id="information-paradox" style="--accent: var(--red)">
+    <h2><span class="secnum">50.</span>The information paradox</h2>
+    <p class="kicker">Hawking's radiation is perfectly thermal, so it carries no memory of what fell in.
+      Quantum mechanics forbids that. Fifty years later, still unresolved &mdash; here is the exact shape
+      of the disagreement.</p>
+
+    <p class="evidence ev-speculative"><span class="ev-dot"></span><strong>open question</strong> &mdash;
+      the two ingredients are solid (Hawking radiation is standard QFT in curved spacetime; unitarity is
+      the backbone of quantum mechanics) but they contradict each other, and nobody has an accepted
+      resolution. Since 2019&ndash;20 the replica-wormhole and "island" calculations do reproduce the
+      Page curve from a gravitational path integral &mdash; genuine progress, still argued over. No
+      black hole has ever been observed to evaporate.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="paradox" aria-label="The Page curve: entanglement entropy of Hawking radiation over the lifetime of an evaporating black hole"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="paradox"></div>
+    <div class="sim-readout" data-readout="paradox" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1973 Bekenstein - Black Holes and Entropy</span>
+      <span class="cit">1975 Hawking - Particle Creation by Black Holes</span>
+      <span class="cit">1976 Hawking - Breakdown of Predictability in Gravitational Collapse</span>
+      <span class="cit">1993 Page - Information in Black Hole Radiation</span>
+      <span class="cit">2021 Almheiri, Hartman, Maldacena, Shaghoulian, Tajdini - The Entropy of Hawking Radiation</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--pink)">Bekenstein&ndash;Hawking entropy</dt>
+        <dd>S = A/4&#8467;<sub>P</sub>&sup2; &mdash; a black hole's entropy is one quarter of its horizon
+          area measured in Planck squares. Astonishing on two counts: entropy normally scales with
+          volume, not area; and the number is colossal, far exceeding the entropy of whatever collapsed.</dd>
+        <dt style="color:var(--green)">unitarity</dt>
+        <dd>The rule that quantum evolution preserves information: a pure state stays pure, and in
+          principle you could always run the film backwards. It is not an optional extra &mdash; drop it
+          and probability itself stops adding to one.</dd>
+        <dt style="color:var(--cyan)">entanglement entropy</dt>
+        <dd>How much a subsystem is entangled with everything else. For the radiation it starts at zero
+          (nothing emitted yet) and must return to zero at the end if the final state is pure &mdash;
+          which is exactly what the Page curve does and Hawking's calculation does not.</dd>
+        <dt style="color:var(--yellow)">the Page time</dt>
+        <dd>The moment the black hole has radiated half its entropy, at 64.6% of its lifetime. Before it,
+          Hawking's answer and unitarity's answer agree exactly; after it, they diverge. It is the
+          earliest point at which anything could possibly look wrong.</dd>
+        <dt style="color:var(--orange)">thermal radiation</dt>
+        <dd>Radiation whose spectrum depends on temperature and nothing else. That is the whole problem:
+          Hawking's radiation depends only on the hole's mass, so two black holes made from utterly
+          different things radiate identically, and the difference between them appears to be erased.</dd>
+        <dt style="color:var(--ink)">islands and replica wormholes</dt>
+        <dd>The 2019&ndash;20 development: when you compute the radiation's entropy using the
+          gravitational path integral carefully, a region <em>inside</em> the black hole starts counting
+          as part of the radiation, and the Page curve comes out correctly. What that means physically
+          &mdash; and how the information actually escapes &mdash; is still being argued.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ S_{\text{BH}} = \frac{4\pi G M^2}{\hbar c} = \frac{A}{4\ell_P^2} \qquad
+         t_{\text{evap}} = \frac{5120\,\pi G^2 M^3}{\hbar c^4} \qquad
+         S_{\text{BH}} \propto M^2 \;\Rightarrow\; t_{\text{Page}} = \left(1 - 2^{-3/2}\right) t_{\text{evap}} $$
+      <p class="eq-note">A solar mass gives S = 1.05&times;10&#8311;&#8311; k<sub>B</sub> and a lifetime of 2.1&times;10&#8310;&#8311; years. The Page fraction, 64.64%, is solved from S &prop; M&sup2; rather than quoted.</p>
+    </div>
+
+    <div class="prose">
+      <p>Take the two results this chapter has already established and put them next to each other.
+      Hawking (1975): a black hole radiates, and the radiation is <em>exactly thermal</em> &mdash; its
+      spectrum depends on the hole's mass and on nothing else whatsoever. Quantum mechanics: evolution
+      is unitary, information is never destroyed, and a pure state cannot become a mixed one. Those two
+      statements cannot both be true, and physics has been stuck on it since Hawking spelled out the
+      consequence in 1976.</p>
+
+      <p>Here is the sharp version. Throw an encyclopaedia into a black hole; throw an equal mass of
+      hydrogen into an identical one. Wait. Both radiate the same thermal spectrum, both shrink, both
+      eventually vanish. Where did the encyclopaedia go? Not into the radiation, which carries no
+      imprint of it. Not into the hole, which no longer exists. Hawking's answer was that the
+      information is simply gone &mdash; that gravity breaks quantum mechanics. Almost nobody believes
+      that now, including, eventually, Hawking.</p>
+
+      <p>Don Page turned the argument into a picture in 1993, and it is the picture the sim draws. Track
+      the entanglement entropy of the radiation as the hole evaporates. On Hawking's calculation it
+      climbs steadily, in red, all the way to the end: the radiation gets more and more mixed and never
+      recovers. But unitarity demands the final state be pure, so the entropy must come back down to
+      zero. It also cannot exceed the entropy of what remains inside &mdash; the hole cannot be hiding
+      more than it has room for. Put those together and you get the green curve: <strong>rise, turn
+      over, fall</strong>.</p>
+
+      <p>The turnover has a definite location, and the sim solves for it rather than quoting it. Since
+      S&nbsp;&prop;&nbsp;M&sup2; and M&nbsp;&prop;&nbsp;(1&nbsp;&minus;&nbsp;t/t<sub>evap</sub>)<sup>1/3</sup>,
+      the hole has radiated half its entropy when M&nbsp;=&nbsp;M&#8320;/&radic;2, which happens at
+      <strong>64.64% of the lifetime</strong>. Before that moment the two predictions agree exactly
+      &mdash; which is the genuinely unsettling part. Nothing looks wrong until the hole is more than
+      half gone, and then two well-established theories give completely different answers about the same
+      photons.</p>
+
+      <p>Switch to the numbers panel and the scale of the thing becomes clear. A solar-mass black hole
+      carries an entropy of 10&#8311;&#8311; k<sub>B</sub> &mdash; enormously more than the star that
+      formed it, and proportional to its <em>area</em> rather than its volume, which is a clue nobody
+      has fully cashed in. Its lifetime is 2&times;10&#8310;&#8311; years. Because t&nbsp;&prop;&nbsp;M&sup3;,
+      no astrophysical black hole is remotely close to its Page time; the universe is far too young. The
+      paradox is entirely real and entirely theoretical.</p>
+
+      <p>Where things stand: since 2019 the "island" calculations &mdash; computing the entropy using
+      the gravitational path integral, including geometries where the radiation's entropy region extends
+      <em>inside</em> the horizon &mdash; do produce the Page curve. That is real progress and it is why
+      the field is more optimistic than it has been in decades. What it does not yet supply is a
+      mechanism: <em>how</em> the information gets from inside to outside, and whether a semiclassical
+      calculation should be trusted to tell us. The honest summary is that we now know what the answer
+      has to look like, and not yet why.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 51 — Where quantum gravity has to take over
+       ====================================================================== -->
+  <section class="sim-section" id="planck-scale" style="--accent: var(--orange)">
+    <h2><span class="secnum">51.</span>Where quantum gravity has to take over</h2>
+    <p class="kicker">Two rules nobody disputes, plotted against each other. Where they cross, both
+      apply and neither theory works &mdash; and that crossing is not a choice, it is a calculation.</p>
+
+    <p class="evidence ev-speculative"><span class="ev-dot"></span><strong>speculative &mdash; no data</strong> &mdash;
+      the <em>location</em> of the boundary follows from constants we have measured to many digits, so
+      the Planck scale itself is not in doubt. What happens there is: there is no experimental
+      measurement of quantum gravity, none is imminent, and the candidate theories are untested. The
+      proposals on the second panel are proposals.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="planck" aria-label="Compton wavelength and Schwarzschild radius plotted against mass, crossing at the Planck scale, and a summary of testable proposals"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="planck"></div>
+    <div class="sim-readout" data-readout="planck" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1965 Penrose - Gravitational Collapse and Space-Time Singularities</span>
+      <span class="cit">1976 Hawking - Breakdown of Predictability in Gravitational Collapse</span>
+      <span class="cit">1982 Birrell, Davies - Quantum Fields in Curved Space</span>
+      <span class="cit">2004 Rovelli - Quantum Gravity</span>
+      <span class="cit">2017 Bose et al. - Spin Entanglement Witness for Quantum Gravity</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">Compton wavelength</dt>
+        <dd>&lambda; = &hbar;/mc, the size below which you cannot pin a mass down. Try to localise it
+          more tightly and the energy required starts creating new particles instead. Lighter means
+          fuzzier &mdash; an electron's is 2.4&times;10&#8315;&sup1;&sup2; m, yours is around
+          10&#8315;&#8308;&sup3; m.</dd>
+        <dt style="color:var(--orange)">Schwarzschild radius</dt>
+        <dd>r<sub>s</sub> = 2Gm/c&sup2;, the size below which a mass is a black hole. Heavier means
+          bigger. Yours is 10&#8315;&sup2;&#8309; m, the Sun's is 2.95 km.</dd>
+        <dt style="color:var(--pink)">the Planck scale</dt>
+        <dd>Where those two sizes are equal, so an object is as quantum-mechanically fuzzy as it is
+          gravitationally dense. Solving &hbar;/mc = 2Gm/c&sup2; gives 1.5&times;10&#8315;&#8312; kg and
+          2.3&times;10&#8315;&sup3;&#8309; m. Note the mass is <em>not</em> tiny &mdash; it is a visible
+          speck. It is the length that is hopeless.</dd>
+        <dt style="color:var(--yellow)">Planck energy</dt>
+        <dd>1.22&times;10&sup1;&#8313; GeV. The LHC reaches about 1.4&times;10&#8308; GeV, so we are
+          short by a factor of roughly 10&sup1;&#8309;. No conceivable accelerator closes that gap;
+          evidence has to come from somewhere else.</dd>
+        <dt style="color:var(--green)">gravity-mediated entanglement</dt>
+        <dd>The most promising tabletop test. A classical field cannot entangle two systems. So if two
+          masses, interacting through nothing but gravity, become entangled, gravity is not classical.
+          The experiment needs masses of about 10&#8315;&sup1;&#8308; kg held in quantum superposition
+          &mdash; extraordinarily hard, but not impossible in principle.</dd>
+        <dt style="color:var(--red)">singularity</dt>
+        <dd>Where general relativity's own equations stop returning finite answers. Penrose proved in
+          1965 that this is not an artefact of idealised symmetry: once a horizon forms, a singularity
+          is unavoidable. A theory predicting its own breakdown is a theory telling you it is incomplete.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \lambda_C = \frac{\hbar}{mc} \qquad r_s = \frac{2Gm}{c^2} \qquad
+         \lambda_C = r_s \;\Longrightarrow\; m = \sqrt{\frac{\hbar c}{2G}},\quad
+         \ell_P = \sqrt{\frac{\hbar G}{c^3}} = 1.616\times10^{-35}\ \text{m} $$
+      <p class="eq-note">&#8467;<sub>P</sub> = 1.616&times;10&#8315;&sup3;&#8309; m, t<sub>P</sub> = 5.391&times;10&#8315;&#8308;&#8308; s, m<sub>P</sub> = 2.176&times;10&#8315;&#8312; kg, E<sub>P</sub> = 1.22&times;10&sup1;&#8313; GeV. All computed here from G, &hbar; and c &mdash; the Planck scale is a consequence of measured constants, not an assumption.</p>
+    </div>
+
+    <div class="prose">
+      <p>Everything in this chapter has been <em>semiclassical</em>: quantum fields doing quantum things
+      on a spacetime that stays classical, a fixed stage rather than another player. It is an
+      extraordinarily successful compromise &mdash; Hawking radiation, the Unruh effect and inflationary
+      perturbations all come out of it. This section is about where it must fail, and the argument needs
+      only two facts.</p>
+
+      <p><strong>One.</strong> Quantum mechanics says you cannot localise a mass better than its Compton
+      wavelength &hbar;/mc. Push harder and you make new particles instead. Lighter things are fuzzier.
+      <strong>Two.</strong> General relativity says that if you compress a mass inside 2Gm/c&sup2; it
+      becomes a black hole. Heavier things are bigger. One size shrinks with mass, the other grows with
+      it &mdash; so somewhere they cross.</p>
+
+      <p>Drag the mass slider along the map. On the left, for anything light, the quantum size is
+      astronomically larger than the gravitational one: an electron's fuzziness beats its Schwarzschild
+      radius by forty-odd orders of magnitude, which is exactly why no particle physicist has ever had
+      to think about gravity. On the right, for anything heavy, the reverse: the Sun's horizon dwarfs
+      its quantum uncertainty so completely that no astronomer has ever had to think about quantum
+      mechanics. <strong>Two theories, two regimes, no overlap &mdash; and that is the only reason
+      twentieth-century physics worked at all.</strong></p>
+
+      <p>Then hit "go to the Planck scale" and watch the curves meet. Set &hbar;/mc = 2Gm/c&sup2; and
+      solve: m = &radic;(&hbar;c/2G) = 1.5&times;10&#8315;&#8312; kg, at a length of
+      2.3&times;10&#8315;&sup3;&#8309; m. Here an object's quantum fuzziness is the same size as its own
+      event horizon. You cannot use quantum mechanics and neglect gravity; you cannot use gravity and
+      neglect quantum mechanics; and nobody knows how to write down a theory that does both. Notice the
+      mass is not small &mdash; 15 micrograms, a speck you could see. It is the <em>length</em> that is
+      out of reach, twenty orders of magnitude below anything the LHC probes.</p>
+
+      <p>And this is not a boundary we could politely avoid. Two places force the issue. The first is
+      the singularity: Penrose proved in 1965 that once a horizon forms, general relativity's own
+      equations run into a place where they stop returning finite answers &mdash; the theory predicts
+      its own breakdown, which is a theory telling you it is incomplete. The second is the Hawking
+      photon: trace one backwards toward the horizon and its wavelength shrinks below the Planck length,
+      so the derivation of Hawking radiation quietly assumes the answer to the question it is being used
+      to raise. That is the trans-Planckian problem, and it is why section 50's paradox cannot be waved
+      away as an accounting error.</p>
+
+      <p>So what can actually be done? The second panel is the honest scoreboard, and the honest
+      headline is that <strong>there is no measurement of quantum gravity, and none is imminent</strong>.
+      The Planck energy is 10&sup1;&#8309; times what the LHC delivers; we are not building our way
+      there. But there are real proposals with real numbers. The best of them is the gravitational
+      entanglement test: a classical field cannot entangle two systems, so if two masses interacting
+      only through gravity become entangled, gravity cannot be classical. It needs masses around
+      10&#8315;&sup1;&#8308; kg held in superposition &mdash; brutal, but engineering rather than
+      fantasy. Alongside it: primordial gravitational waves from section 49 (r &lt; 0.036 and counting),
+      and gamma-ray-burst timing, which has already ruled out the simplest models of energy-dependent
+      light speed right through the Planck energy.</p>
+
+      <p>Meanwhile the candidate theories disagree productively. Loop quantum gravity quantises geometry
+      itself and replaces the singularity with a bounce &mdash; which is where the black-hole-to-white-hole
+      idea comes from, and it is a legitimate research programme rather than a fantasy. String theory
+      answers with holography, the suspicion that a volume of space is fully described by data on its
+      boundary, which is also where the island calculations of section 50 come from. Neither has been
+      tested. That is the honest end of this chapter: we know exactly where our theories stop, we know
+      two independent reasons the gap must be filled, and we do not yet know what fills it.</p>
+    </div>
+  </section>
+
   <section class="sim-section" id="library" style="--accent: var(--orange)">
     <h2><span class="secnum">&#9733;</span>The Library — every paper cited here</h2>
     <p class="kicker">The original sources, in the exact <em>YEAR Author - Title</em> form,
@@ -3348,16 +3717,21 @@
       <li><span class="yr">1968</span>Hewish, Bell, Pilkington, Scott, Collins - Observation of a Rapidly Pulsating Radio Source</li>
       <li><span class="yr">1968</span>Parker - Particle Creation in Expanding Universes</li>
       <li><span class="yr">1969</span>Penrose - Gravitational Collapse: The Role of General Relativity</li>
+      <li><span class="yr">1969</span>Parker - Quantized Fields and Particle Creation in Expanding Universes. I</li>
       <li><span class="yr">1970</span>Rubin, Ford - Rotation of the Andromeda Nebula from a Spectroscopic Survey of Emission Regions</li>
       <li><span class="yr">1972</span>Hafele, Keating - Around-the-World Atomic Clocks: Observed Relativistic Time Gains</li>
       <li><span class="yr">1972</span>Webster, Murdin - Cygnus X-1&mdash;a Spectroscopic Binary with a Heavy Companion?</li>
       <li><span class="yr">1973</span>Misner, Thorne, Wheeler - Gravitation</li>
       <li><span class="yr">1973</span>Fulling - Nonuniqueness of Canonical Field Quantization in Riemannian Space-Time</li>
+      <li><span class="yr">1973</span>Bekenstein - Black Holes and Entropy</li>
       <li><span class="yr">1974</span>Hawking - Black Hole Explosions?</li>
       <li><span class="yr">1975</span>Hawking - Particle Creation by Black Holes</li>
       <li><span class="yr">1975</span>Hulse, Taylor - Discovery of a Pulsar in a Binary System</li>
       <li><span class="yr">1976</span>Unruh - Notes on Black-Hole Evaporation</li>
+      <li><span class="yr">1976</span>Hawking - Breakdown of Predictability in Gravitational Collapse</li>
       <li><span class="yr">1978</span>White, Rees - Core condensation in heavy halos: a two-stage theory for galaxy formation and clustering</li>
+      <li><span class="yr">1981</span>Guth - Inflationary Universe: A Possible Solution to the Horizon and Flatness Problems</li>
+      <li><span class="yr">1981</span>Mukhanov, Chibisov - Quantum Fluctuation and "Nonsingular" Universe</li>
       <li><span class="yr">1982</span>Wootters, Zurek - A Single Quantum Cannot Be Cloned</li>
       <li><span class="yr">1982</span>Birrell, Davies - Quantum Fields in Curved Space</li>
       <li><span class="yr">1988</span>Morris, Thorne - Wormholes in Spacetime and Their Use for Interstellar Travel: A Tool for Teaching General Relativity</li>
@@ -3365,16 +3739,21 @@
       <li><span class="yr">1991</span>Deutsch - Quantum Mechanics near Closed Timelike Lines</li>
       <li><span class="yr">1992</span>Hawking - Chronology Protection Conjecture</li>
       <li><span class="yr">1992</span>Mitalas, Sills - On the Photon Diffusion Time Scale for the Sun</li>
+      <li><span class="yr">1992</span>Smoot et al. - Structure in the COBE Differential Microwave Radiometer First-Year Maps</li>
+      <li><span class="yr">1993</span>Page - Information in Black Hole Radiation</li>
       <li><span class="yr">1998</span>Riess et al. - Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant</li>
       <li><span class="yr">1999</span>Perlmutter et al. - Measurements of &Omega; and &Lambda; from 42 High-Redshift Supernovae</li>
       <li><span class="yr">2003</span>Ashby - Relativity in the Global Positioning System</li>
+      <li><span class="yr">2004</span>Rovelli - Quantum Gravity</li>
       <li><span class="yr">2010</span>Chou, Hume, Rosenband, Wineland - Optical Clocks and Relativity</li>
       <li><span class="yr">2011</span>Everitt et al. - Gravity Probe B: Final Results of a Space Experiment to Test General Relativity</li>
       <li><span class="yr">2015</span>James, von Tunzelmann, Franklin, Thorne - Gravitational Lensing by Spinning Black Holes in Astrophysics, and in the Movie Interstellar</li>
       <li><span class="yr">2016</span>Abbott et al. (LIGO Scientific Collaboration and Virgo Collaboration) - Observation of Gravitational Waves from a Binary Black Hole Merger</li>
       <li><span class="yr">2017</span>Abbott et al. - GW170817: Observation of Gravitational Waves from a Binary Neutron Star Inspiral</li>
+      <li><span class="yr">2017</span>Bose et al. - Spin Entanglement Witness for Quantum Gravity</li>
       <li><span class="yr">2019</span>Event Horizon Telescope Collaboration - First M87 Event Horizon Telescope Results. I. The Shadow of the Supermassive Black Hole</li>
       <li><span class="yr">2020</span>Planck Collaboration - Planck 2018 results. VI. Cosmological parameters</li>
+      <li><span class="yr">2021</span>Almheiri, Hartman, Maldacena, Shaghoulian, Tajdini - The Entropy of Hawking Radiation</li>
       <li><span class="yr">2023</span>LZ Collaboration - First Dark Matter Search Results from the LUX-ZEPLIN (LZ) Experiment</li>
     </ul>
   </section>
