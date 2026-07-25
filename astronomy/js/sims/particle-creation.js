@@ -281,12 +281,25 @@
 
       // crossings
       if (n.aExit) {
-        for (const [av, col, txt] of [[n.aExit, COLORS.yellow, 'exits'], [n.aReentry, COLORS.cyan, 're-enters']]) {
+        // When k -> 1 the two crossings converge on a = 1 and their captions
+        // collide, so stagger them vertically and drop the second if they are
+        // closer together than the text is wide.
+        const pxE = X(Math.log10(n.aExit));
+        const pxR = X(Math.log10(n.aReentry));
+        const tooClose = Math.abs(pxR - pxE) < 62;
+        const marks = [[n.aExit, COLORS.yellow, 'exits', 22]];
+        if (!tooClose) marks.push([n.aReentry, COLORS.cyan, 're-enters', 38]);
+        for (const [av, col, txt, dy] of marks) {
           const px = X(Math.log10(av));
           if (px > x0 && px < x1) {
             rc.circle(px, Y(this.logK), 10, opts(1320, { stroke: col, strokeWidth: 1.8 }));
-            label(ctx, txt, px, Y(this.logK) + 22, { color: col, size: compact ? 9.5 : 11.5, align: 'center' });
+            label(ctx, txt, px, Y(this.logK) + dy, { color: col, size: compact ? 9.5 : 11.5, align: 'center' });
           }
+        }
+        if (tooClose) {
+          rc.circle(pxR, Y(this.logK), 10, opts(1321, { stroke: COLORS.cyan, strokeWidth: 1.8 }));
+          label(ctx, 'exits & re-enters almost together', pxR, Y(this.logK) + 38,
+            { color: COLORS.cyan, size: compact ? 9 : 11, align: 'center' });
         }
       }
 
