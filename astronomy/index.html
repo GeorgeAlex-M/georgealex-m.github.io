@@ -49,6 +49,7 @@
   <script defer src="js/sims/dark-matter.js"></script>
   <script defer src="js/sims/dark-matter-here.js"></script>
   <script defer src="js/sims/dark-energy.js"></script>
+  <script defer src="js/sims/dark-energy-here.js"></script>
   <script defer src="js/sims/wormhole.js"></script>
   <script defer src="js/sims/hawking.js"></script>
   <script defer src="js/sims/grav-waves.js"></script>
@@ -153,6 +154,7 @@
         <li><a href="#dark-matter"><span class="n" style="color:var(--cyan)">11</span>Dark matter</a></li>
         <li><a href="#dark-matter-here"><span class="n" style="color:var(--pink)">45</span>Is dark matter in this room?</a></li>
         <li><a href="#dark-energy"><span class="n" style="color:var(--pink)">12</span>Dark energy</a></li>
+        <li><a href="#dark-energy-here"><span class="n" style="color:var(--pink)">47</span>Dark energy in your kitchen</a></li>
       </ul>
     </div>
 
@@ -1771,6 +1773,119 @@
   </section>
 
   <!-- ======================================================================
+       Sim 47 — Dark energy in your kitchen
+       ====================================================================== -->
+  <section class="sim-section" id="dark-energy-here" style="--accent: var(--pink)">
+    <h2><span class="secnum">47.</span>Dark energy in your kitchen</h2>
+    <p class="kicker">If space is being pushed apart, why isn't your table? Start in the kitchen and
+      zoom out one step at a time, comparing the push against the pull, until the moment the push wins.</p>
+
+    <p class="evidence ev-partial"><span class="ev-dot"></span><strong>measured effect, unknown identity</strong> &mdash;
+      the acceleration was measured in 1998&ndash;99 from distant supernovae and has since been confirmed
+      by the CMB and galaxy surveys; Planck pins the density to about 0.7 of the critical value. What
+      dark energy <em>is</em> &mdash; vacuum energy, a field, or a sign that gravity itself needs
+      amending &mdash; is completely open.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="deHere" aria-label="A kitchen zooming out through Earth, solar system, galaxy and Local Group to the whole universe, comparing matter density with dark energy density"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="deHere"></div>
+    <div class="sim-readout" data-readout="deHere" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1917 Einstein - Kosmologische Betrachtungen zur allgemeinen Relativit&auml;tstheorie (Cosmological Considerations in the General Theory of Relativity)</span>
+      <span class="cit">1998 Riess et al. - Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant</span>
+      <span class="cit">1999 Perlmutter et al. - Measurements of &Omega; and &Lambda; from 42 High-Redshift Supernovae</span>
+      <span class="cit">2020 Planck Collaboration - Planck 2018 results. VI. Cosmological parameters</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--pink)">dark energy</dt>
+        <dd>Whatever is making the expansion of the universe speed up. Its defining oddity is that its
+          density stays <em>constant</em> as space grows: new space arrives already carrying its share.
+          Everything else in the universe thins out as things spread apart.</dd>
+        <dt style="color:var(--cyan)">critical density</dt>
+        <dd>&rho;<sub>crit</sub> = 3H&sub0;&sup2;/8&pi;G &mdash; the density that would make the universe
+          exactly spatially flat. About 8.5&times;10&#8315;&sup2;&#8311;&nbsp;kg/m&sup3;, or roughly five
+          hydrogen atoms per cubic metre. Everything cosmological gets quoted as a fraction of it.</dd>
+        <dt style="color:var(--yellow)">&Omega;<sub>&Lambda;</sub> and &Omega;<sub>m</sub></dt>
+        <dd>The fractions of the critical density contributed by dark energy (&asymp;0.685) and by all
+          matter, dark and ordinary (&asymp;0.315). They add to 1 because the universe measures flat.</dd>
+        <dt style="color:var(--green)">diluting vs not diluting</dt>
+        <dd>Double the size of the universe and you have eight times the volume, so matter's density
+          falls by eight &mdash; it goes as a&#8315;&sup3;. Dark energy's density does not fall at all.
+          That single asymmetry is why matter ruled the early universe and dark energy rules now.</dd>
+        <dt style="color:var(--orange)">the scale factor a</dt>
+        <dd>How big the universe is relative to today, where a = 1. a = 0.5 means everything was half as
+          far apart; the redshift z = 1/a &minus; 1 tells you how much the light from then has stretched
+          on its way here.</dd>
+        <dt style="color:var(--ink)">negative pressure</dt>
+        <dd>The strange property that makes dark energy push instead of pull. In general relativity
+          pressure gravitates too, and for dark energy p = &minus;&rho;c&sup2;. That is why acceleration
+          starts once &rho;<sub>&Lambda;</sub> merely exceeds <em>half</em> the matter density, rather
+          than all of it.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \rho_\Lambda = \Omega_\Lambda\,\rho_{\text{crit}} = \Omega_\Lambda\frac{3H_0^2}{8\pi G} \approx 5.85\times10^{-27}\ \text{kg/m}^3
+         \qquad \rho_m(a) = \frac{\rho_{m,0}}{a^3} \qquad
+         \ddot a > 0 \iff \rho_\Lambda > \tfrac{1}{2}\rho_m $$
+      <p class="eq-note">H&sub0; = 67.4 km/s/Mpc, &Omega;<sub>m</sub> = 0.315 (Planck 2018). Solving the last condition gives a = (&Omega;<sub>m</sub>/2&Omega;<sub>&Lambda;</sub>)<sup>1/3</sup> = 0.613, i.e. acceleration beginning at z &asymp; 0.63 &mdash; the sim solves it rather than quoting it. (The round figure z &asymp; 0.67 you will see elsewhere, including section 12, comes from using &Omega;<sub>m</sub> = 0.3 and &Omega;<sub>&Lambda;</sub> = 0.7 instead of Planck's measured values.)</p>
+    </div>
+
+    <div class="prose">
+      <p>Section 12 shows dark energy the way cosmologists draw it: four universes, four curves, a
+      scrubber through 13.8 billion years. Perfectly true, and perfectly abstract. The question people
+      actually have is much smaller and much better: <strong>if space is expanding, why isn't my kitchen
+      table expanding?</strong></p>
+
+      <p>So start in the kitchen. Dark energy really is in there. Its density is the same everywhere in
+      the universe &mdash; that is its whole personality &mdash; and it works out to about
+      5.9&times;10&#8315;&sup2;&#8311;&nbsp;kg in every cubic metre. Which means the dark energy filling
+      a volume the size of the entire Earth amounts to roughly <strong>six milligrams</strong>. A grain
+      of rice is thirty. Against that, the air in your kitchen is 1.2 kilograms per cubic metre, denser
+      by a factor of two hundred million billion billion. Gravity does not merely win in your kitchen;
+      the contest is not detectable.</p>
+
+      <p>Now zoom out and watch the fight change. The pink fog never thins &mdash; at every zoom level,
+      the same density, because that is what constant density means. What changes is the other side.
+      Earth: matter denser by 10&sup2;&#8313;. The solar system, mostly empty: still 10&sup1;&#8311;.
+      The Milky Way, including its dark-matter halo, thins to about 10&#8315;&sup2;&sup3; kg/m&sup3;
+      &mdash; and matter's lead has collapsed to a few thousand. The Local Group, less again. And
+      finally, average over the whole universe &mdash; all the galaxies, all the gas, all the dark
+      matter, smeared evenly &mdash; and matter comes to 2.7&times;10&#8315;&sup2;&#8311;&nbsp;kg/m&sup3;.
+      <strong>Dark energy wins, 2.17 to 1.</strong></p>
+
+      <p>That is the entire answer, and it is a statement about <em>emptiness</em> rather than about
+      strength. Dark energy is pathetically weak. It only ever wins where there is nothing else, and
+      the universe as a whole is overwhelmingly nothing else. Anywhere that gravity has already gathered
+      something &mdash; a galaxy, a solar system, a planet, a table &mdash; the local density is so far
+      above the cosmic average that dark energy is not even a rounding error. Bound things stay bound.
+      The Local Group will never be torn apart, whatever happens to the space between clusters.</p>
+
+      <p>The second panel shows why this is a story with a plot rather than a fixed state. Matter
+      dilutes: spread the same stuff through eight times the volume and its density drops eightfold,
+      a&#8315;&sup3;. Dark energy does not dilute at all &mdash; each new cubic metre of space arrives
+      with its full share already inside it. So run the slider back and the green line climbs steeply
+      while the pink line sits flat. Early on, matter was denser by orders of magnitude and the
+      expansion was slowing. The two crossed. Now the pink line is on top and the expansion is speeding
+      up. Nothing about dark energy ever changed; <strong>the matter simply ran out.</strong></p>
+
+      <p>One subtlety the sim solves rather than states: acceleration began <em>before</em> the
+      densities were equal. Because dark energy has negative pressure, and pressure gravitates in
+      general relativity, the expansion starts accelerating as soon as &rho;<sub>&Lambda;</sub> beats
+      <em>half</em> the matter density. That happens at a &asymp; 0.61, redshift z &asymp; 0.63 &mdash;
+      about six billion years ago. The universe had been coasting downhill for seven billion years,
+      then quietly began to accelerate, and nobody knew until two teams pointed telescopes at exploding
+      stars in 1998.</p>
+    </div>
+  </section>
+
+<!-- ======================================================================
        Sim 13 — Wormholes & exotic matter
        ====================================================================== -->
   <section class="sim-section" id="wormholes" style="--accent: var(--pink)">
@@ -3023,6 +3138,7 @@
       <li><span class="yr">1913</span>Russell - "Giant" and "Dwarf" Stars</li>
       <li><span class="yr">1915</span>Einstein - Erkl&auml;rung der Perihelbewegung des Merkur aus der allgemeinen Relativit&auml;tstheorie (Explanation of the Perihelion Motion of Mercury from the General Theory of Relativity)</li>
       <li><span class="yr">1916</span>Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</li>
+      <li><span class="yr">1917</span>Einstein - Kosmologische Betrachtungen zur allgemeinen Relativit&auml;tstheorie (Cosmological Considerations in the General Theory of Relativity)</li>
       <li><span class="yr">1919</span>Goddard - A Method of Reaching Extreme Altitudes</li>
       <li><span class="yr">1920</span>Dyson, Eddington, Davidson - A Determination of the Deflection of Light by the Sun's Gravitational Field, from Observations Made at the Total Eclipse of May 29, 1919</li>
       <li><span class="yr">1920</span>Eddington - The Internal Constitution of the Stars</li>
@@ -3076,6 +3192,7 @@
       <li><span class="yr">2016</span>Abbott et al. (LIGO Scientific Collaboration and Virgo Collaboration) - Observation of Gravitational Waves from a Binary Black Hole Merger</li>
       <li><span class="yr">2017</span>Abbott et al. - GW170817: Observation of Gravitational Waves from a Binary Neutron Star Inspiral</li>
       <li><span class="yr">2019</span>Event Horizon Telescope Collaboration - First M87 Event Horizon Telescope Results. I. The Shadow of the Supermassive Black Hole</li>
+      <li><span class="yr">2020</span>Planck Collaboration - Planck 2018 results. VI. Cosmological parameters</li>
       <li><span class="yr">2023</span>LZ Collaboration - First Dark Matter Search Results from the LUX-ZEPLIN (LZ) Experiment</li>
     </ul>
   </section>
