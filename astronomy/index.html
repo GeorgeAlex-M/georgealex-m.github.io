@@ -66,6 +66,7 @@
   <script defer src="js/sims/grandfather.js"></script>
   <script defer src="js/sims/many-worlds.js"></script>
   <script defer src="js/sims/laplace.js"></script>
+  <script defer src="js/sims/vacuum.js"></script>
   <script defer src="js/main.js"></script>
 </head>
 <body>
@@ -234,6 +235,16 @@
         <li><a href="#grandfather"><span class="n" style="color:var(--red)">41</span>The grandfather paradox</a></li>
         <li><a href="#many-worlds"><span class="n" style="color:var(--cyan)">42</span>Everett's many worlds</a></li>
         <li><a href="#laplace"><span class="n" style="color:var(--green)">43</span>Laplace's demon &amp; the Devs question</a></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter XIII &mdash; Quantum Fields &amp; Curved Spacetime</h3>
+      <ul class="toc-items">
+        <li><a href="#vacuum"><span class="n" style="color:var(--cyan)">48</span>The vacuum is a point of view</a></li>
+        <li><span class="soon">Particle creation in an expanding universe</span></li>
+        <li><span class="soon">The information paradox</span></li>
+        <li><span class="soon">Where quantum gravity has to take over</span></li>
       </ul>
     </div>
 
@@ -3103,6 +3114,173 @@
   <!-- ======================================================================
        The Library
        ====================================================================== -->
+<!-- ======================================================================
+       Sim 48 — The vacuum is a point of view
+       ====================================================================== -->
+  <section class="sim-section" id="vacuum" style="--accent: var(--cyan)">
+    <h2><span class="secnum">48.</span>The vacuum is not a place &mdash; it is a point of view</h2>
+    <p class="kicker">Two observers in the same empty spacetime. One coasts and finds nothing; the other
+      accelerates and finds a warm bath of particles. Both are right, and that single fact is what
+      quantum field theory in curved spacetime is about.</p>
+
+    <p class="evidence ev-theory"><span class="ev-dot"></span><strong>established theory, unobserved</strong> &mdash;
+      the mathematics is standard quantum field theory and nobody serious disputes it, but the real
+      effect has never been measured: you would need an acceleration of 2.5&times;10&sup2;&#8304;&nbsp;m/s&sup2;
+      to feel a single kelvin. Analogue systems &mdash; flowing fluids, Bose&ndash;Einstein condensates,
+      optical fibres &mdash; have reproduced its mathematical cousins, which is not the same thing.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="vacuum" aria-label="Two observers in the same empty spacetime, one coasting and one accelerating, and the same temperature formula applied to a black hole horizon"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="vacuum"></div>
+    <div class="sim-readout" data-readout="vacuum" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1968 Parker - Particle Creation in Expanding Universes</span>
+      <span class="cit">1973 Fulling - Nonuniqueness of Canonical Field Quantization in Riemannian Space-Time</span>
+      <span class="cit">1975 Hawking - Particle Creation by Black Holes</span>
+      <span class="cit">1976 Unruh - Notes on Black-Hole Evaporation</span>
+      <span class="cit">1982 Birrell, Davies - Quantum Fields in Curved Space</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">quantum field</dt>
+        <dd>In quantum field theory a "particle" is not a little ball; it is an excitation of a field
+          that fills all of space. Ask how many excitations a region contains and you must first decide
+          what counts as an excitation &mdash; and that decision, it turns out, is not universal.</dd>
+        <dt style="color:var(--pink)">the vacuum</dt>
+        <dd>The lowest-energy state of the fields: what is left when you take everything out. The
+          surprise is that "lowest energy" is defined relative to a notion of time, so observers who
+          disagree about time also disagree about which state is empty.</dd>
+        <dt style="color:var(--orange)">proper acceleration</dt>
+        <dd>The acceleration you actually feel &mdash; what a bathroom scale or an accelerometer strapped
+          to you reads. Standing still on Earth is a proper acceleration of 9.81 m/s&sup2;; falling
+          freely is zero, no matter how fast you are picking up speed.</dd>
+        <dt style="color:var(--red)">Rindler horizon</dt>
+        <dd>Keep accelerating forever and there is a surface, a distance c&sup2;/a behind you, from
+          which no light will ever catch up. You make your own horizon just by accelerating. That
+          horizon is what makes the heat: hide part of the universe from an observer and their
+          description of the rest turns thermal.</dd>
+        <dt style="color:var(--yellow)">surface gravity &kappa;</dt>
+        <dd>The gravitational pull at a black hole's horizon, as measured from far away,
+          &kappa; = c&#8308;/4GM. Feed it into the Unruh formula in place of the acceleration and
+          Hawking's temperature falls out unchanged &mdash; which is the whole argument that the two
+          effects are one effect.</dd>
+        <dt style="color:var(--yellow)">Tolman relation</dt>
+        <dd>In a gravitational field a thermal bath is not one temperature everywhere: T&times;&radic;(1&minus;r<sub>s</sub>/r)
+          is the same at every height. So the deeper you hover, the hotter the same radiation reads
+          &mdash; blueshifted by precisely the factor that slows your clock. It is the honest link
+          between time dilation and temperature, and it is a proportionality, not a cause.</dd>
+        <dt style="color:var(--green)">Bogoliubov transformation</dt>
+        <dd>The piece of machinery that converts one observer's particle-counting scheme into another's.
+          When it mixes creation and annihilation operators together &mdash; which happens whenever
+          spacetime is curved or the observer accelerates &mdash; one person's empty vacuum becomes
+          another person's bath of particles.</dd>
+        <dt style="color:var(--ink)">semiclassical gravity</dt>
+        <dd>The compromise this whole chapter lives in: quantum fields treated properly, but spacetime
+          left classical &mdash; a fixed stage rather than another quantum player. It is good enough for
+          Hawking radiation and wrong at the singularity, which is exactly where a real theory of
+          quantum gravity would have to take over.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ T_{\text{Unruh}} = \frac{\hbar a}{2\pi c\,k_B} \qquad
+         d_{\text{horizon}} = \frac{c^2}{a} \qquad
+         \kappa = \frac{c^4}{4GM} \;\Longrightarrow\;
+         \frac{\hbar\kappa}{2\pi c\,k_B} = \frac{\hbar c^3}{8\pi G M k_B} = T_{\text{Hawking}} $$
+      <p class="eq-note">The constant &hbar;/(2&pi;ck<sub>B</sub>) = 4.055&times;10&#8315;&sup2;&sup1; K per m/s&sup2;. The sim computes the last two expressions independently and prints their ratio, which is 1 &mdash; they are the same formula, not merely similar ones.</p>
+    </div>
+
+    <div class="prose">
+      <p>Everything else on this page has assumed that a particle is a particle. This section is where
+      that assumption breaks, and it breaks in the most disciplined way imaginable: not because the
+      mathematics is vague, but because it is precise about something we did not expect it to be
+      precise about.</p>
+
+      <p>In quantum field theory you count particles by splitting a field into positive-frequency and
+      negative-frequency parts. Frequency means <em>oscillations per unit time</em> &mdash; so before
+      you can count particles you must choose a time. In flat spacetime, for observers drifting freely,
+      everyone's choice agrees and nobody notices there was a choice. Stephen Fulling noticed, in 1973.
+      Change the observer, change the notion of time, change the split &mdash; and change the answer to
+      "how many particles are in this room".</p>
+
+      <p>Bill Unruh made it concrete three years later. Take two observers in the same patch of
+      completely empty flat spacetime. One coasts: they measure vacuum, nothing, zero. The other
+      accelerates: they measure a <strong>thermal bath</strong>, a genuine warmth with a genuine
+      temperature, T&nbsp;=&nbsp;&hbar;a/2&pi;ck<sub>B</sub>. Not an illusion, not an instrument error
+      &mdash; a real thermometer, carried by the accelerating observer, really warms up. And the first
+      one is not wrong either. There is no third, umpire's answer.</p>
+
+      <p>Drag the slider and see why nobody has caught it in a lab. Standing on Earth, your acceleration
+      of 9.81 m/s&sup2; buys you 4&times;10&#8315;&sup2;&#8304; kelvin &mdash; twenty orders of magnitude
+      below the coldest thing ever made. A neutron star's surface manages 5&times;10&#8315;&#8313; K. To
+      feel <em>one single kelvin</em> you need 2.5&times;10&sup2;&#8304;&nbsp;m/s&sup2;, which is
+      2.5&times;10&sup1;&#8313; g. The effect is real and, for now, permanently out of reach.</p>
+
+      <p>But watch the other thing the sim draws: the moment you accelerate, a <strong>horizon</strong>
+      appears behind you, at a distance c&sup2;/a. Beyond it, no signal will ever reach you as long as
+      you keep going. The heat and the horizon show up together &mdash; and that is not a coincidence,
+      it is the mechanism. Hide part of the universe from an observer and the part they can still see
+      stops looking like a pure quantum state and starts looking thermal.</p>
+
+      <p>Which brings the punchline, in the second panel. A black hole has a horizon too, with a surface
+      gravity &kappa;&nbsp;=&nbsp;c&#8308;/4GM. Put that into Unruh's formula &mdash; changing nothing
+      else &mdash; and out comes exactly Hawking's temperature. The sim computes both expressions
+      separately and prints the ratio: 1. Not close to 1. <strong>Hawking radiation is not a special
+      property of black holes.</strong> It is what any observer with a horizon sees, with gravity
+      supplying the acceleration. A solar-mass hole comes out at 6.2&times;10&#8315;&#8312;&nbsp;K, the
+      same number section 14 gets by a completely different route.</p>
+
+      <p><strong>&ldquo;Is this just time dilation? Does his clock slow down, so he has time to see the
+      pairs happening in slow motion?&rdquo;</strong> It is the first thing everyone asks, it is a good
+      instinct, and the answer is no &mdash; with a proof you can run yourself in the third panel. Take
+      an observer moving at a constant 0.999&nbsp;c. Their clock runs 22.37 times slower than yours:
+      enormous dilation, far more than any rocket will ever give you. Unruh temperature they measure:
+      <strong>exactly zero</strong>. Not small. Zero. Now take an accelerating observer instead and the
+      thermometer climbs. All the time dilation in the world produces no particles; acceleration does.
+      So dilation cannot be the cause.</p>
+
+      <p>The reason is worth having precisely, because it is the actual mechanism. A slowed clock
+      <em>rescales</em> frequencies &mdash; every wave looks slower by the same factor, and a bath of
+      nothing rescales to a bath of nothing. Creating particles requires something different: the
+      positive-frequency and negative-frequency parts of the field have to get <em>mixed into each
+      other</em>. Rescaling is not mixing. Only a change in what counts as "forward in time" &mdash;
+      which is what a horizon imposes &mdash; does the mixing. That is why the horizon, not the clock,
+      is the ingredient. And it is why the slow-motion picture, appealing as it is, has to be dropped:
+      the pairs in the drawing are a cartoon, not the derivation.</p>
+
+      <p>But your instinct was pointing at something real, and the panel shows that too. Hover at a
+      fixed height above a black hole rather than falling in. Your clock runs slow by
+      1/&radic;(1&minus;r<sub>s</sub>/r), the familiar gravitational factor. And the Hawking temperature
+      you actually feel is the distant temperature <em>blueshifted by exactly the same factor</em>
+      &mdash; the Tolman relation. The sim draws both curves and they lie on top of one another, because
+      they are the same function. So: time dilation does not <em>create</em> the heat, but wherever
+      clocks slow, the temperature rises in perfect lockstep, and at the horizon both diverge together.
+      Your other intuition was simply correct: acceleration and gravity are the same thing, which is
+      exactly why the same formula serves both panels.</p>
+
+      <p>This is the frontier your friend is asking about, so here is the honest state of it. All of the
+      above is <em>semiclassical</em>: the fields are quantum, but spacetime is still a classical stage
+      they perform on. That compromise works beautifully right up until it doesn't. Trace a Hawking
+      photon backwards toward the horizon and its wavelength shrinks below the Planck length, where the
+      theory has no right to an opinion &mdash; the trans-Planckian problem. Push a collapse to its
+      conclusion and you reach a singularity, where the stage itself stops making sense. And if the
+      radiation really is thermal, the information that fell in appears to be gone, which quantum
+      mechanics forbids.</p>
+
+      <p>Nobody has resolved this. Loop quantum gravity replaces the singularity with a bounce; string
+      theory answers with holography; Leonard Parker showed back in 1968 that an expanding universe
+      creates particles by the same mechanism, which means these effects shaped the early cosmos too.
+      What is not in doubt is the piece this section shows you: <strong>the vacuum is observer-dependent,
+      horizons are warm, and gravity and thermodynamics are somehow the same subject.</strong> Any
+      theory of quantum gravity has to explain why.</p>
+    </div>
+  </section>
+
   <section class="sim-section" id="library" style="--accent: var(--orange)">
     <h2><span class="secnum">&#9733;</span>The Library — every paper cited here</h2>
     <p class="kicker">The original sources, in the exact <em>YEAR Author - Title</em> form,
@@ -3168,16 +3346,20 @@
       <li><span class="yr">1965</span>Penrose - Gravitational Collapse and Space-Time Singularities</li>
       <li><span class="yr">1965</span>Penzias, Wilson - A Measurement of Excess Antenna Temperature at 4080 Mc/s</li>
       <li><span class="yr">1968</span>Hewish, Bell, Pilkington, Scott, Collins - Observation of a Rapidly Pulsating Radio Source</li>
+      <li><span class="yr">1968</span>Parker - Particle Creation in Expanding Universes</li>
       <li><span class="yr">1969</span>Penrose - Gravitational Collapse: The Role of General Relativity</li>
       <li><span class="yr">1970</span>Rubin, Ford - Rotation of the Andromeda Nebula from a Spectroscopic Survey of Emission Regions</li>
       <li><span class="yr">1972</span>Hafele, Keating - Around-the-World Atomic Clocks: Observed Relativistic Time Gains</li>
       <li><span class="yr">1972</span>Webster, Murdin - Cygnus X-1&mdash;a Spectroscopic Binary with a Heavy Companion?</li>
       <li><span class="yr">1973</span>Misner, Thorne, Wheeler - Gravitation</li>
+      <li><span class="yr">1973</span>Fulling - Nonuniqueness of Canonical Field Quantization in Riemannian Space-Time</li>
       <li><span class="yr">1974</span>Hawking - Black Hole Explosions?</li>
       <li><span class="yr">1975</span>Hawking - Particle Creation by Black Holes</li>
       <li><span class="yr">1975</span>Hulse, Taylor - Discovery of a Pulsar in a Binary System</li>
+      <li><span class="yr">1976</span>Unruh - Notes on Black-Hole Evaporation</li>
       <li><span class="yr">1978</span>White, Rees - Core condensation in heavy halos: a two-stage theory for galaxy formation and clustering</li>
       <li><span class="yr">1982</span>Wootters, Zurek - A Single Quantum Cannot Be Cloned</li>
+      <li><span class="yr">1982</span>Birrell, Davies - Quantum Fields in Curved Space</li>
       <li><span class="yr">1988</span>Morris, Thorne - Wormholes in Spacetime and Their Use for Interstellar Travel: A Tool for Teaching General Relativity</li>
       <li><span class="yr">1990</span>Friedman, Morris, Novikov, Echeverria, Klinkhammer, Thorne, Yurtsever - Cauchy Problem in Spacetimes with Closed Timelike Curves</li>
       <li><span class="yr">1991</span>Deutsch - Quantum Mechanics near Closed Timelike Lines</li>
