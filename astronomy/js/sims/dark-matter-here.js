@@ -52,6 +52,7 @@
   const GEV_KG = 1.78266192e-27;   // kg per GeV/c²
   const V_HALO = 2.3e5;            // m/s — typical halo speed through the solar neighbourhood
   const BODY_AREA = 0.7;           // m² — a person's rough cross-section
+  const BODY_VOLUME = 0.066;       // m³ — a 70 kg person at roughly water density
   const C_ATOM = 12 * 1.66053907e-27; // kg — one carbon atom, for scale comparisons
 
   // Volumes in m³, with the ordinary mass of the same thing for contrast.
@@ -187,11 +188,20 @@
     hereNumbers() {
       const t = this.target;
       const dm = this.rho * t.V;                 // kg of dark matter in that volume
+      // How many PARTICLES that is. This matters more than it looks: the mass is
+      // tiny but the particle count is not, and readers reasonably assume the
+      // pink fog drawn on the canvas is a particle count. It is not — at
+      // 100 GeV there is about ONE particle in a coffee cup, 264 in a person.
+      // Saying so out loud is the difference between the sim teaching the point
+      // and the sim contradicting it.
+      const mChiKg = this.mChi * GEV_KG;
       return {
         t, dm, ord: t.ord,
         ratio: dm / t.ord,
         atoms: dm / C_ATOM,                      // in carbon atoms, for small volumes
         litres: dm / 1.0,                        // 1 litre of water = 1 kg
+        count: dm / mChiKg,                      // particles resident right now
+        perM3: this.rho / mChiKg,
       };
     }
 
@@ -199,7 +209,13 @@
       const n = this.rhoGeV / this.mChi;         // particles per cm³
       const flux = n * (V_HALO * 100);           // per cm² per second
       const throughYou = flux * (BODY_AREA * 1e4);
-      return { n, flux, throughYou, perYear: throughYou * 3.15576e7 };
+      // The number people actually need in order to believe the flux: how many
+      // are INSIDE you at any instant. It is small (a few hundred), and the huge
+      // per-second figure comes from speed, not from crowding — each one crosses
+      // in well under a microsecond and is replaced.
+      const resident = n * 1e6 * BODY_VOLUME;    // n is per cm³ → per m³ × m³
+      const transit = (BODY_VOLUME / BODY_AREA) / V_HALO;   // s to cross a body
+      return { n, flux, throughYou, resident, transit, perYear: throughYou * 3.15576e7 };
     }
 
     update(dt) {
@@ -248,6 +264,17 @@
           [` ${t.ordNote}.  Dark matter is `, null],
           [`${sci(1 / n.ratio, 2)}×`, 'orange'], [' rarer here.', null],
         ],
+        [
+          ['HOW MANY PARTICLES IS THAT? ', 'yellow'],
+          [`If each weighs ${fmtNum(this.mChi, 0)} GeV/c², one particle is ${sci(this.mChi * GEV_KG, 2)} kg, so inside `, null],
+          [t.name, 'yellow'], [' there are about ', null],
+          [n.count < 10 ? fmtNum(n.count, 1) : sci(n.count, 3), 'pink'],
+          [n.count < 10 ? ' particles' : ' particles', null],
+          [' — right now, at this instant. ', null],
+          [n.count < 5
+            ? 'Yes: about one particle. The pink dots on the canvas mark that a halo is present; they are NOT a particle count, and at this scale a truthful count would be almost nothing.'
+            : 'The pink dots mark the halo\'s presence — they are not a particle count.', null],
+        ],
         t.key === 'earth' ? [
           ['Read that again: every gram of dark matter inside the entire planet adds up to ', null],
           [`${fmtNum(n.dm, 2)} kg`, 'pink'],
@@ -271,6 +298,16 @@
           ['Through a person (≈0.7 m² of cross-section): ', null],
           [`${sci(f.throughYou, 3)} particles every second`, 'pink'],
           [`  ·  ${sci(f.perYear, 2)} in a year.`, null],
+        ],
+        [
+          ['THAT IS NOT HOW MANY ARE IN YOU. ', 'yellow'],
+          ['At any single instant only about ', null],
+          [`${fmtNum(f.resident, 0)} particles`, 'cyan'],
+          [' are actually inside your body. The enormous per-second figure comes from SPEED, not from crowding: at 230 km/s each one crosses you in ', null],
+          [`${sci(f.transit, 2)} s`, 'orange'],
+          [' and is immediately replaced. A few hundred residents, swapped out a million times a second, is ', null],
+          [`${sci(f.throughYou, 2)} crossings per second`, 'pink'],
+          ['. Both numbers are right; they measure different things — like cars ON a motorway versus cars PASSING a bridge.', null],
         ],
         [
           ['How many actually hit an atom in you? Essentially none. LZ, a 7-tonne xenon detector 1.5 km underground, has been running for years and has seen no confirmed dark-matter event; its 2023 result rules out cross-sections above ', null],
