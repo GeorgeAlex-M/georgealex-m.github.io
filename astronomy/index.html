@@ -40,6 +40,9 @@
   <script defer src="js/sims/emc2.js"></script>
   <script defer src="js/sims/time-dilation.js"></script>
   <script defer src="js/sims/lensing.js"></script>
+  <script defer src="js/sims/escape-velocity.js"></script>
+  <script defer src="js/sims/kepler.js"></script>
+  <script defer src="js/sims/lagrange.js"></script>
   <script defer src="js/sims/big-bang.js"></script>
   <script defer src="js/sims/dark-matter.js"></script>
   <script defer src="js/sims/dark-energy.js"></script>
@@ -132,9 +135,9 @@
     <div class="toc-chapter">
       <h3>Chapter III — Newton's Universe</h3>
       <ul class="toc-items">
-        <li><span class="soon">Escaping Earth's gravity</span></li>
-        <li><span class="soon">Kepler's laws</span></li>
-        <li><span class="soon">Lagrange points</span></li>
+        <li><a href="#escape"><span class="n" style="color:var(--cyan)">7</span>Escaping Earth's gravity</a></li>
+        <li><a href="#kepler"><span class="n" style="color:var(--green)">8</span>Kepler's three laws</a></li>
+        <li><a href="#lagrange"><span class="n" style="color:var(--yellow)">9</span>Lagrange points &amp; the three-body problem</a></li>
       </ul>
     </div>
 
@@ -713,6 +716,455 @@
     </div>
   </section>
 
+<!-- ======================================================================
+       Sim 7 — Escaping Earth's gravity
+       ====================================================================== -->
+  <section class="sim-section" id="escape" style="--accent: var(--cyan)">
+    <h2><span class="secnum">7.</span>Escaping Earth's gravity</h2>
+    <p class="kicker">Drag from the cannon on the mountaintop &mdash; length sets the speed, direction
+      sets the aim &mdash; and let go. Fire enough shots and you will have drawn Newton's own figure by
+      hand: the weak ones fall back, one circles the world, and a harder one never returns.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash; escape
+      and orbital speeds follow from GM and R, both known to many decimal places from spacecraft tracking;
+      every trajectory here is integrated from those measured numbers, and Newton's own Moon test
+      (surface gravity scaled by the inverse square vs. the Moon's real acceleration) is recomputed live
+      and agrees to about a percent.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="escape" aria-label="Newton's cannonball fired from a mountaintop, with trajectories that fall back, orbit, or escape, plus a rocket-equation panel and Newton's Moon test"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="escape"></div>
+    <div class="sim-readout" data-readout="escape" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1687 Newton - Philosophiae Naturalis Principia Mathematica (Mathematical Principles of Natural Philosophy)</span>
+      <span class="cit">1728 Newton - De mundi systemate (A Treatise of the System of the World)</span>
+      <span class="cit">1903 Tsiolkovsky - &#1048;&#1089;&#1089;&#1083;&#1077;&#1076;&#1086;&#1074;&#1072;&#1085;&#1080;&#1077; &#1084;&#1080;&#1088;&#1086;&#1074;&#1099;&#1093; &#1087;&#1088;&#1086;&#1089;&#1090;&#1088;&#1072;&#1085;&#1089;&#1090;&#1074; &#1088;&#1077;&#1072;&#1082;&#1090;&#1080;&#1074;&#1085;&#1099;&#1084;&#1080; &#1087;&#1088;&#1080;&#1073;&#1086;&#1088;&#1072;&#1084;&#1080; (Exploration of Cosmic Space by Means of Reaction Devices)</span>
+      <span class="cit">1919 Goddard - A Method of Reaching Extreme Altitudes</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">escape velocity</dt>
+        <dd>The speed at which a thrown object's kinetic energy exactly cancels the gravitational
+          energy holding it down, so it coasts away forever and only just runs out of speed at
+          infinity. For Earth's surface it is 11.186&nbsp;km/s. Notice what it does <em>not</em>
+          depend on: the object's mass, or which way you aim it.</dd>
+        <dt style="color:var(--green)">circular (orbital) velocity</dt>
+        <dd>The sideways speed at which falling and curving away exactly cancel, so you fall around
+          the world instead of into it &mdash; 7.91&nbsp;km/s at Earth's surface. Escape velocity is
+          always exactly &radic;2 times this, at any distance.</dd>
+        <dt style="color:var(--orange)">specific orbital energy (&epsilon;)</dt>
+        <dd>Kinetic plus potential energy per kilogram, &epsilon; = v&sup2;/2 &minus; GM/r. It never
+          changes along a trajectory, and its sign is the whole story: negative means bound (you come
+          back), zero means exactly parabolic, positive means gone. The sim reads this straight off
+          the integrated motion each frame.</dd>
+        <dt style="color:var(--pink)">eccentricity (e)</dt>
+        <dd>The shape of the path. e&nbsp;=&nbsp;0 is a circle, 0&nbsp;&lt;&nbsp;e&nbsp;&lt;&nbsp;1 an
+          ellipse, e&nbsp;=&nbsp;1 a parabola (or a straight up-and-down drop), e&nbsp;&gt;&nbsp;1 a
+          hyperbola. The <em>eccentricity vector</em> also points at perigee, which is how the sim
+          knows whether the low point of the path is above the ground or buried inside it.</dd>
+        <dt style="color:var(--yellow)">perigee &amp; apogee</dt>
+        <dd>The lowest and highest points of an orbit around Earth. A suborbital arc is simply an
+          orbit whose perigee happens to lie underground &mdash; the ground gets in the way first.
+          Every cannon shot in history has been on an ellipse; they just all intersect the planet.</dd>
+        <dt style="color:var(--cyan)">the rocket equation (Tsiolkovsky)</dt>
+        <dd>&Delta;v = v<sub>e</sub>&nbsp;ln(m&#8320;/m&#8321;). The speed change a rocket can buy
+          depends only on its exhaust velocity and the <em>ratio</em> of its fuelled to empty mass
+          &mdash; and because that ratio sits inside a logarithm, wanting a bit more speed costs
+          exponentially more fuel.</dd>
+        <dt style="color:var(--green)">specific impulse (I<sub>sp</sub>)</dt>
+        <dd>Exhaust velocity expressed in seconds: v<sub>e</sub> = I<sub>sp</sub> &times;
+          g&#8320;, with g&#8320; = 9.80665&nbsp;m/s&sup2; used purely as a unit-conversion constant.
+          Higher is better; hydrogen&ndash;oxygen manages about 450&nbsp;s, an ion drive thousands
+          &mdash; but with a thrust you could measure on a kitchen scale.</dd>
+        <dt style="color:var(--red)">gravity &amp; drag losses</dt>
+        <dd>The &Delta;v a real launch spends fighting gravity while it is still climbing slowly, plus
+          steering and air resistance &mdash; typically 1.5 to 2&nbsp;km/s. That is why reaching a
+          7.8&nbsp;km/s orbit costs more like 9.3&nbsp;km/s of engine.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ v_{\text{esc}} = \sqrt{\frac{2GM}{r}} = \sqrt{2}\,v_{\text{circ}}
+         \qquad \varepsilon = \frac{v^2}{2} - \frac{GM}{r}
+         \qquad \vec{e} = \frac{\vec{v}\times\vec{h}}{GM} - \hat{r} $$
+      $$ \Delta v = v_e \ln\!\left(\frac{m_0}{m_1}\right)
+         \qquad a_{\text{Moon}} \stackrel{?}{=} g_\oplus\left(\frac{R_\oplus}{r_{\text{Moon}}}\right)^{2} $$
+      <p class="eq-note">Computed from GM&nbsp;=&nbsp;3.986004418&times;10<sup>14</sup>&nbsp;m&sup3;/s&sup2;
+        and R&nbsp;=&nbsp;6371&nbsp;km for Earth (and the equivalent measured pairs for the Moon, Mars,
+        Jupiter, Ceres and the Sun); the Moon test uses the lunar semi-major axis 384&nbsp;399&nbsp;km and
+        the sidereal month of 27.321661&nbsp;days.</p>
+    </div>
+
+    <div class="prose">
+      <p>Newton's cannonball is not in the <em>Principia</em>. It appears in a manuscript he wrote for
+      ordinary readers and then set aside; it was printed only after his death, as
+      <em>De mundi systemate</em> in 1728. Put a cannon on a mountain so high there is no air, he says,
+      and fire it horizontally. Fire it gently and the ball falls to the ground some distance away.
+      Fire it harder and it falls further. Fire it hard enough and &mdash; the ground curving away
+      beneath it just as fast as it drops &mdash; it never lands at all. Newton drafted the passage
+      around 1685 for the popular version of what became Book III, then set it aside. The idea that
+      celestial and terrestrial motion obey one attraction was in the air &mdash; Hooke had put an
+      inverse-square guess to Newton in their 1679&ndash;80 letters &mdash; but nobody had turned it
+      into a picture you could argue with. This is that picture.</p>
+
+      <p>So do it. Click or drag anywhere on the canvas: your distance from the cannon sets the muzzle
+      speed, the direction sets the aim, and letting go fires. What happens next is not choreographed &mdash; the ball is handed
+      to a velocity-Verlet integrator and pulled by exact inverse-square gravity, and every frame the
+      sim asks the resulting motion two questions: what is your energy, and where is your perigee? If
+      the energy is negative and the perigee is underground, the shot is orange and it is coming back.
+      If the perigee clears the surface, it turns green and it is in orbit. If the energy has gone
+      positive, it turns cyan and you will never see it again. A shot that has already hit the ground is
+      reported as suborbital even when its energy is positive &mdash; fire steeply downward faster than
+      escape speed and the state really is unbound, but the hyperbola happens to pass through the planet.
+      Shots pile up, lettered A, B, C, so you can compare a family of them the way Newton's own plate does.</p>
+
+      <p>Then switch worlds. The physics does not change; only GM and R do, and everything follows.
+      Ceres asks for 0.5&nbsp;km/s &mdash; a good arm and a running start would very nearly do it.
+      Jupiter demands 59.5. The Sun wants 617.7. And notice that escape speed never cares about the mass
+      of what you throw, or the angle you throw it at: a bullet, a battleship and a bacterium all need
+      exactly the same number, because it is a statement about energy, not about effort.</p>
+
+      <p>Which brings the bad news, in the second panel. Nothing we build gets a cannon; we get rockets,
+      and rockets obey Konstantin Tsiolkovsky's 1903 equation: &Delta;v&nbsp;=&nbsp;v<sub>e</sub>&nbsp;ln(m&#8320;/m&#8321;).
+      The mass ratio is inside a logarithm, so speed is bought with exponentially more propellant. Set
+      the sim to kerosene and oxygen and ask it for the real cost of low Earth orbit &mdash; orbital
+      speed at 200&nbsp;km, plus the gravity, steering and drag you lose on the way up, minus the free
+      408&nbsp;m/s that Earth's rotation hands you at Cape Canaveral &mdash; and the tank has to be about
+      93% of the whole vehicle. Watch the propellant level in the doodle rocket rise as you drag the
+      slider. That is not bad engineering. That is arithmetic &mdash; and Robert Goddard published
+      exactly this arithmetic in 1919. In January 1920 the <em>New York Times</em> mocked him for it,
+      on the grounds that a rocket has nothing to push against in a vacuum. It printed a correction
+      the week of Apollo&nbsp;11.</p>
+
+      <p>Then try the ion engine. Its exhaust velocity is nine times the kerosene one, so Tsiolkovsky's
+      equation hands it an enormous &Delta;v from almost no propellant &mdash; and the sim still refuses
+      to let it reach orbit. It computes why: 92&nbsp;millinewtons of thrust can hold up 9.4&nbsp;grams
+      against Earth's gravity, and the thruster alone weighs 8.3&nbsp;kg. Winning the rocket equation and
+      being able to leave the pad are two different problems, which is why ion drives are switched on
+      only after a chemical rocket has done the shouting.</p>
+
+      <p>The third panel is the oldest measurement on this page. Newton had guessed that the force
+      holding the Moon was the same one that dropped an apple, weakened as the square of the distance
+      &mdash; but a guess is not physics until it is checked against a number nobody chose. So: take
+      gravity at Earth's surface, divide by 60.3 squared, and see whether it matches the acceleration
+      the Moon actually needs to keep curving, 4&pi;&sup2;r/T&sup2;, measured from a distance and a
+      month. The sim computes both. They agree to about 99% &mdash; and the last percent is not an error
+      in the law but a subtlety in it, since the Moon orbits the pair's common centre of mass rather than
+      Earth's middle; put that in and it lands within a third of a percent. Newton, characteristically,
+      wrote that he found the two &ldquo;answer pretty nearly&rdquo;. It was one of the great
+      understatements in the history of science.</p>
+    </div>
+  </section>
+<!-- ======================================================================
+     Sim 8 — Kepler's three laws
+     ====================================================================== -->
+<section class="sim-section" id="kepler" style="--accent: var(--green)">
+  <h2><span class="secnum">8.</span>Kepler's three laws</h2>
+  <p class="kicker">Drag an orbit into any shape you like and watch which things refuse to
+    change. Then let the sim <em>measure</em> the three laws instead of asserting them &mdash;
+    including the eight arcminutes that killed the circle.</p>
+
+  <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+    every planet on the third-law plot is a real measured orbit (NASA/JPL), the least-squares
+    slope is computed from those numbers on the spot, and the swept areas in the second panel
+    are integrated and then measured by polygon, never taken from a formula.</p>
+
+  <div class="sim-canvas-wrap">
+    <canvas data-sim="kepler" aria-label="Three interactive panels: a draggable elliptical orbit with both foci, an orbit integrated and divided into equal-time wedges whose areas are measured, and a log-log plot of orbital period against semi-major axis for the real planets"></canvas>
+  </div>
+  <div class="sim-controls" data-controls="kepler"></div>
+  <div class="sim-readout" data-readout="kepler" aria-live="polite"></div>
+
+  <div class="citation-box">
+    <span class="cit-label">the papers behind this simulation &mdash; search these in your library:</span>
+    <span class="cit">1609 Kepler - Astronomia Nova Aitiologetos, seu Physica Coelestis, tradita commentariis de motibus stellae Martis, ex observationibus G. V. Tychonis Brahe (New Astronomy, Based upon Causes, or Celestial Physics, Treated by Means of Commentaries on the Motions of the Star Mars, from the Observations of Tycho Brahe)</span>
+    <span class="cit">1619 Kepler - Harmonices Mundi Libri V (The Five Books of the Harmony of the World)</span>
+    <span class="cit">1602 Brahe - Astronomiae Instauratae Progymnasmata (Introductory Exercises Toward the Restoration of Astronomy)</span>
+    <span class="cit">1687 Newton - Philosophiae Naturalis Principia Mathematica (Mathematical Principles of Natural Philosophy)</span>
+    <span class="cit">1705 Halley - Astronomiae Cometicae Synopsis (A Synopsis of the Astronomy of Comets)</span>
+  </div>
+
+  <details class="defs">
+    <summary>doodle dictionary &mdash; what do these words mean?</summary>
+    <dl>
+      <dt style="color:var(--green)">focus (plural: foci)</dt>
+      <dd>An ellipse has two special interior points. Their defining property: for
+        <em>every</em> point on the curve, the two distances to the foci add up to the same
+        total, 2a. Kepler's first law says the Sun sits at one of them &mdash; and that
+        nothing at all sits at the other.</dd>
+      <dt style="color:var(--cyan)">eccentricity (e)</dt>
+      <dd>How un-circular an orbit is. e&nbsp;=&nbsp;0 is a perfect circle, e approaching 1 is
+        a long thin cigar. It is the distance from the centre to a focus, divided by a.
+        Real planets are boringly close to circles: Earth's e is 0.0167.</dd>
+      <dt style="color:var(--yellow)">semi-major axis (a)</dt>
+      <dd>Half the long diameter of the ellipse. Beware the folklore that it is "the average
+        distance" &mdash; averaged over <em>time</em> the distance is a(1&nbsp;+&nbsp;e&sup2;/2),
+        averaged over angle it is the semi-<em>minor</em> axis. a is the average of just two
+        points, perihelion and aphelion.</dd>
+      <dt style="color:var(--cyan)">perihelion / aphelion</dt>
+      <dd>The closest and farthest points of an orbit around the Sun: a(1&minus;e) and
+        a(1+e). Around anything else the words are periapsis and apoapsis.</dd>
+      <dt style="color:var(--orange)">equant</dt>
+      <dd>The last patch applied to circular astronomy. To make a circle keep time like a real
+        planet, Ptolemy put the observer off-centre by ae on one side and an imaginary point
+        &mdash; the equant &mdash; off-centre by ae on the other, and had the planet sweep
+        equal <em>angles</em> as seen from the equant. It nearly works. Panel&nbsp;1 measures
+        exactly how nearly.</dd>
+      <dt style="color:var(--pink)">arcminute (&prime;)</dt>
+      <dd>One sixtieth of a degree. The full Moon is about 31&prime; across, so 8&prime; is
+        roughly a quarter of a Moon. Tycho Brahe's naked-eye instruments were good to about
+        1&ndash;2&prime;, which is why a leftover of 8&prime; was not something Kepler could
+        blame on the observer.</dd>
+      <dt style="color:var(--green)">areal velocity (dA/dt)</dt>
+      <dd>The rate at which the Sun&ndash;planet line sweeps out area. Kepler's second law says
+        it never changes. Newton later showed why: it is just the planet's angular momentum
+        divided by twice its mass, and gravity pulls straight at the Sun, so there is no
+        sideways twist to change it.</dd>
+      <dt style="color:var(--yellow)">vis-viva equation</dt>
+      <dd>"Living force" &mdash; the speed formula
+        v&sup2;&nbsp;=&nbsp;GM(2/r&nbsp;&minus;&nbsp;1/a). It is energy conservation in
+        disguise, and it is what makes a comet whip through perihelion and then loiter for
+        decades out near aphelion.</dd>
+      <dt style="color:var(--muted)">dex</dt>
+      <dd>A "decimal exponent" &mdash; one unit of log&#8321;&#8320;. The residual panel is drawn
+        in dex because the interesting deviations are around 0.0002 of them, and no linear
+        axis would show you that next to a 30-fold spread in orbit size.</dd>
+    </dl>
+  </details>
+
+  <div class="equations">
+    $$ r = \frac{a\,(1-e^{2})}{1+e\cos\nu} \qquad\qquad r_{1}+r_{2}=2a $$
+    $$ \frac{dA}{dt} \;=\; \frac{L}{2m} \;=\; \tfrac{1}{2}\sqrt{GM\,a\,(1-e^{2})} \;=\; \text{constant} $$
+    $$ T^{2} = \frac{4\pi^{2}a^{3}}{G\,(M+m)} \qquad\qquad v^{2} = GM\left(\frac{2}{r}-\frac{1}{a}\right) $$
+    <p class="eq-note">Computed with GM<sub>&#9737;</sub>&nbsp;=&nbsp;1.32712440041&times;10&sup2;&#8304;&nbsp;m&sup3;&nbsp;s&#8315;&sup2;
+      (JPL DE440 &mdash; the measured quantity; M<sub>&#9737;</sub> alone is only good to five digits, because
+      G is), au&nbsp;=&nbsp;149&nbsp;597&nbsp;870&nbsp;700&nbsp;m exactly (IAU 2012 Res.&nbsp;B2), and the Julian
+      year&nbsp;=&nbsp;365.25&nbsp;d&nbsp;=&nbsp;31&nbsp;557&nbsp;600&nbsp;s. Planet a, e and <em>sidereal</em>
+      periods come from the NASA NSSDC fact sheets (Mean Orbital Elements, J2000); Ceres and Halley from the
+      JPL Small-Body Database; planet masses are DE440 system GM values.</p>
+  </div>
+
+  <div class="prose">
+    <p>Tycho Brahe spent twenty years on a Danish island measuring where things were, night
+    after night, with instruments the size of doorways and no telescope &mdash; the telescope
+    had not been invented. He got positions right to one or two arcminutes, about ten times
+    better than anyone before him. In 1600 he handed the Mars problem to a new assistant named
+    Johannes Kepler, who expected to be finished in a couple of weeks. Tycho died the following
+    year; Kepler inherited the data and called what followed his <em>war with Mars</em>. It
+    took him the best part of six years.</p>
+
+    <p>Here is what he was up against. A circle, offset from the Sun and equipped with an
+    equant, is astonishingly good. Press <strong>panel&nbsp;1</strong>, choose Mars, and look at
+    the ruler along the bottom: the sim builds that circle, sweeps it at uniform angular rate
+    about the equant, and scans a full revolution for the biggest disagreement with the true
+    ellipse. It comes out at about <strong>9 arcminutes</strong>, worst at the octants &mdash;
+    midway between perihelion and aphelion. That is a modern reconstruction of the comparison
+    Kepler was making, not a replay of his arithmetic, but it lands on his famous number.
+    Now slide the eccentricity down to Earth's 0.0167 and watch the marker slide left of
+    Tycho's green band: for Earth the circle misses by a quarter of an arcminute, and nobody
+    before Tycho could ever have caught it. Kepler wrote that these eight minutes alone had
+    shown the way to reforming all of astronomy. He was not being dramatic; he was being
+    literal about the size of the residual.</p>
+
+    <p>Drag the two handles and something else becomes obvious: real planets are not
+    egg-shaped. Earth's ellipse has b/a&nbsp;=&nbsp;0.99986 &mdash; flattened by fourteen
+    thousandths of one percent, a departure of about 21,000&nbsp;km on a 150-million-kilometre
+    orbit. You cannot draw the difference. What you <em>can</em> see is the Sun sitting
+    2.5&nbsp;million kilometres off-centre. The first law is not really a statement about the
+    shape of the curve; it is a statement about where the Sun is standing.</p>
+
+    <p><strong>Panel&nbsp;2</strong> is the second law, which Kepler actually found <em>first</em>,
+    around 1602, three years before he gave up on circles. Nothing here is assumed: the planet
+    is pushed around by Newtonian gravity with a velocity-Verlet integrator, positions are
+    recorded at equal time intervals, and each wedge's area is then measured as a shoelace sum
+    of triangles with the Sun as the pivot &mdash; the same polygon you see shaded. The twelve
+    numbers come out equal to within a few thousandths of a percent, and the leftover is not
+    physics: chords cut inside the arc, so every wedge is measured slightly small, worst where
+    the planet is moving fastest. Raise the samples slider and watch the spread fall as the
+    square of the sample count. Meanwhile the <em>paths</em> inside those equal areas differ by
+    a factor of 1.5 for Mercury and nearly 13 for Halley. Equal areas, wildly unequal journeys.</p>
+
+    <p><strong>Panel&nbsp;3</strong> is the harmonic law, which Kepler dated to 8&nbsp;March
+    1618, botched the arithmetic on, and re-derived correctly on 15&nbsp;May &mdash; ten years
+    and one book after the other two. He called the relation "sesquialterate", the ratio three
+    to two, which is precisely the slope the sim fits: eight real planets, ordinary least
+    squares, <strong>1.49983</strong>. Add Ceres, Pluto and Halley's comet and the x-range
+    stretches by half again while the slope moves in the fifth decimal. It is not 1.50000, and
+    that is the good part. Newton's version of the law carries the planet's own mass,
+    T&sup2;&nbsp;=&nbsp;4&pi;&sup2;a&sup3;/G(M+m), and Jupiter is heavy enough that the
+    correction is real: it shortens Jupiter's year by 0.048%, about two days. The residual strip
+    marks what each planet's mass term predicts against what its orbit actually shows. Jupiter
+    lands near its mark. Uranus and Neptune sit low too &mdash; but roughly twenty times lower
+    than their masses could explain, so that part is not gravity, it is the honest cost of
+    describing an eight-body solar system with two-body elements.</p>
+
+    <p>One last thing worth doing: in panel&nbsp;1, hold a fixed and drag the eccentricity from
+    nearly zero to nearly one, and keep an eye on the printed period. It does not budge. e does
+    not appear in T&nbsp;=&nbsp;2&pi;&radic;(a&sup3;/GM) at all. A comet on a savage 0.97
+    ellipse and a planet on a lazy circle with the same a keep perfect time with each other,
+    forever &mdash; one of them merely does most of its year in a hurry.</p>
+  </div>
+
+  <blockquote class="quote-box">
+    &ldquo;These eight minutes alone have led the way to reforming all of astronomy.&rdquo;
+    <span class="attrib">* Johannes Kepler, Astronomia Nova (1609), Part II, ch.&nbsp;19 &mdash; the discussion runs across chs.&nbsp;17&ndash;21</span>
+  </blockquote>
+</section>
+<!-- ======================================================================
+     Sim 9 — Lagrange points & the three-body problem
+     ====================================================================== -->
+<section class="sim-section" id="lagrange" style="--accent: var(--yellow)">
+  <h2><span class="secnum">9.</span>Lagrange points &amp; the three-body problem</h2>
+  <p class="kicker">Five places where a spacecraft can loiter for free. Click anywhere to
+    release a probe at rest in the rotating frame, or drag to fling it &mdash; then watch which
+    ones stay and which ones wander off. Nothing about that outcome is scripted; it falls
+    out of the integration.</p>
+
+  <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+    people fly here. SOHO has orbited Sun&ndash;Earth L1 since 1996, DSCOVR since 2015, JWST L2
+    since 2022; the first Trojan asteroid was photographed at Sun&ndash;Jupiter L4 in February 1906,
+    and JPL's Small-Body Database listed 16,356 of them on 24 July 2026. Every position and
+    timescale on this page is computed live from JPL DE440 constants, not typed in.</p>
+
+  <div class="sim-canvas-wrap">
+    <canvas data-sim="lagrange" aria-label="The co-rotating frame of the circular restricted three-body problem, with the five computed Lagrange points, effective-potential contours, real spacecraft and Trojan swarms, and probes you can release and integrate"></canvas>
+  </div>
+  <div class="sim-controls" data-controls="lagrange"></div>
+  <div class="sim-readout" data-readout="lagrange" aria-live="polite"></div>
+
+  <div class="citation-box">
+    <span class="cit-label">the papers behind this simulation &mdash; search these in your library:</span>
+    <span class="cit">1767 Euler - De motu rectilineo trium corporum se mutuo attrahentium (On the Rectilinear Motion of Three Bodies Mutually Attracting Each Other)</span>
+    <span class="cit">1772 Lagrange - Essai sur le probl&egrave;me des trois corps (Essay on the Three-Body Problem)</span>
+    <span class="cit">1836 Jacobi - Sur le mouvement d'un point et sur un cas particulier du probl&egrave;me des trois corps (On the Motion of a Point and on a Particular Case of the Three-Body Problem)</span>
+    <span class="cit">1878 Hill - Researches in the Lunar Theory</span>
+    <span class="cit">1890 Poincar&eacute; - Sur le probl&egrave;me des trois corps et les &eacute;quations de la dynamique (On the Three-Body Problem and the Equations of Dynamics)</span>
+    <span class="cit">1906 Wolf - Photographische Aufnahmen von kleinen Planeten (Photographic Exposures of Minor Planets)</span>
+    <span class="cit">1906 Charlier - &Uuml;ber den Planeten 1906 TG (On the Planet 1906 TG)</span>
+  </div>
+
+  <details class="defs">
+    <summary>doodle dictionary &mdash; what do these words mean?</summary>
+    <dl>
+      <dt style="color:var(--yellow)">the co-rotating frame</dt>
+      <dd>The whole picture spins once per orbit, so the two big bodies sit still and only
+        the small stuff moves. It is a merry-go-round: convenient, but you pay for it with
+        two invented forces &mdash; centrifugal and Coriolis &mdash; that are not there in the
+        non-spinning view.</dd>
+      <dt style="color:var(--cyan)">effective potential (&Omega;)</dt>
+      <dd>Gravity from both bodies <em>plus</em> the centrifugal term, added into one
+        landscape. The Lagrange points are exactly the places where this landscape is
+        flat &mdash; where its slope, not gravity, vanishes.</dd>
+      <dt style="color:var(--pink)">Coriolis force</dt>
+      <dd>The sideways shove a rotating frame gives anything that <em>moves</em> in it. It
+        does no work and never appears in the potential landscape &mdash; which is precisely
+        why the landscape alone cannot tell you whether L4 and L5 are stable.</dd>
+      <dt style="color:var(--green)">the Jacobi constant (C)</dt>
+      <dd>The one quantity this problem conserves: C&nbsp;=&nbsp;2&Omega;&nbsp;&minus;&nbsp;v&sup2;.
+        The sim prints it live for your newest probe. If the integration were quietly
+        cheating, that number would drift &mdash; it holds to about one part in 10&sup1;&#8310;.</dd>
+      <dt style="color:var(--orange)">zero-velocity curve</dt>
+      <dd>Where a probe with a given C would be brought to a standstill. It cannot cross;
+        the curve walls off a forbidden region. Lower the energy and these walls pinch shut
+        at L1, then L2, then L3 &mdash; the "gateways" every low-energy mission threads.</dd>
+      <dt style="color:var(--yellow)">halo / Lissajous orbit</dt>
+      <dd>The looping path a real spacecraft flies <em>around</em> a Lagrange point, hundreds
+        of thousands of kilometres wide. Nobody parks on the point itself: at L2 you would sit
+        in Earth's shadow, and at L1 you would broadcast straight through the roaring Sun.</dd>
+      <dt style="color:var(--green)">tadpole libration</dt>
+      <dd>The slow, curled, comma-shaped wander of a Trojan around L4 or L5. Two beating
+        frequencies draw it: a fast one of about one orbit, and a slow one that for
+        Sun&ndash;Earth takes some 221 years.</dd>
+      <dt style="color:var(--red)">e-folding time</dt>
+      <dd>How long an instability takes to grow by a factor of e (about 2.718). Sun&ndash;Earth
+        L2 e-folds in roughly 23 days &mdash; not a deadline, just the rate at which a nudge
+        becomes a problem. Doubling time is 0.693 of it.</dd>
+      <dt style="color:var(--cyan)">restricted three-body problem</dt>
+      <dd>The simplification that makes any of this solvable: the third body is treated as
+        massless (it is pushed, but pushes nothing back), and the two big ones move on exact
+        circles. Real orbits are slightly elliptical, so this is a very good model, not the truth.</dd>
+    </dl>
+  </details>
+
+  <div class="equations">
+    $$ \Omega(x,y) \;=\; \tfrac{1}{2}\left(x^{2}+y^{2}\right) \;+\; \frac{1-\mu}{r_{1}} \;+\; \frac{\mu}{r_{2}} $$
+    $$ \ddot{x} - 2\dot{y} = \frac{\partial\Omega}{\partial x}, \qquad
+       \ddot{y} + 2\dot{x} = \frac{\partial\Omega}{\partial y}, \qquad
+       C = 2\Omega - \left(\dot{x}^{2}+\dot{y}^{2}\right) $$
+    $$ \mu < \frac{9-\sqrt{69}}{18} = 0.0385208965\ldots
+       \qquad\Longleftrightarrow\qquad \frac{m_{1}}{m_{2}} > \frac{25+3\sqrt{69}}{2} = 24.9599\ldots $$
+    <p class="eq-note">Distances in units of the separation, time in units of 1/(orbital angular rate),
+      origin at the barycentre. The &frac12;(x&sup2;+y&sup2;) term <em>is</em> the centrifugal potential;
+      the &minus;2&#7823; and +2&#7819; terms <em>are</em> the Coriolis force. Mass ratios come from JPL DE440
+      (&mu;&nbsp;=&nbsp;3.0404&times;10&#8315;&#8310; for Sun&ndash;Earth+Moon, 0.0121506 for Earth&ndash;Moon,
+      9.5388&times;10&#8315;&#8308; for Sun&ndash;Jupiter, 0.10856 for Pluto&ndash;Charon); the last line is
+      Routh's 1875 stability criterion, evaluated live in the readout.</p>
+  </div>
+
+  <div class="prose">
+    <p>In 1767 Leonhard Euler asked what happens if you line three gravitating bodies up in a
+    row and ask them to stay lined up. He got a fifth-degree equation and three answers &mdash;
+    the points we now call L1, L2 and L3. Five years later Joseph-Louis Lagrange, writing a
+    prize essay for the Paris Academy, found two more, and these were stranger: put the third
+    body at the far corner of an <em>equilateral triangle</em> and it will simply stay there.
+    No approximation, no fitting. The corner is exact, at
+    x&nbsp;=&nbsp;&frac12;&nbsp;&minus;&nbsp;&mu;, y&nbsp;=&nbsp;&plusmn;&radic;3/2, for any
+    two masses whatsoever. All five ended up named after Lagrange, which is a little unfair to Euler.</p>
+
+    <p>Here is the thing everyone gets wrong, so let us be blunt about it: <strong>gravity does not
+    cancel at a Lagrange point</strong>. Open the force budget in the corner of the sim. At
+    Sun&ndash;Earth L1 the Sun still pulls with almost its full strength; Earth tugs back with
+    about 3% of that; and the third bar &mdash; the centrifugal term, the price of drawing the
+    picture on a merry-go-round &mdash; makes up the difference. The three sum to zero. That
+    <em>is</em> the definition. A Lagrange point is not a hole in gravity; it is a place where a
+    body can circle the Sun in exactly one year at a radius where Kepler alone would insist on
+    a shorter one, because a second body is quietly helping.</p>
+
+    <p>Now press "drop a Trojan at L4" and then "seed L2's unstable mode", and watch the
+    difference. The probe at L4 curls into a tadpole and stays; the probe at L2 runs away,
+    e-folding every 23 days or so &mdash; the sim measures that rate off its own trajectory and
+    prints it next to the value the linearised equations predict, and they agree to a fraction
+    of a percent. What makes L4 stable is genuinely counter-intuitive: on the potential landscape L4
+    and L5 are <em>hilltops</em>, not basins. A marble would roll off. What saves it is the
+    Coriolis force, which curls anything that starts sliding into a loop instead &mdash; stability
+    that only exists because the thing is moving. Turn the potential contours on and you can see
+    the hilltop for yourself, and then see it fail to matter. Edward Routh worked out in 1875
+    exactly how far you can push this: the heavy body must outweigh the light one by more than
+    24.96&nbsp;to&nbsp;1. Sun&ndash;Earth clears that by a factor of thirteen thousand.
+    Pluto&ndash;Charon does not clear it at all, which is why that button is there.</p>
+
+    <p>On 22 February 1906, Max Wolf photographed a faint object at Heidelberg that was in no
+    sensible place for an asteroid. Carl Charlier worked out what it was: a body librating
+    about the Sun&ndash;Jupiter triangular point, 60&deg; ahead of Jupiter, exactly where
+    Lagrange's essay said it could sit. It became 588 Achilles, and by convention everything
+    found at L4 was named for a Greek hero and everything at L5 for a Trojan &mdash; a scheme
+    established just late enough to strand two spies behind enemy lines, 624 Hektor among the
+    Greeks and 617 Patroclus among the Trojans. Switch the sim to Sun&ndash;Jupiter and the two
+    camps appear, the leading one visibly the larger: the debiased count runs about
+    1.6&nbsp;to&nbsp;1 in favour of the Greeks, a lopsidedness that is still being argued over.</p>
+
+    <p>Poincar&eacute; is the other ghost in this room. His 1890 memoir on the three-body problem
+    won King Oscar II's prize &mdash; and then Lars Phragm&eacute;n, editing it for
+    <em>Acta Mathematica</em>, found a serious error. Poincar&eacute; recalled the printed run at
+    his own expense, which cost him more than the prize was worth, and rewrote it. In repairing
+    the mistake he found the homoclinic tangle, and with it the first clear sight of what we now
+    call chaos. The problem is not "unsolvable" &mdash; Sundman gave a convergent series in 1912,
+    it just converges uselessly slowly &mdash; but it has no closed-form general solution and it
+    is exquisitely sensitive to where you start. Which is why the last honest thing to say is
+    this: <strong>nothing sits at a Lagrange point</strong>. JWST flies a halo loop that carries
+    it between 250,000 and 832,000 km from L2 and nudges itself back roughly every three weeks,
+    always outward, because its thrusters can never point sunward without cooking the mirror.
+    Gaia orbited L2 for eleven years and was pushed out into a heliocentric graveyard in March
+    2025. These are not parking spaces. They are places where, if you keep paying a very small
+    amount of attention, the universe will mostly leave you alone.</p>
+  </div>
+</section>
+
   <!-- ======================================================================
        Sim 10 — The Big Bang & the expanding universe
        ====================================================================== -->
@@ -858,8 +1310,8 @@
     </details>
 
     <div class="equations">
-      $$ v(r) = \sqrt{\frac{G\,M(<r)}{r}} \qquad
-         M_{\text{halo}}(<r) = 4\pi \rho_0 r_c^2\!\left(r - r_c\arctan\frac{r}{r_c}\right) $$
+      $$ v(r) = \sqrt{\frac{G\,M(&lt;r)}{r}} \qquad
+         M_{\text{halo}}(&lt;r) = 4\pi \rho_0 r_c^2\!\left(r - r_c\arctan\frac{r}{r_c}\right) $$
       <p class="eq-note">Orbital speed depends only on the mass enclosed within the orbit. Adding a pseudo-isothermal dark halo makes M keep growing with r, which flattens v(r) — exactly what's observed.</p>
     </div>
 
@@ -1633,7 +2085,7 @@
     <div class="citation-box">
       <span class="cit-label">the papers behind this simulation — search these in your library:</span>
       <span class="cit">1913 Russell - "Giant" and "Dwarf" Stars</span>
-      <span class="cit">1926 Eddington - The Internal Constitution of the Stars (mass&ndash;luminosity relation)</span>
+      <span class="cit">1926 Eddington - The Internal Constitution of the Stars</span>
     </div>
 
     <details class="defs">
@@ -2182,30 +2634,46 @@
       so you can find them in a reference manager or archive. This list grows with every
       new section of the page.</p>
     <ul class="library-list">
+      <li><span class="yr">1602</span>Brahe - Astronomiae Instauratae Progymnasmata (Introductory Exercises Toward the Restoration of Astronomy)</li>
+      <li><span class="yr">1609</span>Kepler - Astronomia Nova Aitiologetos, seu Physica Coelestis, tradita commentariis de motibus stellae Martis, ex observationibus G. V. Tychonis Brahe (New Astronomy, Based upon Causes, or Celestial Physics, Treated by Means of Commentaries on the Motions of the Star Mars, from the Observations of Tycho Brahe)</li>
+      <li><span class="yr">1619</span>Kepler - Harmonices Mundi Libri V (The Five Books of the Harmony of the World)</li>
+      <li><span class="yr">1687</span>Newton - Philosophiae Naturalis Principia Mathematica (Mathematical Principles of Natural Philosophy)</li>
+      <li><span class="yr">1705</span>Halley - Astronomiae Cometicae Synopsis (A Synopsis of the Astronomy of Comets)</li>
+      <li><span class="yr">1728</span>Newton - De mundi systemate (A Treatise of the System of the World)</li>
+      <li><span class="yr">1767</span>Euler - De motu rectilineo trium corporum se mutuo attrahentium (On the Rectilinear Motion of Three Bodies Mutually Attracting Each Other)</li>
+      <li><span class="yr">1772</span>Lagrange - Essai sur le probl&egrave;me des trois corps (Essay on the Three-Body Problem)</li>
       <li><span class="yr">1814</span>Fraunhofer - Bestimmung des Brechungs- und Farbenzerstreuungs-Verm&ouml;gens verschiedener Glasarten</li>
       <li><span class="yr">1814</span>Laplace - Essai philosophique sur les probabilit&eacute;s (A Philosophical Essay on Probabilities)</li>
+      <li><span class="yr">1836</span>Jacobi - Sur le mouvement d'un point et sur un cas particulier du probl&egrave;me des trois corps (On the Motion of a Point and on a Particular Case of the Three-Body Problem)</li>
       <li><span class="yr">1842</span>Doppler - &Uuml;ber das farbige Licht der Doppelsterne und einiger anderer Gestirne des Himmels (On the Coloured Light of the Binary Stars)</li>
       <li><span class="yr">1859</span>Le Verrier - Lettre de M. Le Verrier &agrave; M. Faye sur la th&eacute;orie de Mercure et sur le mouvement du p&eacute;rih&eacute;lie de cette plan&egrave;te (Letter on the Theory of Mercury and the Motion of its Perihelion)</li>
       <li><span class="yr">1865</span>Maxwell - A Dynamical Theory of the Electromagnetic Field</li>
+      <li><span class="yr">1878</span>Hill - Researches in the Lunar Theory</li>
       <li><span class="yr">1888</span>Hertz - &Uuml;ber Strahlen elektrischer Kraft (On Electric Radiation)</li>
+      <li><span class="yr">1890</span>Poincar&eacute; - Sur le probl&egrave;me des trois corps et les &eacute;quations de la dynamique (On the Three-Body Problem and the Equations of Dynamics)</li>
       <li><span class="yr">1893</span>Wien - Eine neue Beziehung der Strahlung schwarzer K&ouml;rper zum zweiten Hauptsatz der W&auml;rmetheorie</li>
       <li><span class="yr">1900</span>Planck - Zur Theorie des Gesetzes der Energieverteilung im Normalspektrum (On the Theory of the Energy Distribution Law of the Normal Spectrum)</li>
+      <li><span class="yr">1903</span>Tsiolkovsky - &#1048;&#1089;&#1089;&#1083;&#1077;&#1076;&#1086;&#1074;&#1072;&#1085;&#1080;&#1077; &#1084;&#1080;&#1088;&#1086;&#1074;&#1099;&#1093; &#1087;&#1088;&#1086;&#1089;&#1090;&#1088;&#1072;&#1085;&#1089;&#1090;&#1074; &#1088;&#1077;&#1072;&#1082;&#1090;&#1080;&#1074;&#1085;&#1099;&#1084;&#1080; &#1087;&#1088;&#1080;&#1073;&#1086;&#1088;&#1072;&#1084;&#1080; (Exploration of Cosmic Space by Means of Reaction Devices)</li>
       <li><span class="yr">1905</span>Einstein - Zur Elektrodynamik bewegter K&ouml;rper (On the Electrodynamics of Moving Bodies)</li>
       <li><span class="yr">1905</span>Einstein - Ist die Tr&auml;gheit eines K&ouml;rpers von seinem Energieinhalt abh&auml;ngig? (Does the Inertia of a Body Depend Upon Its Energy Content?)</li>
+      <li><span class="yr">1906</span>Wolf - Photographische Aufnahmen von kleinen Planeten (Photographic Exposures of Minor Planets)</li>
+      <li><span class="yr">1906</span>Charlier - &Uuml;ber den Planeten 1906 TG (On the Planet 1906 TG)</li>
       <li><span class="yr">1913</span>Bohr - On the Constitution of Atoms and Molecules</li>
       <li><span class="yr">1913</span>Russell - "Giant" and "Dwarf" Stars</li>
       <li><span class="yr">1915</span>Einstein - Erkl&auml;rung der Perihelbewegung des Merkur aus der allgemeinen Relativit&auml;tstheorie (Explanation of the Perihelion Motion of Mercury from the General Theory of Relativity)</li>
       <li><span class="yr">1916</span>Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</li>
+      <li><span class="yr">1919</span>Goddard - A Method of Reaching Extreme Altitudes</li>
       <li><span class="yr">1920</span>Dyson, Eddington, Davidson - A Determination of the Deflection of Light by the Sun's Gravitational Field, from Observations Made at the Total Eclipse of May 29, 1919</li>
       <li><span class="yr">1920</span>Eddington - The Internal Constitution of the Stars</li>
       <li><span class="yr">1922</span>Friedmann - &Uuml;ber die Kr&uuml;mmung des Raumes (On the Curvature of Space)</li>
       <li><span class="yr">1925</span>Payne - Stellar Atmospheres: A Contribution to the Observational Study of High Temperature in the Reversing Layers of Stars</li>
+      <li><span class="yr">1926</span>Eddington - The Internal Constitution of the Stars</li>
       <li><span class="yr">1927</span>Lema&icirc;tre - Un Univers homog&egrave;ne de masse constante et de rayon croissant rendant compte de la vitesse radiale des n&eacute;buleuses extra-galactiques</li>
       <li><span class="yr">1929</span>Hubble - A Relation between Distance and Radial Velocity among Extra-Galactic Nebulae</li>
       <li><span class="yr">1931</span>Chandrasekhar - The Maximum Mass of Ideal White Dwarfs</li>
+      <li><span class="yr">1932</span>Cockcroft, Walton - Experiments with High Velocity Positive Ions. II. The Disintegration of Elements by High Velocity Protons</li>
       <li><span class="yr">1933</span>Zwicky - Die Rotverschiebung von extragalaktischen Nebeln (The Redshift of Extragalactic Nebulae)</li>
       <li><span class="yr">1934</span>Baade, Zwicky - On Super-Novae</li>
-      <li><span class="yr">1932</span>Cockcroft, Walton - Experiments with High Velocity Positive Ions. II. The Disintegration of Elements by High Velocity Protons</li>
       <li><span class="yr">1935</span>Einstein, Rosen - The Particle Problem in the General Theory of Relativity</li>
       <li><span class="yr">1935</span>Schr&ouml;dinger - Die gegenw&auml;rtige Situation in der Quantenmechanik (The Present Situation in Quantum Mechanics)</li>
       <li><span class="yr">1936</span>Einstein - Lens-Like Action of a Star by the Deviation of Light in the Gravitational Field</li>
