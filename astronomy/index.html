@@ -46,6 +46,7 @@
   <script defer src="js/sims/lagrange.js"></script>
   <script defer src="js/sims/big-bang.js"></script>
   <script defer src="js/sims/dark-matter.js"></script>
+  <script defer src="js/sims/dark-matter-here.js"></script>
   <script defer src="js/sims/dark-energy.js"></script>
   <script defer src="js/sims/wormhole.js"></script>
   <script defer src="js/sims/hawking.js"></script>
@@ -148,6 +149,7 @@
       <ul class="toc-items">
         <li><a href="#big-bang"><span class="n" style="color:var(--orange)">10</span>The Big Bang &amp; the expanding universe</a></li>
         <li><a href="#dark-matter"><span class="n" style="color:var(--cyan)">11</span>Dark matter</a></li>
+        <li><a href="#dark-matter-here"><span class="n" style="color:var(--pink)">45</span>Is dark matter in this room?</a></li>
         <li><a href="#dark-energy"><span class="n" style="color:var(--pink)">12</span>Dark energy</a></li>
       </ul>
     </div>
@@ -1456,6 +1458,134 @@
   </section>
 
   <!-- ======================================================================
+       Sim 45 — Is dark matter HERE?
+       ====================================================================== -->
+  <section class="sim-section" id="dark-matter-here" style="--accent: var(--pink)">
+    <h2><span class="secnum">45.</span>Is dark matter in this room?</h2>
+    <p class="kicker">Yes &mdash; and you can work out exactly how much. Pick a volume, from a coffee
+      cup to the solar system, and multiply by the measured local density. The answer for the whole
+      Earth is the surprise.</p>
+
+    <p class="evidence ev-partial"><span class="ev-dot"></span><strong>measured effect, unknown identity</strong> &mdash;
+      the local density is measured from how stars bob up and down through the galactic disc (Oort's
+      1932 method) and from the rotation curve; it is about 0.4&nbsp;GeV/cm&sup3; with a real spread of
+      roughly 0.3&ndash;0.6, which is why it is a slider here and not a constant. What the particles
+      <em>are</em> is unknown: LZ, XENONnT and their predecessors have looked for decades and found nothing.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="dmHere" aria-label="A garden scene with dark matter streaming through it, a flux panel, and a comparison of how ordinary and dark matter collapse"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="dmHere"></div>
+    <div class="sim-readout" data-readout="dmHere" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1932 Oort - The force exerted by the stellar system in the direction perpendicular to the galactic plane and some related problems</span>
+      <span class="cit">1933 Zwicky - Die Rotverschiebung von extragalaktischen Nebeln (The Redshift of Extragalactic Nebulae)</span>
+      <span class="cit">1970 Rubin, Ford - Rotation of the Andromeda Nebula from a Spectroscopic Survey of Emission Regions</span>
+      <span class="cit">1978 White, Rees - Core condensation in heavy halos: a two-stage theory for galaxy formation and clustering</span>
+      <span class="cit">2023 LZ Collaboration - First Dark Matter Search Results from the LUX-ZEPLIN (LZ) Experiment</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">local dark-matter density</dt>
+        <dd>How much dark matter there is per unit volume where <em>we</em> are, about
+          0.4&nbsp;GeV/cm&sup3; &mdash; roughly 7&times;10&#8315;&sup2;&sup2;&nbsp;kg in every cubic
+          metre. Measured, not assumed: stars oscillate through the galactic disc, and how fast they
+          are pulled back tells you the total mass around them, including the part that does not shine.</dd>
+        <dt style="color:var(--yellow)">GeV/cm&sup3;</dt>
+        <dd>Particle physicists measure mass in energy units via E = mc&sup2;. One GeV/c&sup2; is
+          1.78&times;10&#8315;&sup2;&#8311;&nbsp;kg &mdash; about the mass of a hydrogen atom. So
+          "0.4 GeV per cubic centimetre" means roughly one hydrogen atom's worth of dark matter in
+          every 2.5 cubic centimetres.</dd>
+        <dt style="color:var(--pink)">halo</dt>
+        <dd>The vast, roughly spherical cloud of dark matter a galaxy sits inside. The Milky Way's
+          reaches far beyond its visible edge and holds most of its mass. Crucially it is a
+          <em>sphere</em>, not a disc &mdash; and this sim shows why.</dd>
+        <dt style="color:var(--green)">radiative cooling</dt>
+        <dd>The trick ordinary matter has and dark matter does not: gas collides with itself, heats up,
+          glows, and the escaping light carries energy away. Losing energy is what lets matter fall
+          inward and stay there. It is the reason planets, stars and gardens can exist at all.</dd>
+        <dt style="color:var(--orange)">flux</dt>
+        <dd>How many particles cross a given area each second: density &times; speed. The dark-matter
+          flux through your body is enormous &mdash; and completely harmless, because the particles
+          almost never interact with anything.</dd>
+        <dt style="color:var(--ink)">WIMP</dt>
+        <dd>Weakly Interacting Massive Particle &mdash; the leading (but unconfirmed) guess for what
+          dark matter is made of. "Weakly interacting" is the operative part: it is why the stuff is
+          streaming through you right now and you cannot feel it.</dd>
+        <dt style="color:var(--red)">cross-section</dt>
+        <dd>The effective target size a particle presents &mdash; how likely it is to hit something.
+          LZ's 2023 result says the dark-matter cross-section must be below
+          9.2&times;10&#8315;&#8308;&#8312;&nbsp;cm&sup2;, which is about a hundred billion billion
+          times smaller than an atomic nucleus.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ M_{\text{DM}} = \rho_{\text{local}} \cdot V \qquad
+         \rho_{\text{local}} \approx 0.4\ \frac{\text{GeV}}{\text{cm}^3} = 7.13\times10^{-22}\ \frac{\text{kg}}{\text{m}^3} \qquad
+         \Phi = n v = \frac{\rho}{m_\chi} v $$
+      <p class="eq-note">1 GeV/c&sup2; = 1.78266&times;10&#8315;&sup2;&#8311; kg. Halo speed v &asymp; 230 km/s. Earth's volume is 1.083&times;10&sup2;&sup1; m&sup3; &mdash; multiply and the whole planet contains about 0.77 kg of dark matter.</p>
+    </div>
+
+    <div class="prose">
+      <p>Section 11 showed you dark matter from the outside, as a rotation curve that refuses to fall
+      off. The obvious next question is the one nobody asks out loud: <strong>is any of it here?</strong>
+      In my garden, in this room, in me? The answer is yes, and it is calculable, and the number is
+      strange enough to be worth doing carefully.</p>
+
+      <p>Start with what is actually measured. Stars near the Sun bob up and down through the plane of
+      the galaxy like horses on a carousel, and how sharply they are pulled back tells you the total
+      mass around them &mdash; shining or not. Jan Oort worked this out in 1932, before anyone had a
+      name for the missing part. The modern answer is about <strong>0.4 GeV per cubic
+      centimetre</strong>, which is 7&times;10&#8315;&sup2;&sup2; kilograms in every cubic metre. It is
+      genuinely uncertain by a factor of about two, so the sim gives you the slider rather than
+      pretending otherwise.</p>
+
+      <p>Now just multiply. A cup of coffee contains about eleven carbon atoms' worth of dark matter.
+      You contain 5&times;10&#8315;&sup2;&sup3; kg of it. And the entire Earth &mdash; the whole planet,
+      core to atmosphere, 5.97&times;10&sup2;&#8308; kilograms of rock and iron &mdash; contains
+      <strong>about three quarters of a kilogram</strong> of dark matter. All of it. Less than a litre
+      of water. Meanwhile, in the galaxy as a whole, dark matter outweighs everything visible five to
+      one. The same substance is overwhelming out there and irrelevant down here, and that is not a
+      contradiction &mdash; it is the most important clue we have about it.</p>
+
+      <p>Switch to the second panel and it gets stranger. Divide that density by a guessed particle
+      mass and you get the traffic: if each particle weighs 100 GeV, roughly <strong>six hundred
+      million of them pass through your body every second</strong>, blowing through at 230 km/s as the
+      solar system ploughs through the halo. Through the chair, the floor, the planet, out the other
+      side. Drag the mass slider and watch the count swing by orders of magnitude &mdash; because the
+      density is measured but the particle mass is not, so the traffic is only as certain as the guess.
+      How many of those billions actually touch an atom in you? On current limits, not one in your
+      entire life. That is what LZ is testing: seven tonnes of liquid xenon, a kilometre and a half
+      underground to hide from cosmic rays, waiting years for a single flash. It has not seen one.</p>
+
+      <p>Which leaves the real question, the third panel: if there is five times more dark matter than
+      ordinary matter, <strong>why is there so little of it here?</strong> The answer is one word:
+      <em>glow</em>. Ordinary gas collides with itself, heats up, and radiates light &mdash; and the
+      escaping photons carry energy away. Something that can lose energy cannot stay in a wide orbit;
+      it sinks. And because collisions cancel out sideways motion, it flattens as it sinks. That is why
+      galaxies have discs, why discs have stars, why stars have planets, and why the planet has a
+      garden with beans on poles.</p>
+
+      <p>Dark matter cannot do any of this. No charge, no light, essentially no collisions &mdash;
+      no way to shed a single joule. So it keeps the energy it was born with and stays exactly as puffy
+      as it started: a vast round halo, three-dimensional and diffuse, which the flat little disc of
+      ordinary matter sits inside like a coin in a balloon. Run both clouds in the sim from identical
+      starting conditions; the only difference in the code is whether the particles can radiate, and
+      the two shapes separate on their own.</p>
+
+      <p>So dark matter <em>is</em> on Earth &mdash; about a bottle of water's worth, streaming through
+      constantly, replaced every instant, never accumulating. It cannot build anything, cannot settle,
+      cannot be mined. It is scaffolding, not substance: the invisible framework that let the visible
+      universe collapse into something interesting.</p>
+    </div>
+  </section>
+
+<!-- ======================================================================
        Sim 12 — Dark energy
        ====================================================================== -->
   <section class="sim-section" id="dark-energy" style="--accent: var(--pink)">
@@ -2795,6 +2925,7 @@
       <li><span class="yr">1929</span>Hubble - A Relation between Distance and Radial Velocity among Extra-Galactic Nebulae</li>
       <li><span class="yr">1931</span>Chandrasekhar - The Maximum Mass of Ideal White Dwarfs</li>
       <li><span class="yr">1932</span>Cockcroft, Walton - Experiments with High Velocity Positive Ions. II. The Disintegration of Elements by High Velocity Protons</li>
+      <li><span class="yr">1932</span>Oort - The force exerted by the stellar system in the direction perpendicular to the galactic plane and some related problems</li>
       <li><span class="yr">1933</span>Zwicky - Die Rotverschiebung von extragalaktischen Nebeln (The Redshift of Extragalactic Nebulae)</li>
       <li><span class="yr">1934</span>Baade, Zwicky - On Super-Novae</li>
       <li><span class="yr">1935</span>Einstein, Rosen - The Particle Problem in the General Theory of Relativity</li>
@@ -2821,6 +2952,7 @@
       <li><span class="yr">1974</span>Hawking - Black Hole Explosions?</li>
       <li><span class="yr">1975</span>Hawking - Particle Creation by Black Holes</li>
       <li><span class="yr">1975</span>Hulse, Taylor - Discovery of a Pulsar in a Binary System</li>
+      <li><span class="yr">1978</span>White, Rees - Core condensation in heavy halos: a two-stage theory for galaxy formation and clustering</li>
       <li><span class="yr">1982</span>Wootters, Zurek - A Single Quantum Cannot Be Cloned</li>
       <li><span class="yr">1988</span>Morris, Thorne - Wormholes in Spacetime and Their Use for Interstellar Travel: A Tool for Teaching General Relativity</li>
       <li><span class="yr">1990</span>Friedman, Morris, Novikov, Echeverria, Klinkhammer, Thorne, Yurtsever - Cauchy Problem in Spacetimes with Closed Timelike Curves</li>
@@ -2835,6 +2967,7 @@
       <li><span class="yr">2016</span>Abbott et al. (LIGO Scientific Collaboration and Virgo Collaboration) - Observation of Gravitational Waves from a Binary Black Hole Merger</li>
       <li><span class="yr">2017</span>Abbott et al. - GW170817: Observation of Gravitational Waves from a Binary Neutron Star Inspiral</li>
       <li><span class="yr">2019</span>Event Horizon Telescope Collaboration - First M87 Event Horizon Telescope Results. I. The Shadow of the Supermassive Black Hole</li>
+      <li><span class="yr">2023</span>LZ Collaboration - First Dark Matter Search Results from the LUX-ZEPLIN (LZ) Experiment</li>
     </ul>
   </section>
 
