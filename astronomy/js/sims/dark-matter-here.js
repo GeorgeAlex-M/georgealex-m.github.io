@@ -275,6 +275,12 @@
             ? 'Yes: about one particle. The pink dots on the canvas mark that a halo is present; they are NOT a particle count, and at this scale a truthful count would be almost nothing.'
             : 'The pink dots mark the halo\'s presence — they are not a particle count.', null],
         ],
+        [
+          ['SO IS SPACE FULL OF IT? Yes — and that is the same fact, not a different one. ', 'yellow'],
+          ['At this density you need a sphere ', null],
+          [`${fmtNum(2 * Math.cbrt((3 * (M_EARTH / this.rho)) / (4 * Math.PI)) / 9.4607304726e15, 2)} light-years across`, 'cyan'],
+          [' to gather one Earth-mass of dark matter. Nothing about the dark matter is scarce; a planet is just an absurdly small, absurdly dense speck of the other kind of matter. Widen the box and dark matter wins — across a whole galaxy it outweighs everything visible about five to one.', null],
+        ],
         t.key === 'earth' ? [
           ['Read that again: every gram of dark matter inside the entire planet adds up to ', null],
           [`${fmtNum(n.dm, 2)} kg`, 'pink'],

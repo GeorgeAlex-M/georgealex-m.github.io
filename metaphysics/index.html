@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Doodle Metaphysics — the questions under the physics, with an honest label on
+    which ones evidence can actually reach.
+    Classic scripts sharing window.Astro (shared engine in ../doodle/), so it
+    works opened directly from disk (file://) as well as on GitHub Pages.
+  -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doodle Metaphysics — what is actually there</title>
+  <meta name="description" content="Interactive doodle simulations of the classic questions of metaphysics — time, identity, causation, free will — with an honest badge on each saying whether measured physics constrains it, whether it is pure argument, or whether the dispute is merely verbal.">
+  <link rel="icon" type="image/x-icon" href="../images/fav-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="../doodle/doodle.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="../doodle/engine/palette.js"></script>
+  <script defer src="../doodle/engine/constants.js"></script>
+  <script defer src="../doodle/engine/canvas.js"></script>
+  <script defer src="../doodle/engine/rough-helpers.js"></script>
+  <script defer src="../doodle/engine/sketch.js"></script>
+  <script defer src="../doodle/engine/controls.js"></script>
+  <script defer src="../doodle/engine/integrators.js"></script>
+  <script defer src="../doodle/engine/sim.js"></script>
+  <script defer src="sims/block-universe.js"></script>
+  <script defer src="main.js"></script>
+</head>
+<body>
+<main>
+
+  <header class="site-header">
+    <img class="logo" src="../images/logo.png" alt="Unreal Software logo">
+    <a class="site-name" href="../index.html">&larr; unrealsoftware — home</a>
+  </header>
+
+  <div class="hero">
+    <h1>Doodle Metaphysics</h1>
+    <p class="tagline">The questions that sit underneath the physics: what exists, what
+      makes a thing that thing, what a cause is, whether the future is already there.
+      Every section carries an honest label saying whether measured evidence reaches the
+      question at all &mdash; because for most of them, it does not.</p>
+  </div>
+
+  <blockquote class="quote-box">
+    &ldquo;The world is the totality of facts, not of things.&rdquo;
+    <span class="attrib">* Ludwig Wittgenstein</span>
+  </blockquote>
+
+  <!-- ======================================================================
+       How to read the badges — this page needs its own scheme
+       ====================================================================== -->
+  <section class="sim-section" id="how-to-read" style="--accent: var(--yellow)">
+    <h2><span class="secnum">&#9733;</span>How to read this page</h2>
+    <p class="kicker">The rest of this site labels claims by how well they are measured. Metaphysics
+      needs a different scale, because most of its questions cannot be measured even in principle
+      &mdash; and pretending otherwise would be the exact failure this page exists to avoid.</p>
+
+    <div class="prose">
+      <p>Four labels are used here, and the difference between them matters more than any individual
+      argument:</p>
+      <p class="evidence ev-measured"><span class="ev-dot"></span><strong>constrained by measured physics</strong> &mdash;
+        experiment genuinely bears on the question. You cannot hold just any position; some are ruled out
+        by data. Rare, and the most interesting case.</p>
+      <p class="evidence ev-theory"><span class="ev-dot"></span><strong>conceptual analysis</strong> &mdash;
+        argument alone. No experiment could settle it, even with unlimited budget, because the
+        disagreement is not about what happens but about what the words pick out.</p>
+      <p class="evidence ev-partial"><span class="ev-dot"></span><strong>live disagreement</strong> &mdash;
+        competent, informed people hold opposing views today, and their reasons are stateable. Not the
+        same as "anyone's guess".</p>
+      <p class="evidence ev-speculative"><span class="ev-dot"></span><strong>verbal dispute</strong> &mdash;
+        the argument dissolves once the terms are pinned down. Both sides were right about the facts and
+        disagreeing about a definition. Philosophy's most useful and least celebrated result.</p>
+      <p>A section can start in one category and end in another &mdash; and when a piece of physics does
+      real work, it will be marked exactly where the physics stops and the interpretation begins. That
+      line is the whole point.</p>
+    </div>
+  </section>
+
+  <nav class="doodle-toc" aria-label="Table of contents">
+    <h2>Map of the questions (this page)</h2>
+
+    <div class="toc-chapter">
+      <h3>Chapter I &mdash; Time</h3>
+      <ul class="toc-items">
+        <li><a href="#block-universe"><span class="n" style="color:var(--cyan)">1</span>Is the future already there?</a></li>
+        <li><span class="soon">McTaggart's A-series and B-series</span></li>
+        <li><span class="soon">Why time seems to flow one way</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter II &mdash; Identity &amp; Change</h3>
+      <ul class="toc-items">
+        <li><span class="soon">The Ship of Theseus, one plank at a time</span></li>
+        <li><span class="soon">Are you the same person you were?</span></li>
+        <li><span class="soon">Parfit's teleporter</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter III &mdash; Causation</h3>
+      <ul class="toc-items">
+        <li><span class="soon">Point at the causation &mdash; Hume's challenge</span></li>
+        <li><span class="soon">Counterfactuals: what would have happened</span></li>
+        <li><span class="soon">Light cones: where physics makes cause exact</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter IV &mdash; What Is There?</h3>
+      <ul class="toc-items">
+        <li><span class="soon">Strip an object of its properties</span></li>
+        <li><span class="soon">Universals and particulars</span></li>
+        <li><span class="soon">On what there is &mdash; Quine's criterion</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter V &mdash; Freedom</h3>
+      <ul class="toc-items">
+        <li><span class="soon">Determinism, compatibilism, and the Libet experiments</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>Chapter VI &mdash; Mind &amp; Matter</h3>
+      <ul class="toc-items">
+        <li><span class="soon">The hard problem, Mary's Room, and zombies</span></li>
+      </ul>
+    </div>
+
+    <div class="toc-chapter">
+      <h3>&mdash;</h3>
+      <ul class="toc-items">
+        <li><a href="#library"><span class="n" style="color:var(--orange)">&#9733;</span>The Library &mdash; every source cited here</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       Sim 1 — Is the future already there?
+       ====================================================================== -->
+  <section class="sim-section" id="block-universe" style="--accent: var(--cyan)">
+    <h2><span class="secnum">1.</span>Is the future already there?</h2>
+    <p class="kicker">Two people pass on a pavement. One is walking. Their "now", carried out to
+      Andromeda, differs by three days. That is measured physics &mdash; and then the argument starts.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>constrained by measured physics</strong> &mdash;
+      the relativity of simultaneity is not an interpretation. It follows from the measured constancy of
+      the speed of light, and it is confirmed daily by particle accelerators and GPS. What it <em>implies</em>
+      about whether the future exists is a separate question, and this section marks precisely where the
+      physics stops and the philosophy begins.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="blockUniverse" aria-label="A Minkowski diagram with two observers' planes of simultaneity tilting, and a street scene showing the Andromeda paradox"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="blockUniverse"></div>
+    <div class="sim-readout" data-readout="blockUniverse" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the sources behind this section — search these in your library:</span>
+      <span class="cit">1905 Einstein - Zur Elektrodynamik bewegter K&ouml;rper (On the Electrodynamics of Moving Bodies)</span>
+      <span class="cit">1908 McTaggart - The Unreality of Time</span>
+      <span class="cit">1909 Minkowski - Raum und Zeit (Space and Time)</span>
+      <span class="cit">1966 Rietdijk - A Rigorous Proof of Determinism Derived from the Special Theory of Relativity</span>
+      <span class="cit">1967 Putnam - Time and Physical Geometry</span>
+      <span class="cit">1968 Stein - On Einstein-Minkowski Space-Time</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">simultaneity</dt>
+        <dd>Which distant events count as happening "at the same time as" this one. It feels like a fact
+          about the universe. It is not: it depends on how fast you are moving, and there is no way to
+          settle it that all observers would accept.</dd>
+        <dt style="color:var(--pink)">plane of "now"</dt>
+        <dd>The set of all events an observer calls simultaneous with themselves. Draw it on a spacetime
+          diagram and it is a line (a plane, in full 3D). Change your speed and the line tilts &mdash;
+          sweeping over events that were, a moment ago, in your future.</dd>
+        <dt style="color:var(--yellow)">light cone</dt>
+        <dd>The boundary of everything you could possibly influence or be influenced by, drawn at 45&deg;
+          on these diagrams. Inside it, cause and effect; outside it, no signal can pass. The cone is the
+          same for every observer &mdash; that is what keeps physics sane.</dd>
+        <dt style="color:var(--green)">timelike vs spacelike</dt>
+        <dd>Two events are <em>timelike</em> separated if a signal could travel between them &mdash; then
+          every observer agrees which came first. They are <em>spacelike</em> separated if no signal
+          could &mdash; and then observers disagree about the order, with no fact of the matter. The sim
+          tests every pair and tells you which it is.</dd>
+        <dt style="color:var(--orange)">block universe (eternalism)</dt>
+        <dd>The view that past, present and future are all equally real &mdash; that spacetime is a fixed
+          four-dimensional block and "now" is just where you happen to be in it, like "here". The rival
+          view, presentism, says only the present moment exists.</dd>
+        <dt style="color:var(--ink)">A-series and B-series</dt>
+        <dd>McTaggart's distinction. The A-series describes events as past, present or future &mdash;
+          which changes as time passes. The B-series describes them only as earlier-than or later-than
+          &mdash; which never changes. Relativity is comfortable with the B-series and awkward with the A.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ t' = \gamma\left(t - \frac{vx}{c^2}\right) \qquad
+         \gamma = \frac{1}{\sqrt{1 - v^2/c^2}} \qquad
+         \Delta t = \frac{\gamma v x}{c^2} $$
+      <p class="eq-note">The last expression is the whole trick: a tiny v multiplied by an enormous x gives a large &Delta;t. Walking pace (1 m/s) and the distance to Andromeda (2.4&times;10&sup2;&sup2; m) give 2.67&times;10&#8309; s &mdash; about three days.</p>
+    </div>
+
+    <div class="prose">
+      <p>Start with something that is not in dispute. The speed of light is the same for every observer,
+      however fast they are moving &mdash; measured, repeatedly, since 1887. Einstein took that fact
+      seriously and Minkowski drew the consequence: space and time are one four-dimensional structure,
+      and different observers slice it differently.</p>
+
+      <p>The first panel is that slicing. Your "now" is the flat cyan line. Someone moving relative to
+      you has a tilted pink one. Drag the speed and watch it scissor. Events that you say happen at the
+      same moment, they say happen at different moments &mdash; and if you push far enough, the pink and
+      orange events actually <strong>swap order</strong>. One observer says the flare came first; the
+      other says the rock cracked first. Neither is making a mistake.</p>
+
+      <p>Before that sounds like anything goes, notice the guardrail the sim enforces. The two events A
+      and B &mdash; the cup leaving your hand and the cup hitting the floor &mdash; never swap, at any
+      speed, for anybody. They are <em>timelike</em> separated: a signal could travel from one to the
+      other, so one could have caused the other. Relativity permits observers to disagree about
+      simultaneity. It absolutely forbids them to disagree about cause and effect. Turn on the light cone
+      and you can see the boundary between the two regimes.</p>
+
+      <p>Now the second panel, which is where the size of the effect stops being abstract. Two people
+      pass each other on a pavement; one is walking at a metre per second. That is one part in three
+      hundred million of the speed of light &mdash; utterly negligible. But &Delta;t = &gamma;vx/c&sup2;
+      multiplies that negligible fraction by the distance to the Andromeda galaxy, and out comes
+      <strong>about three days</strong>. Events in the walker's "now" over there are three days in the
+      stander's past or future. Get in a car and it is nearly three months. This is Roger Penrose's
+      version of the point, and the arithmetic is not controversial.</p>
+
+      <p><strong>Here is where the physics ends.</strong> Everything above is measured or follows from
+      measurement. What comes next is argument, and it is labelled as argument.</p>
+
+      <p>Rietdijk (1966) and Putnam (1967) reasoned like this: whatever is on my plane of "now" is real.
+      Whatever is on yours is real. We disagree about which events those are. Therefore all of them must
+      be real &mdash; including events that are, for me, still in the future. The future exists already;
+      we simply have not got there. That is the <strong>block universe</strong>, and physicists tend to
+      find it congenial because relativity treats time so much like space.</p>
+
+      <p>Howard Stein replied in 1968, and his objection is the reason this section is not simply titled
+      "physics proves the block universe". The argument assumes that "is real for me" applies to a whole
+      plane of simultaneity. But relativity never licenses that. What it gives you is a <em>point</em>
+      and its past light cone &mdash; the events that could have sent you a signal. Define "real for me"
+      that way instead, as Stein showed you consistently can, and the argument produces nothing. The
+      relativity is untouched; the metaphysical conclusion evaporates.</p>
+
+      <p>So the honest position, and the one this page will keep taking: <strong>the tilting is real, the
+      three days are real, and what they mean is not settled.</strong> Anyone who tells you relativity
+      has proved that the future already exists is skipping the 1968 paper. Anyone who tells you
+      relativity is irrelevant to the question is skipping the diagram. The interesting work is in
+      between, and it is still going on.</p>
+
+      <p class="cross-link">Elsewhere on this site: the astronomy page builds the physics this section
+      leans on &mdash; <a href="../astronomy/index.html#bending-time">time dilation</a>,
+      <a href="../astronomy/index.html#everyday-time">the everyday version of it</a>, and
+      <a href="../astronomy/index.html#laplace">Laplace's demon</a>, which asks the determinism question
+      from the other end.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Library
+       ====================================================================== -->
+  <section class="sim-section" id="library" style="--accent: var(--orange)">
+    <h2><span class="secnum">&#9733;</span>The Library &mdash; every source cited here</h2>
+    <p class="kicker">In the exact <em>YEAR Author - Title</em> form, so you can find them in a reference
+      manager or archive. This list grows with every new section.</p>
+    <ul class="library-list">
+      <li><span class="yr">1905</span>Einstein - Zur Elektrodynamik bewegter K&ouml;rper (On the Electrodynamics of Moving Bodies)</li>
+      <li><span class="yr">1908</span>McTaggart - The Unreality of Time</li>
+      <li><span class="yr">1909</span>Minkowski - Raum und Zeit (Space and Time)</li>
+      <li><span class="yr">1966</span>Rietdijk - A Rigorous Proof of Determinism Derived from the Special Theory of Relativity</li>
+      <li><span class="yr">1967</span>Putnam - Time and Physical Geometry</li>
+      <li><span class="yr">1968</span>Stein - On Einstein-Minkowski Space-Time</li>
+    </ul>
+  </section>
+
+  <footer class="site-footer">
+    <p>Drawn and argued by hand(ish). Found a mistake &mdash; in the physics or in the philosophy?
+      Good. Tell me.</p>
+    <a class="patreon" href="https://www.patreon.com/GeoQuasar" target="_blank" rel="noopener">
+      <img src="../images/patreon.png" alt="Support on Patreon">
+    </a>
+  </footer>
+
+</main>
+
+<button class="backtop" id="backtop" aria-label="Back to top" title="Back to top">&uarr;</button>
+
+</body>
+</html>
