@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Doodle Honesty — what the evidence actually says about telling whether
+    someone is being straight with you. Mostly deflationary, on purpose.
+    Classic scripts sharing window.Astro (shared engine in ../doodle/).
+  -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doodle Honesty — can you tell if someone is lying?</title>
+  <meta name="description" content="Interactive, evidence-labelled doodles on detecting deception: why demeanour is not evidence, why even a good detector mostly accuses innocent people, and the few methods that actually work.">
+  <link rel="icon" type="image/x-icon" href="../images/fav-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="../doodle/doodle.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="../doodle/engine/palette.js"></script>
+  <script defer src="../doodle/engine/constants.js"></script>
+  <script defer src="../doodle/engine/canvas.js"></script>
+  <script defer src="../doodle/engine/rough-helpers.js"></script>
+  <script defer src="../doodle/engine/sketch.js"></script>
+  <script defer src="../doodle/engine/controls.js"></script>
+  <script defer src="../doodle/engine/integrators.js"></script>
+  <script defer src="../doodle/engine/sim.js"></script>
+  <script defer src="sims/detecting.js"></script>
+  <script defer src="main.js"></script>
+</head>
+<body>
+<main>
+
+  <header class="site-header">
+    <img class="logo" src="../images/logo.png" alt="Unreal Software logo">
+    <a class="site-name" href="../index.html">&larr; unrealsoftware — home</a>
+  </header>
+
+  <div class="hero">
+    <h1>Doodle Honesty</h1>
+    <p class="tagline">How do you find out whether someone is being straight with you? The
+      research has a clear answer, and it is not the one anybody wants: you cannot tell by
+      looking. What you <em>can</em> do is check. This page is about the difference.</p>
+  </div>
+
+  <blockquote class="quote-box">
+    &ldquo;It is not a lie if you believe it.&rdquo;
+    <span class="attrib">* George Costanza, accidentally describing the main problem</span>
+  </blockquote>
+
+  <nav class="doodle-toc" aria-label="Table of contents">
+    <h2>Map of the questions (this page)</h2>
+    <div class="toc-chapter">
+      <h3>Chapter I &mdash; Can You Tell?</h3>
+      <ul class="toc-items">
+        <li><a href="#detecting"><span class="n" style="color:var(--cyan)">1</span>Reading people, and why it fails</a></li>
+        <li><span class="soon">Why we default to believing (truth-default theory)</span></li>
+        <li><span class="soon">The confident liar and the nervous innocent</span></li>
+      </ul>
+    </div>
+    <div class="toc-chapter">
+      <h3>Chapter II &mdash; What To Do Instead</h3>
+      <ul class="toc-items">
+        <li><span class="soon">Asking questions that are hard to fake</span></li>
+        <li><span class="soon">Incentives: when is honesty the cheaper option?</span></li>
+        <li><span class="soon">Reading institutions, not faces &mdash; what gets written down</span></li>
+      </ul>
+    </div>
+    <div class="toc-chapter">
+      <h3>&mdash;</h3>
+      <ul class="toc-items">
+        <li><a href="#library"><span class="n" style="color:var(--orange)">&#9733;</span>The Library &mdash; every paper cited here</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       Sim 1 — Reading people, and why it fails
+       ====================================================================== -->
+  <section class="sim-section" id="detecting" style="--accent: var(--cyan)">
+    <h2><span class="secnum">1.</span>Reading people, and why it fails</h2>
+    <p class="kicker">Humans detect lies 54% of the time. A coin gets 50%. Worse, if you act on
+      that ability in a group where most people are honest, almost everyone you accuse is innocent
+      &mdash; and that part is just arithmetic.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+      the 54% figure pools 206 studies and 24,483 judges (Bond &amp; DePaulo, 2006). The absence of
+      reliable behavioural cues is a separate meta-analysis (DePaulo et al., 2003). The polygraph's
+      unsuitability for screening is the conclusion of a US National Research Council review. The
+      base-rate panel is not a study at all &mdash; it is Bayes' theorem, and it cannot be argued with.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="detecting" aria-label="Two identically drawn figures, a grid of 100 people showing true and false accusations, and a ranking of detection methods"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="detecting"></div>
+    <div class="sim-readout" data-readout="detecting" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">2003 DePaulo, Lindsay, Malone, Muhlenbruck, Charlton, Cooper - Cues to Deception</span>
+      <span class="cit">2003 National Research Council - The Polygraph and Lie Detection</span>
+      <span class="cit">2006 Bond, DePaulo - Accuracy of Deception Judgments</span>
+      <span class="cit">2006 Global Deception Research Team - A World of Lies</span>
+      <span class="cit">2006 Hartwig, Granhag, Str&ouml;mwall, Kronkvist - Strategic Use of Evidence During Police Interviews</span>
+      <span class="cit">2014 Levine - Truth-Default Theory (TDT): A Theory of Human Deception and Deception Detection</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">base rate</dt>
+        <dd>How common the thing is before you look. If 5 people in 100 are lying, that 5% is the base
+          rate &mdash; and it dominates everything, because it decides how many honest people are
+          available to be misjudged.</dd>
+        <dt style="color:var(--green)">sensitivity</dt>
+        <dd>Of the people who ARE lying, what fraction do you catch? Humans: 47%. We miss most lies.</dd>
+        <dt style="color:var(--pink)">specificity</dt>
+        <dd>Of the people who are being honest, what fraction do you correctly leave alone? Humans: 61%.
+          Which means we wrongly suspect nearly 4 honest people in 10.</dd>
+        <dt style="color:var(--orange)">precision</dt>
+        <dd>The number that actually matters when you accuse someone: of everyone you flag, what fraction
+          really lied? At realistic human accuracy and a low base rate it is around 6%. Nineteen of every
+          twenty accusations land on someone innocent.</dd>
+        <dt style="color:var(--yellow)">truth-default</dt>
+        <dd>Levine's finding that people mostly assume they are being told the truth, and only leave that
+          default when something forces them to. It looks like gullibility. It is closer to efficiency:
+          most statements really are true, and checking everything would cost more than it saves.</dd>
+        <dt style="color:var(--ink)">strategic use of evidence</dt>
+        <dd>An interview technique with actual support: don't reveal what you already know. Let the
+          account be given freely first, then compare it with the evidence you were holding. Liars
+          unwittingly contradict facts they didn't know you had; truth-tellers don't.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ P(\text{lying} \mid \text{you accused}) =
+         \frac{b \cdot s}{b \cdot s + (1-b)(1-t)} $$
+      <p class="eq-note">b = base rate of lying, s = sensitivity, t = specificity. With the measured human values (s = 0.47, t = 0.61) and 5% of a group lying, this comes out at about 6% &mdash; so roughly 94 of every 100 accusations are wrong. The panel computes it live for any values you choose.</p>
+    </div>
+
+    <div class="prose">
+      <p>The instinct that you can read a person is one of the most confidently held beliefs there is,
+      and one of the least supported. Bond and DePaulo pooled 206 studies covering 24,483 people making
+      lie-or-truth judgements. Average accuracy: <strong>54%</strong>. Coin-flipping gets 50%. Training,
+      experience and professional confidence barely move it &mdash; police officers and judges score
+      about the same as students, while being considerably more certain.</p>
+
+      <p>Break the number down and it gets more interesting. We correctly flag only 47% of lies, but
+      correctly clear 61% of truths. We are biased toward belief. Timothy Levine argues this is not a
+      bug: most of what people tell us is true, so defaulting to trust is efficient, and the occasional
+      lie that slips through costs less than checking everything would. Our lie detector is bad because
+      it mostly does not need to be good.</p>
+
+      <p>The cues everyone "knows" do not survive measurement. DePaulo and colleagues meta-analysed the
+      behavioural signals &mdash; gaze, fidgeting, hesitation, story detail &mdash; and found them faint
+      to non-existent. Avoiding eye contact is believed to indicate lying in nearly every country
+      surveyed, and it does not work anywhere. Nervousness indicates nervousness; an honest person who
+      realises they are suspected becomes <em>more</em> nervous, not less. That is why the two figures in
+      the first panel are drawn with the same random seed. There is no visible difference to draw.</p>
+
+      <p>Now the panel that matters, because it is arithmetic rather than psychology. Suppose you act on
+      your judgement in a group where 5% are lying. Even with the measured human hit rates, you end up
+      accusing about 39 people in every 100 &mdash; and only about 2 of them actually lied. Your accusation
+      is right roughly <strong>6% of the time</strong>. Switch to a fictional detector that is 90% accurate
+      in both directions and it is still wrong about two-thirds of the time at that base rate. This is
+      exactly the mathematics of screening for a rare disease, and it does not care how certain you feel.</p>
+
+      <p><strong>The practical conclusion is not "look harder", it is "stop looking".</strong> Every method
+      with real support has the same shape: it compares the claim against something outside the person.
+      Check what can be checked &mdash; dates, records, who else was present, what was written down at the
+      time. Ask questions that are cheap to answer if you lived it and expensive to answer if you are
+      constructing it. Hold back what you already know and see whether the account collides with it; that
+      last one, strategic use of evidence, is the best-supported interview technique in the literature.</p>
+
+      <p>And notice what all of those have in common: none of them require you to decide whether someone
+      is a liar. They require you to find out what is true. Those are different jobs, and only the second
+      one is achievable. Someone can be entirely sincere and still wrong; someone can be evasive because
+      they are constrained rather than dishonest. If your conclusion rests on how a person seemed, you do
+      not yet have a conclusion &mdash; you have an impression, and the evidence says it is worth about
+      four percentage points above a coin.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Library
+       ====================================================================== -->
+  <section class="sim-section" id="library" style="--accent: var(--orange)">
+    <h2><span class="secnum">&#9733;</span>The Library &mdash; every paper cited here</h2>
+    <p class="kicker">In the exact <em>YEAR Author - Title</em> form, so you can find them in a
+      reference manager. This list grows with every new section.</p>
+    <ul class="library-list">
+      <li><span class="yr">2003</span>DePaulo, Lindsay, Malone, Muhlenbruck, Charlton, Cooper - Cues to Deception</li>
+      <li><span class="yr">2003</span>National Research Council - The Polygraph and Lie Detection</li>
+      <li><span class="yr">2006</span>Bond, DePaulo - Accuracy of Deception Judgments</li>
+      <li><span class="yr">2006</span>Global Deception Research Team - A World of Lies</li>
+      <li><span class="yr">2006</span>Hartwig, Granhag, Str&ouml;mwall, Kronkvist - Strategic Use of Evidence During Police Interviews</li>
+      <li><span class="yr">2014</span>Levine - Truth-Default Theory (TDT): A Theory of Human Deception and Deception Detection</li>
+    </ul>
+  </section>
+
+  <footer class="site-footer">
+    <p>Drawn and checked by hand(ish). Found a mistake? Good &mdash; that's the whole point. Tell me.</p>
+    <a class="patreon" href="https://www.patreon.com/GeoQuasar" target="_blank" rel="noopener">
+      <img src="../images/patreon.png" alt="Support on Patreon">
+    </a>
+  </footer>
+
+</main>
+
+<button class="backtop" id="backtop" aria-label="Back to top" title="Back to top">&uarr;</button>
+
+</body>
+</html>
