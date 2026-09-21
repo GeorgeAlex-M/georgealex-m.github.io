@@ -14,12 +14,32 @@
   --pink: #f783ac;
   --yellow: #ffd43b;
   --red: #ff8787;
+  --ink-2: #e9ecef;
+  --veil: rgba(30, 30, 30, 0.45);
   --font-hand: 'Gochi Hand', 'Segoe Print', 'Comic Sans MS', cursive;
   --font-body: 'Patrick Hand', 'Segoe Print', 'Comic Sans MS', cursive;
   /* Uneven radii make straight CSS borders read as hand-drawn strokes */
   --wobble: 255px 15px 225px 15px / 15px 225px 15px 255px;
   --wobble-alt: 15px 225px 15px 255px / 255px 15px 225px 15px;
   --wobble-soft: 45px 12px 35px 14px / 12px 38px 14px 42px;
+}
+
+/* Light theme. Set by Astro.setTheme() on <html data-theme="light">; the hues
+   move to the dark end of the same Open Color ramps so they stay legible on
+   paper. Keep these in sync with A.THEMES in doodle/engine/palette.js. */
+:root[data-theme='light'] {
+  --bg: #ffffff;
+  --grid: rgba(0, 0, 0, 0.06);
+  --ink: #1e1e1e;
+  --muted: #6c757d;
+  --cyan: #0b7285;
+  --green: #2f9e44;
+  --orange: #e8590c;
+  --pink: #c2255c;
+  --yellow: #e67700;
+  --red: #e03131;
+  --ink-2: #343a40;
+  --veil: rgba(255, 255, 255, 0.55);
 }
 
 * { box-sizing: border-box; }
@@ -185,6 +205,24 @@ a:hover { color: var(--yellow); }
 }
 .sim-canvas-wrap.short canvas { height: 400px; }
 
+/* Dark / light toggle. The button is injected by doodle/engine/palette.js, so
+   this rule is what makes it appear on every page that loads this stylesheet. */
+.themetoggle {
+  position: fixed;
+  left: 1.1rem;
+  bottom: 1.1rem;
+  z-index: 20;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1.7px solid var(--ink);
+  border-radius: var(--wobble-soft);
+  padding: 0.3rem 0.9rem 0.38rem;
+  cursor: pointer;
+}
+.themetoggle:hover { color: var(--yellow); border-color: var(--yellow); }
+
 /* Play overlay for paused sims (reduced motion / before first interaction) */
 .sim-overlay {
   position: absolute;
@@ -192,7 +230,7 @@ a:hover { color: var(--yellow); }
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(30, 30, 30, 0.45);
+  background: var(--veil);
 }
 .sim-overlay[hidden] { display: none; }
 .sim-overlay button {
@@ -316,7 +354,7 @@ a:hover { color: var(--yellow); }
 }
 .defs dd {
   margin: 0.1rem 0 0 1.1rem;
-  color: #dee2e6;
+  color: var(--ink-2);
   font-size: 1.02rem;
 }
 
@@ -349,7 +387,7 @@ a:hover { color: var(--yellow); }
 }
 .citation-box .cit { display: block; padding: 0.08rem 0; }
 
-.prose { margin: 1.2rem 0 0; color: #e9ecef; }
+.prose { margin: 1.2rem 0 0; color: var(--ink-2); }
 .prose p { margin: 0.7rem 0; }
 .prose strong { color: var(--yellow); font-weight: normal; }
 .prose em { color: var(--cyan); font-style: normal; }
@@ -361,7 +399,7 @@ a:hover { color: var(--yellow); }
   border: 1.6px solid var(--muted);
   border-radius: var(--wobble);
   font-style: italic;
-  color: #e9ecef;
+  color: var(--ink-2);
 }
 .quote-box .attrib {
   display: block;

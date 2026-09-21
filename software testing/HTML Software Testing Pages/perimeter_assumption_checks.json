@@ -1,0 +1,225 @@
+{
+    "boundary_type_2": [
+        {
+            "data_type": "integer",
+            "lower": 1,
+            "upper": 20,
+            "equivalence_partition": [
+                6,
+                10,
+                15
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    { "below_boundary": 0 },
+                    { "boundary": 1 }
+                ],
+                [
+                    [
+                        { "boundary": 6 },
+                        { "above_boundary": 7 }
+                    ],
+                    [
+                        { "boundary": 10 },
+                        { "above_boundary": 11 }
+                    ],
+                    [
+                        { "below_boundary": 14 },
+                        { "boundary": 15 }
+                    ]
+                ],
+                [
+                    { "boundary": 20 },
+                    { "above_boundary": 21 }
+                ]
+            ]
+        },
+        {
+            "data_type": "float",
+            "lower": 1.0,
+            "upper": 20.0,
+            "equivalence_partition": [
+                5.8,
+                10.5,
+                15.2
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    { "below_boundary": 0.9 },
+                    { "boundary": 1.0 }
+                ],
+                [
+                    [
+                        { "boundary": 5.8 },
+                        { "above_boundary": 5.9 }
+                    ],
+                    [
+                        { "boundary": 10.5 },
+                        { "above_boundary": 10.6 }
+                    ],
+                    [
+                        { "below_boundary": 15.1 },
+                        { "boundary": 15.2 }
+                    ]
+                ],
+                [
+                    { "boundary": 20.0 },
+                    { "above_boundary": 20.1 }
+                ]
+            ]
+        },
+        {
+            "data_type": "char",
+            "lower": "A",
+            "upper": "Z",
+            "equivalence_partition": [
+                "G",
+                "M",
+                "S"
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    { "below_boundary": "@" },
+                    { "boundary": "A" }
+                ],
+                [
+                    [
+                        { "boundary": "G" },
+                        { "above_boundary": "H" }
+                    ],
+                    [
+                        { "below_boundary": "L" },
+                        { "boundary": "M" }
+                    ],
+                    [
+                        { "below_boundary": "R" },
+                        { "boundary": "S" }
+                    ]
+                ],
+                [
+                    { "boundary": "Z" },
+                    { "above_boundary": "[" }
+                ]
+            ]
+        }
+    ],
+    "boundary_type_3": [
+        {
+            "data_type": "integer",
+            "lower": 1,
+            "upper": 20,
+            "equivalence_partition": [
+                6,
+                10,
+                15
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    { "below_boundary": 0 },
+                    { "boundary": 1 },
+                    { "above_boundary": 2 }
+                ],
+                [
+                    [
+                        { "below_boundary": 5 },
+                        { "boundary": 6 },
+                        { "above_boundary": 7 }
+                    ],
+                    [
+                        { "below_boundary": 9 },
+                        { "boundary": 10 },
+                        { "above_boundary": 11 }
+                    ],
+                    [
+                        { "below_boundary": 14 },
+                        { "boundary": 15 },
+                        { "above_boundary": 16 }
+                    ]
+                ],
+                [
+                    { "below_boundary": 19 },
+                    { "boundary": 20 },
+                    { "above_boundary": 21 }
+                ]
+            ]
+        },
+        {
+            "data_type": "float",
+            "lower": 1.0,
+            "upper": 20.0,
+            "equivalence_partition": [
+                5.8,
+                10.5,
+                15.2
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    { "below_boundary": 0.9 },
+                    { "boundary": 1.0 },
+                    { "above_boundary": 1.1 }
+                ],
+                [
+                    [
+                        { "below_boundary": 5.7 },
+                        { "boundary": 5.8 },
+                        { "above_boundary": 5.9 }
+                    ],
+                    [
+                        { "below_boundary": 10.4 },
+                        { "boundary": 10.5 },
+                        { "above_boundary": 10.6 }
+                    ],
+                    [
+                        { "below_boundary": 15.1 },
+                        { "boundary": 15.2 },
+                        { "above_boundary": 15.3 }
+                    ]
+                ],
+                [
+                    { "below_boundary": 19.9 },
+                    { "boundary": 20.0 },
+                    { "above_boundary": 20.1 }
+                ]
+            ]
+        },
+        {
+            "data_type": "char",
+            "lower": "A",
+            "upper": "Z",
+            "equivalence_partition": [
+                "G",
+                "M",
+                "S"
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    { "below_boundary": "@" },
+                    { "boundary": "A" },
+                    { "above_boundary": "B" }
+                ],
+                [
+                    [
+                        { "below_boundary": "F" },
+                        { "boundary": "G" },
+                        { "above_boundary": "H" }
+                    ],
+                    [
+                        { "below_boundary": "L" },
+                        { "boundary": "M" },
+                        { "above_boundary": "N" }
+                    ],
+                    [
+                        { "below_boundary": "R" },
+                        { "boundary": "S" },
+                        { "above_boundary": "T" }
+                    ]
+                ],
+                [
+                    { "below_boundary": "Y" },
+                    { "boundary": "Z" },
+                    { "above_boundary": "[" }
+                ]
+            ]
+        }
+    ]
+}

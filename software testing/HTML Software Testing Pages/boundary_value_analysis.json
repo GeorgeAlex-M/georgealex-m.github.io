@@ -1,0 +1,225 @@
+{
+    "two_point_bva": [
+        {
+            "data_type": "integer",
+            "lower": 1,
+            "upper": 20,
+            "equivalence_classes": [
+                6,
+                10,
+                15
+            ],
+            "boundary_test_cases": [
+                [
+                    { "below_boundary": 0 },
+                    { "on_boundary": 1 }
+                ],
+                [
+                    [
+                        { "on_boundary": 6 },
+                        { "above_boundary": 7 }
+                    ],
+                    [
+                        { "on_boundary": 10 },
+                        { "above_boundary": 11 }
+                    ],
+                    [
+                        { "below_boundary": 14 },
+                        { "on_boundary": 15 }
+                    ]
+                ],
+                [
+                    { "on_boundary": 20 },
+                    { "above_boundary": 21 }
+                ]
+            ]
+        },
+        {
+            "data_type": "float",
+            "lower": 1.0,
+            "upper": 20.0,
+            "equivalence_classes": [
+                5.8,
+                10.5,
+                15.2
+            ],
+            "boundary_test_cases": [
+                [
+                    { "below_boundary": 0.9 },
+                    { "on_boundary": 1.0 }
+                ],
+                [
+                    [
+                        { "on_boundary": 5.8 },
+                        { "above_boundary": 5.9 }
+                    ],
+                    [
+                        { "on_boundary": 10.5 },
+                        { "above_boundary": 10.6 }
+                    ],
+                    [
+                        { "below_boundary": 15.1 },
+                        { "on_boundary": 15.2 }
+                    ]
+                ],
+                [
+                    { "on_boundary": 20.0 },
+                    { "above_boundary": 20.1 }
+                ]
+            ]
+        },
+        {
+            "data_type": "char",
+            "lower": "A",
+            "upper": "Z",
+            "equivalence_classes": [
+                "G",
+                "M",
+                "S"
+            ],
+            "boundary_test_cases": [
+                [
+                    { "below_boundary": "@" },
+                    { "on_boundary": "A" }
+                ],
+                [
+                    [
+                        { "on_boundary": "G" },
+                        { "above_boundary": "H" }
+                    ],
+                    [
+                        { "below_boundary": "L" },
+                        { "on_boundary": "M" }
+                    ],
+                    [
+                        { "below_boundary": "R" },
+                        { "on_boundary": "S" }
+                    ]
+                ],
+                [
+                    { "on_boundary": "Z" },
+                    { "above_boundary": "[" }
+                ]
+            ]
+        }
+    ],
+    "three_point_bva": [
+        {
+            "data_type": "integer",
+            "lower": 1,
+            "upper": 20,
+            "equivalence_classes": [
+                6,
+                10,
+                15
+            ],
+            "boundary_test_cases": [
+                [
+                    { "below_boundary": 0 },
+                    { "on_boundary": 1 },
+                    { "above_boundary": 2 }
+                ],
+                [
+                    [
+                        { "below_boundary": 5 },
+                        { "on_boundary": 6 },
+                        { "above_boundary": 7 }
+                    ],
+                    [
+                        { "below_boundary": 9 },
+                        { "on_boundary": 10 },
+                        { "above_boundary": 11 }
+                    ],
+                    [
+                        { "below_boundary": 14 },
+                        { "on_boundary": 15 },
+                        { "above_boundary": 16 }
+                    ]
+                ],
+                [
+                    { "below_boundary": 19 },
+                    { "on_boundary": 20 },
+                    { "above_boundary": 21 }
+                ]
+            ]
+        },
+        {
+            "data_type": "float",
+            "lower": 1.0,
+            "upper": 20.0,
+            "equivalence_classes": [
+                5.8,
+                10.5,
+                15.2
+            ],
+            "boundary_test_cases": [
+                [
+                    { "below_boundary": 0.9 },
+                    { "on_boundary": 1.0 },
+                    { "above_boundary": 1.1 }
+                ],
+                [
+                    [
+                        { "below_boundary": 5.7 },
+                        { "on_boundary": 5.8 },
+                        { "above_boundary": 5.9 }
+                    ],
+                    [
+                        { "below_boundary": 10.4 },
+                        { "on_boundary": 10.5 },
+                        { "above_boundary": 10.6 }
+                    ],
+                    [
+                        { "below_boundary": 15.1 },
+                        { "on_boundary": 15.2 },
+                        { "above_boundary": 15.3 }
+                    ]
+                ],
+                [
+                    { "below_boundary": 19.9 },
+                    { "on_boundary": 20.0 },
+                    { "above_boundary": 20.1 }
+                ]
+            ]
+        },
+        {
+            "data_type": "char",
+            "lower": "A",
+            "upper": "Z",
+            "equivalence_classes": [
+                "G",
+                "M",
+                "S"
+            ],
+            "boundary_test_cases": [
+                [
+                    { "below_boundary": "@" },
+                    { "on_boundary": "A" },
+                    { "above_boundary": "B" }
+                ],
+                [
+                    [
+                        { "below_boundary": "F" },
+                        { "on_boundary": "G" },
+                        { "above_boundary": "H" }
+                    ],
+                    [
+                        { "below_boundary": "L" },
+                        { "on_boundary": "M" },
+                        { "above_boundary": "N" }
+                    ],
+                    [
+                        { "below_boundary": "R" },
+                        { "on_boundary": "S" },
+                        { "above_boundary": "T" }
+                    ]
+                ],
+                [
+                    { "below_boundary": "Y" },
+                    { "on_boundary": "Z" },
+                    { "above_boundary": "[" }
+                ]
+            ]
+        }
+    ]
+}

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    The Yard — a landscape that runs through a whole day.
+    Same architecture as astronomy/index.html: classic scripts on the window.Astro
+    namespace, loaded in dependency order below, so the page also works opened
+    straight off disk (file://). Only the CDN assets need a connection.
+  -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Yard — everything built between 2am and sunrise</title>
+  <meta name="description" content="A hand-drawn yard that runs through a whole day: the house goes dark, the workshop stays lit. George Manea — QA Engineer, Bucharest, open to work.">
+  <meta name="author" content="George Manea">
+  <link rel="icon" type="image/x-icon" href="../images/fav-icon.png">
+
+  <meta property="og:title" content="The Yard">
+  <meta property="og:description" content="The house goes dark before the shed does. That is the whole picture, really.">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../doodle/doodle.css">
+  <style>
+    /* A landscape wants height. Page-local so the shared theme stays untouched. */
+    .sim-canvas-wrap.tall canvas { height: 560px; }
+    @media (max-width: 640px) {
+      .sim-canvas-wrap.tall canvas { height: 420px; }
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script defer src="../doodle/engine/palette.js"></script>
+  <script defer src="../doodle/engine/constants.js"></script>
+  <script defer src="../doodle/engine/canvas.js"></script>
+  <script defer src="../doodle/engine/rough-helpers.js"></script>
+  <script defer src="../doodle/engine/sketch.js"></script>
+  <script defer src="../doodle/engine/controls.js"></script>
+  <script defer src="../doodle/engine/integrators.js"></script>
+  <script defer src="../doodle/engine/sim.js"></script>
+  <script defer src="two-futures.js"></script>
+  <script defer src="the-yard.js"></script>
+  <script defer src="main.js"></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <img class="logo" src="../images/logo.png" alt="Unreal Software logo">
+    <a class="site-name" href="../index.html">&larr; unrealsoftware — home</a>
+  </header>
+
+<main>
+
+  <div class="hero">
+    <h1>The Yard</h1>
+    <p class="tagline">A whole day in one drawing. Let it run, or drag the hours yourself —
+      the sun and the moon ride the same arc, the stars come up, the windows fill,
+      and one light stays on longer than the rest.</p>
+  </div>
+
+  <section class="sim-section" id="two-futures" style="--accent: var(--pink)">
+    <h2><span class="secnum">1.</span>Two futures, and a third one</h2>
+    <p class="kicker">Drag <em>which way</em>. Then click the third road — that button is for you, not me.</p>
+
+    <div class="sim-canvas-wrap tall">
+      <canvas data-sim="twoFutures" aria-label="A hand-drawn fork in the road. On the left, a writing desk under a tree at night with a typewriter, a lamp, a tower of manuscripts and a sleeping cat, signed Plan A, full-time writer. On the right, under a flickering lamppost, a cardboard sign reading will test your software for food, a tin cup with two coins, pigeons, a cardboard box marked ISTQB and a cracked laptop still running tests, signed Plan B, beggar. Between them a barred track leads uphill to a small lit office marked QA Engineer, Bucharest."></canvas>
+    </div>
+    <div class="sim-controls" data-controls="twoFutures"></div>
+    <div class="sim-readout" data-readout="twoFutures" aria-live="polite"></div>
+
+    <p>Both ends are drawn honestly. The <strong>$80 a month</strong> under Plan A is my actual
+      DistroKid income, which is lovely and is not rent. The cardboard under Plan B says
+      <em>will test your software for food</em>, which is a joke, and is also the single most
+      accurate CV I have ever written.</p>
+
+    <p>The middle road has a barrier across it and a note saying it opens from your side.
+      That part is not a joke — it is the only thing on this page I actually need.</p>
+  </section>
+
+  <section class="sim-section" id="yard" style="--accent: var(--yellow)">
+    <h2><span class="secnum">2.</span>Let the day run</h2>
+    <p class="kicker">Try <strong>3am</strong>. That is when most of this got made.</p>
+
+    <div class="sim-canvas-wrap tall">
+      <canvas data-sim="theYard" aria-label="A hand-drawn yard at night: a house with lit windows, a shed with its door open and light spilling out, a tree with a swing, a dog by a fire, a workbench with a telescope and a guitar, a garden, and a gate standing open onto a road toward a distant city"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="theYard"></div>
+    <div class="sim-readout" data-readout="theYard" aria-live="polite"></div>
+
+    <p>The house is the day job. It has been a good house — six years of software testing,
+      Amber and then Electronic Arts, ISTQB Foundation and Agile, CompTIA. Its lights go off
+      at a sensible hour.</p>
+
+    <p>The shed is the other thing. It is where the telescope on the bench came from, and the
+      guitar, and the little board with the LED still blinking on it. It is where
+      <a href="../astronomy/index.html">fifty physics simulations</a> got written, and
+      <strong>Ghidra MCP</strong>, and <strong>Genome Blueprint</strong>, and a book called
+      <em>Metathoughts</em> that is still being written. Nobody assigned any of it. I wanted
+      it to exist, so I built it after the shift ended, which is why the shed light is the
+      last one burning in every frame after about eleven.</p>
+
+    <p>The gate has been open a while. That is the only part of this drawing that is a
+      request.</p>
+  </section>
+
+  <section class="sim-section" id="looking-for" style="--accent: var(--green)">
+    <h2><span class="secnum">3.</span>What I'm looking for</h2>
+
+    <p><strong>QA Engineer</strong> — that is the one I actually want, and I will say plainly
+      why: I already do the engineering half on my own time, and I would rather be paid for it
+      than run playthroughs. I am also open to QA Specialist and QA Lead.
+      <strong>Bucharest</strong> — on-site, hybrid or remote.</p>
+
+    <details class="defs" open>
+      <summary>what's on the bench</summary>
+      <dl>
+        <dt>6 years in software testing</dt>
+        <dd>Currently QA Analyst&nbsp;2 at Electronic Arts; Amber before that. Games QA, which
+          means shipping to a hard date against a build that changes under you daily.</dd>
+
+        <dt>ISTQB Foundation · ISTQB Agile · CompTIA</dt>
+        <dd>Useful, and the least interesting line here.</dd>
+
+        <dt>Tools I built because I wanted them</dt>
+        <dd><strong>Ghidra MCP</strong> — reverse-engineering tooling wired into an MCP server.
+          <strong>Genome Blueprint</strong> — a DNA analysis pipeline.</dd>
+
+        <dt>A rendering engine and 50+ simulations</dt>
+        <dd>Everything on this site, including the yard above: a hand-written canvas engine,
+          deterministic drawing, real constants, and a citation attached to every physical
+          claim. If you want to know how I think about correctness, read that rather than
+          my CV.</dd>
+
+        <dt>I'm the one who trains the team</dt>
+        <dd>When teammates need testing explained, they come to me. That has been true at
+          every job I have had.</dd>
+      </dl>
+    </details>
+
+    <p class="evidence ev-partial"><span class="ev-dot"></span><strong>the honest part</strong> &mdash;
+      I do not have a Romanian <em>bacalaureat</em> yet. I am sitting it. I would rather you
+      read that here than find it later; the six years and everything on the bench are the
+      argument I am making instead.</p>
+
+    <p><strong>Find me on LinkedIn:</strong>
+      <!-- TODO George: paste your LinkedIn profile URL into the href below. -->
+      <a href="https://www.linkedin.com/in/" rel="me">George Manea</a>.
+      <!-- Uncomment if you want a public email here (it will get scraped):
+      Or email <a href="mailto:gmanea@unrealsoftware.org">gmanea@unrealsoftware.org</a>. -->
+      A role, a referral, or a correction to the physics — all three are welcome.</p>
+  </section>
+
+  <footer class="site-footer">
+    <p>Drawn by hand(ish), in the same engine as the rest of the site. Sunrise 06:12,
+      sunset 20:36 — Bucharest, late July. If the clock is going to be in the picture,
+      it may as well be true.</p>
+  </footer>
+
+</main>
+
+<button class="themetoggle" id="themetoggle" aria-label="Switch between the dark and light theme"></button>
+<button class="backtop" id="backtop" aria-label="Back to top" title="Back to top">&uarr;</button>
+
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Software Tester Evaluation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .category {
+            background-color: #2c3e50;
+        }
+
+        .subcategory {
+            background-color: #34495e;
+        }
+
+        .score-0 {
+            background-color: #e74c3c;
+        }
+
+        .score-1 {
+            background-color: #e67e22;
+        }
+
+        .score-2 {
+            background-color: #f1c40f;
+        }
+
+        .score-3 {
+            background-color: #2ecc71;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+            .tooltip .tooltiptext {
+                visibility: hidden;
+                width: 200px;
+                background-color: #555;
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 5px;
+                position: absolute;
+                z-index: 1;
+                bottom: 125%;
+                left: 50%;
+                margin-left: -100px;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .tooltip:hover .tooltiptext {
+                visibility: visible;
+                opacity: 1;
+            }
+
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold text-center mb-8">Advanced Software Tester Evaluation</h1>
+        <div class="mb-4">
+            <div class="bg-white rounded-lg shadow p-4">
+                <h2 class="text-lg font-semibold mb-2">Evaluation Progress</h2>
+                <div class="bg-gray-200 rounded-full h-4">
+                    <div id="progress-bar" class="bg-blue-500 rounded-full h-4 progress-bar" style="width: 0%"></div>
+                </div>
+                <p id="progress-text" class="text-sm mt-2">0% complete</p>
+            </div>
+        </div>
+        <form id="evaluation-form" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="tester-name">
+                        Tester Name
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="tester-name" type="text" placeholder="Enter tester's name" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="evaluation-period">
+                        Evaluation Period
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="evaluation-period" type="month" required>
+                </div>
+            </div>
+
+            <div id="evaluation-grid" class="space-y-6">
+                <!-- Evaluation sections will be dynamically inserted here -->
+            </div>
+
+            <div class="flex items-center justify-between mt-6">
+                <button id="submit-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    Submit Evaluation
+                </button>
+                <button id="save-draft-btn" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                    Save Draft
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const evaluationData = [
+            {
+                category: "Bug Quality",
+                subcategories: [
+                    { name: "Bug Quality", description: "Assess the overall quality of bug reports, including clarity, reproducibility, and completeness of information provided." },
+                    { name: "Bug Complexity", description: "Evaluate the tester's ability to identify and report complex, hard-to-find bugs that significantly impact the software." }
+                ]
+            },
+            {
+                category: "Task Comprehension",
+                subcategories: [
+                    { name: "Task Understanding", description: "Measure the tester's ability to grasp and interpret task requirements, ensuring comprehensive test coverage." },
+                    { name: "Task Efficiency", description: "Evaluate the tester's speed and effectiveness in completing assigned tasks while maintaining high-quality standards." }
+                ]
+            },
+            {
+                category: "Attendance",
+                subcategories: [
+                    { name: "Punctuality", description: "Assess the tester's consistency in arriving on time for shifts and meetings." },
+                    { name: "Reliability", description: "Evaluate the tester's dependability in terms of attendance and completing scheduled work hours." }
+                ]
+            },
+            {
+                category: "Time Management",
+                subcategories: [
+                    { name: "Prioritization Skills", description: "Assess the tester's ability to effectively prioritize tasks and manage workload to meet deadlines." }
+                ]
+            },
+            {
+                category: "Communication Skills",
+                subcategories: [
+                    { name: "Technical Communication", description: "Evaluate the tester's ability to clearly convey technical information to both technical and non-technical team members." },
+                    { name: "Communication Efficiency", description: "Assess the tester's effectiveness in sharing information and collaborating with team members." },
+                    { name: "English Skills", description: "Evaluate the tester's proficiency in written and spoken English, crucial for clear communication in an international team." }
+                ]
+            },
+            {
+                category: "Technical Skills",
+                subcategories: [
+                    { name: "Tools Knowledge", description: "Assess the tester's proficiency with various testing tools and platforms used in the project." },
+                    { name: "Tools Adaptability", description: "Evaluate the tester's ability to quickly learn and effectively use new tools or technologies." },
+                    { name: "Hardware Knowledge", description: "Assess the tester's understanding of different hardware configurations and their impact on software performance." }
+                ]
+            },
+            {
+                category: "Game Knowledge & Proficiency",
+                subcategories: [
+                    { name: "Game Adaptability", description: "Evaluate the tester's ability to quickly understand and test different game genres or styles." },
+                    { name: "Game Knowledge", description: "Assess the tester's depth of understanding about game mechanics, design principles, and industry trends." },
+                    { name: "Constructive Feedback", description: "Evaluate the quality and usefulness of the tester's feedback for improving game design and player experience." }
+                ]
+            },
+            {
+                category: "Motivation & Initiative",
+                subcategories: [
+                    { name: "Results Oriented Behavior", description: "Assess the tester's focus on achieving concrete, measurable outcomes in their work." },
+                    { name: "Initiative", description: "Evaluate the tester's proactiveness in taking on new responsibilities or suggesting improvements." },
+                    { name: "Innovation", description: "Assess the tester's ability to bring new ideas or approaches to improve testing processes or game quality." }
+                ]
+            },
+            {
+                category: "Dependability",
+                subcategories: [
+                    { name: "Work Delegation", description: "Evaluate the tester's ability to effectively distribute workload and collaborate with team members." },
+                    { name: "Reliability", description: "Assess the tester's consistency in meeting commitments and delivering high-quality work." },
+                    { name: "Personal Contribution", description: "Evaluate the overall impact and value the tester brings to the team and projects." }
+                ]
+            },
+            {
+                category: "People Skills",
+                subcategories: [
+                    { name: "Teamwork", description: "Assess the tester's ability to work effectively within a team, contributing to a positive work environment." },
+                    { name: "Overall Behavior", description: "Evaluate the tester's professional conduct, attitude, and interpersonal skills in the workplace." }
+                ]
+            }
+        ];
+
+        function createEvaluationSection(category, subcategories) {
+            const sectionEl = document.createElement('div');
+            sectionEl.className = 'bg-gray-200 rounded-lg overflow-hidden';
+
+            const categoryEl = document.createElement('div');
+            categoryEl.className = 'category text-white font-bold py-2 px-4';
+            categoryEl.textContent = category;
+            sectionEl.appendChild(categoryEl);
+
+            subcategories.forEach(sub => {
+                const subEl = document.createElement('div');
+                subEl.className = 'subcategory text-white py-2 px-4 flex items-center';
+
+                const nameEl = document.createElement('div');
+                nameEl.className = 'w-1/4 font-semibold tooltip';
+                nameEl.innerHTML = `${sub.name} <span class="tooltiptext">${sub.description}</span>`;
+                subEl.appendChild(nameEl);
+
+                const scoreEl = document.createElement('div');
+                scoreEl.className = 'w-1/4 flex justify-center space-x-2';
+                for (let i = 0; i < 4; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = `w-8 h-8 rounded-full score-${i} hover:opacity-80 focus:outline-none transition-colors duration-200`;
+                    btn.textContent = i;
+                    btn.onclick = function (e) {
+                        e.preventDefault();
+                        setScore(this, i);
+                        updateProgress();
+                    };
+                    scoreEl.appendChild(btn);
+                }
+                subEl.appendChild(scoreEl);
+
+                const commentEl = document.createElement('div');
+                commentEl.className = 'w-1/2';
+                const textarea = document.createElement('textarea');
+                textarea.className = 'w-full p-2 rounded text-gray-800';
+                textarea.placeholder = 'Enter comments...';
+                textarea.rows = 2;
+                textarea.oninput = updateProgress;
+                commentEl.appendChild(textarea);
+                subEl.appendChild(commentEl);
+
+                sectionEl.appendChild(subEl);
+            });
+
+            return sectionEl;
+        }
+
+        function setScore(btn, score) {
+            const buttons = btn.parentElement.children;
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('ring-2', 'ring-white');
+            }
+            btn.classList.add('ring-2', 'ring-white');
+        }
+
+        function updateProgress() {
+            const totalFields = document.querySelectorAll('.subcategory').length * 2; // Score + Comment for each subcategory
+            let filledFields = 0;
+
+            document.querySelectorAll('.subcategory').forEach(sub => {
+                if (sub.querySelector('button.ring-2')) filledFields++;
+                if (sub.querySelector('textarea').value.trim() !== '') filledFields++;
+            });
+
+            const progress = Math.round((filledFields / totalFields) * 100);
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.getElementById('progress-text').textContent = `${progress}% complete`;
+        }
+
+        function saveDraft() {
+            const formData = {
+                testerName: document.getElementById('tester-name').value,
+                evaluationPeriod: document.getElementById('evaluation-period').value,
+                scores: {},
+                comments: {}
+            };
+
+            document.querySelectorAll('.subcategory').forEach((sub, index) => {
+                const scoreBtn = sub.querySelector('button.ring-2');
+                formData.scores[index] = scoreBtn ? scoreBtn.textContent : null;
+                formData.comments[index] = sub.querySelector('textarea').value;
+            });
+
+            localStorage.setItem('evaluationDraft', JSON.stringify(formData));
+            alert('Draft saved successfully!');
+        }
+
+        function loadDraft() {
+            const savedDraft = localStorage.getItem('evaluationDraft');
+            if (savedDraft) {
+                const formData = JSON.parse(savedDraft);
+                document.getElementById('tester-name').value = formData.testerName;
+                document.getElementById('evaluation-period').value = formData.evaluationPeriod;
+
+                document.querySelectorAll('.subcategory').forEach((sub, index) => {
+                    if (formData.scores[index] !== null) {
+                        const scoreBtn = sub.querySelector(`button:nth-child(${parseInt(formData.scores[index]) + 1})`);
+                        if (scoreBtn) setScore(scoreBtn, formData.scores[index]);
+                    }
+                    sub.querySelector('textarea').value = formData.comments[index] || '';
+                });
+
+                updateProgress();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const grid = document.getElementById('evaluation-grid');
+            evaluationData.forEach(section => {
+                grid.appendChild(createEvaluationSection(section.category, section.subcategories));
+            });
+
+            document.getElementById('submit-btn').addEventListener('click', function (e) {
+                e.preventDefault();
+                if (document.getElementById('evaluation-form').checkValidity()) {
+                    // Here you would collect all the scores and comments and submit them
+                    alert('Evaluation submitted successfully!');
+                    localStorage.removeItem('evaluationDraft'); // Clear the draft after submission
+                } else {
+                    alert('Please fill in all required fields before submitting.');
+                }
+            });
+
+            document.getElementById('save-draft-btn').addEventListener('click', saveDraft);
+
+            loadDraft(); // Load any saved draft when the page loads
+        });
+    </script>
+</body>
+</html>

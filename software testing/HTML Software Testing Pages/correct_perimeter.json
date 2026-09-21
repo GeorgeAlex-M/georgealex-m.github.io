@@ -1,0 +1,225 @@
+{
+    "boundary_type_2": [
+        {
+            "data_type": "integer",
+            "lower": 1,
+            "upper": 20,
+            "equivalence_partition": [
+                6,
+                10,
+                15
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    0,
+                    1
+                ],
+                [
+                    [
+                        6,
+                        7
+                    ],
+                    [
+                        9,
+                        10
+                    ],
+                    [
+                        14,
+                        15
+                    ]
+                ],
+                [
+                    20,
+                    21
+                ]
+            ]
+        },
+        {
+            "data_type": "float",
+            "lower": 1.0,
+            "upper": 20.0,
+            "equivalence_partition": [
+                5.8,
+                10.5,
+                15.2
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    0.9,
+                    1.0
+                ],
+                [
+                    [
+                        5.8,
+                        5.9
+                    ],
+                    [
+                        10.4,
+                        10.5
+                    ],
+                    [
+                        15.1,
+                        15.2
+                    ]
+                ],
+                [
+                    20.0,
+                    20.1
+                ]
+            ]
+        },
+        {
+            "data_type": "char",
+            "lower": "A",
+            "upper": "Z",
+            "equivalence_partition": [
+                "G",
+                "M",
+                "S"
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    "@",
+                    "A"
+                ],
+                [
+                    [
+                        "G",
+                        "H"
+                    ],
+                    [
+                        "L",
+                        "M"
+                    ],
+                    [
+                        "R",
+                        "S"
+                    ]
+                ],
+                [
+                    "Z",
+                    "["
+                ]
+            ]
+        }
+    ],
+    "boundary_type_3": [
+        {
+            "data_type": "integer",
+            "lower": 1,
+            "upper": 20,
+            "equivalence_partition": [
+                6,
+                10,
+                15
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    0,
+                    1,
+                    2
+                ],
+                [
+                    [
+                        5,
+                        6,
+                        7
+                    ],
+                    [
+                        9,
+                        10,
+                        11
+                    ],
+                    [
+                        14,
+                        15,
+                        16
+                    ]
+                ],
+                [
+                    19,
+                    20,
+                    21
+                ]
+            ]
+        },
+        {
+            "data_type": "float",
+            "lower": 1.0,
+            "upper": 20.0,
+            "equivalence_partition": [
+                5.8,
+                10.5,
+                15.2
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    0.9,
+                    1.0,
+                    1.1
+                ],
+                [
+                    [
+                        5.7,
+                        5.8,
+                        5.9
+                    ],
+                    [
+                        10.4,
+                        10.5,
+                        10.6
+                    ],
+                    [
+                        15.1,
+                        15.2,
+                        15.3
+                    ]
+                ],
+                [
+                    19.9,
+                    20.0,
+                    20.1
+                ]
+            ]
+        },
+        {
+            "data_type": "char",
+            "lower": "A",
+            "upper": "Z",
+            "equivalence_partition": [
+                "G",
+                "M",
+                "S"
+            ],
+            "perimeter_assumption_checks": [
+                [
+                    "@",
+                    "A",
+                    "B"
+                ],
+                [
+                    [
+                        "F",
+                        "G",
+                        "H"
+                    ],
+                    [
+                        "L",
+                        "M",
+                        "N"
+                    ],
+                    [
+                        "R",
+                        "S",
+                        "T"
+                    ]
+                ],
+                [
+                    "Y",
+                    "Z",
+                    "["
+                ]
+            ]
+        }
+    ]
+}

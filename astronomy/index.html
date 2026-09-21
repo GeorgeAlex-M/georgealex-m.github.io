@@ -70,6 +70,11 @@
   <script defer src="js/sims/particle-creation.js"></script>
   <script defer src="js/sims/information-paradox.js"></script>
   <script defer src="js/sims/planck-scale.js"></script>
+  <script defer src="js/sims/double-slit.js"></script>
+  <script defer src="js/sims/schrodinger-cat.js"></script>
+  <script defer src="js/sims/rutherford.js"></script>
+  <script defer src="js/sims/bell.js"></script>
+  <script defer src="js/sims/determinism.js"></script>
   <script defer src="js/main.js"></script>
 </head>
 <body>
@@ -224,10 +229,10 @@
     <div class="toc-chapter">
       <h3>Chapter XI — The Quantum Corner</h3>
       <ul class="toc-items">
-        <li><span class="soon">The double slit</span></li>
-        <li><span class="soon">Schr&ouml;dinger's cat &amp; superposition</span></li>
-        <li><span class="soon">Rutherford's gold foil</span></li>
-        <li><span class="soon">Spooky action at a distance</span></li>
+        <li><a href="#double-slit"><span class="n" style="color:var(--cyan)">36</span>The double slit</a></li>
+        <li><a href="#schrodinger-cat"><span class="n" style="color:var(--pink)">37</span>Schr&ouml;dinger's cat &amp; superposition</a></li>
+        <li><a href="#rutherford"><span class="n" style="color:var(--yellow)">38</span>Rutherford's gold foil</a></li>
+        <li><a href="#bell"><span class="n" style="color:var(--green)">39</span>Spooky action at a distance</a></li>
       </ul>
     </div>
 
@@ -238,6 +243,7 @@
         <li><a href="#grandfather"><span class="n" style="color:var(--red)">41</span>The grandfather paradox</a></li>
         <li><a href="#many-worlds"><span class="n" style="color:var(--cyan)">42</span>Everett's many worlds</a></li>
         <li><a href="#laplace"><span class="n" style="color:var(--green)">43</span>Laplace's demon &amp; the Devs question</a></li>
+        <li><a href="#determinism"><span class="n" style="color:var(--yellow)">52</span>Determined, or genuinely random?</a></li>
       </ul>
     </div>
 
@@ -2792,6 +2798,604 @@
   </section>
 
   <!-- ======================================================================
+       Sim 36 — The double slit
+       ====================================================================== -->
+  <section class="sim-section" id="double-slit" style="--accent: var(--cyan)">
+    <h2><span class="secnum">36.</span>The double slit &mdash; and why your body doesn't do it</h2>
+    <p class="kicker">Start on your own bedroom wall with a laser pointer and two razor cuts in
+      kitchen foil, measure the fringes against a real 30&nbsp;cm ruler, and then turn the source
+      down until one particle crosses the room at a time and watch the pattern refuse to go away.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+      Young did the optical version in 1804; Davisson and Germer diffracted electrons in 1927;
+      J&ouml;nsson built a literal electron double slit in 1961; Tonomura filmed single electrons
+      building the pattern up dot by dot in 1989; and buckyballs, then 25,000-amu molecules, have
+      since done the same. The duality relation V&sup2;&nbsp;+&nbsp;D&sup2;&nbsp;&le;&nbsp;1 was
+      measured directly by D&uuml;rr, Nonn and Rempe in 1998.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="doubleSlit" aria-label="A bedroom double-slit experiment with a laser pointer, a single-particle build-up screen, a which-path detector, a quantum eraser, and a comparison of everyday de Broglie wavelengths"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="doubleSlit"></div>
+    <div class="sim-readout" data-readout="doubleSlit" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1804 Young - Experiments and Calculations Relative to Physical Optics</span>
+      <span class="cit">1924 de Broglie - Recherches sur la th&eacute;orie des quanta (Researches on the Theory of Quanta)</span>
+      <span class="cit">1927 Davisson, Germer - Diffraction of Electrons by a Crystal of Nickel</span>
+      <span class="cit">1961 J&ouml;nsson - Elektroneninterferenzen an mehreren k&uuml;nstlich hergestellten Feinspalten (Electron Interference at Several Artificially Produced Fine Slits)</span>
+      <span class="cit">1978 Wheeler - The 'Past' and the 'Delayed-Choice' Double-Slit Experiment</span>
+      <span class="cit">1982 Scully, Dr&uuml;hl - Quantum eraser: A proposed photon correlation experiment concerning observation and "delayed choice" in quantum mechanics</span>
+      <span class="cit">1988 Greenberger, Yasin - Simultaneous wave and particle knowledge in a neutron interferometer</span>
+      <span class="cit">1989 Tonomura, Endo, Matsuda, Kawasaki, Ezawa - Demonstration of single-electron buildup of an interference pattern</span>
+      <span class="cit">1996 Englert - Fringe Visibility and Which-Way Information: An Inequality</span>
+      <span class="cit">1998 D&uuml;rr, Nonn, Rempe - Origin of quantum-mechanical complementarity probed by a 'which-way' experiment in an atom interferometer</span>
+      <span class="cit">1999 Arndt, Nairz, Vos-Andreae, Keller, van der Zouw, Zeilinger - Wave-particle duality of C60 molecules</span>
+      <span class="cit">2007 Jacques, Wu, Grosshans, Treussart, Grangier, Aspect, Roch - Experimental Realization of Wheeler's Delayed-Choice Gedanken Experiment</span>
+      <span class="cit">2019 Fein, Geyer, Zwick, Kia&#322;ka, Pedalino, Mayor, Gerlich, Arndt - Quantum superposition of molecules beyond 25 kDa</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--pink)">fringe spacing (&Delta;y)</dt>
+        <dd>The distance between neighbouring bright bars on the wall, &Delta;y&nbsp;=&nbsp;&lambda;L/d.
+          It is the whole experiment in one equation: measure it with a ruler, and since you know how
+          far away the wall is and how far apart the cuts are, you have measured the wavelength of
+          light. A 650&nbsp;nm pointer, cuts 0.10&nbsp;mm apart and a wall 3&nbsp;m away gives bars
+          19.5&nbsp;mm apart &mdash; comfortably visible.</dd>
+        <dt style="color:var(--orange)">the envelope</dt>
+        <dd>Each cut has a <em>width</em> as well as a position, and a single cut of width a spreads
+          light into a broad blob with its first dark ring at &lambda;L/a. The two-cut fringes live
+          inside that blob. Where a fringe lands exactly on an envelope zero, that bar goes missing
+          &mdash; a detail you can see in the sim by widening the cuts.</dd>
+        <dt style="color:var(--cyan)">de Broglie wavelength</dt>
+        <dd>&lambda;&nbsp;=&nbsp;h/p, proposed by Louis de Broglie in his 1924 thesis on nothing more
+          than symmetry: if light waves carry momentum, perhaps matter with momentum carries a wave.
+          Everything has one. A 50&nbsp;kV electron has 5.36&nbsp;pm; you, walking, have
+          6.8&times;10&#8315;&sup3;&#8310;&nbsp;m.</dd>
+        <dt style="color:var(--yellow)">visibility (V)</dt>
+        <dd>How much contrast the fringes have: 1 when the dark bands are truly dark, 0 when the wall
+          is a featureless blob. It is a measured quantity, not a metaphor &mdash; you point a
+          photometer at the wall and read it off.</dd>
+        <dt style="color:var(--orange)">distinguishability (D)</dt>
+        <dd>How reliably the apparatus <em>could</em> say which cut the particle went through &mdash;
+          whether or not anybody looks at the answer. D and V are locked together by
+          V&sup2;&nbsp;+&nbsp;D&sup2;&nbsp;&le;&nbsp;1, which is the precise, quantitative version of
+          the vague statement that "observation destroys interference".</dd>
+        <dt style="color:var(--green)">the quantum eraser</dt>
+        <dd>An arrangement in which the which-path information is stored in a second particle and can
+          later be either read or scrambled. The screen itself never shows fringes; the fringes appear
+          in the <em>subsets</em> of hits sorted by what the second particle said &mdash; and sorting
+          requires that partner's record, which travels no faster than light.</dd>
+        <dt style="color:var(--ink)">electron biprism</dt>
+        <dd>What Tonomura actually used instead of two slits: a charged wire between two earthed
+          plates that splits an electron beam and folds the halves back together. Mathematically it is
+          a double slit; practically it gives far cleaner fringes, which is why the 1989 film exists.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \Delta y = \frac{\lambda L}{d} \qquad
+         I(y) = \operatorname{sinc}^2\!\left(\frac{\pi a y}{\lambda L}\right)\left[\,1 + V\cos\frac{2\pi d y}{\lambda L}\right] \qquad
+         \lambda = \frac{h}{p} \qquad V^2 + D^2 \le 1 $$
+      <p class="eq-note">a is the width of each cut, d the distance between them, L the distance to the wall. For a 50&nbsp;keV electron the momentum must be computed relativistically &mdash; p&thinsp;c = &radic;(E<sub>k</sub>&sup2; + 2E<sub>k</sub>mc&sup2;) gives &lambda; = 5.355&nbsp;pm, where the non-relativistic formula would say 5.485&nbsp;pm.</p>
+    </div>
+
+    <div class="prose">
+      <p>Do this one. It costs the price of a laser pointer. Take a square of kitchen foil, draw a
+      razor blade across it twice, a fraction of a millimetre apart, tape it in front of the pointer,
+      turn the lights off and aim at a wall three metres away. You will not get a pair of bright
+      lines. You will get a <strong>row of bars</strong>, evenly spaced, fading out at the edges, and
+      if you hold a ruler against them and put the spacing into &Delta;y = &lambda;L/d you will have
+      measured the wavelength of visible light in your own bedroom to about two significant figures.
+      Thomas Young did this in 1804 with a candle and a card and settled a century of argument about
+      whether light was a wave.</p>
+
+      <p>None of that is quantum mechanics. Water waves through two gaps in a harbour wall do exactly
+      the same thing. The quantum part starts when you turn the source down. Send the particles
+      through <em>one at a time</em>, so slowly that the previous one has already landed before the
+      next one leaves, and every single arrival is a point &mdash; a localised flash you could put a
+      finger on. Nothing wave-like about it. Then wait. After a hundred dots you have noise. After a
+      few thousand, bands. After seventy thousand, the fringes are as sharp as the bright version.
+      <strong>No dot ever moved.</strong> The pattern was never in any individual particle; it was in
+      the statistics of where they were willing to land.</p>
+
+      <p>Tonomura's group filmed this in 1989 with 50&nbsp;kV electrons, and the numbers matter,
+      because they close the obvious escape route. Each electron crosses the apparatus in about
+      10&#8315;&#8312;&nbsp;seconds, and the gun released them roughly a thousand times a second
+      &mdash; so <strong>the previous electron had been a dot on the screen for around eighty
+      thousand transit times</strong> before the next one set off. There was never a second electron
+      in the machine. Whatever interferes, it is not one particle with another.</p>
+
+      <p>Now for the part that gets told badly. Put a detector at one of the cuts and the fringes
+      fade. The usual explanation &mdash; "the observer collapses the wavefunction", or the slightly
+      better "measuring it kicks it sideways" &mdash; is wrong, and we know it is wrong because
+      somebody checked. In 1998 D&uuml;rr, Nonn and Rempe marked which path an atom took by flipping
+      an internal state with microwaves, transferring a momentum <em>ten thousand times too small</em>
+      to smear the pattern. The fringes vanished anyway, by exactly the predicted amount. What kills
+      interference is not the kick and not the observer. It is that the information now exists. The
+      relation is quantitative: <strong>V&sup2; + D&sup2; &le; 1</strong>, and you can sit anywhere on
+      that quarter circle you like.</p>
+
+      <p>Which sets up the eraser, the most over-dramatised experiment in physics. Store the
+      which-path information in a partner particle instead of reading it, and you can decide how to
+      measure that partner <em>after</em> the first one has already hit the screen &mdash; Jacques and
+      colleagues did it in 2007 with a random number generator and a delay line. It sounds like the
+      past being rewritten. It is not, and the sim shows why in one picture: the screen itself
+      <strong>never</strong> has fringes. Not before the choice, not after it, not ever. The fringes
+      live in the two subsets of hits sorted by the partner's answer, and those two subsets are
+      shifted half a period apart so that adding them back gives exactly the featureless blob you
+      already had. Nothing was erased. A list was used &mdash; and the list has to physically arrive,
+      at light speed or slower, before you can sort anything. Section 39 is the same lesson with the
+      volume turned up.</p>
+
+      <p>Finally, the question all of this ought to raise: if everything has a wavelength, why don't
+      <em>you</em> diffract when you walk through a doorway? Because &lambda; = h/mv, and for a 70&nbsp;kg
+      person at walking pace that is <strong>6.8&times;10&#8315;&sup3;&#8310; metres</strong> &mdash;
+      about 10&#8315;&sup2;&#8304; of a proton radius. Diffraction only shows up when the wavelength is
+      comparable to the opening, so to spread out noticeably in an 0.8&nbsp;m doorway you would have to
+      walk at 10&#8315;&sup3;&#8309;&nbsp;m/s: roughly one proton width every three million years. The
+      classical world is not a different set of laws. It is the same laws with Planck's constant in
+      them, and Planck's constant is small.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 37 — Schrödinger's cat & superposition
+       ====================================================================== -->
+  <section class="sim-section" id="schrodinger-cat" style="--accent: var(--pink)">
+    <h2><span class="secnum">37.</span>Schr&ouml;dinger's cat &mdash; and how long the cat is actually "both"</h2>
+    <p class="kicker">Build the apparatus he really specified, solve for the size of the radioactive
+      speck, and then compute the thing he had no way to compute: how many seconds a cat could
+      possibly stay in a superposition. The answer is a number, and it is very small.</p>
+
+    <p class="evidence ev-partial"><span class="ev-dot"></span><strong>measured mechanism, open interpretation</strong> &mdash;
+      superposition is measured routinely, up to molecules of 25,000&nbsp;amu; decoherence is measured
+      too, on C&#8327;&#8320; molecules, by letting gas in and by heating them until they glow, and it
+      matches theory. What is <em>not</em> settled is what the mathematics is describing &mdash; why
+      one outcome happens rather than another. Three serious positions are held by serious people, and
+      the section marks where the physics stops.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="schrodingerCat" aria-label="Schrödinger's steel chamber with its radium speck, Geiger tube, hammer and flask; a decoherence-time calculator with a logarithmic timeline; a shelf of measured superposition records; and the three interpretations"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="schrodingerCat"></div>
+    <div class="sim-readout" data-readout="schrodingerCat" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1935 Einstein, Podolsky, Rosen - Can Quantum-Mechanical Description of Physical Reality Be Considered Complete?</span>
+      <span class="cit">1935 Schr&ouml;dinger - Die gegenw&auml;rtige Situation in der Quantenmechanik (The Present Situation in Quantum Mechanics)</span>
+      <span class="cit">1957 Everett - "Relative State" Formulation of Quantum Mechanics</span>
+      <span class="cit">1981 Zurek - Pointer basis of quantum apparatus: Into what mixture does the wave packet collapse?</span>
+      <span class="cit">1985 Joos, Zeh - The emergence of classical properties through interaction with the environment</span>
+      <span class="cit">1986 Ghirardi, Rimini, Weber - Unified dynamics for microscopic and macroscopic systems</span>
+      <span class="cit">1996 Brune, Hagley, Dreyer, Ma&icirc;tre, Maali, Wunderlich, Raimond, Haroche - Observing the Progressive Decoherence of the "Meter" in a Quantum Measurement</span>
+      <span class="cit">1996 Penrose - On Gravity's Role in Quantum State Reduction</span>
+      <span class="cit">1999 Arndt, Nairz, Vos-Andreae, Keller, van der Zouw, Zeilinger - Wave-particle duality of C60 molecules</span>
+      <span class="cit">2000 Friedman, Patel, Chen, Tolpygo, Lukens - Quantum superposition of distinct macroscopic states</span>
+      <span class="cit">2003 Hornberger, Uttenthaler, Brezger, Hackerm&uuml;ller, Arndt, Zeilinger - Collisional Decoherence Observed in Matter Wave Interferometry</span>
+      <span class="cit">2004 Hackerm&uuml;ller, Hornberger, Brezger, Zeilinger, Arndt - Decoherence of matter waves by thermal emission of radiation</span>
+      <span class="cit">2007 Schlosshauer - Decoherence and the Quantum-to-Classical Transition</span>
+      <span class="cit">2019 Fein, Geyer, Zwick, Kia&#322;ka, Pedalino, Mayor, Gerlich, Arndt - Quantum superposition of molecules beyond 25 kDa</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">superposition</dt>
+        <dd>A state that is a sum of others, and behaves like neither of them: |&psi;&rang; =
+          &alpha;|A&rang; + &beta;|B&rang;. It is not "we don't know which". A coin under a cup is
+          unknown; a superposition <em>interferes</em>, and the interference is what you measure to
+          prove it was one.</dd>
+        <dt style="color:var(--green)">becquerel (Bq)</dt>
+        <dd>One nuclear decay per second. Schr&ouml;dinger's sample works out at
+          1.93&times;10&#8315;&#8308;&nbsp;Bq &mdash; one decay every 87 minutes &mdash; and that
+          activity is the same whichever isotope you pick. Only the <em>mass</em> changes, from three
+          thousand atoms of polonium-210 to fifteen nanograms of uranium-238.</dd>
+        <dt style="color:var(--yellow)">decay constant (&lambda;) and half-life</dt>
+        <dd>&lambda; = ln2 / T&frac12;. The chance a given nucleus survives a time t is
+          e&#8315;&#7529;&#7511;, with no memory of how long it has already waited &mdash; the one
+          genuinely random thing in the apparatus, and the reason the cat's fate is not merely
+          unknown but undetermined.</dd>
+        <dt style="color:var(--pink)">decoherence</dt>
+        <dd>What actually happens to a superposition in the real world: the environment interacts with
+          the object, learns its state, and carries that information away, destroying the interference
+          between branches. It is ordinary Schr&ouml;dinger evolution of object <em>plus</em>
+          surroundings, with no new law added &mdash; and it is fast. For a cat in air it takes about
+          10&#8315;&sup2;&#8311;&nbsp;seconds.</dd>
+        <dt style="color:var(--orange)">the measurement problem</dt>
+        <dd>The gap decoherence does not close. After decoherence the state is still a sum over both
+          branches; it is just that they can no longer interfere. Getting from "a sum that cannot
+          interfere" to "this one happened" is the open part, and anyone who says decoherence solved
+          it has skipped a step.</dd>
+        <dt style="color:var(--red)">objective collapse (GRW, Penrose)</dt>
+        <dd>The proposal that collapse is a real physical process, added to the equations, with a rate
+          that grows with mass &mdash; negligible for an atom, instant for a cat. Unlike the other
+          interpretations this one makes different predictions: a tiny spontaneous heating and X-ray
+          emission. Underground experiments have been narrowing its parameters for twenty years.</dd>
+        <dt style="color:var(--ink)">burlesk</dt>
+        <dd>Schr&ouml;dinger's own word for the cat: <em>ridiculous</em>. He built the case to show
+          that taking the wavefunction literally leads to absurdity when a single atom is wired to
+          something the size of an animal. It was an argument against the naive picture, and it has
+          spent ninety years being quoted as though it were a claim about cats.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ P(\text{no decay in } t) = e^{-N\lambda t} = \tfrac{1}{2}
+         \;\Longrightarrow\; N\lambda = \frac{\ln 2}{3600\ \mathrm{s}} = 1.925\times 10^{-4}\ \mathrm{Bq} $$
+      $$ \tau_{\text{dec}} \;\sim\; \frac{1}{n\,\sigma\,\bar v}\,,\qquad
+         n = \frac{p}{k_BT}\,,\quad \bar v = \sqrt{\frac{8k_BT}{\pi m}}\,,\qquad
+         n_\gamma = 16\pi\zeta(3)\left(\frac{k_BT}{hc}\right)^{3} $$
+      <p class="eq-note">The first line is Schr&ouml;dinger's "perhaps one atom decays in an hour" turned into an exact sample size. The second is why the cat is never in a superposition: at 300&nbsp;K and one atmosphere, a 0.3&nbsp;m&sup2; cat is struck by 8.7&times;10&sup2;&#8310; air molecules a second, and even in a perfect vacuum by 1.2&times;10&sup2;&sup2; thermal photons a second.</p>
+    </div>
+
+    <div class="prose">
+      <p>Schr&ouml;dinger's specification is much more precise than the retellings suggest, and it is
+      worth solving. He asks for "a tiny bit of radioactive substance, so small that perhaps in the
+      course of one hour one of the atoms decays, but also, with equal probability, perhaps none".
+      That is an equation: P(no decay in one hour) = &frac12;, so N&lambda;t = ln&nbsp;2, so the
+      sample must have an activity of exactly <strong>1.93&times;10&#8315;&#8308; becquerel</strong>
+      &mdash; one decay every 87 minutes. Fix that and the mass falls out: 14 million atoms of
+      radium-226, weighing five <em>attograms</em>. A microgram of radium, already far too small to
+      see, would be a hundred and ninety million times too hot.</p>
+
+      <p>The apparatus in the sim is his, item for item: the steel chamber, the Geiger counter, the
+      relay, the hammer, the flask of hydrocyanic acid, and the cat. Shut the lid and the sim draws a
+      genuine Poisson sample at that activity. Nothing is rigged to land on a half; the half is what
+      the arithmetic forces.</p>
+
+      <p>And here is the thing almost everyone gets backwards. <strong>Schr&ouml;dinger did not
+      believe the cat was in a superposition.</strong> He called the case <em>burlesk</em> &mdash;
+      ridiculous &mdash; and constructed it to argue that something must be wrong with taking the
+      wavefunction literally, because wiring one atom to an animal produces nonsense. It was a
+      reductio, published in 1935, in the same argument and the same year as Einstein, Podolsky and
+      Rosen's paper. It has since been recited for ninety years as if it were a claim rather than a
+      complaint.</p>
+
+      <p>He also could not answer his own objection, because the answer is fifty years younger than
+      he was. It is <em>decoherence</em>, and it is arithmetic you can do on the back of an envelope.
+      A cat in a sealed box is being continuously struck by things that record where it is. Air at
+      room temperature and pressure delivers <strong>8.7&times;10&sup2;&#8310; molecular collisions per
+      second</strong> to a cat-sized cross-section, and each collision that can tell the two branch
+      positions apart carries the distinction away irreversibly. That alone puts the coherence time at
+      around 10&#8315;&sup2;&#8311;&nbsp;seconds. Pump out all the air and you have not helped much: at
+      300&nbsp;K the walls of the box glow in the infrared, and those photons deliver another
+      10&sup2;&sup2; hits a second. The shortest interval anyone has ever measured is an attosecond,
+      10&#8315;&sup9;&nbsp;&times;&nbsp;10&#8315;&sup9;&nbsp;s. The cat's superposition is a hundred
+      million times shorter than <em>that</em>. Schr&ouml;dinger's hour never gets started.</p>
+
+      <p>This is a mechanism, not an excuse, and the difference matters: it has been measured. Let gas
+      into a molecule interferometer and the fringes die off exponentially with pressure, exactly as
+      the collision model says (Hornberger 2003). Heat the molecules until they radiate infrared
+      &mdash; so that they announce their own position to the room &mdash; and the fringes die again at
+      the predicted temperature (Hackerm&uuml;ller 2004). Haroche's group went further and simply
+      <em>watched</em> a small cat state decohere in a microwave cavity, at the predicted rate, one
+      leaking photon at a time. That is a Nobel Prize's worth of evidence that the quantum-to-classical
+      boundary is not a wall but a rate.</p>
+
+      <p>So where does that leave the line between quantum and classical? Not where people put it. The
+      axis is not mass; it is <strong>isolation</strong>. A buckyball with sixty carbon atoms
+      interferes with itself. So does a molecule of twenty-five thousand atomic mass units, about two
+      thousand atoms, with a de Broglie wavelength a thousand times smaller than the molecule. So does
+      a superconducting loop the width of a hair carrying ten billion electrons in both directions at
+      once. What those all have in common is not that they are small &mdash; the loop is visible under
+      a microscope &mdash; but that they are cold, in vacuum, and left alone. A live cat is a warm
+      chemical reactor radiating about ten watts of infrared. It is its own environment. That is the
+      physical content of "you cannot do it", and it is a far more interesting answer than "big things
+      are classical".</p>
+
+      <p>One last piece of honesty, because this is the section where it matters most. Decoherence
+      explains why you never <em>see</em> a superposition. It does not explain why you see one
+      outcome. After decoherence the state still contains both branches; what has changed is only that
+      they can no longer interfere. Crossing from "a sum that cannot interfere" to "this one happened"
+      is the measurement problem, and it is open. There are three serious positions &mdash; no collapse
+      and both branches real (Everett, and section 42), a genuine extra collapse process that is
+      mass-dependent and <em>experimentally testable</em>, and the view that the state was never a
+      thing in the first place. The mathematics is agreed and the predictions match to fourteen decimal
+      places. What is being described is not agreed. That is where physics currently stops, and saying
+      so out loud is more useful than picking a side and calling it settled.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 38 — Rutherford's gold foil
+       ====================================================================== -->
+  <section class="sim-section" id="rutherford" style="--accent: var(--yellow)">
+    <h2><span class="secnum">38.</span>Rutherford's gold foil &mdash; the afternoon the atom got a nucleus</h2>
+    <p class="kicker">Sit in the dark in Manchester in 1909, swing the microscope arm to any angle,
+      and count the flashes yourself. Then watch the plum-pudding model get deleted by a factor no
+      adjustment could reach &mdash; and find out why the table still holds your hand up.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+      Geiger and Marsden counted scintillations by eye for years; the 1/sin&#8308;(&theta;/2) law was
+      confirmed in 1913 across a rate range of about 250,000 to one, and every count rate the sim
+      reports comes from that cross-section with the apparatus constants stated on the canvas. The
+      trajectories are integrated from the Coulomb force and checked against the exact
+      tan(&theta;/2)&nbsp;=&nbsp;D/2b.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="rutherford" aria-label="The 1909 Geiger–Marsden apparatus with a rotating microscope arm and live scintillation counting, a side-by-side comparison of the Thomson and Rutherford atoms with integrated trajectories, a stadium scale model, and the contact between a hand and a table"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="rutherford"></div>
+    <div class="sim-readout" data-readout="rutherford" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1904 Thomson - On the Structure of the Atom: an Investigation of the Stability and Periods of Oscillation of a number of Corpuscles arranged at equal intervals around the Circumference of a Circle</span>
+      <span class="cit">1909 Geiger, Marsden - On a Diffuse Reflection of the &alpha;-Particles</span>
+      <span class="cit">1911 Rutherford - The Scattering of &alpha; and &beta; Particles by Matter and the Structure of the Atom</span>
+      <span class="cit">1913 Geiger, Marsden - The Laws of Deflexion of &alpha; Particles through Large Angles</span>
+      <span class="cit">1913 Bohr - On the Constitution of Atoms and Molecules</span>
+      <span class="cit">1919 Rutherford - Collision of &alpha; Particles with Light Atoms. IV. An Anomalous Effect in Nitrogen</span>
+      <span class="cit">1967 Dyson, Lenard - Stability of Matter. I</span>
+      <span class="cit">1975 Lieb, Thirring - Bound for the Kinetic Energy of Fermions Which Proves the Stability of Matter</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">distance of closest approach (D)</dt>
+        <dd>How near a head-on &alpha; gets before the Coulomb repulsion turns it around:
+          D&nbsp;=&nbsp;Z&#8321;Z&#8322;e&sup2;/4&pi;&epsilon;&#8320;E. For a 7.68&nbsp;MeV &alpha; on
+          gold it is 29.6&nbsp;fm &mdash; four times the radius of the gold nucleus, which is why the
+          formula is pure electrostatics and works.</dd>
+        <dt style="color:var(--yellow)">impact parameter (b)</dt>
+        <dd>How far off-centre the &alpha; is aimed. It fixes the deflection exactly:
+          tan(&theta;/2)&nbsp;=&nbsp;D/2b. Aim within D/2 = 14.8&nbsp;fm of the nucleus and the
+          particle comes back past 90&deg;.</dd>
+        <dt style="color:var(--pink)">cross-section and the barn</dt>
+        <dd>The effective target area for some outcome. Backscattering off gold has a cross-section of
+          6.9&nbsp;barn, where one barn is 10&#8315;&sup2;&#8312;&nbsp;m&sup2; &mdash; a unit named,
+          with heavy irony, because a nucleus is about as easy to hit as the broad side of one.</dd>
+        <dt style="color:var(--green)">plum pudding model</dt>
+        <dd>Thomson's 1904 atom: electrons embedded in a sphere of smeared-out positive charge filling
+          the whole atom. It was a serious, quantitative model &mdash; and it predicts a maximum
+          single-atom deflection of about 0.013&deg;, which is what kills it.</dd>
+        <dt style="color:var(--orange)">multiple (compound) scattering</dt>
+        <dd>The defence Thomson's model needed: thousands of tiny deflections adding up as a random
+          walk, &theta;<sub>rms</sub> = &theta;&#8321;&radic;N. It gives about 1&deg; across a foil,
+          and the odds of ever reaching 90&deg; are around 1 in 10&sup3;&#8304;&#8304;&#8304; &mdash;
+          not a poor fit, an impossibility.</dd>
+        <dt style="color:var(--red)">scintillation</dt>
+        <dd>The tiny flash of light a zinc-sulphide screen makes when a single &alpha; particle hits
+          it. Geiger and Marsden counted these by eye, in a blacked-out room, after half an hour of
+          dark adaptation, for hours at a stretch. Every data point in the 1913 paper is a human being
+          saying "there".</dd>
+        <dt style="color:var(--ink)">Pauli exclusion principle</dt>
+        <dd>No two electrons may occupy the same quantum state. It is the reason matter is
+          <em>stiff</em> rather than merely repulsive, the reason your hand does not go through the
+          table, and &mdash; scaled up &mdash; the reason a white dwarf can hold itself against
+          gravity (section 23).</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ \frac{d\sigma}{d\Omega} = \left(\frac{D}{4}\right)^{\!2}\frac{1}{\sin^{4}(\theta/2)}\,,
+         \qquad D = \frac{Z_1 Z_2 e^{2}}{4\pi\varepsilon_0 E}\,,
+         \qquad \tan\frac{\theta}{2} = \frac{D}{2b} $$
+      $$ R(\theta) = N_0\,(nt)\,\frac{d\sigma}{d\Omega}\,\Delta\Omega
+         \qquad\qquad
+         \theta_{\text{rms}}^{\text{Thomson}} = \frac{D}{R_{\text{atom}}}\sqrt{\frac{t}{2R_{\text{atom}}}} $$
+      <p class="eq-note">The first line is Rutherford's 1911 result; the second turns it into flashes per minute, and gives Thomson's random walk for comparison. For 7.68&nbsp;MeV &alpha; on 1&nbsp;&micro;m of gold: &sigma;(&theta;&nbsp;&gt;&nbsp;90&deg;) = 6.89&nbsp;barn, so about 1 &alpha; in 24,600 comes back.</p>
+    </div>
+
+    <div class="prose">
+      <p>The apparatus was small enough to fit on a bench, and the room was dark. A speck of radium in
+      a lead block, a tube to collimate the &alpha; particles it threw out, a leaf of gold foil, and a
+      screen of zinc sulphide on a swinging arm with a microscope over it &mdash; all inside an
+      evacuated brass chamber. Hans Geiger and Ernest Marsden let their eyes adapt for half an hour,
+      put an eye to the eyepiece, and counted flashes. One flash, one &alpha; particle. For years.</p>
+
+      <p>Swing the arm in the sim and the count rate is not decoration: it is
+      (D/4)&sup2;/sin&#8308;(&theta;/2) with the apparatus constants written on the canvas, and the
+      flashes arrive as genuine Poisson events at that rate. At 5&deg; you get tens of thousands a
+      minute. At 30&deg;, about forty. At 150&deg;, <strong>one every four and a half
+      minutes</strong>. That spread &mdash; a factor of a quarter of a million across the arc, every
+      point of it on a 1/sin&#8308;(&theta;/2) curve &mdash; is the whole discovery, and Geiger and
+      Marsden spent 1913 confirming exactly that shape, by eye, one flash at a time.</p>
+
+      <p>What made it a discovery rather than a curve is the second panel. In Thomson's atom the
+      positive charge is spread through the entire sphere, so the strongest kick any single atom can
+      deliver is D/R<sub>atom</sub> &asymp; <strong>0.013&deg;</strong>. (The sim integrates the actual
+      equation of motion inside a uniformly charged sphere and gets the same answer at grazing
+      incidence, which is how you know neither number is a fudge.) Crossing a couple of microns of foil
+      an &alpha; meets a few thousand atoms, and the deflections add in quadrature, giving about one
+      degree. The chance a random walk of that size ever reaches 90&deg; is roughly
+      exp(&minus;(90/1)&sup2;) &mdash; somewhere around <strong>1 in
+      10&sup3;&#8304;&#8304;&#8304;</strong>. Rutherford ran the same comparison in 1911 and put it at
+      about 10&#8315;&sup3;&#8309;&#8304;&#8304;.</p>
+
+      <p>Read that exponent again, because it is the point. There are perhaps 10&#8312;&#8304; atoms in
+      the observable universe. This is not a model fitting badly; it is a model being <em>deleted</em>,
+      by a margin no amount of adjustment could ever cross. And Geiger and Marsden had already seen the
+      backscattering &mdash; about one &alpha; in eight thousand off a thick platinum reflector, in
+      1909. Rutherford said it was as if you had fired a fifteen-inch shell at a sheet of tissue paper
+      and it had come back and hit you.</p>
+
+      <p>What replaced it was uncomfortably specific: all the positive charge, and 99.98% of the mass,
+      packed into a volume about 10&#8315;&sup1;&sup3; of the atom. Blow a gold atom up until its
+      nucleus is a grain of rice on the centre spot of a football pitch and the nearest electron is
+      <strong>ninety-odd metres away, in the back row of the stands</strong> &mdash; and that grain of
+      rice still outweighs the entire stadium by a factor of four thousand. It also broke classical
+      physics immediately: an electron orbiting a point charge radiates, and should spiral in within
+      about 10&#8315;&sup1;&sup1;&nbsp;seconds. Rutherford's atom cannot survive a nanosecond under
+      Maxwell's equations. Bohr patched it in 1913 by quantising the orbits, the patch worked
+      beautifully, and nobody could say <em>why</em> until Schr&ouml;dinger and Heisenberg.</p>
+
+      <p>Which leaves the question every reader asks and almost every explanation gets wrong: if atoms
+      are that empty, why doesn't your hand go through the table? Not because the atoms are solid, and
+      not simply because "the electrons repel". Electrostatic repulsion is real but it is the smaller
+      half; on its own it would make matter springy and compressible. The reason matter is
+      <strong>stiff</strong> is the Pauli exclusion principle: pushing two filled electron clouds into
+      the same space would require promoting electrons into higher, faster states, and that costs an
+      enormous amount of energy. It is the same effect that holds a white dwarf up against its own
+      gravity, and it is not a hand-wave &mdash; that ordinary matter does not simply collapse was an
+      open problem until Dyson and Lenard proved it in 1967. Without exclusion, the energy of matter
+      would grow as N&#8309;&#8407;&sup5; instead of N and pouring a glass of water would go off like a
+      bomb. Nothing ever touches anything. Every sensation of touch you have had in your life is two
+      electron clouds refusing to share a state, reported by a nerve.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 39 — Spooky action at a distance
+       ====================================================================== -->
+  <section class="sim-section" id="bell" style="--accent: var(--green)">
+    <h2><span class="secnum">39.</span>Spooky action at a distance &mdash; what Bell actually proved</h2>
+    <p class="kicker">Two labs at either end of a street. Turn Alice's dial and watch absolutely
+      nothing happen at Bob's end &mdash; then carry the notebooks to a table in the middle, and find
+      the thing that no local theory can produce, no matter how clever.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+      Bell's inequality has been violated in every competent test since Freedman and Clauser in 1972.
+      Aspect, Grangier and Roger measured S&nbsp;=&nbsp;2.697&nbsp;&plusmn;&nbsp;0.015 in 1982, which
+      is forty-six standard deviations past the local limit of 2; in 2015 three groups closed the
+      remaining loopholes simultaneously. The 2022 Nobel Prize went to Aspect, Clauser and Zeilinger.
+      The <em>interpretation</em> &mdash; which of local realism's assumptions to drop &mdash; is a
+      live disagreement, and the section says so.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="bell" aria-label="Two laboratories at either end of a street connected by a buried fibre, with each detector's clicks shown as pure noise; the two notebooks compared on a café table; a CHSH scoreboard with measured results; and an explicit local hidden-variable model running alongside the quantum one"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="bell"></div>
+    <div class="sim-readout" data-readout="bell" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1935 Einstein, Podolsky, Rosen - Can Quantum-Mechanical Description of Physical Reality Be Considered Complete?</span>
+      <span class="cit">1964 Bell - On the Einstein Podolsky Rosen Paradox</span>
+      <span class="cit">1969 Clauser, Horne, Shimony, Holt - Proposed Experiment to Test Local Hidden-Variable Theories</span>
+      <span class="cit">1972 Freedman, Clauser - Experimental Test of Local Hidden-Variable Theories</span>
+      <span class="cit">1980 Ghirardi, Rimini, Weber - A general argument against superluminal transmission through the quantum mechanical measurement process</span>
+      <span class="cit">1982 Aspect, Grangier, Roger - Experimental Realization of Einstein-Podolsky-Rosen-Bohm Gedankenexperiment: A New Violation of Bell's Inequalities</span>
+      <span class="cit">1982 Aspect, Dalibard, Roger - Experimental Test of Bell's Inequalities Using Time-Varying Analyzers</span>
+      <span class="cit">1982 Wootters, Zurek - A Single Quantum Cannot Be Cloned</span>
+      <span class="cit">1993 Bennett, Brassard, Cr&eacute;peau, Jozsa, Peres, Wootters - Teleporting an unknown quantum state via dual classical and Einstein-Podolsky-Rosen channels</span>
+      <span class="cit">2015 Hensen et al. - Loophole-free Bell inequality violation using electron spins separated by 1.3 kilometres</span>
+      <span class="cit">2015 Giustina et al. - Significant-Loophole-Free Test of Bell's Theorem with Entangled Photons</span>
+      <span class="cit">2015 Shalm et al. - Strong Loophole-Free Test of Local Realism</span>
+      <span class="cit">2017 Yin et al. - Satellite-based entanglement distribution over 1200 kilometers</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">entanglement</dt>
+        <dd>Two particles described by a single joint state that cannot be written as one state for
+          each. Neither has a polarisation of its own; only the <em>pair</em> has a property, and that
+          property is "these two will disagree". Nothing about it lets either half be used as a
+          transmitter.</dd>
+        <dt style="color:var(--green)">no-signalling</dt>
+        <dd>The theorem that nothing Alice does to her particle can change any statistic Bob can
+          measure on his. It is provable in two lines and it is why entanglement does not contradict
+          relativity. In the sim it is the first thing you see: both columns are exactly 50/50 at
+          every angle, whatever the other dial is doing.</dd>
+        <dt style="color:var(--pink)">local hidden variables</dt>
+        <dd>Einstein's proposal, made concrete: each pair carries some property &lambda; fixed at the
+          source &mdash; the sealed envelopes in the sim &mdash; and each detector's answer depends on
+          &lambda; and its own setting only. It is a completely reasonable idea. Bell showed it is
+          measurably wrong.</dd>
+        <dt style="color:var(--yellow)">the correlation E(a,b)</dt>
+        <dd>How often the two answers agree minus how often they disagree, at settings a and b.
+          Quantum mechanics says &minus;cos&nbsp;2(a&minus;b); the best local model says a triangle.
+          They touch at 0&deg;, 45&deg; and 90&deg; and differ by at most 0.207 in between &mdash;
+          and that 0.207 is the whole of Bell's theorem.</dd>
+        <dt style="color:var(--orange)">CHSH and the number S</dt>
+        <dd>The practical form of Bell's inequality, from Clauser, Horne, Shimony and Holt in 1969:
+          four settings, four correlations, one number
+          S&nbsp;=&nbsp;|E(a,b)&nbsp;&minus;&nbsp;E(a,b&prime;)&nbsp;+&nbsp;E(a&prime;,b)&nbsp;+&nbsp;E(a&prime;,b&prime;)|.
+          Any local theory is capped at 2. Quantum mechanics reaches 2&radic;2 = 2.828.</dd>
+        <dt style="color:var(--red)">Tsirelson's bound</dt>
+        <dd>The <em>other</em> limit: quantum mechanics cannot exceed 2&radic;2 either. Correlations up
+          to 4 would still be consistent with no-signalling, and nature does not use them. Why it stops
+          exactly at 2&radic;2 is an open and rather deep question.</dd>
+        <dt style="color:var(--ink)">the loopholes</dt>
+        <dd>Three ways a stubborn local theory could have survived: the two labs not far enough apart
+          for the settings to be causally isolated (locality), too few particles detected for the
+          sample to be fair (detection), and the setting choices not truly independent of the source
+          (freedom of choice). Each was closed separately over thirty years, and all three at once in
+          2015.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ E(a,b) = -\cos 2(a-b) \qquad\qquad
+         P(\text{agree}) = \sin^{2}(a-b) $$
+      $$ S = \bigl|\,E(a,b) - E(a,b') + E(a',b) + E(a',b')\,\bigr| \;\le\; 2
+         \quad\text{(any local theory)}, \qquad
+         S^{\text{QM}}_{\max} = 2\sqrt{2} = 2.8284 $$
+      <p class="eq-note">The bound is bookkeeping, not physics: if every particle carries an answer for every setting, then for each individual pair A(a)B(b) &minus; A(a)B(b&prime;) + A(a&prime;)B(b) + A(a&prime;)B(b&prime;) is exactly &plusmn;2, since each A and B is &plusmn;1 &mdash; and an average of numbers that are each &plusmn;2 cannot exceed 2. The maximum is reached at a = 0&deg;, a&prime; = 45&deg;, b = 22.5&deg;, b&prime; = 67.5&deg;.</p>
+    </div>
+
+    <div class="prose">
+      <p>Almost every picture of this experiment is drawn wrongly, with a signal leaping between the
+      two detectors &mdash; so this section starts from the opposite end. Two labs, one at each end of
+      a street, a fibre in a trench between them, and a source in a shed in the middle sending one
+      photon each way. Turn Alice's dial to anything you like and watch Bob's column. It does not
+      change. It cannot change: his fraction of "+" is exactly one half at every angle, for every
+      choice she could ever make. Each detector on its own is a perfect coin toss, and a coin toss
+      carries no message.</p>
+
+      <p>That is the <strong>no-signalling theorem</strong>, it is two lines of algebra, and it is why
+      entanglement does not contradict relativity. If Alice could shift Bob's statistics by turning a
+      knob she could send Morse code faster than light. She cannot. The result has a close relative:
+      if Bob could copy his photon he could measure the copies and read her setting &mdash; and
+      Wootters and Zurek proved in 1982 that copying an unknown quantum state is impossible.</p>
+
+      <p>So where is the famous weirdness? Not in either column. It is in the <em>relationship</em>
+      between the columns, and a relationship between two lists is invisible from inside either one.
+      To see it, somebody has to physically carry a notebook down the street. Line the rows up and set
+      both dials to the same angle: every single row is opposite. Thousands of them, no exceptions.
+      That is what Einstein, Podolsky and Rosen wrote about in 1935, and their objection was an
+      excellent one. If measuring Alice's photon tells you Bob's with certainty and no signal passed,
+      surely Bob's answer was already decided when the pair left the source &mdash; a property the
+      photons carried all along, which quantum mechanics simply fails to describe. Call it an element
+      of reality. Nobody had a way to test that for twenty-nine years.</p>
+
+      <p>John Bell found one in 1964, and the argument is so simple it is almost annoying. Suppose
+      each photon does carry answers for every dial setting it might meet. Then for any individual
+      pair, the combination A(a)B(b) &minus; A(a)B(b&prime;) + A(a&prime;)B(b) + A(a&prime;)B(b&prime;)
+      is <strong>exactly &plusmn;2</strong> &mdash; you can check it by hand in four lines, since every
+      term is &plusmn;1. And an average of numbers that are each &plusmn;2 cannot exceed 2. No physics
+      is assumed. No mechanism. Only that the answers exist, and that each side's answer does not
+      depend on the other side's setting. Quantum mechanics predicts <strong>2&radic;2 =
+      2.828</strong>, and the fourth panel of the sim runs the best possible local model right beside
+      the quantum one, on the same dials and the same random draws, so you can watch the pink bar hit
+      its ceiling while the cyan one goes through.</p>
+
+      <p>The local model in that panel is not a straw man. It is the honest best case: each pair leaves
+      carrying a hidden angle &lambda; &mdash; the sealed envelopes &mdash; and each detector opens its
+      own envelope and answers from &lambda; and its own dial alone. It reproduces the perfect 50/50
+      marginals. It reproduces the perfect anti-correlation at equal angles, so it explains the entire
+      EPR argument. And at 22.5&deg; it gives &minus;0.500 where nature gives &minus;0.707. That gap,
+      0.207 wide, is the whole thing.</p>
+
+      <p>It has been measured for fifty years and it keeps coming out the same. Freedman and Clauser
+      got 2.46 &plusmn; 0.13 in 1972. Aspect, Grangier and Roger got 2.697 &plusmn; 0.015 in 1982
+      &mdash; forty-six sigma &mdash; and in the same year Aspect, Dalibard and Roger switched the
+      analysers <em>while the photons were in flight</em>, so no setting could have been known at the
+      source. In 2015 three groups closed the last loopholes at once, using electron spins 1.3&nbsp;km
+      apart and detectors efficient enough that no fair-sampling excuse survived. In 2017 a satellite
+      distributed entangled pairs to ground stations 1,200&nbsp;km apart. The 2022 Nobel Prize went to
+      Aspect, Clauser and Zeilinger.</p>
+
+      <p>What that does <em>not</em> mean is that a signal passed &mdash; the first panel rules that
+      out permanently. What it means is that at least one of three assumptions has to go: that the
+      outcomes existed before measurement, that each outcome depends only on its own side's setting, or
+      that the experimenters' choices were independent of the source. Most physicists surrender the
+      first. Bohmians surrender the second and accept an explicit non-locality that still, provably,
+      cannot signal. Superdeterminism surrenders the third and has never been turned into a working
+      theory. Reasonable people take different exits. Nobody gets to keep all three, and that &mdash;
+      not any story about telepathy between particles &mdash; is what Bell proved.</p>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================
        Sim 40 — Gödel's rotating universe
        ====================================================================== -->
   <section class="sim-section" id="godel" style="--accent: var(--orange)">
@@ -3117,6 +3721,211 @@
   <!-- ======================================================================
        The Library
        ====================================================================== -->
+  <!-- ======================================================================
+       Sim 52 — Determined or random?
+       ====================================================================== -->
+  <section class="sim-section" id="determinism" style="--accent: var(--yellow)">
+    <h2><span class="secnum">52.</span>Determined, or genuinely random? &mdash; the experiments that narrowed it down</h2>
+    <p class="kicker">Section 43 asks whether the future can be <em>predicted</em>. This one asks the
+      harder question underneath: whether it is already <em>decided</em> &mdash; and answers it with
+      the apparatus. The radioactive source on your own ceiling, every published Bell measurement
+      plotted with its error bar, the grid of which machine shut which escape route, two quasars used
+      as a random number generator, and the detector under a mountain still hunting for real
+      randomness.</p>
+
+    <p class="evidence ev-partial"><span class="ev-dot"></span><strong>measured eliminations, open verdict</strong> &mdash;
+      each elimination on this page is a real experiment with a real result: Bell/Aspect/2015 for
+      local hidden variables, Kochen&ndash;Specker/Kirchmair&nbsp;2009 for non-contextual ones,
+      Leggett/Gr&ouml;blacher&nbsp;2007 for a class of non-local realism. But <em>no experiment has
+      shown the world is random, and none has shown it is determined</em>. Two never-refuted
+      deterministic theories are still standing. Anyone who tells you Bell settled this has skipped a
+      step, and the section says so throughout.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="determinism" aria-label="A smoke alarm on a hallway ceiling emitting real exponentially-distributed decays, a plot of every published Bell measurement with its error bar against the local bound, a grid of which experiment closed which loophole, a mountain-top observatory taking its detector settings from two quasars, a certified-randomness bench with its assumptions printed on a certificate, and the Gran Sasso germanium detector hunting for spontaneous collapse radiation"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="determinism"></div>
+    <div class="sim-readout" data-readout="determinism" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1952 Bohm - A Suggested Interpretation of the Quantum Theory in Terms of "Hidden" Variables. I and II</span>
+      <span class="cit">1957 Everett - "Relative State" Formulation of Quantum Mechanics</span>
+      <span class="cit">1964 Bell - On the Einstein Podolsky Rosen Paradox</span>
+      <span class="cit">1967 Kochen, Specker - The Problem of Hidden Variables in Quantum Mechanics</span>
+      <span class="cit">1982 Aspect, Grangier, Roger - Experimental Realization of Einstein-Podolsky-Rosen-Bohm Gedankenexperiment: A New Violation of Bell's Inequalities</span>
+      <span class="cit">1986 Ghirardi, Rimini, Weber - Unified dynamics for microscopic and macroscopic systems</span>
+      <span class="cit">1996 Penrose - On Gravity's Role in Quantum State Reduction</span>
+      <span class="cit">1998 Weihs, Jennewein, Simon, Weinfurter, Zeilinger - Violation of Bell's Inequality under Strict Einstein Locality Conditions</span>
+      <span class="cit">2001 Rowe, Kielpinski, Meyer, Sackett, Itano, Monroe, Wineland - Experimental violation of a Bell's inequality with efficient detection</span>
+      <span class="cit">2015 Giustina et al. - Significant-Loophole-Free Test of Bell's Theorem with Entangled Photons</span>
+      <span class="cit">2015 Shalm et al. - Strong Loophole-Free Test of Local Realism</span>
+      <span class="cit">1972 Freedman, Clauser - Experimental Test of Local Hidden-Variable Theories</span>
+      <span class="cit">2003 Leggett - Nonlocal Hidden-Variable Theories and Quantum Mechanics: An Incompatibility Theorem</span>
+      <span class="cit">2006 Conway, Kochen - The Free Will Theorem</span>
+      <span class="cit">2007 Gr&ouml;blacher, Paterek, Kaltenbaek, Brukner, &#379;ukowski, Aspelmeyer, Zeilinger - An experimental test of non-local realism</span>
+      <span class="cit">2009 Kirchmair, Z&auml;hringer, Gerritsma, Kleinmann, G&uuml;hne, Cabello, Blatt, Roos - State-independent experimental test of quantum contextuality</span>
+      <span class="cit">2010 Pironio et al. - Random numbers certified by Bell's theorem</span>
+      <span class="cit">2011 Colbeck, Renner - No extension of quantum theory can have improved predictive power</span>
+      <span class="cit">2012 Pusey, Barrett, Rudolph - On the reality of the quantum state</span>
+      <span class="cit">2015 Hensen et al. - Loophole-free Bell inequality violation using electron spins separated by 1.3 kilometres</span>
+      <span class="cit">2016 't Hooft - The Cellular Automaton Interpretation of Quantum Mechanics</span>
+      <span class="cit">2017 Handsteiner et al. - Cosmic Bell Test: Measurement Settings from Milky Way Stars</span>
+      <span class="cit">2018 Rauch et al. - Cosmic Bell Test Using Random Measurement Settings from High-Redshift Quasars</span>
+      <span class="cit">2018 BIG Bell Test Collaboration - Challenging local realism with human choices</span>
+      <span class="cit">2018 Bierhorst et al. - Experimentally generated randomness certified by the impossibility of superluminal signals</span>
+      <span class="cit">2021 Donadi, Piscicchia, Curceanu, Di&oacute;si, Laubenstein, Bassi - Underground test of gravity-related wave function collapse</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--yellow)">determinism</dt>
+        <dd>The claim that the state of the world at one moment fixes it at every other. Note what it
+          is <em>not</em>: it is not the claim that anyone could calculate the answer. A chaotic
+          pendulum is perfectly determined and hopeless to predict &mdash; that is section 43.
+          Determined and predictable are different questions, and this section is about the first one.</dd>
+        <dt style="color:var(--orange)">hidden variables</dt>
+        <dd>Any extra facts the world might carry that quantum mechanics leaves out, which would make
+          the outcomes fixed in advance. The experiments have not killed hidden variables. They have
+          killed particular <em>kinds</em>: local ones, and non-contextual ones.</dd>
+        <dt style="color:var(--cyan)">contextuality</dt>
+        <dd>Whether an outcome can depend on <em>what else</em> you chose to measure alongside it.
+          Kochen and Specker proved in 1967 that hidden variables must be contextual &mdash; the
+          answer cannot be a simple pre-written property of the particle, even if you allow it to be
+          non-local. Confirmed with trapped ions in 2009.</dd>
+        <dt style="color:var(--green)">Bohmian mechanics</dt>
+        <dd>A complete, fully deterministic theory of quantum phenomena from 1952: real particles with
+          real trajectories, guided by a wave. It reproduces every quantum prediction exactly and has
+          never been refuted by any experiment. Its price is explicit non-locality &mdash; which,
+          being non-signalling, breaks nothing.</dd>
+        <dt style="color:var(--orange)">superdeterminism</dt>
+        <dd>The escape Bell cannot close: if the experimenters' setting choices are themselves
+          correlated with the hidden variables, the theorem does not apply. Unfalsifiable in
+          principle. The cosmic Bell tests answer it not by refuting it but by making it more
+          expensive &mdash; the correlation would have had to be arranged over 7.8 billion years ago.</dd>
+        <dt style="color:var(--pink)">certified randomness</dt>
+        <dd>Random bits whose unpredictability is <em>proved</em> from a measured Bell violation
+          rather than assumed from a good-looking generator. The guarantee is exact:
+          P<sub>guess</sub> = &frac12; + &frac12;&radic;(2 &minus; S&sup2;/4). It is conditional on
+          the experiment's assumptions, and it is a working technology.</dd>
+        <dt style="color:var(--red)">objective collapse</dt>
+        <dd>Theories that add a real, random, physical collapse to the equations &mdash; so they are
+          not interpretations but rival theories, and they predict things standard quantum mechanics
+          forbids: a faint spontaneous glow of X-rays from ordinary matter. That is measurable, and it
+          is being measured under a mountain.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ P(\text{no decay in } t) = e^{-\lambda N t} \qquad\text{(memoryless — both stories predict it)} $$
+      $$ P_{\text{guess}}(S) = \tfrac{1}{2} + \tfrac{1}{2}\sqrt{2 - \tfrac{S^{2}}{4}}\,,
+         \qquad \text{certified bits} = -\log_2 P_{\text{guess}} $$
+      $$ t_{\text{lookback}}(z) = \frac{1}{H_0}\int_0^{z}\frac{dz'}{(1+z')\sqrt{\Omega_m(1+z')^3+\Omega_\Lambda}} $$
+      <p class="eq-note">The middle line is the device-independent randomness bound: 0 bits at the local limit S = 2, and exactly 1 bit at Tsirelson's S = 2&radic;2. The last line, with Planck 2018 values, gives the quasars of the 2018 cosmic Bell test lookback times of 12.22 and 5.87 billion years.</p>
+    </div>
+
+    <div class="prose">
+      <p>There is a radioactive source on your ceiling. An ionisation smoke alarm contains about a
+      microcurie of americium-241 &mdash; roughly <strong>0.29 micrograms</strong>, some
+      7&times;10&sup1;&#8308; atoms &mdash; throwing out <strong>37,000 alpha particles every
+      second</strong>, one every 27 microseconds, and it has been doing so above your head since the
+      day it was fitted. Each of those emissions happens at a particular moment. The question this
+      section is about is whether that moment <em>was already fixed</em>.</p>
+
+      <p>Start with the bad news, because it explains why the rest of this took a century. You cannot
+      answer that by watching. Radioactive decay is <strong>memoryless</strong>: a nucleus that has
+      sat there for a thousand years is exactly as likely to go in the next second as a brand new one.
+      A world with hidden clockwork ticking inside every nucleus and a world where the moment is
+      genuinely undecided produce <em>the same distribution of clicks, forever</em>. No counter, run
+      for no matter how long, can tell them apart. Staring harder at randomness never works.</p>
+
+      <p>What Bell found in 1964 is the way around that: a situation where "the answers existed in
+      advance" implies something <strong>arithmetically different</strong> from what quantum mechanics
+      predicts &mdash; not a different feeling, a different number. That is section 39, and the number
+      has been measured many times over.</p>
+
+      <p>Now the correction that this whole section exists to make, because it is stated wrongly
+      almost everywhere. <strong>Bell did not prove the universe is random.</strong> Bell's theorem
+      rules out hidden variables that are <em>local</em>. Give up locality and determinism survives
+      completely intact &mdash; which is exactly what Bohmian mechanics does: real particles, real
+      trajectories, no dice anywhere in the theory, every quantum prediction reproduced exactly, never
+      refuted by any experiment in seventy years. Everett's many worlds is deterministic too, and more
+      so: nothing but the Schr&ouml;dinger equation, unitary and reversible, with no collapse and no
+      randomness in the equations at all. <strong>Two of the three most-discussed accounts of quantum
+      mechanics are strictly deterministic theories.</strong></p>
+
+      <p>That said, the eliminations are real and there are a lot of them. Local hidden variables:
+      dead. Non-contextual hidden variables &mdash; answers fixed in advance <em>and</em> independent
+      of what else you choose to measure alongside &mdash; dead even if you allow non-locality
+      (Kochen and Specker proved it in 1967; Kirchmair and colleagues measured it with trapped ions in
+      2009). A broad class of non-local realism: dead (Leggett 2003, measured by Gr&ouml;blacher 2007).
+      "The wavefunction is only information about our knowledge": heavily constrained (Pusey, Barrett
+      and Rudolph, 2012). Each of those closed off a specific way the world could have been quietly
+      pre-decided, and none of them came back.</p>
+
+      <p>Which leaves one deterministic escape route that Bell genuinely cannot close, and it deserves
+      to be stated fairly rather than mocked. Bell's argument assumes the experimenters' choice of
+      settings is independent of whatever the particles are carrying. Deny that &mdash; let the
+      settings and the hidden variables share a common cause &mdash; and the theorem never applies.
+      This is <strong>superdeterminism</strong>, and Gerard 't Hooft has pursued it seriously. It
+      cannot be refuted, because any correlation you point at could always have been arranged.</p>
+
+      <p>So instead of refuting it, physicists made it expensive. If you choose your detector settings
+      using something that made its mind up a long time ago and a long way away, then any conspiracy
+      has to have been set up before that. In 2017 Handsteiner and colleagues used the colour of light
+      from Milky Way stars, pushing the common cause back six centuries. In 2018 Rauch and colleagues
+      pointed two telescopes at <strong>two quasars</strong>, at redshifts 3.911 and 0.5952, whose
+      light had been in flight for 12.2 and 5.9 billion years. The inequality was still violated. Any
+      local hidden-variable model must now have had its settings fixed <strong>more than 7.8 billion
+      years ago</strong> &mdash; excluding 96% of the space-time volume of the experiment's past light
+      cone. The escape hatch is still open. It is just that whoever arranged the conspiracy had to do
+      it before the Earth existed.</p>
+
+      <p>And there is one genuinely positive result, which is the closest anyone has come to catching
+      randomness in the act. A Bell violation lets you <em>certify</em> that an outcome could not have
+      been written down in advance, with an exact bound: an adversary who built your detectors and
+      hid a script inside them guesses your bit with probability at most
+      &frac12;&nbsp;+&nbsp;&frac12;&radic;(2&nbsp;&minus;&nbsp;S&sup2;/4). At the local limit S&nbsp;=&nbsp;2
+      that is certainty and you have earned nothing; at Tsirelson's S&nbsp;=&nbsp;2&radic;2 it is a
+      coin flip and you have earned <strong>exactly one bit</strong> that no pre-existing record
+      contained. This is not a thought experiment &mdash; Pironio and colleagues extracted 42 such
+      bits in 2010, Bierhorst and colleagues 1,024 in 2018, and NIST runs a public beacon on the
+      principle. Colbeck and Renner added a striking theorem in 2011: <em>if</em> setting choices are
+      free, then no theory whatsoever, known or unknown, can ever predict quantum outcomes better than
+      quantum mechanics already does.</p>
+
+      <p>But read the small print, because it is the point rather than a footnote. That certificate is
+      conditional &mdash; on no signalling, on free settings, on devices that do not leak &mdash; and
+      the sim prints those conditions on the canvas instead of hiding them. There is no measurement
+      that proves the world is random full stop, and there never can be, because superdeterminism is
+      always waiting underneath. Randomness can be certified relative to assumptions. It cannot be
+      proved outright.</p>
+
+      <p>So what would actually settle it? One thing might. <strong>Objective collapse</strong>
+      theories &mdash; Ghirardi, Rimini and Weber in 1986, Penrose in 1996 &mdash; do not interpret
+      quantum mechanics, they <em>change its equations</em>, adding a real physical collapse whose
+      rate grows with mass. Because they change the equations they make different predictions: a tiny
+      spontaneous heating of everything, and a faint spontaneous emission of X-rays from ordinary
+      matter that standard quantum mechanics forbids. That is a measurement, and it is being made
+      1.4&nbsp;km under Gran Sasso with a germanium detector. In 2021 Donadi and colleagues reported
+      the answer: the parameter-free version of the Di&oacute;si&ndash;Penrose model is
+      <strong>excluded</strong>. Every year the detector runs, the room left for that idea shrinks. If
+      such a glow is ever seen, fundamental randomness stops being an interpretation and becomes an
+      observation.</p>
+
+      <p>The honest verdict, then. Determinism is alive, in two well-developed theories that have
+      never been refuted and one that cannot be. Randomness is alive, as a postulate in the textbook
+      theory and as a testable prediction in objective collapse. What has been <em>killed</em> is the
+      comfortable middle &mdash; the idea that the answers were sitting quietly in the particles all
+      along, locally, waiting to be read off. That was Einstein's picture, and it is the one thing
+      here we can say for certain is wrong. Everything else is still being measured, which is a far
+      better position than the question was in a hundred years ago, when it belonged to philosophers
+      and had no numbers in it at all.</p>
+    </div>
+  </section>
+
+
 <!-- ======================================================================
        Sim 48 — The vacuum is a point of view
        ====================================================================== -->
@@ -3665,6 +4474,7 @@
       <li><span class="yr">1728</span>Newton - De mundi systemate (A Treatise of the System of the World)</li>
       <li><span class="yr">1767</span>Euler - De motu rectilineo trium corporum se mutuo attrahentium (On the Rectilinear Motion of Three Bodies Mutually Attracting Each Other)</li>
       <li><span class="yr">1772</span>Lagrange - Essai sur le probl&egrave;me des trois corps (Essay on the Three-Body Problem)</li>
+      <li><span class="yr">1804</span>Young - Experiments and Calculations Relative to Physical Optics</li>
       <li><span class="yr">1814</span>Fraunhofer - Bestimmung des Brechungs- und Farbenzerstreuungs-Verm&ouml;gens verschiedener Glasarten</li>
       <li><span class="yr">1814</span>Laplace - Essai philosophique sur les probabilit&eacute;s (A Philosophical Essay on Probabilities)</li>
       <li><span class="yr">1836</span>Jacobi - Sur le mouvement d'un point et sur un cas particulier du probl&egrave;me des trois corps (On the Motion of a Point and on a Particular Case of the Three-Body Problem)</li>
@@ -3677,22 +4487,30 @@
       <li><span class="yr">1893</span>Wien - Eine neue Beziehung der Strahlung schwarzer K&ouml;rper zum zweiten Hauptsatz der W&auml;rmetheorie</li>
       <li><span class="yr">1900</span>Planck - Zur Theorie des Gesetzes der Energieverteilung im Normalspektrum (On the Theory of the Energy Distribution Law of the Normal Spectrum)</li>
       <li><span class="yr">1903</span>Tsiolkovsky - &#1048;&#1089;&#1089;&#1083;&#1077;&#1076;&#1086;&#1074;&#1072;&#1085;&#1080;&#1077; &#1084;&#1080;&#1088;&#1086;&#1074;&#1099;&#1093; &#1087;&#1088;&#1086;&#1089;&#1090;&#1088;&#1072;&#1085;&#1089;&#1090;&#1074; &#1088;&#1077;&#1072;&#1082;&#1090;&#1080;&#1074;&#1085;&#1099;&#1084;&#1080; &#1087;&#1088;&#1080;&#1073;&#1086;&#1088;&#1072;&#1084;&#1080; (Exploration of Cosmic Space by Means of Reaction Devices)</li>
+      <li><span class="yr">1904</span>Thomson - On the Structure of the Atom: an Investigation of the Stability and Periods of Oscillation of a number of Corpuscles arranged at equal intervals around the Circumference of a Circle</li>
       <li><span class="yr">1905</span>Einstein - Zur Elektrodynamik bewegter K&ouml;rper (On the Electrodynamics of Moving Bodies)</li>
       <li><span class="yr">1905</span>Einstein - Ist die Tr&auml;gheit eines K&ouml;rpers von seinem Energieinhalt abh&auml;ngig? (Does the Inertia of a Body Depend Upon Its Energy Content?)</li>
       <li><span class="yr">1906</span>Wolf - Photographische Aufnahmen von kleinen Planeten (Photographic Exposures of Minor Planets)</li>
       <li><span class="yr">1906</span>Charlier - &Uuml;ber den Planeten 1906 TG (On the Planet 1906 TG)</li>
+      <li><span class="yr">1909</span>Geiger, Marsden - On a Diffuse Reflection of the &alpha;-Particles</li>
+      <li><span class="yr">1911</span>Rutherford - The Scattering of &alpha; and &beta; Particles by Matter and the Structure of the Atom</li>
       <li><span class="yr">1913</span>Bohr - On the Constitution of Atoms and Molecules</li>
       <li><span class="yr">1913</span>Russell - "Giant" and "Dwarf" Stars</li>
+      <li><span class="yr">1913</span>Geiger, Marsden - The Laws of Deflexion of &alpha; Particles through Large Angles</li>
       <li><span class="yr">1915</span>Einstein - Erkl&auml;rung der Perihelbewegung des Merkur aus der allgemeinen Relativit&auml;tstheorie (Explanation of the Perihelion Motion of Mercury from the General Theory of Relativity)</li>
       <li><span class="yr">1916</span>Schwarzschild - &Uuml;ber das Gravitationsfeld eines Massenpunktes nach der Einsteinschen Theorie (On the Gravitational Field of a Mass Point According to Einstein's Theory)</li>
       <li><span class="yr">1917</span>Einstein - Kosmologische Betrachtungen zur allgemeinen Relativit&auml;tstheorie (Cosmological Considerations in the General Theory of Relativity)</li>
       <li><span class="yr">1919</span>Goddard - A Method of Reaching Extreme Altitudes</li>
+      <li><span class="yr">1919</span>Rutherford - Collision of &alpha; Particles with Light Atoms. IV. An Anomalous Effect in Nitrogen</li>
       <li><span class="yr">1920</span>Dyson, Eddington, Davidson - A Determination of the Deflection of Light by the Sun's Gravitational Field, from Observations Made at the Total Eclipse of May 29, 1919</li>
       <li><span class="yr">1920</span>Eddington - The Internal Constitution of the Stars</li>
       <li><span class="yr">1922</span>Friedmann - &Uuml;ber die Kr&uuml;mmung des Raumes (On the Curvature of Space)</li>
+      <li><span class="yr">1924</span>de Broglie - Recherches sur la th&eacute;orie des quanta (Researches on the Theory of Quanta)</li>
       <li><span class="yr">1925</span>Payne - Stellar Atmospheres: A Contribution to the Observational Study of High Temperature in the Reversing Layers of Stars</li>
       <li><span class="yr">1926</span>Eddington - The Internal Constitution of the Stars</li>
       <li><span class="yr">1927</span>Lema&icirc;tre - Un Univers homog&egrave;ne de masse constante et de rayon croissant rendant compte de la vitesse radiale des n&eacute;buleuses extra-galactiques</li>
+      <li><span class="yr">1927</span>Davisson, Germer - Diffraction of Electrons by a Crystal of Nickel</li>
+      <li><span class="yr">1927</span>Thomson, Reid - Diffraction of Cathode Rays by a Thin Film</li>
       <li><span class="yr">1929</span>Hubble - A Relation between Distance and Radial Velocity among Extra-Galactic Nebulae</li>
       <li><span class="yr">1931</span>Chandrasekhar - The Maximum Mass of Ideal White Dwarfs</li>
       <li><span class="yr">1932</span>Cockcroft, Walton - Experiments with High Velocity Positive Ions. II. The Disintegration of Elements by High Velocity Protons</li>
@@ -3701,59 +4519,109 @@
       <li><span class="yr">1934</span>Baade, Zwicky - On Super-Novae</li>
       <li><span class="yr">1935</span>Einstein, Rosen - The Particle Problem in the General Theory of Relativity</li>
       <li><span class="yr">1935</span>Schr&ouml;dinger - Die gegenw&auml;rtige Situation in der Quantenmechanik (The Present Situation in Quantum Mechanics)</li>
+      <li><span class="yr">1935</span>Einstein, Podolsky, Rosen - Can Quantum-Mechanical Description of Physical Reality Be Considered Complete?</li>
       <li><span class="yr">1936</span>Einstein - Lens-Like Action of a Star by the Deviation of Light in the Gravitational Field</li>
       <li><span class="yr">1939</span>Bethe - Energy Production in Stars</li>
       <li><span class="yr">1939</span>Oppenheimer, Volkoff - On Massive Neutron Cores</li>
       <li><span class="yr">1939</span>Oppenheimer, Snyder - On Continued Gravitational Contraction</li>
       <li><span class="yr">1949</span>G&ouml;del - An Example of a New Type of Cosmological Solutions of Einstein's Field Equations of Gravitation</li>
+      <li><span class="yr">1952</span>Bohm - A Suggested Interpretation of the Quantum Theory in Terms of "Hidden" Variables. I and II</li>
       <li><span class="yr">1957</span>Burbidge, Burbidge, Fowler, Hoyle - Synthesis of the Elements in Stars</li>
       <li><span class="yr">1957</span>Everett - "Relative State" Formulation of Quantum Mechanics</li>
+      <li><span class="yr">1961</span>J&ouml;nsson - Elektroneninterferenzen an mehreren k&uuml;nstlich hergestellten Feinspalten (Electron Interference at Several Artificially Produced Fine Slits)</li>
       <li><span class="yr">1962</span>Fuller, Wheeler - Causality and Multiply Connected Space-Time</li>
       <li><span class="yr">1963</span>Kerr - Gravitational Field of a Spinning Mass as an Example of Algebraically Special Metrics</li>
       <li><span class="yr">1963</span>Lorenz - Deterministic Nonperiodic Flow</li>
       <li><span class="yr">1964</span>Bertozzi - Speed and Kinetic Energy of Relativistic Electrons</li>
+      <li><span class="yr">1964</span>Bell - On the Einstein Podolsky Rosen Paradox</li>
       <li><span class="yr">1965</span>Penrose - Gravitational Collapse and Space-Time Singularities</li>
       <li><span class="yr">1965</span>Penzias, Wilson - A Measurement of Excess Antenna Temperature at 4080 Mc/s</li>
+      <li><span class="yr">1967</span>Dyson, Lenard - Stability of Matter. I</li>
+      <li><span class="yr">1967</span>Kochen, Specker - The Problem of Hidden Variables in Quantum Mechanics</li>
       <li><span class="yr">1968</span>Hewish, Bell, Pilkington, Scott, Collins - Observation of a Rapidly Pulsating Radio Source</li>
       <li><span class="yr">1968</span>Parker - Particle Creation in Expanding Universes</li>
       <li><span class="yr">1969</span>Penrose - Gravitational Collapse: The Role of General Relativity</li>
       <li><span class="yr">1969</span>Parker - Quantized Fields and Particle Creation in Expanding Universes. I</li>
+      <li><span class="yr">1969</span>Clauser, Horne, Shimony, Holt - Proposed Experiment to Test Local Hidden-Variable Theories</li>
       <li><span class="yr">1970</span>Rubin, Ford - Rotation of the Andromeda Nebula from a Spectroscopic Survey of Emission Regions</li>
       <li><span class="yr">1972</span>Hafele, Keating - Around-the-World Atomic Clocks: Observed Relativistic Time Gains</li>
       <li><span class="yr">1972</span>Webster, Murdin - Cygnus X-1&mdash;a Spectroscopic Binary with a Heavy Companion?</li>
+      <li><span class="yr">1972</span>Freedman, Clauser - Experimental Test of Local Hidden-Variable Theories</li>
       <li><span class="yr">1973</span>Misner, Thorne, Wheeler - Gravitation</li>
       <li><span class="yr">1973</span>Fulling - Nonuniqueness of Canonical Field Quantization in Riemannian Space-Time</li>
       <li><span class="yr">1973</span>Bekenstein - Black Holes and Entropy</li>
       <li><span class="yr">1974</span>Hawking - Black Hole Explosions?</li>
       <li><span class="yr">1975</span>Hawking - Particle Creation by Black Holes</li>
       <li><span class="yr">1975</span>Hulse, Taylor - Discovery of a Pulsar in a Binary System</li>
+      <li><span class="yr">1975</span>Lieb, Thirring - Bound for the Kinetic Energy of Fermions Which Proves the Stability of Matter</li>
       <li><span class="yr">1976</span>Unruh - Notes on Black-Hole Evaporation</li>
       <li><span class="yr">1976</span>Hawking - Breakdown of Predictability in Gravitational Collapse</li>
       <li><span class="yr">1978</span>White, Rees - Core condensation in heavy halos: a two-stage theory for galaxy formation and clustering</li>
+      <li><span class="yr">1978</span>Wheeler - The 'Past' and the 'Delayed-Choice' Double-Slit Experiment</li>
+      <li><span class="yr">1980</span>Ghirardi, Rimini, Weber - A general argument against superluminal transmission through the quantum mechanical measurement process</li>
       <li><span class="yr">1981</span>Guth - Inflationary Universe: A Possible Solution to the Horizon and Flatness Problems</li>
       <li><span class="yr">1981</span>Mukhanov, Chibisov - Quantum Fluctuation and "Nonsingular" Universe</li>
+      <li><span class="yr">1981</span>Zurek - Pointer basis of quantum apparatus: Into what mixture does the wave packet collapse?</li>
       <li><span class="yr">1982</span>Wootters, Zurek - A Single Quantum Cannot Be Cloned</li>
       <li><span class="yr">1982</span>Birrell, Davies - Quantum Fields in Curved Space</li>
+      <li><span class="yr">1982</span>Aspect, Grangier, Roger - Experimental Realization of Einstein-Podolsky-Rosen-Bohm Gedankenexperiment: A New Violation of Bell's Inequalities</li>
+      <li><span class="yr">1982</span>Aspect, Dalibard, Roger - Experimental Test of Bell's Inequalities Using Time-Varying Analyzers</li>
+      <li><span class="yr">1982</span>Scully, Dr&uuml;hl - Quantum eraser: A proposed photon correlation experiment concerning observation and "delayed choice" in quantum mechanics</li>
+      <li><span class="yr">1985</span>Joos, Zeh - The emergence of classical properties through interaction with the environment</li>
+      <li><span class="yr">1986</span>Ghirardi, Rimini, Weber - Unified dynamics for microscopic and macroscopic systems</li>
       <li><span class="yr">1988</span>Morris, Thorne - Wormholes in Spacetime and Their Use for Interstellar Travel: A Tool for Teaching General Relativity</li>
+      <li><span class="yr">1988</span>Greenberger, Yasin - Simultaneous wave and particle knowledge in a neutron interferometer</li>
+      <li><span class="yr">1989</span>Tonomura, Endo, Matsuda, Kawasaki, Ezawa - Demonstration of single-electron buildup of an interference pattern</li>
       <li><span class="yr">1990</span>Friedman, Morris, Novikov, Echeverria, Klinkhammer, Thorne, Yurtsever - Cauchy Problem in Spacetimes with Closed Timelike Curves</li>
       <li><span class="yr">1991</span>Deutsch - Quantum Mechanics near Closed Timelike Lines</li>
       <li><span class="yr">1992</span>Hawking - Chronology Protection Conjecture</li>
       <li><span class="yr">1992</span>Mitalas, Sills - On the Photon Diffusion Time Scale for the Sun</li>
       <li><span class="yr">1992</span>Smoot et al. - Structure in the COBE Differential Microwave Radiometer First-Year Maps</li>
       <li><span class="yr">1993</span>Page - Information in Black Hole Radiation</li>
+      <li><span class="yr">1993</span>Bennett, Brassard, Cr&eacute;peau, Jozsa, Peres, Wootters - Teleporting an unknown quantum state via dual classical and Einstein-Podolsky-Rosen channels</li>
+      <li><span class="yr">1996</span>Englert - Fringe Visibility and Which-Way Information: An Inequality</li>
+      <li><span class="yr">1996</span>Brune, Hagley, Dreyer, Ma&icirc;tre, Maali, Wunderlich, Raimond, Haroche - Observing the Progressive Decoherence of the "Meter" in a Quantum Measurement</li>
+      <li><span class="yr">1996</span>Penrose - On Gravity's Role in Quantum State Reduction</li>
       <li><span class="yr">1998</span>Riess et al. - Observational Evidence from Supernovae for an Accelerating Universe and a Cosmological Constant</li>
+      <li><span class="yr">1998</span>D&uuml;rr, Nonn, Rempe - Origin of quantum-mechanical complementarity probed by a 'which-way' experiment in an atom interferometer</li>
+      <li><span class="yr">1998</span>Weihs, Jennewein, Simon, Weinfurter, Zeilinger - Violation of Bell's Inequality under Strict Einstein Locality Conditions</li>
       <li><span class="yr">1999</span>Perlmutter et al. - Measurements of &Omega; and &Lambda; from 42 High-Redshift Supernovae</li>
+      <li><span class="yr">1999</span>Arndt, Nairz, Vos-Andreae, Keller, van der Zouw, Zeilinger - Wave-particle duality of C60 molecules</li>
+      <li><span class="yr">2000</span>Friedman, Patel, Chen, Tolpygo, Lukens - Quantum superposition of distinct macroscopic states</li>
+      <li><span class="yr">2001</span>Rowe, Kielpinski, Meyer, Sackett, Itano, Monroe, Wineland - Experimental violation of a Bell's inequality with efficient detection</li>
       <li><span class="yr">2003</span>Ashby - Relativity in the Global Positioning System</li>
+      <li><span class="yr">2003</span>Hornberger, Uttenthaler, Brezger, Hackerm&uuml;ller, Arndt, Zeilinger - Collisional Decoherence Observed in Matter Wave Interferometry</li>
+      <li><span class="yr">2003</span>Leggett - Nonlocal Hidden-Variable Theories and Quantum Mechanics: An Incompatibility Theorem</li>
       <li><span class="yr">2004</span>Rovelli - Quantum Gravity</li>
+      <li><span class="yr">2004</span>Hackerm&uuml;ller, Hornberger, Brezger, Zeilinger, Arndt - Decoherence of matter waves by thermal emission of radiation</li>
+      <li><span class="yr">2006</span>Conway, Kochen - The Free Will Theorem</li>
+      <li><span class="yr">2007</span>Jacques, Wu, Grosshans, Treussart, Grangier, Aspect, Roch - Experimental Realization of Wheeler's Delayed-Choice Gedanken Experiment</li>
+      <li><span class="yr">2007</span>Schlosshauer - Decoherence and the Quantum-to-Classical Transition</li>
+      <li><span class="yr">2007</span>Gr&ouml;blacher, Paterek, Kaltenbaek, Brukner, &#379;ukowski, Aspelmeyer, Zeilinger - An experimental test of non-local realism</li>
+      <li><span class="yr">2009</span>Kirchmair, Z&auml;hringer, Gerritsma, Kleinmann, G&uuml;hne, Cabello, Blatt, Roos - State-independent experimental test of quantum contextuality</li>
       <li><span class="yr">2010</span>Chou, Hume, Rosenband, Wineland - Optical Clocks and Relativity</li>
+      <li><span class="yr">2010</span>Pironio et al. - Random numbers certified by Bell's theorem</li>
       <li><span class="yr">2011</span>Everitt et al. - Gravity Probe B: Final Results of a Space Experiment to Test General Relativity</li>
+      <li><span class="yr">2011</span>Colbeck, Renner - No extension of quantum theory can have improved predictive power</li>
+      <li><span class="yr">2012</span>Pusey, Barrett, Rudolph - On the reality of the quantum state</li>
       <li><span class="yr">2015</span>James, von Tunzelmann, Franklin, Thorne - Gravitational Lensing by Spinning Black Holes in Astrophysics, and in the Movie Interstellar</li>
+      <li><span class="yr">2015</span>Hensen et al. - Loophole-free Bell inequality violation using electron spins separated by 1.3 kilometres</li>
+      <li><span class="yr">2015</span>Giustina et al. - Significant-Loophole-Free Test of Bell's Theorem with Entangled Photons</li>
+      <li><span class="yr">2015</span>Shalm et al. - Strong Loophole-Free Test of Local Realism</li>
       <li><span class="yr">2016</span>Abbott et al. (LIGO Scientific Collaboration and Virgo Collaboration) - Observation of Gravitational Waves from a Binary Black Hole Merger</li>
+      <li><span class="yr">2016</span>'t Hooft - The Cellular Automaton Interpretation of Quantum Mechanics</li>
       <li><span class="yr">2017</span>Abbott et al. - GW170817: Observation of Gravitational Waves from a Binary Neutron Star Inspiral</li>
       <li><span class="yr">2017</span>Bose et al. - Spin Entanglement Witness for Quantum Gravity</li>
+      <li><span class="yr">2017</span>Yin et al. - Satellite-based entanglement distribution over 1200 kilometers</li>
+      <li><span class="yr">2017</span>Handsteiner et al. - Cosmic Bell Test: Measurement Settings from Milky Way Stars</li>
+      <li><span class="yr">2018</span>Rauch et al. - Cosmic Bell Test Using Random Measurement Settings from High-Redshift Quasars</li>
+      <li><span class="yr">2018</span>BIG Bell Test Collaboration - Challenging local realism with human choices</li>
+      <li><span class="yr">2018</span>Bierhorst et al. - Experimentally generated randomness certified by the impossibility of superluminal signals</li>
       <li><span class="yr">2019</span>Event Horizon Telescope Collaboration - First M87 Event Horizon Telescope Results. I. The Shadow of the Supermassive Black Hole</li>
+      <li><span class="yr">2019</span>Fein, Geyer, Zwick, Kia&#322;ka, Pedalino, Mayor, Gerlich, Arndt - Quantum superposition of molecules beyond 25 kDa</li>
       <li><span class="yr">2020</span>Planck Collaboration - Planck 2018 results. VI. Cosmological parameters</li>
       <li><span class="yr">2021</span>Almheiri, Hartman, Maldacena, Shaghoulian, Tajdini - The Entropy of Hawking Radiation</li>
+      <li><span class="yr">2021</span>Donadi, Piscicchia, Curceanu, Di&oacute;si, Laubenstein, Bassi - Underground test of gravity-related wave function collapse</li>
       <li><span class="yr">2023</span>LZ Collaboration - First Dark Matter Search Results from the LUX-ZEPLIN (LZ) Experiment</li>
     </ul>
   </section>

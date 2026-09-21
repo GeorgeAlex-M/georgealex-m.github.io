@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pattern Admin Dashboard</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .header {
+    text-align: center;
+    margin: 20px 0 40px 0;
+    color: white;
+  }
+
+  .header h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+
+  /* Summary Cards */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .summary-card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  }
+
+  .summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--card-color, #4CAF50);
+  }
+
+  .summary-card.tests { --card-color: #2196F3; }
+  .summary-card.matches { --card-color: #4CAF50; }
+  .summary-card.users { --card-color: #FF9800; }
+  .summary-card.success-rate { --card-color: #9C27B0; }
+
+  .summary-card .icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    color: var(--card-color);
+  }
+
+  .summary-card .value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  .summary-card .label {
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+
+  .summary-card .change {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+
+  .change.positive {
+    background: #E8F5E8;
+    color: #2E7D2E;
+  }
+
+  .change.negative {
+    background: #FFE8E8;
+    color: #D32F2F;
+  }
+
+  /* Main Content Grid */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+
+  /* Dashboard Section */
+  .dashboard-section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 24px;
+    background: #2196F3;
+    border-radius: 2px;
+  }
+
+  /* Enhanced Timeline */
+  .timeline-container {
+    height: 350px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+  }
+
+  .timeline-controls {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 100;
+    display: flex;
+    gap: 8px;
+    background: rgba(255,255,255,0.9);
+    padding: 8px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+  }
+
+  .timeline-control {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+
+  .timeline-control:hover {
+    background: #f8f9fa;
+    transform: translateY(-1px);
+  }
+
+  .timeline-control.active {
+    background: #2196F3;
+    color: white;
+    border-color: #2196F3;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+  }
+
+  .timeline-info {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .timeline-events {
+    position: absolute;
+    top: 80px;
+    bottom: 55px;
+    left: 20px;
+    right: 20px;
+  }
+
+  .timeline-event {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 5;
+  }
+
+  .timeline-event:hover {
+    transform: scale(1.5);
+    z-index: 15;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+
+  .timeline-event.match {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+  }
+
+  .timeline-event.no-match {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+  }
+
+  .timeline-event.dense {
+    width: 16px;
+    height: 16px;
+    border-width: 3px;
+  }
+
+  .timeline-event.cluster {
+    width: 20px;
+    height: 20px;
+    border-width: 3px;
+    position: relative;
+  }
+
+  .timeline-event.cluster::after {
+    content: attr(data-count);
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .user-lane {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 32px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    font-size: 11px;
+    color: #555;
+    padding: 6px 8px;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(5px);
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .user-lane:nth-child(even) {
+    background: rgba(248,249,250,0.6);
+  }
+
+  .timeline-axis {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    right: 20px;
+    height: 45px;
+    background: white;
+    border-top: 2px solid #dee2e6;
+    border-radius: 0 0 8px 8px;
+  }
+
+  /* Enhanced Tables */
+  .table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+
+  .table-header {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .table-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  .search-box {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    backdrop-filter: blur(10px);
+  }
+
+  .search-box::placeholder {
+    color: rgba(255,255,255,0.7);
+  }
+
+  .enhanced-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .enhanced-table th {
+    background: #f8f9fa;
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .enhanced-table td {
+    padding: 16px;
+    border-bottom: 1px solid #dee2e6;
+    transition: background-color 0.2s ease;
+  }
+
+  .enhanced-table tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  .enhanced-table tr.match {
+    background: linear-gradient(90deg, #C0FFC0, #E8F5E8) !important;
+    border-left: 4px solid #4CAF50;
+  }
+
+  .enhanced-table tr.no-match {
+    background: linear-gradient(90deg, #FFC0C0, #FFE8E8) !important;
+    border-left: 4px solid #f44336;
+  }
+
+  /* Status Badges */
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-badge.match {
+    background: #E8F5E8;
+    color: #2E7D2E;
+  }
+
+  .status-badge.no-match {
+    background: #FFE8E8;
+    color: #D32F2F;
+  }
+
+  /* Connection Panel */
+  .connection-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    z-index: 1000;
+    min-width: 250px;
+    border-left: 4px solid #4CAF50;
+    backdrop-filter: blur(10px);
+  }
+
+  .connection-panel.disconnected {
+    border-left-color: #f44336;
+    animation: shake 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(2px); }
+  }
+
+  .connection-status {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4CAF50;
+    margin-right: 10px;
+    animation: pulse 2s infinite;
+  }
+
+  .status-dot.disconnected {
+    background: #f44336;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 30px 0;
+  }
+
+  .btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .btn.primary {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+  }
+
+  .btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+  }
+
+  .btn.danger {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+  }
+
+  .btn.danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+  }
+
+  /* Back Link */
+  .back-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 1000;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+  }
+
+  .back-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+  }
+
+  /* Pattern Specs */
+  .pattern-specs {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #2196F3;
+    margin-top: 15px;
+    display: none;
+  }
+
+  .pattern-specs.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .pattern-toggle {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .pattern-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+  }
+
+  /* Sidebar */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Loading States */
+  .loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #2196F3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .content-grid {
+      grid-template-columns: 1fr;
+    }
+    .sidebar {
+      order: -1;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .summary-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .container {
+      padding: 10px;
+    }
+    .timeline-controls {
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .summary-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+
+  /* Tooltip Enhancement */
+  .timeline-tooltip {
+    position: absolute;
+    background: rgba(0,0,0,0.9);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 1000;
+    display: none;
+    min-width: 220px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  .tooltip-header {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #4CAF50;
+  }
+
+  .tooltip-row {
+    margin: 4px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tooltip-label {
+    opacity: 0.8;
+  }
+
+  .tooltip-value {
+    font-weight: 500;
+  }
+
+  .red-spec {
+    color: #d32f2f;
+    font-weight: 600;
+    background: rgba(211, 47, 47, 0.1);
+    padding: 2px 4px;
+    border-radius: 3px;
+    margin: 4px 0;
+  }
+
+  /* Cluster Detail Modal */
+  .cluster-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+  }
+
+  .cluster-modal.show {
+    display: flex;
+    animation: modalFadeIn 0.3s ease;
+  }
+
+  @keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .cluster-modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+  }
+
+  @keyframes modalSlideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .cluster-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  .cluster-modal-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .cluster-modal-close {
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .cluster-modal-close:hover {
+    background: #d32f2f;
+    transform: scale(1.05);
+  }
+
+  .cluster-test-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .cluster-test-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-left: 4px solid #ddd;
+    transition: all 0.2s ease;
+  }
+
+  .cluster-test-item:hover {
+    background: #e9ecef;
+    transform: translateX(4px);
+  }
+
+  .cluster-test-item.match {
+    border-left-color: #4CAF50;
+    background: linear-gradient(90deg, #f0fff0, #f8f9fa);
+  }
+
+  .cluster-test-item.no-match {
+    border-left-color: #f44336;
+    background: linear-gradient(90deg, #fff0f0, #f8f9fa);
+  }
+
+  .cluster-test-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .cluster-test-result {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .cluster-test-result.match {
+    color: #2E7D2E;
+  }
+
+  .cluster-test-result.no-match {
+    color: #D32F2F;
+  }
+
+  .cluster-test-time {
+    font-size: 0.8rem;
+    color: #666;
+    font-family: monospace;
+  }
+
+  .cluster-test-input {
+    font-family: 'Courier New', monospace;
+    background: white;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 0.9rem;
+    word-break: break-all;
+  }
+
+  .cluster-summary {
+    background: linear-gradient(135deg, #e3f2fd, #f8f9fa);
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    border-left: 4px solid #2196F3;
+  }
+
+  .cluster-summary-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .cluster-stat {
+    text-align: center;
+  }
+
+  .cluster-stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2196F3;
+  }
+
+  .cluster-stat-label {
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* User Rule Breakdown Modal */
+  .user-rule-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+  }
+
+  .user-rule-modal.show {
+    display: flex;
+    animation: modalFadeIn 0.3s ease;
+  }
+
+  .user-rule-modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+  }
+
+  .user-rule-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  .user-rule-modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .user-rule-modal-close {
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .user-rule-modal-close:hover {
+    background: #d32f2f;
+    transform: scale(1.05);
+  }
+
+  .rules-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .rule-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-left: 5px solid #ddd;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rule-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+
+  .rule-item.covered {
+    border-left-color: #4CAF50;
+    background-color: #e8f5e9;
+  }
+
+  .rule-item.missed {
+    border-left-color: #f44336;
+    background-color: #ffebee;
+  }
+
+  .rule-text-content {
+    flex-grow: 1;
+  }
+
+  .rule-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 4px;
+  }
+
+  .rule-name.red-spec-rule {
+    color: #D32F2F;
+  }
+
+  .rule-description {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  .rule-status {
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    min-width: 100px;
+    text-align: center;
+  }
+
+  .rule-status.covered {
+    color: #2E7D2E;
+    background-color: #C8E6C9;
+  }
+
+  .rule-status.missed {
+    color: #C62828;
+    background-color: #FFCDD2;
+  }
+</style>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body>
+<a href="index.html" class="back-link">← Back to Pattern Test</a>
+
+<div class="connection-panel" id="connectionPanel">
+  <div class="connection-status">
+    <div class="status-dot" id="statusDot"></div>
+    <div class="status-text" id="statusText">Connecting...</div>
+  </div>
+  <div class="status-details" id="statusDetails">Initializing Firebase</div>
+  <div class="time-info" id="currentTime">--:--:--</div>
+</div>
+
+<!-- Cluster Detail Modal -->
+<div class="cluster-modal" id="clusterModal">
+  <div class="cluster-modal-content">
+    <div class="cluster-modal-header">
+      <div class="cluster-modal-title" id="clusterModalTitle">Test Details</div>
+      <button class="cluster-modal-close" onclick="closeClusterModal()">✕ Close</button>
+    </div>
+    <div id="clusterModalBody">
+      <!-- Content will be populated by JavaScript -->
+    </div>
+  </div>
+</div>
+
+<!-- User Rule Breakdown Modal -->
+<div class="user-rule-modal" id="userRuleModal">
+  <div class="user-rule-modal-content">
+    <div class="user-rule-modal-header">
+      <div class="user-rule-modal-title" id="userRuleModalTitle">Rule Discovery</div>
+      <button class="user-rule-modal-close" onclick="closeUserRuleModal()">✕ Close</button>
+    </div>
+    <div id="userRuleModalBody">
+      <!-- Rule breakdown will be populated here -->
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="header">
+    <h1>📊 Pattern Admin Dashboard</h1>
+    <p>Real-time analytics and user activity monitoring</p>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-grid">
+    <div class="summary-card tests">
+      <div class="icon">🧪</div>
+      <div class="value" id="totalTests">0</div>
+      <div class="label">Total Tests</div>
+      <div class="change positive" id="testsChange" style="display: none;">+0 today</div>
+    </div>
+    <div class="summary-card matches">
+      <div class="icon">✅</div>
+      <div class="value" id="totalMatches">0</div>
+      <div class="label">Successful Matches</div>
+      <div class="change positive" id="matchesChange" style="display: none;">+0 today</div>
+    </div>
+    <div class="summary-card users">
+      <div class="icon">👥</div>
+      <div class="value" id="activeUsers">0</div>
+      <div class="label">Active Users</div>
+      <div class="change positive" id="usersChange" style="display: none;">+0 new</div>
+    </div>
+    <div class="summary-card success-rate">
+      <div class="icon">📈</div>
+      <div class="value" id="successRate">0%</div>
+      <div class="label">Success Rate</div>
+      <div class="change positive" id="rateChange" style="display: none;">+0%</div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="content-grid">
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Pattern Specifications -->
+<div class="dashboard-section">
+        <div class="section-header">
+          <div class="section-title">📋 Pattern Specifications</div>
+          <button class="pattern-toggle" id="toggleSpecsBtn" onclick="togglePatternSpecs()">Show Details</button>
+  </div>
+  <div class="pattern-specs" id="patternSpecs">
+    <ol>
+      <li>Accept three hexadecimal integers (including positive and negative)...</li>
+      <li>...that ascend in value from left to right.</li>
+      <li>There may be a "+" symbol preceding positive numbers.</li>
+      <li>The integers must be delimited by whitespace, comma, period, or colon.</li>
+      <li>There also may be leading or trailing whitespace on the test case string.</li>
+            <li class="red-spec">If a non-whitespace delimiter is used, there may also be leading (but not trailing) whitespace on each of the three integers in the string.</li>
+      <li class="red-spec">More than one "-" or "+" in a row causes number to be treated as a zero.</li>
+      <li class="red-spec">Encoded characters are transformed by HTTP (e.g. %20 is turned into a space).</li>
+      <li class="red-spec">HTML is not stripped out, which can disrupt the front end.</li>
+      <li class="red-spec">Any text appended to the end of a test case string will be ignored if it starts with whitespace.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- Test Design Guide & Solution -->
+<div class="dashboard-section">
+  <div class="section-header">
+    <div class="section-title">🔬 Test Design Guide & Solution</div>
+    <button class="pattern-toggle" id="toggleGuideBtn" onclick="toggleTestDesignGuide()">Show Guide</button>
+  </div>
+  <div class="pattern-specs" id="testDesignGuide" style="display: none;"> <!-- Initially hidden -->
+    <p>This guide demonstrates how to use common software test design techniques to systematically understand and test the 10 pattern rules.</p>
+    
+    <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1976D2;">1. Key Test Design Techniques</h4>
+    <ul style="list-style-type: disc; margin-left: 20px; margin-bottom:15px;">
+      <li><strong>Equivalence Partitioning (EP):</strong> Dividing input data into partitions from which test cases can be derived. Assumes all values in a partition behave the same. E.g., for a hex digit, valid hex chars (0-9, A-F) form one partition, invalid chars (G-Z, !, @) form another.</li>
+      <li><strong>Boundary Value Analysis (BVA):</strong> Testing at the edges or boundaries of equivalence partitions. E.g., if a number must be 1-100, test 0, 1, 100, 101. For this pattern, boundaries might relate to the number of characters, number of signs, etc.</li>
+      <li><strong>Decision Table Testing:</strong> Useful when behavior depends on multiple conditions. For example, Rule 6 depends on the type of delimiter AND the presence of whitespace.</li>
+      <li><strong>Negative Testing:</strong> Designing test cases that are expected to fail or produce error conditions. Crucial for ensuring robustness and correct error handling.</li>
+      <li><strong>Exploratory Testing:</strong> Simultaneous learning, test design, and execution. Useful for discovering edge cases not immediately obvious from specs.</li>
+    </ul>
+
+    <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1976D2;">2. Applying Techniques to Discover the Pattern (Rule by Rule)</h4>
+    <p>Let's assume we start with the given examples (e.g., "2, 4, 6" on index.html) and the 10 rules. Our goal is to confirm each rule.</p>
+    
+    <style>
+      .rule-test-guide { margin-bottom: 20px; padding: 10px; border-left: 3px solid #e0e0e0; background-color: #fdfdfd; border-radius: 0 4px 4px 0;}
+      .rule-test-guide h5 { margin-top: 0; margin-bottom: 8px; color: #333; font-size: 1.1em;}
+      .rule-test-guide h5.red-spec { color: #c0392b; }
+      .rule-test-guide p { font-size: 0.9em; margin-bottom: 5px;}
+      .rule-test-guide ul { list-style-type: square; margin-left: 20px; font-size: 0.9em;}
+      .rule-test-guide code { background: #eee; padding: 2px 5px; border-radius: 3px; font-family: 'Courier New', monospace;}
+    </style>
+
+    <!-- Rule 1 -->
+    <div class="rule-test-guide">
+      <h5>Rule 1: Accept three hexadecimal integers (positive/negative).</h5>
+      <p><strong>Techniques:</strong> EP, BVA, Negative Testing.</p>
+      <ul>
+        <li><strong>EP (Valid):</strong> <code>1 2 3</code>, <code>A B C</code>, <code>10 1A 2B</code>. Test negative: <code>-A 0 10</code>.</li>
+        <li><strong>EP (Invalid Chars):</strong> <code>1 2 G</code> (should fail).</li>
+        <li><strong>BVA (Number of Parts):</strong> <code>1 2</code> (fail), <code>1 2 3 4</code> (test Rule 10 interaction).</li>
+      </ul>
+    </div>
+
+    <!-- Rule 2 -->
+    <div class="rule-test-guide">
+      <h5>Rule 2: ...that ascend in value from left to right.</h5>
+      <p><strong>Techniques:</strong> EP, Negative Testing.</p>
+      <ul>
+        <li><strong>EP (Valid):</strong> <code>1 2 3</code>, <code>-10 0 10</code>.</li>
+        <li><strong>EP (Invalid - Not Ascending):</strong> <code>3 2 1</code> (fail), <code>1 3 2</code> (fail).</li>
+        <li><strong>EP (Invalid - Equal):</strong> <code>1 1 2</code> (fail).</li>
+      </ul>
+    </div>
+
+    <!-- Rule 3 -->
+    <div class="rule-test-guide">
+      <h5>Rule 3: There may be a "+" symbol preceding positive numbers.</h5>
+      <p><strong>Techniques:</strong> EP.</p>
+      <ul>
+        <li><strong>EP (With '+'):</strong> <code>+1 +2 +3</code>.</li>
+      </ul>
+    </div>
+
+    <!-- Rule 4 -->
+    <div class="rule-test-guide">
+      <h5>Rule 4: The integers must be delimited by whitespace, comma, period, or colon.</h5>
+      <p><strong>Techniques:</strong> EP.</p>
+      <ul>
+        <li><strong>EP (Valid):</strong> <code>1 2 3</code>, <code>4,5,6</code>, <code>7.8.9</code>, <code>A:B:C</code>.</li>
+        <li><strong>EP (Invalid):</strong> <code>1;2;3</code> (fail).</li>
+      </ul>
+    </div>
+
+    <!-- Rule 5 -->
+    <div class="rule-test-guide">
+      <h5>Rule 5: There also may be leading or trailing whitespace on the test case string.</h5>
+      <p><strong>Techniques:</strong> EP.</p>
+      <ul>
+        <li><strong>EP (Valid):</strong> <code>  1 2 3</code>, <code>1 2 3  </code>, <code>  1 2 3  </code>.</li>
+      </ul>
+    </div>
+
+    <!-- Rule 6 (Red Spec) -->
+    <div class="rule-test-guide">
+      <h5 class="red-spec">Rule 6: If a non-whitespace delimiter is used, leading (not trailing) whitespace on integers.</h5>
+      <p><strong>Techniques:</strong> EP, Decision Table.</p>
+      <ul>
+        <li><strong>EP (Valid):</strong> <code>1,  2,  C</code>, <code>A .  B .  1C</code>.</li>
+        <li><strong>Refresher:</strong> "Trailing" refers to space after the number but *before* a non-whitespace delimiter (e.g., <code>1  ,</code>). This is handled because <code>1</code> becomes the token.</li>
+      </ul>
+    </div>
+
+    <!-- Rule 7 (Red Spec) -->
+    <div class="rule-test-guide">
+      <h5 class="red-spec">Rule 7: More than one "-" or "+" in a row causes number to be treated as a zero.</h5>
+      <p><strong>Techniques:</strong> EP, BVA.</p>
+      <ul>
+        <li><strong>EP (Valid, becomes 0):</strong> <code>++0A 0B 0C</code> (0, 11, 12 - matches), <code>--1 2 3</code>.</li>
+        <li><strong>BVA (Single sign - not zero):</strong> <code>+1 2 3</code>.</li>
+      </ul>
+    </div>
+
+    <!-- Rule 8 (Red Spec) -->
+    <div class="rule-test-guide">
+      <h5 class="red-spec">Rule 8: Encoded characters are transformed by HTTP (e.g. %20 is turned into a space).</h5>
+      <p><strong>Techniques:</strong> EP.</p>
+      <ul>
+        <li><strong>EP (Valid):</strong> <code>1%202%203</code> (becomes "1 2 3"), <code>1%2C2%2C3</code> (becomes "1,2,3").</li>
+      </ul>
+    </div>
+
+    <!-- Rule 9 (Red Spec) -->
+    <div class="rule-test-guide">
+      <h5 class="red-spec">Rule 9: HTML is not stripped out... (but may still parse if HTML is in ignored part).</h5>
+      <p><strong>Techniques:</strong> EP.</p>
+      <ul>
+        <li><strong>EP (Valid - HTML in ignored part):</strong> <code>1 2 3 <b>ignored</b></code> (matches).</li>
+        <li><strong>EP (Invalid - HTML disrupting number):</strong> <code>1 <b>2</b> 3</code> (fails).</li>
+      </ul>
+    </div>
+
+    <!-- Rule 10 (Red Spec) -->
+    <div class="rule-test-guide">
+      <h5 class="red-spec">Rule 10: Any text appended ... will be ignored if it starts with whitespace.</h5>
+      <p><strong>Techniques:</strong> EP.</p>
+      <ul>
+        <li><strong>EP (Valid - ignored):</strong> <code>1 2 3 ignore this</code>.</li>
+        <li><strong>EP (Invalid - not ignored):</strong> <code>1 2 3ignorethis</code> (fails).</li>
+      </ul>
+    </div>
+
+    <h4 style="margin-top: 20px; margin-bottom: 10px; color: #1976D2;">3. Synthesizing the Solution</h4>
+    <p>By systematically testing each rule, you confirm your understanding. The "Comprehensive Example (All Rules)" from the User Rule Breakdown modal demonstrates this synthesis:</p>
+    <code style="display: block; background: #f0f0f0; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; font-size: 0.95rem; word-break: break-all;">
+      &nbsp;&nbsp;++0A&nbsp;,&nbsp;&nbsp;+%2014&nbsp;:&nbsp;&nbsp;1E&nbsp;&nbsp;ignore&nbsp;<b>HTML</b>&nbsp;here&nbsp;&nbsp;
+    </code>
+    <p>This string exercises all 10 rules. Effective testing combines understanding specs, applying design techniques, and iterative refinement.</p>
+
+  </div>
+</div>
+
+      <!-- Timeline View -->
+<div class="dashboard-section">
+        <div class="section-header">
+          <div class="section-title">📈 Activity Timeline</div>
+        </div>
+  <div class="timeline-container">
+    <div class="timeline-controls">
+      <button class="timeline-control active" onclick="setTimeRange('today')">Today</button>
+      <button class="timeline-control" onclick="setTimeRange('yesterday')">Yesterday</button>
+      <button class="timeline-control" onclick="setTimeRange('week')">This Week</button>
+      <button class="timeline-control" onclick="setTimeRange('month')">This Month</button>
+    </div>
+          <div class="timeline-info" id="timelineInfo">
+            <span class="loading"></span>Loading timeline...
+    </div>
+          <div class="timeline-events" id="timelineEvents"></div>
+          <div class="timeline-axis" id="timelineAxis"></div>
+    <div class="timeline-tooltip" id="timelineTooltip"></div>
+  </div>
+</div>
+
+      <!-- Recent Activity Log -->
+      <div class="table-container">
+        <div class="table-header">
+          <div class="table-title">📝 Recent Activity Log</div>
+          <input type="text" class="search-box" placeholder="Search logs..." id="logSearch" onkeyup="filterLogs()">
+        </div>
+        <div style="max-height: 400px; overflow-y: auto;">
+          <table class="enhanced-table">
+    <thead>
+      <tr>
+                <th>⏰ Time</th>
+                <th>👤 User</th>
+                <th>📊 Result</th>
+                <th>💬 Input</th>
+      </tr>
+    </thead>
+            <tbody id="logTableBody">
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 40px;">
+                  <span class="loading"></span>
+                  Loading activity logs...
+                </td>
+              </tr>
+    </tbody>
+  </table>
+        </div>
+      </div>
+</div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- User Statistics -->
+      <div class="table-container">
+        <div class="table-header">
+          <div class="table-title">👥 User Statistics</div>
+          <input type="text" class="search-box" placeholder="Search users..." id="userSearch" onkeyup="filterUsers()">
+        </div>
+        <div style="max-height: 500px; overflow-y: auto;">
+          <table class="enhanced-table">
+    <thead>
+      <tr>
+        <th>User</th>
+                <th>Tests</th>
+                <th>✅</th>
+                <th>❌</th>
+                <th>🔥</th>
+      </tr>
+    </thead>
+            <tbody id="statsTableBody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 40px;">
+                  <span class="loading"></span>
+                  Loading statistics...
+                </td>
+              </tr>
+    </tbody>
+  </table>
+        </div>
+      </div>
+    </div>
+</div>
+
+  <!-- Controls -->
+<div class="controls">
+    <button class="btn primary" onclick="refreshData()">🔄 Refresh Data</button>
+    <button class="btn danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+  </div>
+</div>
+
+<script>
+// Firebase configuration
+var firebaseConfig = {
+  apiKey: "AIzaSyDIEIGoQIcvTsnGWiA_H6tEOgCwGGk7F7M",
+  authDomain: "pattern-testing-3980e.firebaseapp.com",
+  databaseURL: "https://pattern-testing-3980e-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "pattern-testing-3980e",
+  storageBucket: "pattern-testing-3980e.firebasestorage.app",
+  messagingSenderId: "633904453209",
+  appId: "1:633904453209:web:ee99e29bdccba358fe8348",
+  measurementId: "G-67KPTGF8Z2"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+var database = firebase.database();
+
+// Global data storage
+var allLogs = {};
+var allStats = {};
+var lastUpdateTime = null;
+var dataCount = 0;
+var currentTimeRange = 'today';
+var originalLogsData = {};
+var originalStatsData = {};
+
+function updateTime() {
+  const now = new Date();
+  document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+}
+
+function updateConnectionStatus(connected) {
+  const panel = document.getElementById('connectionPanel');
+  const dot = document.getElementById('statusDot');
+  const text = document.getElementById('statusText');
+  const details = document.getElementById('statusDetails');
+  
+  if (connected) {
+    panel.className = 'connection-panel';
+    dot.className = 'status-dot';
+    text.textContent = 'Firebase Connected';
+    details.textContent = `Real-time sync • ${dataCount} entries`;
+  } else {
+    panel.className = 'connection-panel disconnected';
+    dot.className = 'status-dot disconnected';
+    text.textContent = 'Disconnected';
+    details.textContent = 'Lost connection • Reconnecting...';
+  }
+}
+
+function updateSummaryCards() {
+  // Calculate totals
+  let totalTests = 0;
+  let totalMatches = 0;
+  let totalUsers = Object.keys(allStats).length;
+  
+  Object.values(allStats).forEach(userStats => {
+    totalTests += userStats.entries;
+    totalMatches += userStats.matches;
+  });
+  
+  const successRate = totalTests > 0 ? Math.round((totalMatches / totalTests) * 100) : 0;
+  
+  // Update summary cards
+  document.getElementById('totalTests').textContent = totalTests.toLocaleString();
+  document.getElementById('totalMatches').textContent = totalMatches.toLocaleString();
+  document.getElementById('activeUsers').textContent = totalUsers.toLocaleString();
+  document.getElementById('successRate').textContent = successRate + '%';
+  
+  // Calculate today's changes
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const todayLogs = Object.values(allLogs).filter(log => {
+    const logDate = new Date(log.date);
+    return logDate >= today;
+  });
+  
+  const todayTests = todayLogs.length;
+  const todayMatches = todayLogs.filter(log => log.result === 'match').length;
+  
+  // Show changes if there's activity today
+  if (todayTests > 0) {
+    document.getElementById('testsChange').textContent = `+${todayTests} today`;
+    document.getElementById('testsChange').style.display = 'block';
+    
+    document.getElementById('matchesChange').textContent = `+${todayMatches} today`;
+    document.getElementById('matchesChange').style.display = 'block';
+  }
+}
+
+function loadStatsFromFirebase() {
+  database.ref('stats').on('value', function(snapshot) {
+    allStats = snapshot.val() || {};
+    originalStatsData = {...allStats};
+    displayStats();
+    updateSummaryCards();
+  });
+}
+
+function displayStats() {
+  const tbody = document.getElementById('statsTableBody');
+  tbody.innerHTML = '';
+  
+  let totalOverallEntries = 0, totalOverallMatches = 0, totalOverallNonMatches = 0, maxOverallLongestStreak = 0;
+
+  Object.values(allStats).forEach(userStats => {
+    totalOverallEntries += userStats.entries;
+    totalOverallMatches += userStats.matches;
+    totalOverallNonMatches += userStats.nonMatches;
+    maxOverallLongestStreak = Math.max(maxOverallLongestStreak, userStats.longest);
+  });
+
+  if (totalOverallEntries > 0) {
+    const row = document.createElement('tr');
+    row.style.fontWeight = 'bold';
+    row.style.backgroundColor = '#f0f7ff';
+    row.innerHTML = `
+      <td>🌟 ALL USERS</td>
+      <td>${totalOverallEntries}</td>
+      <td>${totalOverallMatches}</td>
+      <td>${totalOverallNonMatches}</td>
+      <td>${maxOverallLongestStreak}</td>
+    `;
+    tbody.appendChild(row);
+  }
+  
+  // Placeholder for advanced pattern checking logic (to be refined)
+  function getCoveredRules(inputString) {
+    const rules = new Set();
+    // This is a mock-up. Real implementation needs granular checks based on the 10 rules.
+    // Example: If input is simple like "1 2 3", it covers basic rules.
+    if (/^\s*[0-9a-fA-F]+\s+[0-9a-fA-F]+\s+[0-9a-fA-F]+\s*$/.test(inputString.trim())) rules.add(1).add(2).add(4).add(5);
+    if (inputString.includes('+')) rules.add(3);
+    // Rule 4: Check for non-whitespace delimiters specifically
+    if (/[.,:]/.test(inputString)) rules.add(4); 
+    if (inputString.trim() !== inputString) rules.add(5); 
+    if (/[a-fA-F]/i.test(inputString)) rules.add(1); // Indicates hex usage
+
+    // Rule 6: If a non-whitespace delimiter (e.g., comma, period, colon) is present AND
+    // there's a pattern like 'delimiter whitespace number', it likely used Rule 6.
+    // This is a heuristic based on the input string that *successfully matched*.
+    if (/[.,:]\s+[0-9a-fA-F]/i.test(inputString)) {
+        rules.add(6);
+    }
+
+    // Rule 7: Multiple signs
+    if (/[+-]{2,}/.test(inputString)) rules.add(7);
+    
+    // Rule 8: Encoded chars. If inputString contains %xx and it matched, Rule 8 was involved.
+    if (/%[0-9a-fA-F]{2}/.test(inputString)) rules.add(8);
+    
+    // Rule 10 and Rule 9 (related to appended text / HTML handling)
+    const matchRule10 = inputString.trim().match(/^([+-]?[0-9a-fA-F]+(?:[\s,.:]+[+-]?[0-9a-fA-F]+){2})(\s+.*)/);
+    if (matchRule10) {
+        rules.add(10);
+        const appendedTextContent = matchRule10[2].trim(); // This is the actual ignored text, trimmed
+        // Check for Rule 9: HTML tags within appended text OR just alphabetic characters in appended text
+        if (/<[^>]+>/.test(appendedTextContent) || /[a-zA-Z]/.test(appendedTextContent)) {
+            rules.add(9);
+        }
+    } else {
+        // If Rule 10 didn't match (no appended text starting with space after 3 numbers),
+        // still check the whole string for HTML tags for Rule 9. This covers cases where HTML might
+        // exist elsewhere in a string that still somehow constitutes a match (less common for this pattern).
+        if (/<[^>]+>/.test(inputString)) {
+            rules.add(9);
+        }
+    }
+
+    return rules;
+  }
+
+  const ruleWeights = {
+    1: 1, 2: 1, 3: 1, 4: 1, 5: 1, // Basic rules
+    6: 2, 7: 3, 8: 2, 9: 3, 10: 3  // Complex/tricky rules (higher weight)
+  };
+  
+  // Calculate max possible score from rules (accessible in the outer scope)
+  const maxRuleScore = Object.values(ruleWeights).reduce((sum, weight) => sum + weight, 0);
+
+  const usersData = Object.entries(allStats).map(([username, userStats]) => {
+    const userLogs = Object.values(allLogs).filter(log => log.user === username);
+    const successfulInputs = new Set();
+    const allUniqueInputs = new Set();
+    let coveredRulesByThisUser = new Set();
+
+    userLogs.forEach(log => {
+      allUniqueInputs.add(log.input.trim().toLowerCase());
+      if (log.result === 'match') {
+        successfulInputs.add(log.input.trim().toLowerCase());
+        const rulesFoundInThisInput = getCoveredRules(log.input);
+        rulesFoundInThisInput.forEach(rule => coveredRulesByThisUser.add(rule));
+      }
+    });
+
+    let patternDiscoveryScore = 0;
+    coveredRulesByThisUser.forEach(ruleId => {
+      patternDiscoveryScore += (ruleWeights[ruleId] || 0);
+    });
+
+    const totalTests = userStats.entries;
+    const efficiency = totalTests > 0 ? (patternDiscoveryScore / totalTests) : 0;
+    const uniqueRulesDiscoveredCount = coveredRulesByThisUser.size;
+    
+    let spamPenaltyFactor = 0;
+    if (uniqueRulesDiscoveredCount > 0 && totalTests > uniqueRulesDiscoveredCount * 3) {
+        spamPenaltyFactor = Math.min( (totalTests / (uniqueRulesDiscoveredCount * 3)) -1, 1) * 0.2;
+    }
+    if (patternDiscoveryScore > 0 && totalTests > patternDiscoveryScore * 5) {
+        spamPenaltyFactor = Math.max(spamPenaltyFactor, Math.min( (totalTests / (patternDiscoveryScore * 5)) -1, 1) * 0.3 );
+    }
+
+    let compositeScore = 
+        (patternDiscoveryScore / maxRuleScore * 600) +
+        (efficiency * 300) +
+        (userStats.longest * 10);
+
+    compositeScore *= (1 - spamPenaltyFactor);
+
+    return {
+      username,
+      userStats,
+      patternDiscoveryScore,
+      uniqueRulesDiscoveredCount,
+      coveredRules: coveredRulesByThisUser,
+      efficiency,
+      compositeScore,
+      spamFactor: spamPenaltyFactor
+    };
+  })
+  .sort((a, b) => b.compositeScore - a.compositeScore);
+
+  usersData.forEach(data => {
+    const { username, userStats, patternDiscoveryScore, uniqueRulesDiscoveredCount, coveredRules, efficiency, compositeScore, spamFactor } = data;
+    const row = document.createElement('tr');
+    row.style.cursor = 'pointer';
+    row.title = `Click to see ${username}'s rule discovery details`;
+
+    row.addEventListener('click', () => {
+      showUserRuleModal(username, coveredRules);
+    });
+    
+    const efficiencyDisplay = efficiency.toFixed(2);
+
+    row.innerHTML = `
+      <td>
+        <strong>${username}</strong>
+        <div style="font-size: 0.7rem; color: #666; margin-top: 2px;">
+          Score: ${compositeScore.toFixed(0)} • Rules: ${uniqueRulesDiscoveredCount}/10 (${patternDiscoveryScore} pts) • Eff: ${efficiencyDisplay}
+          ${spamFactor > 0 ? `<br><span style='color: #D32F2F; font-style: italic;'>Spam factor: ${(spamFactor*100).toFixed(0)}%</span>` : ''}
+        </div>
+      </td>
+      <td>${userStats.entries}</td>
+      <td><span class="status-badge match">${userStats.matches}</span></td>
+      <td><span class="status-badge no-match">${userStats.nonMatches}</span></td>
+      <td>${userStats.longest}</td>
+    `;
+
+    if (patternDiscoveryScore >= maxRuleScore * 0.7) {
+      row.style.backgroundColor = '#e8f5e8'; row.style.borderLeft = '4px solid #4CAF50';
+    } else if (patternDiscoveryScore >= maxRuleScore * 0.4) {
+      row.style.backgroundColor = '#f0f9ff'; row.style.borderLeft = '4px solid #2196F3';
+    } else if (uniqueRulesDiscoveredCount > 0) {
+      row.style.backgroundColor = '#fffdf0'; row.style.borderLeft = '4px solid #FF9800';
+    } else if (userStats.entries > 3) {
+      row.style.backgroundColor = '#fff0f0'; row.style.borderLeft = '4px solid #f44336';
+    }
+    if (spamFactor > 0.15) {
+        row.style.opacity = '0.7';
+    }
+
+    tbody.appendChild(row);
+  });
+
+  if (usersData.length === 0 && totalOverallEntries === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 40px; color: #666;">
+          No user data available yet
+        </td>
+      </tr>
+    `;
+  }
+}
+
+function loadLogsFromFirebase() {
+  database.ref('logs').on('value', function(snapshot) {
+    allLogs = snapshot.val() || {};
+    originalLogsData = {...allLogs};
+    dataCount = Object.keys(allLogs).length;
+    lastUpdateTime = new Date();
+    displayLogs();
+    displayTimeline();
+    updateSummaryCards();
+    displayStats(); // Ensure stats (and rule coverage) are updated after logs are loaded/updated
+    updateConnectionStatus(true);
+  });
+}
+
+function displayLogs() {
+  const tbody = document.getElementById('logTableBody');
+  tbody.innerHTML = '';
+  
+  // Convert to array and sort by date (most recent first)
+  const logsArray = Object.entries(allLogs).map(([key, log]) => ({
+    id: key,
+    ...log
+  })).sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  // Show most recent 50 entries
+  const recentLogs = logsArray.slice(0, 50);
+  
+  recentLogs.forEach(log => {
+    const row = document.createElement('tr');
+    const logDate = new Date(log.date);
+    const isToday = logDate.toDateString() === new Date().toDateString();
+    
+    // Apply result-based styling
+    if (log.result === 'match') {
+      row.className = 'match';
+    } else {
+      row.className = 'no-match';
+    }
+    
+    row.innerHTML = `
+      <td>
+        ${log.timestamp}
+        ${isToday ? '<span style="color: #2196F3; font-weight: 600;">• Today</span>' : ''}
+      </td>
+      <td><strong>${log.user}</strong></td>
+      <td>
+        <span class="status-badge ${log.result.replace(' ', '-')}">${log.result}</span>
+      </td>
+      <td style="font-family: monospace; word-break: break-all;">"${log.input}"</td>
+    `;
+    tbody.appendChild(row);
+  });
+  
+  if (Object.keys(allLogs).length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" style="text-align: center; padding: 40px; color: #666;">
+          No activity logs available yet
+        </td>
+      </tr>
+    `;
+  }
+}
+
+function filterLogs() {
+  const searchTerm = document.getElementById('logSearch').value.toLowerCase();
+  const tbody = document.getElementById('logTableBody');
+  const rows = tbody.getElementsByTagName('tr');
+  
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const text = row.textContent.toLowerCase();
+    
+    if (text.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  }
+}
+
+function filterUsers() {
+  const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+  const tbody = document.getElementById('statsTableBody');
+  const rows = tbody.getElementsByTagName('tr');
+  
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const text = row.textContent.toLowerCase();
+    
+    if (text.includes(searchTerm)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  }
+}
+
+function displayTimeline() {
+  const container = document.getElementById('timelineEvents');
+  const axis = document.getElementById('timelineAxis');
+  const info = document.getElementById('timelineInfo');
+  const tooltip = document.getElementById('timelineTooltip');
+  
+  // Clear everything
+  container.innerHTML = '';
+  axis.innerHTML = '';
+  tooltip.style.display = 'none';
+  
+  if (Object.keys(allLogs).length === 0) {
+    info.innerHTML = 'No data available';
+    axis.innerHTML = '<div style="text-align: center; padding: 10px; color: #666;">No activity to display</div>';
+    return;
+  }
+  
+  const { startTime, endTime } = getTimeRangeData(currentTimeRange);
+  
+  // Filter logs for time range
+  const filteredLogs = Object.values(allLogs).filter(log => {
+    const logDate = new Date(log.date);
+    return logDate >= startTime && logDate <= endTime;
+  });
+  
+  if (filteredLogs.length === 0) {
+    info.innerHTML = `No activity in ${currentTimeRange}`;
+    axis.innerHTML = '<div style="text-align: center; padding: 10px; color: #666;">No activity in selected period</div>';
+    return;
+  }
+  
+  // Group by users
+  const userGroups = {};
+  filteredLogs.forEach(log => {
+    if (!userGroups[log.user]) {
+      userGroups[log.user] = [];
+    }
+    userGroups[log.user].push(log);
+  });
+  
+  // Sort users by activity count
+  const sortedUsers = Object.keys(userGroups).sort((a, b) => 
+    userGroups[b].length - userGroups[a].length
+  );
+  
+  // Create user lanes
+  const laneHeight = 32;
+  const containerHeight = container.offsetHeight || 220;
+  const maxLanes = Math.floor((containerHeight - 20) / laneHeight);
+  const displayUsers = sortedUsers.slice(0, maxLanes);
+  
+  displayUsers.forEach((user, laneIndex) => {
+    // Create user lane background
+    const lane = document.createElement('div');
+    lane.className = 'user-lane';
+    lane.style.top = (laneIndex * laneHeight) + 'px';
+    lane.style.height = '31px';
+    
+    const matches = userGroups[user].filter(log => log.result === 'match').length;
+    lane.textContent = `${user} (${userGroups[user].length} tests, ${matches} matches)`;
+    container.appendChild(lane);
+    
+    // Process events for this user with collision detection
+    const userEvents = userGroups[user].map(log => {
+      const logDate = new Date(log.date);
+      const timePercent = Math.max(2, Math.min(95, ((logDate - startTime) / (endTime - startTime)) * 100));
+      return {
+        log: log,
+        timePercent: timePercent,
+        logDate: logDate
+      };
+    }).sort((a, b) => a.timePercent - b.timePercent);
+    
+    // Group events that are close together (within 2% of timeline width)
+    const eventGroups = [];
+    const threshold = 2; // 2% threshold for grouping
+    
+    userEvents.forEach(event => {
+      let placed = false;
+      
+      // Try to find an existing group to add this event to
+      for (let group of eventGroups) {
+        const groupCenter = group.events.reduce((sum, e) => sum + e.timePercent, 0) / group.events.length;
+        if (Math.abs(event.timePercent - groupCenter) <= threshold) {
+          group.events.push(event);
+          placed = true;
+          break;
+        }
+      }
+      
+      // If not placed in existing group, create new group
+      if (!placed) {
+        eventGroups.push({
+          events: [event]
+        });
+      }
+    });
+    
+    // Render event groups
+    eventGroups.forEach(group => {
+      if (group.events.length === 1) {
+        // Single event - render normally
+        const event = group.events[0];
+        createTimelineEvent(container, event, laneIndex, laneHeight, 0);
+      } else {
+        // Multiple events - create stacked or clustered visualization
+        if (group.events.length <= 3) {
+          // Stack up to 3 events
+          group.events.forEach((event, stackIndex) => {
+            createTimelineEvent(container, event, laneIndex, laneHeight, stackIndex);
+          });
+        } else {
+          // Create cluster for 4+ events
+          const avgTimePercent = group.events.reduce((sum, e) => sum + e.timePercent, 0) / group.events.length;
+          const matchCount = group.events.filter(e => e.log.result === 'match').length;
+          const noMatchCount = group.events.length - matchCount;
+          
+          createClusterEvent(container, group.events, avgTimePercent, laneIndex, laneHeight, matchCount, noMatchCount);
+        }
+      }
+    });
+  });
+  
+  // Update info display
+  const matches = filteredLogs.filter(log => log.result === 'match').length;
+  const totalUsers = Object.keys(userGroups).length;
+  const successRate = Math.round((matches / filteredLogs.length) * 100);
+  
+  info.innerHTML = `
+    📊 ${filteredLogs.length} tests • 
+    ✅ ${matches} matches (${successRate}%) • 
+    👥 ${totalUsers} users
+  `;
+  
+  // Create time axis
+  createTimeAxis(startTime, endTime, currentTimeRange);
+}
+
+function createTimelineEvent(container, eventData, laneIndex, laneHeight, stackOffset) {
+  const event = document.createElement('div');
+  const resultClass = eventData.log.result.replace(' ', '-');
+  event.className = `timeline-event ${resultClass}`;
+  
+  // Position with stacking offset
+  event.style.left = eventData.timePercent + '%';
+  event.style.top = (laneIndex * laneHeight + 8 + (stackOffset * 4)) + 'px';
+  
+  // Adjust opacity for stacked events
+  if (stackOffset > 0) {
+    event.style.opacity = Math.max(0.7, 1 - (stackOffset * 0.1));
+    event.style.transform = `translateX(-${stackOffset * 3}px)`;
+  }
+  
+  // Enhanced tooltip
+  event.addEventListener('mouseenter', (e) => {
+    showEventTooltip(e, [eventData.log]);
+  });
+  
+  event.addEventListener('mouseleave', () => {
+    hideEventTooltip();
+  });
+  
+  container.appendChild(event);
+}
+
+function createClusterEvent(container, events, timePercent, laneIndex, laneHeight, matchCount, noMatchCount) {
+  const clusterEvent = document.createElement('div');
+  
+  // Determine cluster color based on majority result
+  const majorityMatch = matchCount >= noMatchCount;
+  clusterEvent.className = `timeline-event cluster ${majorityMatch ? 'match' : 'no-match'}`;
+  
+  clusterEvent.style.left = timePercent + '%';
+  clusterEvent.style.top = (laneIndex * laneHeight + 6) + 'px';
+  clusterEvent.setAttribute('data-count', events.length);
+  
+  // Enhanced cluster tooltip
+  clusterEvent.addEventListener('mouseenter', (e) => {
+    const logs = events.map(event => event.log);
+    showEventTooltip(e, logs, true);
+  });
+  
+  clusterEvent.addEventListener('mouseleave', () => {
+    hideEventTooltip();
+  });
+
+  // Add click functionality to show detailed modal
+  clusterEvent.addEventListener('click', (e) => {
+    e.stopPropagation();
+    showClusterModal(events);
+  });
+
+  // Add visual feedback for clickability
+  clusterEvent.style.cursor = 'pointer';
+  clusterEvent.title = 'Click to view individual tests';
+  
+  container.appendChild(clusterEvent);
+}
+
+function showEventTooltip(e, logs, isCluster = false) {
+  const tooltip = document.getElementById('timelineTooltip');
+  
+  if (isCluster) {
+    // Cluster tooltip showing summary
+    const matches = logs.filter(log => log.result === 'match').length;
+    const user = logs[0].user;
+    const timeRange = getTimeRange(logs);
+    
+    tooltip.innerHTML = `
+      <div class="tooltip-header">${user} - ${logs.length} tests</div>
+      <div class="tooltip-row">
+        <span class="tooltip-label">✅ Matches:</span>
+        <span class="tooltip-value">${matches}</span>
+      </div>
+      <div class="tooltip-row">
+        <span class="tooltip-label">❌ No matches:</span>
+        <span class="tooltip-value">${logs.length - matches}</span>
+      </div>
+      <div class="tooltip-row">
+        <span class="tooltip-label">Time range:</span>
+        <span class="tooltip-value">${timeRange}</span>
+      </div>
+      <div style="margin-top: 8px; font-size: 10px; opacity: 0.8;">
+        Click to see individual tests
+      </div>
+    `;
+  } else {
+    // Single event tooltip
+    const log = logs[0];
+    const logDate = new Date(log.date);
+    
+    tooltip.innerHTML = `
+      <div class="tooltip-header">${log.user}</div>
+      <div class="tooltip-row">
+        <span class="tooltip-label">Input:</span>
+        <span class="tooltip-value">"${log.input}"</span>
+      </div>
+      <div class="tooltip-row">
+        <span class="tooltip-label">Result:</span>
+        <span class="tooltip-value">${log.result}</span>
+      </div>
+      <div class="tooltip-row">
+        <span class="tooltip-label">Time:</span>
+        <span class="tooltip-value">${log.timestamp}</span>
+      </div>
+      <div class="tooltip-row">
+        <span class="tooltip-label">Date:</span>
+        <span class="tooltip-value">${logDate.toLocaleDateString()}</span>
+      </div>
+    `;
+  }
+  
+  tooltip.style.display = 'block';
+  tooltip.style.left = Math.min(e.clientX + 15, window.innerWidth - 240) + 'px';
+  tooltip.style.top = Math.max(e.clientY - 60, 10) + 'px';
+  tooltip.style.position = 'fixed';
+}
+
+function hideEventTooltip() {
+  const tooltip = document.getElementById('timelineTooltip');
+  tooltip.style.display = 'none';
+}
+
+function getTimeRange(logs) {
+  const times = logs.map(log => new Date(log.date).getTime());
+  const minTime = Math.min(...times);
+  const maxTime = Math.max(...times);
+  
+  if (minTime === maxTime) {
+    return new Date(minTime).toLocaleTimeString();
+  }
+  
+  const duration = maxTime - minTime;
+  if (duration < 60000) { // Less than 1 minute
+    return `${Math.round(duration / 1000)}s span`;
+  } else if (duration < 3600000) { // Less than 1 hour
+    return `${Math.round(duration / 60000)}m span`;
+  } else {
+    return `${Math.round(duration / 3600000)}h span`;
+  }
+}
+
+function createTimeAxis(startTime, endTime, range) {
+  const axis = document.getElementById('timelineAxis');
+  axis.innerHTML = '';
+  
+  const tickCount = 6;
+  const axisContainer = document.createElement('div');
+  axisContainer.style.display = 'flex';
+  axisContainer.style.height = '100%';
+  axisContainer.style.alignItems = 'center';
+  axisContainer.style.borderTop = '1px solid #ddd';
+  axisContainer.style.background = 'white';
+  
+  for (let i = 0; i <= tickCount; i++) {
+    const tick = document.createElement('div');
+    tick.style.flex = '1';
+    tick.style.textAlign = 'center';
+    tick.style.fontSize = '11px';
+    tick.style.color = '#666';
+    tick.style.padding = '5px 2px';
+    tick.style.borderRight = i < tickCount ? '1px solid #eee' : 'none';
+    
+    const timePos = startTime.getTime() + (i / tickCount) * (endTime.getTime() - startTime.getTime());
+    const tickTime = new Date(timePos);
+    
+    if (range === 'today' || range === 'yesterday') {
+      tick.textContent = tickTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+    } else if (range === 'week') {
+      tick.textContent = tickTime.toLocaleDateString([], {weekday: 'short', day: 'numeric'});
+    } else {
+      tick.textContent = tickTime.toLocaleDateString([], {month: 'short', day: 'numeric'});
+    }
+    
+    axisContainer.appendChild(tick);
+  }
+  
+  axis.appendChild(axisContainer);
+}
+
+function refreshData() {
+  // Firebase automatically refreshes via listeners
+  const btn = event.target;
+  const originalText = btn.textContent;
+  btn.textContent = '🔄 Refreshing...';
+  btn.disabled = true;
+  
+  setTimeout(() => {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }, 1000);
+}
+
+function clearAllData() {
+  if (confirm('⚠️ Are you sure you want to clear ALL logs and statistics?\n\nThis action cannot be undone!')) {
+    const logs = Object.keys(allLogs).length;
+    const users = Object.keys(allStats).length;
+    
+    if (confirm(`This will delete:\n• ${logs} activity logs\n• ${users} user statistics\n\nProceed?`)) {
+    database.ref('logs').remove();
+    database.ref('stats').remove();
+      
+      // Show success message
+      setTimeout(() => {
+        alert('✅ All data has been cleared successfully');
+      }, 500);
+    }
+  }
+}
+
+function setTimeRange(range) {
+  currentTimeRange = range;
+  
+  // Update active button
+  document.querySelectorAll('.timeline-control').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  displayTimeline();
+}
+
+function getTimeRangeData(range) {
+  const now = new Date();
+  let startTime, endTime;
+  
+  switch(range) {
+    case 'today':
+      startTime = new Date(now);
+      startTime.setHours(0, 0, 0, 0);
+      endTime = new Date(now);
+      endTime.setHours(23, 59, 59, 999);
+      break;
+    case 'yesterday':
+      startTime = new Date(now);
+      startTime.setDate(now.getDate() - 1);
+      startTime.setHours(0, 0, 0, 0);
+      endTime = new Date(now);
+      endTime.setDate(now.getDate() - 1);
+      endTime.setHours(23, 59, 59, 999);
+      break;
+    case 'week':
+      startTime = new Date(now);
+      startTime.setDate(now.getDate() - 7);
+      startTime.setHours(0, 0, 0, 0);
+      endTime = new Date(now);
+      break;
+    case 'month':
+      startTime = new Date(now);
+      startTime.setDate(now.getDate() - 30);
+      startTime.setHours(0, 0, 0, 0);
+      endTime = new Date(now);
+      break;
+  }
+  
+  return { startTime, endTime };
+}
+
+function togglePatternSpecs() {
+  const patternSpecs = document.getElementById('patternSpecs');
+  const button = document.getElementById('toggleSpecsBtn'); 
+  
+  if (patternSpecs.classList.contains('show')) {
+    patternSpecs.classList.remove('show');
+    button.textContent = 'Show Details';
+    patternSpecs.style.display = 'none'; // Ensure display:none is set
+  } else {
+    patternSpecs.classList.add('show');
+    button.textContent = 'Hide Details';
+    patternSpecs.style.display = 'block'; // Ensure display:block is set
+  }
+}
+
+function toggleTestDesignGuide() {
+  const testDesignGuide = document.getElementById('testDesignGuide');
+  const button = document.getElementById('toggleGuideBtn');
+  
+  if (testDesignGuide.classList.contains('show')) {
+    testDesignGuide.classList.remove('show');
+    button.textContent = 'Show Guide';
+    testDesignGuide.style.display = 'none'; // Ensure display:none is set
+  } else {
+    testDesignGuide.classList.add('show');
+    button.textContent = 'Hide Guide';
+    testDesignGuide.style.display = 'block'; // Ensure display:block is set
+  }
+}
+
+// Connection status monitoring
+database.ref('.info/connected').on('value', function(snapshot) {
+  updateConnectionStatus(snapshot.val() === true);
+});
+
+// Initialize
+setInterval(updateTime, 1000);
+updateTime();
+
+// Load data with real-time listeners
+loadStatsFromFirebase();
+loadLogsFromFirebase();
+
+// Initialize timeline
+setTimeout(() => {
+  if (Object.keys(allLogs).length > 0) {
+    displayTimeline();
+  }
+}, 1000);
+
+function showClusterModal(events) {
+  const modal = document.getElementById('clusterModal');
+  const title = document.getElementById('clusterModalTitle');
+  const body = document.getElementById('clusterModalBody');
+  
+  const logs = events.map(event => event.log);
+  const user = logs[0].user;
+  const matches = logs.filter(log => log.result === 'match').length;
+  const timeRange = getTimeRange(logs);
+  
+  // Set title
+  title.textContent = `${user} - ${logs.length} Tests`;
+  
+  // Create content
+  body.innerHTML = `
+    <div class="cluster-summary">
+      <h3 style="margin: 0 0 8px 0; color: #2196F3;">Activity Summary</h3>
+      <div class="cluster-summary-stats">
+        <div class="cluster-stat">
+          <div class="cluster-stat-value">${logs.length}</div>
+          <div class="cluster-stat-label">Total Tests</div>
+        </div>
+        <div class="cluster-stat">
+          <div class="cluster-stat-value">${matches}</div>
+          <div class="cluster-stat-label">Matches</div>
+        </div>
+        <div class="cluster-stat">
+          <div class="cluster-stat-value">${logs.length - matches}</div>
+          <div class="cluster-stat-label">No Matches</div>
+        </div>
+        <div class="cluster-stat">
+          <div class="cluster-stat-value">${Math.round((matches / logs.length) * 100)}%</div>
+          <div class="cluster-stat-label">Success Rate</div>
+        </div>
+      </div>
+      <div style="margin-top: 8px; font-size: 0.9rem; color: #666;">
+        <strong>Time Range:</strong> ${timeRange}
+      </div>
+    </div>
+    
+    <h4 style="margin: 0 0 12px 0; color: #333;">Individual Tests:</h4>
+    <div class="cluster-test-list">
+      ${logs.map(log => `
+        <div class="cluster-test-item ${log.result.replace(' ', '-')}">
+          <div class="cluster-test-header">
+            <span class="cluster-test-result ${log.result.replace(' ', '-')}">
+              ${log.result === 'match' ? '✅ Match' : '❌ No Match'}
+            </span>
+            <span class="cluster-test-time">${log.timestamp}</span>
+          </div>
+          <div class="cluster-test-input">"${log.input}"</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  
+  // Show modal
+  modal.classList.add('show');
+  
+  // Close modal when clicking outside
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeClusterModal();
+    }
+  });
+  
+  // Close modal on Escape key
+  document.addEventListener('keydown', handleModalKeydown);
+}
+
+function closeClusterModal() {
+  const modal = document.getElementById('clusterModal');
+  modal.classList.remove('show');
+  document.removeEventListener('keydown', handleModalKeydown);
+}
+
+function handleModalKeydown(e) {
+  if (e.key === 'Escape') {
+    closeClusterModal();
+  }
+}
+
+// --- User Rule Breakdown Modal Logic ---
+const allPatternRules = [
+  { id: 1, name: "Hexadecimal Integers", description: "Accept three hexadecimal integers (positive/negative).", example: "1A 2B 3C", isRedSpec: false },
+  { id: 2, name: "Ascending Order", description: "Integers ascend in value (left to right).", example: "10 20 30", isRedSpec: false },
+  { id: 3, name: "Positive Sign", description: "Optional '+' symbol for positive numbers.", example: "+5 +10 +15", isRedSpec: false },
+  { id: 4, name: "Delimiters", description: "Integers delimited by whitespace, comma, period, or colon.", example: "A.B:C", isRedSpec: false },
+  { id: 5, name: "Leading/Trailing Whitespace", description: "Allow leading/trailing whitespace on the whole string.", example: "  1 2 3  ", isRedSpec: false },
+  { id: 6, name: "Conditional Whitespace (Delimiter Specific)", description: "If non-whitespace delimiter used, leading (not trailing) whitespace allowed on individual integers.", example: "10,  20,  30", isRedSpec: true },
+  { id: 7, name: "Multiple Signs", description: "More than one '-' or '+' in a row treats number as zero.", example: "++0A 0B 0C (becomes 0 0B 0C)", isRedSpec: true },
+  { id: 8, name: "Encoded Characters", description: "Encoded characters transformed by HTTP (e.g., %20 to space).", example: "10%2020%2030 (becomes 10 20 30)", isRedSpec: true },
+  { id: 9, name: "HTML Handling", description: "HTML is not stripped out, potentially disrupting front end (but may still parse if HTML is in ignored part).", example: "10 20 30 <em>html</em>", isRedSpec: true },
+  { id: 10, name: "Appended Text Ignored", description: "Text appended after a valid pattern (starting with whitespace) is ignored.", example: "10 20 30 ignore this", isRedSpec: true }
+];
+
+function showUserRuleModal(username, coveredRuleIds) {
+  const modal = document.getElementById('userRuleModal');
+  const title = document.getElementById('userRuleModalTitle');
+  const body = document.getElementById('userRuleModalBody');
+
+  title.textContent = `Rule Discovery for ${username}`;
+
+  let html = '<ul class="rules-list">';
+  allPatternRules.forEach(rule => {
+    const isCovered = coveredRuleIds.has(rule.id);
+    html += `
+      <li class="rule-item ${isCovered ? 'covered' : 'missed'}">
+        <div class="rule-text-content">
+          <div class="rule-name ${rule.isRedSpec ? 'red-spec-rule' : ''}">Rule ${rule.id}: ${rule.name}</div>
+          <div class="rule-description">${rule.description}</div>
+          <div class="rule-example" style="margin-top: 5px; font-size: 0.85em;">
+            <strong>Example:</strong> <code style="background: #eee; padding: 2px 5px; border-radius: 3px;">${rule.example}</code>
+          </div>
+        </div>
+        <div class="rule-status ${isCovered ? 'covered' : 'missed'}">
+          ${isCovered ? '✅ Covered' : '❌ Missed'}
+        </div>
+      </li>
+    `;
+  });
+  html += '</ul>';
+
+  // Comprehensive Example Section
+  html += `
+    <div class="comprehensive-example-section" style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee;">
+      <h4 style="margin-bottom: 10px; font-size: 1.2rem; color: #333;">Comprehensive Example (All Rules)</h4>
+      <p style="font-size: 0.9rem; color: #555;">
+        The following string is designed to comply with all 10 rules and result in a match:
+      </p>
+      <code style="display: block; background: #f0f0f0; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; font-size: 0.95rem; word-break: break-all;">
+        &nbsp;&nbsp;++0A&nbsp;,&nbsp;&nbsp;+%2014&nbsp;:&nbsp;&nbsp;1E&nbsp;&nbsp;ignore&nbsp;<b>HTML</b>&nbsp;here&nbsp;&nbsp;
+      </code>
+      <p style="font-size: 0.9rem; color: #555;">This example aims to cover:</p>
+      <ul style="font-size: 0.85rem; color: #555; margin-left: 20px; list-style-type: disc;">
+        <li><b>Rule 1:</b> Hexadecimal Integers (<code>0A</code>, <code>14</code>, <code>1E</code>).</li>
+        <li><b>Rule 2:</b> Ascending Order (<code>0</code>, <code>20</code>, <code>30</code> in decimal after Rule 7 applies).</li>
+        <li><b>Rule 3:</b> Positive Sign (<code>+</code> in <code>+%2014</code>).</li>
+        <li><b>Rule 4:</b> Delimiters (<code>,</code> and <code>:</code>).</li>
+        <li><b>Rule 5:</b> Leading/Trailing Whitespace (on the entire string).</li>
+        <li><b>Rule 6:</b> Conditional Whitespace (e.g., spaces around <code>+%2014</code> after comma).</li>
+        <li><b>Rule 7:</b> Multiple Signs (<code>++0A</code> becomes <code>0</code>).</li>
+        <li><b>Rule 8:</b> Encoded Characters (<code>%20</code> becomes a space).</li>
+        <li><b>Rule 9:</b> HTML Handling (<code>&lt;b&gt;HTML&lt;/b&gt;</code> is present in the ignored suffix and not stripped).</li>
+        <li><b>Rule 10:</b> Appended Text Ignored (<code>&nbsp;&nbsp;ignore&nbsp;&lt;b&gt;HTML&lt;/b&gt;&nbsp;here&nbsp;&nbsp;</code> is ignored).</li>
+      </ul>
+      <p style="font-size: 0.8rem; color: #777; margin-top: 10px;">
+        <em>The success of this complex string on the main test page (<code>index.html</code>) depends on its parser robustly handling all combined rule interactions as described.</em>
+      </p>
+    </div>
+  `;
+
+  body.innerHTML = html;
+  modal.classList.add('show');
+}
+
+function closeUserRuleModal() {
+  const modal = document.getElementById('userRuleModal');
+  modal.classList.remove('show');
+  document.removeEventListener('keydown', handleUserRuleModalKeydown);
+}
+
+function handleUserRuleModalKeydown(e) {
+  if (e.key === 'Escape') {
+    closeUserRuleModal();
+  }
+}
+</script>
+
+</body>
+</html> 

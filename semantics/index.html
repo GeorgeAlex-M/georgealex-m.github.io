@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Doodle Semantics — does the wording change what you see?
+    Classic scripts sharing window.Astro (shared engine in ../doodle/), so it
+    works opened directly from disk (file://) as well as on GitHub Pages.
+  -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doodle Semantics — does the wording change what you see?</title>
+  <meta name="description" content="Four interactive doodle simulations of experiments that measured what a single word does to memory, judgement and perception: Loftus &amp; Palmer's verbs, Tversky &amp; Kahneman's frames, Asch's adjective order, and the Russian blues.">
+  <meta name="author" content="George">
+  <link rel="icon" type="image/x-icon" href="../images/fav-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../doodle/doodle.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script defer src="../doodle/engine/palette.js"></script>
+  <script defer src="../doodle/engine/constants.js"></script>
+  <script defer src="../doodle/engine/canvas.js"></script>
+  <script defer src="../doodle/engine/rough-helpers.js"></script>
+  <script defer src="../doodle/engine/sketch.js"></script>
+  <script defer src="../doodle/engine/controls.js"></script>
+  <script defer src="../doodle/engine/integrators.js"></script>
+  <script defer src="../doodle/engine/sim.js"></script>
+  <script defer src="sims/loftus.js"></script>
+  <script defer src="sims/framing.js"></script>
+  <script defer src="sims/asch.js"></script>
+  <script defer src="sims/blueexplain.js"></script>
+  <script defer src="sims/bluebound.js"></script>
+  <script defer src="main.js"></script>
+</head>
+<body>
+<main>
+
+  <header class="site-header">
+    <img class="logo" src="../images/logo.png" alt="Unreal Software logo">
+    <a class="site-name" href="../index.html">&larr; unrealsoftware — home</a>
+  </header>
+
+  <div class="hero">
+    <h1>Doodle Semantics</h1>
+    <p class="tagline">Change one word. Keep everything else identical — the same film, the
+      same statistics, the same six adjectives, the same shade of blue. Then measure what
+      moved. Four experiments, drawn by hand, each one you can actually poke.</p>
+  </div>
+
+  <blockquote class="quote-box">
+    &ldquo;The world is presented in a kaleidoscopic flux of impressions which has to be
+    organized by our minds &mdash; and this means largely by the linguistic systems in our
+    minds.&rdquo;
+    <span class="attrib">* Benjamin Lee Whorf, 1940 &mdash; the strong version of this claim
+      did <em>not</em> survive testing. What did survive is on this page.</span>
+  </blockquote>
+
+  <nav class="doodle-toc" aria-label="Table of contents">
+    <h2>Four experiments (this page)</h2>
+    <div class="toc-chapter">
+      <h3>Chapter I &mdash; What one word does</h3>
+      <ul class="toc-items">
+        <li><a href="#loftus"><span class="n" style="color:var(--red)">1</span>One verb, two memories</a></li>
+        <li><a href="#framing"><span class="n" style="color:var(--orange)">2</span>Same numbers, different word</a></li>
+        <li><a href="#asch"><span class="n" style="color:var(--cyan)">3</span>Same six words, different person</a></li>
+        <li><a href="#blueexplain"><span class="n" style="color:var(--green)">4</span>How the blue experiment actually works</a></li>
+        <li><a href="#bluebound"><span class="n" style="color:var(--pink)">5</span>The boundary your language drew</a></li>
+      </ul>
+    </div>
+    <div class="toc-chapter">
+      <h3>&mdash;</h3>
+      <ul class="toc-items">
+        <li><a href="#limits"><span class="n" style="color:var(--yellow)">!</span>What this does <em>not</em> prove</a></li>
+        <li><a href="#library"><span class="n" style="color:var(--orange)">&#9733;</span>The Library &mdash; every source cited here</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       Sim 1 — Loftus & Palmer
+       ====================================================================== -->
+  <section class="sim-section" id="loftus" style="--accent: var(--red)">
+    <h2><span class="secnum">1.</span>One verb, two memories</h2>
+    <p class="kicker">Forty-five students watched the same crash films. Then they were asked
+      how fast the cars were going &mdash; and the question contained one of five verbs.
+      Pick the verb and watch the estimate move. Then press <em>one week later</em>.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+      speed estimates and the broken-glass follow-up are reported numbers from a controlled
+      experiment with random assignment. The verb is the <em>only</em> thing that differed
+      between groups; everyone saw the same film. The effect has been replicated many times
+      and is standard textbook material on eyewitness memory.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="loftus" aria-label="Simulation of the Loftus and Palmer verb experiment: a crash whose severity and reported speed change with the verb in the question"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="loftus"></div>
+    <div class="sim-readout" data-readout="loftus" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the sources behind this simulation — search these in your library:</span>
+      <span class="cit">1974 Loftus, Palmer - Reconstruction of Automobile Destruction: An Example of the Interaction Between Language and Memory</span>
+      <span class="cit">1994 Loftus - The Myth of Repressed Memory</span>
+      <span class="cit">2020 Spielman - Psychology 2e (p.279)</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--ink)">leading question</dt>
+        <dd>A question whose wording carries an assumption. &ldquo;How fast were they going when
+          they <em>smashed</em>?&rdquo; smuggles in a severe crash; &ldquo;when they
+          <em>contacted</em>?&rdquo; smuggles in a gentle one. The witness answers the question
+          they were <em>given</em>, not the one they were meant to be asked.</dd>
+        <dt style="color:var(--red)">misinformation effect</dt>
+        <dd>New information that arrives <em>after</em> an event gets folded into the memory of
+          the event. A week later the witness cannot tell which part came from the film and
+          which part came from the question. This is why the broken glass matters: there was
+          none in the film.</dd>
+        <dt style="color:var(--orange)">reconstruction (vs playback)</dt>
+        <dd>Memory is not a recording you replay. It is rebuilt each time from fragments plus
+          expectations. That is exactly why a single verb can get inside it.</dd>
+        <dt style="color:var(--muted)">random assignment</dt>
+        <dd>Who got which verb was decided by chance, not by the participants. That is what
+          licenses the causal claim: the groups differed in the verb and nothing else, so the
+          verb is what moved the answers.</dd>
+      </dl>
+    </details>
+
+    <div class="prose">
+      <p>Loftus and Palmer showed 45 students films of traffic accidents and then asked, in
+      writing: <em>&ldquo;About how fast were the cars going when they ___ each other?&rdquo;</em>
+      Nine students got <em>smashed</em>, nine got <em>collided</em>, nine <em>bumped</em>, nine
+      <em>hit</em>, nine <em>contacted</em>. Mean estimates ran from 40.8 mph down to 31.8 mph.
+      Same film. Same footage of the same speed. The verb moved the number by about nine miles
+      an hour.</p>
+      <p>The second experiment is the one that should worry you. A new set of 150 people watched
+      a crash; a third were asked the <em>smashed</em> question, a third the <em>hit</em>
+      question, a third were asked nothing about speed at all. One week later everyone was
+      asked: <em>did you see any broken glass?</em> There was no broken glass in the film.
+      In the <em>smashed</em> group, 32% said yes &mdash; more than twice the 14% in the
+      <em>hit</em> group, and well above the 12% of controls.</p>
+      <p>The word did not just bias what they <em>said</em>. A week later it had been absorbed
+      into what they <em>remembered</em>. Nothing in the world had changed. One verb had.</p>
+      <p style="color:var(--muted)">Note on numbers: the mph means and percentages above are from the 1974
+      paper itself. <em>Psychology 2e</em>, the textbook in my library, reports only the
+      qualitative result &mdash; &ldquo;much higher speed&rdquo;, &ldquo;more than twice as
+      likely&rdquo; &mdash; so I have gone back to the original rather than invent figures.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 2 — Framing
+       ====================================================================== -->
+  <section class="sim-section" id="framing" style="--accent: var(--orange)">
+    <h2><span class="secnum">2.</span>Same numbers, different word</h2>
+    <p class="kicker">Two descriptions of exactly the same statistics. Not a rounding
+      difference, not a different study &mdash; logically equivalent sentences. Flip the frame
+      and watch the decision flip with it, including in trained physicians.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+      framing reversals are among the most replicated findings in decision science, and the
+      surgery study was run on physicians as well as students and patients. The two
+      percentages shown for it are quoted from Kahneman. For the 600-lives problem Kahneman
+      reports only &ldquo;a substantial majority&rdquo; and &ldquo;a large majority&rdquo;, so
+      this page shows no percentages there.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="framing" aria-label="Simulation of framing effects: the same survival statistics described as survival or as mortality, and the 600-lives problem described as lives saved or lives lost"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="framing"></div>
+    <div class="sim-readout" data-readout="framing" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the sources behind this simulation — search these in your library:</span>
+      <span class="cit">1981 Tversky, Kahneman - The Framing of Decisions and the Psychology of Choice</span>
+      <span class="cit">1982 McNeil, Pauker, Sox, Tversky - On the Elicitation of Preferences for Alternative Therapies</span>
+      <span class="cit">2011 Kahneman - Thinking, Fast and Slow (ch.34, Frames and Reality)</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--ink)">frame</dt>
+        <dd>The wording that presents a choice. Two frames are <em>extensionally
+          equivalent</em> when they describe exactly the same states of the world &mdash; 90%
+          survival <em>is</em> 10% mortality. A perfectly rational agent would be indifferent
+          between them.</dd>
+        <dt style="color:var(--orange)">invariance</dt>
+        <dd>The rationality assumption that equivalent descriptions should produce equivalent
+          preferences. Framing effects are famous precisely because they break it, reliably,
+          in people who are otherwise competent.</dd>
+        <dt style="color:var(--green)">gain frame / loss frame</dt>
+        <dd>Describing an outcome in terms of what is gained (lives saved, patients surviving)
+          versus what is lost (lives lost, patients dying). People tend to avoid risk in the
+          gain frame and seek risk in the loss frame &mdash; the same outcome, opposite
+          appetite.</dd>
+        <dt style="color:var(--muted)">System 1</dt>
+        <dd>Kahneman's name for the fast, automatic reading that happens before you deliberate.
+          You cannot choose not to hear &ldquo;mortality&rdquo; as bad news. Deliberation comes
+          after the frame has already landed.</dd>
+      </dl>
+    </details>
+
+    <div class="prose">
+      <p>Physicians were given outcome statistics for lung-cancer treatment. Half read that
+      &ldquo;the one-month survival rate is 90%&rdquo;. Half read that &ldquo;there is 10%
+      mortality in the first month&rdquo;. These are the same fact. Surgery was chosen by 84%
+      of physicians given the survival frame, and by 50% of those given the mortality frame.
+      As Kahneman puts it: <em>&ldquo;Medical training is, evidently, no defense against the
+      power of framing.&rdquo;</em></p>
+      <p>The 600-lives problem does the same trick with lives. Programme A saves 200 people for
+      certain; programme B has a one-third chance of saving all 600. Most people take the sure
+      thing. Now rewrite it: programme A&prime; means 400 people die for certain; programme
+      B&prime; has a one-third chance that nobody dies. Now most people take the gamble. A and
+      A&prime; are the same programme. So are B and B&prime;. Only the paint changed.</p>
+      <p>This is the cleanest possible demonstration that wording is not decoration. Two
+      sentences that a logician would call identical produce two different populations of
+      decision-makers &mdash; and the people making the decisions do not experience themselves
+      as being moved by wording at all.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 3 — Asch
+       ====================================================================== -->
+  <section class="sim-section" id="asch" style="--accent: var(--cyan)">
+    <h2><span class="secnum">3.</span>Same six words, different person</h2>
+    <p class="kicker">Alan and Ben are described with the identical six adjectives. The only
+      difference is which one you hear first. Reveal them one at a time and watch the
+      impression fork &mdash; then watch what happens to the word <em>stubborn</em>.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+      the order effect itself is a measured, repeatedly replicated result (Asch 1946, and the
+      standard demonstration in Kahneman ch.7). The impression meter in the drawing is an
+      <em>illustration</em> of the direction, not a reported score &mdash; Asch reports the
+      reversal and the reinterpretation, not a value per adjective.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="asch" aria-label="Simulation of Asch's impression-formation experiment: the same six adjectives revealed in opposite orders for two people"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="asch"></div>
+    <div class="sim-readout" data-readout="asch" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the sources behind this simulation — search these in your library:</span>
+      <span class="cit">1946 Asch - Forming Impressions of Personality</span>
+      <span class="cit">2011 Kahneman - Thinking, Fast and Slow (ch.7, A Machine for Jumping to Conclusions)</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--ink)">primacy effect</dt>
+        <dd>What arrives first weighs more. Not because it is better evidence, but because it
+          sets up the interpretation that everything afterwards is read through.</dd>
+        <dt style="color:var(--cyan)">halo effect</dt>
+        <dd>One early positive trait spreads a glow over unrelated later traits. Its negative
+          twin does the same in reverse. The later evidence is not ignored &mdash; it is
+          recruited.</dd>
+        <dt style="color:var(--yellow)">semantic change of meaning</dt>
+        <dd>Asch's own explanation, and the interesting one: the later words do not merely
+          count for less, they <em>mean something else</em>. &ldquo;Stubborn&rdquo; in an
+          intelligent person is principled; &ldquo;stubborn&rdquo; in an envious person is
+          dangerous. Same string of letters, different content.</dd>
+        <dt style="color:var(--muted)">coherent story</dt>
+        <dd>The mind's default is to build the most coherent picture available from whatever
+          arrived first, and then to defend it. Ambiguity is resolved in favour of the story
+          already running.</dd>
+      </dl>
+    </details>
+
+    <div class="prose">
+      <p>Alan is <em>intelligent &mdash; industrious &mdash; impulsive &mdash; critical &mdash;
+      stubborn &mdash; envious</em>. Ben is <em>envious &mdash; stubborn &mdash; critical
+      &mdash; impulsive &mdash; industrious &mdash; intelligent</em>. Read them slowly. Most
+      people find Alan considerably more likeable, and this is not subtle: it is the reliable
+      result of the demonstration.</p>
+      <p>The naive explanation is that we stop paying attention. The better explanation is
+      Asch's, and it is sharper: the early adjectives change what the later adjectives
+      <em>mean</em>. In Kahneman's words, <em>&ldquo;The stubbornness of an intelligent person
+      is seen as likely to be justified and may actually evoke respect, but intelligence in an
+      envious and stubborn person makes him more dangerous.&rdquo;</em></p>
+      <p>That is the part worth carrying: this is not a bias about attention or effort. The
+      word arrived intact and was re-read. Which means the order in which you learn about a
+      person &mdash; or a codebase, or a candidate, or a bug report &mdash; is not neutral
+      packaging around the evidence. It is part of the evidence you end up with.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 4 — Russian blues
+       ====================================================================== -->
+  <section class="sim-section" id="blueexplain" style="--accent: var(--green)">
+    <h2><span class="secnum">4.</span>How the blue experiment actually works</h2>
+    <p class="kicker">This one is worth walking through slowly before you play with it, because
+      the trick is easy to miss. Six steps: press <em>next step</em> and read the line under
+      the drawing each time.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+      steps 2 to 6 are the study as reported. The <em>pink/red</em> analogy in step 1 is mine,
+      not part of the experiment, and is labelled as an analogy on the drawing. The
+      response-time bars show direction only, not milliseconds.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="blueexplain" aria-label="Six-step walkthrough of the Russian blues experiment: the pink and red analogy, the goluboy and siniy boundary, the three-square task, the two kinds of trial, the interference conditions, and the limits of the claim"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="blueexplain"></div>
+    <div class="sim-readout" data-readout="blueexplain" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the sources behind this simulation — search these in your library:</span>
+      <span class="cit">2007 Winawer, Witthoft, Frank, Wu, Wade, Boroditsky - Russian Blues Reveal Effects of Language on Color Discrimination</span>
+      <span class="cit">2020 Sedivy - Language in Mind: An Introduction to Psycholinguistics (ch.13)</span>
+    </div>
+
+    <div class="prose">
+      <p><strong>The thing that is easy to miss</strong> is in step 4. The two trials use the
+      <em>same physical difference</em> &mdash; two steps along the same ramp of blues, the same
+      gap in wavelength, a gap you could measure with an instrument and get the same number
+      twice. The only thing that changes between them is whether a Russian speaker would give
+      the two squares the same name or two different names.</p>
+      <p>That is the whole design. If naming were irrelevant to seeing, both trials should take
+      the same time. For English speakers they do. For Russian speakers they don't.</p>
+      <p>And <strong>step 5 is what turns a curiosity into evidence.</strong> The obvious
+      objection is that Russian speakers might simply be better practised with blues, for
+      reasons that have nothing to do with words. So the experimenters loaded the participants
+      up with a second task while they worked. When that task was verbal &mdash; hold an
+      eight-digit number in your head &mdash; the Russian advantage vanished. When it was an
+      equally demanding <em>non-verbal</em> task &mdash; hold a spatial grid pattern &mdash; the
+      advantage came straight back. Practice does not care whether your second task is made of
+      words. Language does.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Sim 5 — Russian blues, interactive
+       ====================================================================== -->
+  <section class="sim-section" id="bluebound" style="--accent: var(--pink)">
+    <h2><span class="secnum">5.</span>The boundary your language drew</h2>
+    <p class="kicker">Russian has no single basic word for &ldquo;blue&rdquo;. Lighter blues are
+      <em>голубой</em>, darker blues are <em>синий</em> &mdash; two separate basic colour terms.
+      Slide a pair of blues across that line and watch who gets faster. Then load the words up
+      with a digit string and watch the advantage vanish.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> &mdash;
+      this is a speeded perceptual discrimination task with reaction times, an
+      English-speaking control group, and an interference manipulation. The finding &mdash;
+      Russian advantage at the category boundary, killed by verbal load, spared by spatial load
+      &mdash; is measured. The response-time bars in the drawing are illustrative, since
+      Sedivy reports the direction and the dissociation rather than per-condition
+      milliseconds.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="bluebound" aria-label="Simulation of the Russian blues experiment: a blue colour ramp with the goluboy and siniy category boundary, a three-square matching task, and verbal versus spatial interference"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="bluebound"></div>
+    <div class="sim-readout" data-readout="bluebound" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the sources behind this simulation — search these in your library:</span>
+      <span class="cit">2007 Winawer, Witthoft, Frank, Wu, Wade, Boroditsky - Russian Blues Reveal Effects of Language on Color Discrimination</span>
+      <span class="cit">2020 Sedivy - Language in Mind: An Introduction to Psycholinguistics</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--ink)">basic colour term</dt>
+        <dd>A short, common, non-derived colour word that a speaker applies freely &mdash;
+          <em>red</em>, <em>green</em>, <em>blue</em>. English has one for the whole blue range;
+          Russian has two. &ldquo;Light blue&rdquo; is a phrase in English, not a basic term,
+          the way <em>pink</em> is a basic term and &ldquo;light red&rdquo; is not.</dd>
+        <dt style="color:var(--pink)">categorical perception</dt>
+        <dd>A physically even sequence being <em>experienced</em> as bumpy: differences that
+          cross a category line look bigger than equal-sized differences inside a category.
+          Long known for speech sounds; here, measured for colour.</dd>
+        <dt style="color:var(--red)">verbal interference</dt>
+        <dd>Occupying the language system with an irrelevant verbal load &mdash; in this
+          study, holding an eight-digit number in mind &mdash; while doing the main task. If an effect disappears
+          under verbal load but survives an equally demanding non-verbal load, the language
+          system was participating in the task, not just describing it afterwards.</dd>
+        <dt style="color:var(--green)">spatial interference (the control)</dt>
+        <dd>An equally demanding memory load with no words in it &mdash; hold a spatial grid
+          pattern instead of the digits.
+          This is the condition that makes the result interesting: it rules out
+          &ldquo;the participants were just busy&rdquo;.</dd>
+      </dl>
+    </details>
+
+    <div class="prose">
+      <p>Three squares: one on top, two below. Which of the bottom two matches the top one?
+      Press as fast as you can. When two <em>very similar</em> squares fell on opposite sides
+      of the <em>голубой</em>/<em>синий</em> line, Russian speakers answered faster than when
+      both squares sat inside a single category. English speakers, whose language draws no
+      line there, showed no such difference.</p>
+      <p>By itself that is suggestive but weak &mdash; maybe Russian speakers just have more
+      practice with blue. The interference conditions are what make it strong. When subjects
+      had to hold an <strong>eight-digit number</strong> in mind through the trial, the Russian
+      advantage disappeared. When the extra load was a <strong>spatial grid pattern</strong>
+      instead, it came back. Something specifically linguistic was being used, live, during a
+      task where nobody was asked to name anything.</p>
+      <p>This is the narrow, defensible version of the Whorf idea. Not &ldquo;your language
+      determines what you can think&rdquo;. Rather: a distinction your language forces you to
+      make gets recruited as a shortcut, and shows up as milliseconds in a task that is not
+      about words at all.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       Limits
+       ====================================================================== -->
+  <section class="sim-section" id="limits" style="--accent: var(--yellow)">
+    <h2><span class="secnum">!</span>What this does <em>not</em> prove</h2>
+    <p class="kicker">Four solid results are not a licence to claim everything. Here is the
+      honest boundary of what is on this page.</p>
+
+    <p class="evidence ev-partial"><span class="ev-dot"></span><strong>partially supported</strong> &mdash;
+      the general claim &ldquo;language shapes thought&rdquo; is true in the narrow, measured
+      senses above and false in the strong sense Whorf originally proposed. Treat any single
+      sentence summarising this literature with suspicion, including mine.</p>
+
+    <div class="prose">
+      <p><strong>It does not show linguistic determinism.</strong> Whorf's strong claim &mdash;
+      that you cannot think what your language does not encode &mdash; failed. Russian speakers
+      see every shade an English speaker sees; English speakers can learn the
+      <em>голубой</em>/<em>синий</em> distinction in an afternoon. What was measured is a
+      speed advantage of tens of milliseconds, not a difference in what is perceivable.</p>
+      <p><strong>It does not show that everything is framing.</strong> The framing studies work
+      because the two descriptions are <em>logically equivalent</em>. When two descriptions are
+      not equivalent &mdash; when one is more accurate &mdash; preferring the accurate one is
+      not a bias. The lesson is about equivalent wordings, not about all wordings.</p>
+      <p><strong>It does not show that memory is worthless.</strong> Loftus's own point is
+      narrower and more useful: memory is reconstructive, so it is vulnerable at the moment of
+      <em>retrieval</em>, and the wording of the question is one of the inputs to the
+      reconstruction. That is an argument for careful interviewing, not for distrusting all
+      witnesses.</p>
+      <p><strong>It does not measure occupational or professional labels.</strong> Whether
+      calling a kind of work &ldquo;manual&rdquo; changes how people evaluate the people doing
+      it is a reasonable hypothesis, and the four studies above make it plausible &mdash; but
+      plausible is not measured. As far as I can find, nobody has run that experiment. If you
+      know of one, send it to me and I will add it here with a proper evidence label.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       The Library
+       ====================================================================== -->
+  <section class="sim-section" id="library" style="--accent: var(--orange)">
+    <h2><span class="secnum">&#9733;</span>The Library &mdash; every source cited here</h2>
+    <p class="kicker">In <em>YEAR Author - Title</em> form, so you can find them in a reference
+      manager or archive. Textbook entries carry the edition year of the copy I read.</p>
+    <ul class="library-list">
+      <li><span class="yr">1946</span>Asch - Forming Impressions of Personality</li>
+      <li><span class="yr">1974</span>Loftus, Palmer - Reconstruction of Automobile Destruction: An Example of the Interaction Between Language and Memory</li>
+      <li><span class="yr">1981</span>Tversky, Kahneman - The Framing of Decisions and the Psychology of Choice</li>
+      <li><span class="yr">1982</span>McNeil, Pauker, Sox, Tversky - On the Elicitation of Preferences for Alternative Therapies</li>
+      <li><span class="yr">1994</span>Loftus - The Myth of Repressed Memory</li>
+      <li><span class="yr">2007</span>Winawer, Witthoft, Frank, Wu, Wade, Boroditsky - Russian Blues Reveal Effects of Language on Color Discrimination</li>
+      <li><span class="yr">2011</span>Kahneman - Thinking, Fast and Slow</li>
+      <li><span class="yr">2020</span>Sedivy - Language in Mind: An Introduction to Psycholinguistics</li>
+      <li><span class="yr">2020</span>Spielman - Psychology 2e</li>
+    </ul>
+  </section>
+
+  <footer class="site-footer">
+    <p>Drawn and researched by hand(ish). Spotted a number I got wrong, or a study I have
+      overstated? Tell me &mdash; that's the scientific method working.</p>
+    <a class="patreon" href="https://www.patreon.com/GeoQuasar" target="_blank" rel="noopener">
+      <img src="../images/patreon.png" alt="Support on Patreon">
+    </a>
+  </footer>
+
+</main>
+
+<button class="backtop" id="backtop" aria-label="Back to top" title="Back to top">&uarr;</button>
+
+</body>
+</html>

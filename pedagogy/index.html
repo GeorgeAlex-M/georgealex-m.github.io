@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Doodle Pedagogy — hand-drawn, evidence-labelled learning science.
+    Classic scripts sharing window.Astro (shared engine in ../doodle/), so it
+    works opened directly from disk (file://) as well as on GitHub Pages.
+  -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doodle Pedagogy — how humans learn efficiently</title>
+  <meta name="description" content="Interactive, evidence-labelled doodle simulations of how to learn efficiently — the forgetting curve, spaced repetition, retrieval practice and more, with the original papers behind each finding.">
+  <meta name="author" content="George">
+  <link rel="icon" type="image/x-icon" href="../images/fav-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="../doodle/doodle.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="../doodle/engine/palette.js"></script>
+  <script defer src="../doodle/engine/constants.js"></script>
+  <script defer src="../doodle/engine/canvas.js"></script>
+  <script defer src="../doodle/engine/rough-helpers.js"></script>
+  <script defer src="../doodle/engine/sketch.js"></script>
+  <script defer src="../doodle/engine/controls.js"></script>
+  <script defer src="../doodle/engine/integrators.js"></script>
+  <script defer src="../doodle/engine/sim.js"></script>
+  <script defer src="sims/forgetting-curve.js"></script>
+  <script defer src="main.js"></script>
+</head>
+<body>
+<main>
+
+  <header class="site-header">
+    <img class="logo" src="../images/logo.png" alt="Unreal Software logo">
+    <a class="site-name" href="../index.html">&larr; unrealsoftware — home</a>
+  </header>
+
+  <div class="hero">
+    <h1>Doodle Pedagogy</h1>
+    <p class="tagline">How to actually learn — not myths, but what the experiments show.
+      Interactive, with the original papers cited and an honest label on how firmly each
+      finding is proven.</p>
+  </div>
+
+  <blockquote class="quote-box">
+    &ldquo;Learning is not attained by chance, it must be sought for with ardor and
+    attended to with diligence.&rdquo;
+    <span class="attrib">* Abigail Adams</span>
+  </blockquote>
+
+  <nav class="doodle-toc" aria-label="Table of contents">
+    <h2>Map of learning (this page)</h2>
+    <div class="toc-chapter">
+      <h3>Chapter I — Making It Stick</h3>
+      <ul class="toc-items">
+        <li><a href="#forgetting"><span class="n" style="color:var(--cyan)">1</span>The forgetting curve &amp; spaced repetition</a></li>
+        <li><span class="soon">Retrieval practice beats re-reading</span></li>
+        <li><span class="soon">Cognitive load — the working-memory juggle</span></li>
+        <li><span class="soon">Deliberate practice</span></li>
+        <li><span class="soon">The experiential learning cycle</span></li>
+      </ul>
+    </div>
+    <div class="toc-chapter">
+      <h3>&mdash;</h3>
+      <ul class="toc-items">
+        <li><a href="#library"><span class="n" style="color:var(--orange)">&#9733;</span>The Library — every paper cited here</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       Sim 1 — The forgetting curve & spaced repetition
+       ====================================================================== -->
+  <section class="sim-section" id="forgetting" style="--accent: var(--cyan)">
+    <h2><span class="secnum">1.</span>The forgetting curve &amp; spaced repetition</h2>
+    <p class="kicker">Watch a memory fade — then fight back. Compare cramming against
+      spacing, or build your own review schedule and see what survives to exam day.</p>
+
+    <p class="evidence ev-measured"><span class="ev-dot"></span><strong>measured</strong> —
+      forgetting was first measured by Ebbinghaus on himself in 1885, and the
+      <em>spacing effect</em> (spread-out reviews beat massed cramming) is one of the most
+      reliably reproduced findings in all of psychology. Caveat: the exact curve shape
+      (exponential vs power-law) and the day-numbers depend on the material and the person —
+      the model here is a clean, honest approximation, not a promise for your specific exam.</p>
+
+    <div class="sim-canvas-wrap">
+      <canvas data-sim="forgetting" aria-label="Interactive forgetting curve with cram, spaced, and build-your-own review schedules"></canvas>
+    </div>
+    <div class="sim-controls" data-controls="forgetting"></div>
+    <div class="sim-readout" data-readout="forgetting" aria-live="polite"></div>
+
+    <div class="citation-box">
+      <span class="cit-label">the papers behind this simulation — search these in your library:</span>
+      <span class="cit">1885 Ebbinghaus - &Uuml;ber das Ged&auml;chtnis: Untersuchungen zur experimentellen Psychologie (Memory: A Contribution to Experimental Psychology)</span>
+      <span class="cit">1994 Bjork - Memory and Metamemory Considerations in the Training of Human Beings</span>
+      <span class="cit">1994 Wo&zacute;niak, Gorzela&nacute;czyk - Optimization of Repetition Spacing in the Practice of Learning</span>
+      <span class="cit">2006 Cepeda, Pashler, Vul, Wixted, Rohrer - Distributed Practice in Verbal Recall Tasks: A Review and Quantitative Synthesis</span>
+    </div>
+
+    <details class="defs">
+      <summary>doodle dictionary — what do these words mean?</summary>
+      <dl>
+        <dt style="color:var(--cyan)">the forgetting curve</dt>
+        <dd>How fast a memory decays once you stop reviewing it. Ebbinghaus memorised lists of
+          nonsense syllables and re-tested himself over days: retention drops steeply at first,
+          then levels off. Roughly <em>R = e<sup>&minus;t/S</sup></em> — an exponential fall.</dd>
+        <dt style="color:var(--green)">memory strength / stability (S)</dt>
+        <dd>How many days it takes for a memory to fade appreciably — the "S" in the curve. A
+          fresh, hard fact has a small S (forgotten in a day); a well-practised one has a huge S
+          (survives for years). Every successful review multiplies S, so the curve gets flatter.</dd>
+        <dt style="color:var(--orange)">the spacing effect</dt>
+        <dd>The same number of reviews spread out over time produces far stronger memories than
+          the same reviews crammed together. Reviewing something <em>just as you're about to
+          forget it</em> is where the growth happens — cramming, when you still remember it
+          perfectly, barely helps.</dd>
+        <dt style="color:var(--pink)">spaced repetition</dt>
+        <dd>The practical system built on the spacing effect (Anki, SuperMemo): review each item
+          at expanding intervals — 1 day, 3 days, a week, a month — timed to catch you right at
+          the edge of forgetting. Woźniak turned it into an algorithm in the 1980s–90s.</dd>
+        <dt style="color:var(--yellow)">desirable difficulty</dt>
+        <dd>Robert Bjork's insight: making retrieval a little bit hard (waiting until you almost
+          forgot) feels worse but learns better. Easy, fluent review feels productive and
+          mostly isn't — the brain only strengthens what it has to work for.</dd>
+      </dl>
+    </details>
+
+    <div class="equations">
+      $$ R(t) = e^{-t/S} \qquad\qquad S_{\text{new}} = S \cdot g(R_{\text{review}}) $$
+      <p class="eq-note">Retention decays exponentially with memory strength S. Each review multiplies S by a
+        gain g that is <em>largest when you review late</em> (low R) — the mathematical heart of why spacing beats cramming.</p>
+    </div>
+
+    <div class="prose">
+      <p>In 1885 Hermann Ebbinghaus did something a little mad: he memorised thousands of
+      meaningless syllables (WID, ZOF, …) and tested his own recall over hours, days and weeks,
+      inventing experimental memory science in the process. His result is the
+      <strong>forgetting curve</strong>: you lose memories fast at first, then slower — and
+      without review, most of what you "learned" today is gone within a week.</p>
+      <p>But every time you successfully pull a memory back, it comes back <em>stronger</em> —
+      the curve resets to the top and then decays more slowly. Here's the twist the experiments
+      revealed, again and again: <strong>when</strong> you review matters more than how often.
+      Cram five reviews into one evening and each adds almost nothing, because you still
+      remembered perfectly — there was nothing to strengthen. Space those same five reviews out
+      so each one catches you just as the memory is slipping, and the strength compounds until
+      the curve is nearly flat. That is <em>spaced repetition</em>.</p>
+      <p>Try it: hit <strong>compare</strong> and watch "study once" collapse, "cram" do only
+      slightly better, and "spaced" flatten out and survive to exam day — same number of reviews
+      for all three. Then switch to <strong>build your own</strong>, click the timeline to place
+      your reviews, and find a schedule that keeps you above passing on exam day. The lesson
+      Ebbinghaus paid for so you don't have to: <em>don't study harder the night before —
+      study a little, spaced out, starting now.</em></p>
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       The Library
+       ====================================================================== -->
+  <section class="sim-section" id="library" style="--accent: var(--orange)">
+    <h2><span class="secnum">&#9733;</span>The Library — every paper cited here</h2>
+    <p class="kicker">The original sources, in <em>YEAR Author - Title</em> form, so you can
+      find them in a reference manager or archive. This list grows with every new section.</p>
+    <ul class="library-list">
+      <li><span class="yr">1885</span>Ebbinghaus - &Uuml;ber das Ged&auml;chtnis: Untersuchungen zur experimentellen Psychologie (Memory: A Contribution to Experimental Psychology)</li>
+      <li><span class="yr">1994</span>Bjork - Memory and Metamemory Considerations in the Training of Human Beings</li>
+      <li><span class="yr">1994</span>Wo&zacute;niak, Gorzela&nacute;czyk - Optimization of Repetition Spacing in the Practice of Learning</li>
+      <li><span class="yr">2006</span>Cepeda, Pashler, Vul, Wixted, Rohrer - Distributed Practice in Verbal Recall Tasks: A Review and Quantitative Synthesis</li>
+    </ul>
+  </section>
+
+  <footer class="site-footer">
+    <p>Drawn and researched by hand(ish). Spotted a mistake in the learning science? Tell me —
+      that's the scientific method working.</p>
+    <a class="patreon" href="https://www.patreon.com/GeoQuasar" target="_blank" rel="noopener">
+      <img src="../images/patreon.png" alt="Support on Patreon">
+    </a>
+  </footer>
+
+</main>
+
+<button class="backtop" id="backtop" aria-label="Back to top" title="Back to top">&uarr;</button>
+
+</body>
+</html>

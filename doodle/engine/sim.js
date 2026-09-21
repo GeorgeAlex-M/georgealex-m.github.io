@@ -88,9 +88,12 @@
         text = `source: ${short}`;
       }
       const tw = ctx.measureText(text).width;
-      ctx.fillStyle = 'rgba(30, 30, 30, 0.88)';
+      // Theme-driven: a hardcoded dark chip turns into a black smudge on paper.
+      ctx.globalAlpha = 0.88;
+      ctx.fillStyle = A.COLORS.bg;
       ctx.fillRect(w - tw - 20, h - 26, tw + 14, 20);
-      ctx.fillStyle = '#ffa94d';
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = A.COLORS.orange;
       ctx.fillText(text, w - 12, h - 12);
       ctx.restore();
     }

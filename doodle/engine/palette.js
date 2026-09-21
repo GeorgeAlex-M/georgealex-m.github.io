@@ -6,18 +6,90 @@
 (() => {
   const A = (window.Astro = window.Astro || {});
 
-  A.COLORS = {
-    bg: '#1e1e1e',
-    grid: 'rgba(255, 255, 255, 0.055)',
-    ink: '#f8f9fa',
-    muted: '#adb5bd',
-    cyan: '#04d9ff',
-    green: '#69db7c',
-    orange: '#ffa94d',
-    pink: '#f783ac',
-    yellow: '#ffd43b',
-    red: '#ff8787',
+  // Two themes, same hues. Dark uses the light end of the Open Color ramps
+  // (shades 3–4, which glow on #1e1e1e); light uses the dark end (shades 8–9,
+  // which stay legible on white). Straight #ffd43b on paper is invisible, so
+  // the light theme is NOT the dark one with the background flipped.
+  A.THEMES = {
+    dark: {
+      bg: '#1e1e1e',
+      grid: 'rgba(255, 255, 255, 0.055)',
+      ink: '#f8f9fa',
+      muted: '#adb5bd',
+      cyan: '#04d9ff',
+      green: '#69db7c',
+      orange: '#ffa94d',
+      pink: '#f783ac',
+      yellow: '#ffd43b',
+      red: '#ff8787',
+    },
+    light: {
+      bg: '#ffffff',
+      grid: 'rgba(0, 0, 0, 0.06)',
+      ink: '#1e1e1e',
+      muted: '#6c757d',
+      cyan: '#0b7285',
+      green: '#2f9e44',
+      orange: '#e8590c',
+      pink: '#c2255c',
+      yellow: '#e67700',
+      red: '#e03131',
+    },
   };
+
+  // Every sim does `const { COLORS } = A` at load, so this object's IDENTITY
+  // must never change — setTheme assigns over its properties in place.
+  A.COLORS = {};
+  A.theme = 'dark';
+
+  A.setTheme = function (name) {
+    const t = A.THEMES[name] ? name : 'dark';
+    A.theme = t;
+    Object.assign(A.COLORS, A.THEMES[t]);
+    document.documentElement.setAttribute('data-theme', t);
+    try { localStorage.setItem('doodle-theme', t); } catch (e) { /* private mode */ }
+    // Cached Drawables bake in their stroke colour, and the grid is a cached
+    // bitmap — both have to be thrown away, not just repainted.
+    (window.__sims || []).forEach((s) => {
+      s.canvas._grid = null;
+      s.cache.invalidate();
+      s.renderFrame();
+    });
+    return t;
+  };
+
+  A.toggleTheme = function () { return A.setTheme(A.theme === 'dark' ? 'light' : 'dark'); };
+
+  A.setTheme((() => {
+    try { return localStorage.getItem('doodle-theme') || 'dark'; } catch (e) { return 'dark'; }
+  })());
+
+  // The toggle installs itself, so every page that loads doodle.css and this
+  // file gets one without a per-page edit — and, more to the point, nobody can
+  // switch to light on one page and land on another with no way back. A page
+  // that wants the button somewhere specific can put its own
+  // <button class="themetoggle"> in the markup and this will adopt it.
+  function installToggle() {
+    let b = document.querySelector('.themetoggle');
+    if (!b) {
+      b = document.createElement('button');
+      b.className = 'themetoggle';
+      document.body.appendChild(b);
+    }
+    b.type = 'button';
+    const paint = () => {
+      const dark = A.theme === 'dark';
+      b.textContent = dark ? '☀ light' : '☾ dark';
+      const l = dark ? 'Switch to the light theme' : 'Switch to the dark theme';
+      b.setAttribute('aria-label', l);
+      b.title = l;
+    };
+    paint();
+    b.addEventListener('click', () => { A.toggleTheme(); paint(); });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', installToggle);
+  else installToggle();
 
   A.FONT_HAND = "'Gochi Hand', 'Segoe Print', 'Comic Sans MS', cursive";
   A.FONT_BODY = "'Patrick Hand', 'Segoe Print', 'Comic Sans MS', cursive";

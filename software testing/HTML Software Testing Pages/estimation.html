@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Estimation Techniques</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .technique { border: 1px solid #ccc; padding: 20px; margin: 20px 0; }
+        input, select, button { margin: 5px 0; padding: 5px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        canvas { max-width: 100%; }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Estimation Techniques</h1>
+    <button onclick="showAllInfo()">ℹ️ Information on All Techniques</button>
+
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Estimation Techniques Information</h2>
+            <div id="infoContent"></div>
+        </div>
+    </div>
+
+    <div class="technique" id="threePoint">
+        <h2>1. Three-Point Estimation</h2>
+        <input type="number" id="optimistic" placeholder="Optimistic">
+        <input type="number" id="mostLikely" placeholder="Most Likely">
+        <input type="number" id="pessimistic" placeholder="Pessimistic">
+        <button onclick="calculateThreePoint()">Calculate</button>
+        <p id="threePointResult"></p>
+    </div>
+
+    <div class="technique" id="analogous">
+        <h2>2. Analogous Estimating</h2>
+        <div id="analogousProjects"></div>
+        <button onclick="addAnalogousProject()">Add Project</button>
+        <button onclick="calculateAnalogous()">Calculate Estimate</button>
+        <p id="analogousResult"></p>
+    </div>
+
+    <div class="technique" id="parametric">
+        <h2>3. Parametric Estimating</h2>
+        <input type="number" id="parameterValue" placeholder="Parameter Value">
+        <input type="number" id="productivityRate" placeholder="Productivity Rate">
+        <button onclick="calculateParametric()">Calculate</button>
+        <p id="parametricResult"></p>
+    </div>
+
+    <div class="technique" id="bottomUp">
+        <h2>4. Bottom-up Estimating</h2>
+        <div id="tasks"></div>
+        <button onclick="addTask()">Add Task</button>
+        <button onclick="calculateBottomUp()">Calculate Total</button>
+        <p id="bottomUpResult"></p>
+    </div>
+
+    <div class="technique" id="delphi">
+        <h2>5. Delphi Technique</h2>
+        <div>
+            <input type="number" id="delphiExperts" placeholder="Number of Experts">
+            <input type="number" id="delphiRounds" placeholder="Number of Rounds">
+            <button onclick="setupDelphi()">Setup Delphi</button>
+        </div>
+        <div id="delphiInputs"></div>
+        <button onclick="runDelphi()">Run Delphi</button>
+        <div id="delphiResults"></div>
+    </div>
+
+    <div class="technique" id="monteCarlo">
+        <h2>6. Monte Carlo Simulation</h2>
+        <div>
+            <input type="number" id="monteCarloTasks" placeholder="Number of Tasks">
+            <button onclick="generateMonteCarloTasks()">Generate Tasks</button>
+        </div>
+        <div id="monteCarloTaskInputs"></div>
+        <div>
+            <input type="number" id="monteCarloIterations" placeholder="Number of Iterations">
+            <button onclick="runMonteCarlo()">Run Simulation</button>
+        </div>
+        <canvas id="monteCarloChart"></canvas>
+        <p id="monteCarloResult"></p>
+    </div>
+
+    <div class="technique" id="planningPoker">
+        <h2>7. Planning Poker</h2>
+        <div>
+            <input type="number" id="pokerParticipants" placeholder="Number of Participants">
+            <button onclick="setupPlanningPoker()">Setup Planning Poker</button>
+        </div>
+        <div id="pokerInputs"></div>
+        <button onclick="runPlanningPoker()">Calculate Consensus</button>
+        <p id="planningPokerResult"></p>
+    </div>
+
+    <div class="technique" id="functionPoint">
+        <h2>8. Function Point Analysis</h2>
+        <table id="functionPointTable">
+            <tr>
+                <th>Component</th>
+                <th>Low</th>
+                <th>Average</th>
+                <th>High</th>
+            </tr>
+            <tr>
+                <td>External Inputs</td>
+                <td><input type="number" class="fp-ei" data-complexity="low"></td>
+                <td><input type="number" class="fp-ei" data-complexity="avg"></td>
+                <td><input type="number" class="fp-ei" data-complexity="high"></td>
+            </tr>
+            <tr>
+                <td>External Outputs</td>
+                <td><input type="number" class="fp-eo" data-complexity="low"></td>
+                <td><input type="number" class="fp-eo" data-complexity="avg"></td>
+                <td><input type="number" class="fp-eo" data-complexity="high"></td>
+            </tr>
+            <tr>
+                <td>External Inquiries</td>
+                <td><input type="number" class="fp-eq" data-complexity="low"></td>
+                <td><input type="number" class="fp-eq" data-complexity="avg"></td>
+                <td><input type="number" class="fp-eq" data-complexity="high"></td>
+            </tr>
+            <tr>
+                <td>Internal Logical Files</td>
+                <td><input type="number" class="fp-ilf" data-complexity="low"></td>
+                <td><input type="number" class="fp-ilf" data-complexity="avg"></td>
+                <td><input type="number" class="fp-ilf" data-complexity="high"></td>
+            </tr>
+            <tr>
+                <td>External Interface Files</td>
+                <td><input type="number" class="fp-eif" data-complexity="low"></td>
+                <td><input type="number" class="fp-eif" data-complexity="avg"></td>
+                <td><input type="number" class="fp-eif" data-complexity="high"></td>
+            </tr>
+        </table>
+        <button onclick="calculateFunctionPoints()">Calculate Function Points</button>
+        <p id="functionPointResult"></p>
+    </div>
+
+    <div class="technique" id="pert">
+        <h2>9. PERT</h2>
+        <input type="number" id="pertOptimistic" placeholder="Optimistic">
+        <input type="number" id="pertMostLikely" placeholder="Most Likely">
+        <input type="number" id="pertPessimistic" placeholder="Pessimistic">
+        <button onclick="calculatePERT()">Calculate</button>
+        <p id="pertResult"></p>
+    </div>
+
+    <div class="technique" id="percentageCompletion">
+        <h2>10. Percentage of Completion Method</h2>
+        <input type="number" id="totalEstimate" placeholder="Total Estimate">
+        <input type="number" id="percentageComplete" placeholder="Percentage Complete">
+        <button onclick="calculatePercentageCompletion()">Calculate</button>
+        <p id="percentageCompletionResult"></p>
+    </div>
+
+    <div class="technique" id="weightedAverage">
+        <h2>11. Weighted Average Method</h2>
+        <div id="estimates"></div>
+        <button onclick="addEstimate()">Add Estimate</button>
+        <button onclick="calculateWeightedAverage()">Calculate</button>
+        <p id="weightedAverageResult"></p>
+    </div>
+
+    <script>
+    // 1. Three-Point Estimation
+    function calculateThreePoint() {
+        const o = parseFloat(document.getElementById('optimistic').value);
+        const m = parseFloat(document.getElementById('mostLikely').value);
+        const p = parseFloat(document.getElementById('pessimistic').value);
+        const estimate = (o + 4*m + p) / 6;
+        const standardDeviation = (p - o) / 6;
+        document.getElementById('threePointResult').textContent = `Estimate: ${estimate.toFixed(2)}, Standard Deviation: ${standardDeviation.toFixed(2)}`;
+    }
+
+    // 2. Analogous Estimating
+    function addAnalogousProject() {
+        const div = document.createElement('div');
+        div.innerHTML = `
+            <input type="number" class="analogous-estimate" placeholder="Historical Estimate">
+            <input type="number" class="analogous-actual" placeholder="Actual Value">
+        `;
+        document.getElementById('analogousProjects').appendChild(div);
+    }
+
+    function calculateAnalogous() {
+        const estimates = document.getElementsByClassName('analogous-estimate');
+        const actuals = document.getElementsByClassName('analogous-actual');
+        let totalRatio = 0;
+        let count = 0;
+        for (let i = 0; i < estimates.length; i++) {
+            const estimate = parseFloat(estimates[i].value);
+            const actual = parseFloat(actuals[i].value);
+            if (!isNaN(estimate) && !isNaN(actual) && estimate !== 0) {
+                totalRatio += actual / estimate;
+                count++;
+            }
+        }
+        const averageRatio = totalRatio / count;
+        document.getElementById('analogousResult').textContent = `Average Ratio: ${averageRatio.toFixed(2)}. Multiply your new estimate by this ratio.`;
+    }
+
+    // 3. Parametric Estimating
+    function calculateParametric() {
+        const parameter = parseFloat(document.getElementById('parameterValue').value);
+        const rate = parseFloat(document.getElementById('productivityRate').value);
+        const estimate = parameter * rate;
+        document.getElementById('parametricResult').textContent = `Estimate: ${estimate.toFixed(2)}`;
+    }
+
+    // 4. Bottom-up Estimating
+    function addTask() {
+        const div = document.createElement('div');
+        div.innerHTML = '<input type="number" class="taskEstimate" placeholder="Task Estimate">';
+        document.getElementById('tasks').appendChild(div);
+    }
+
+    function calculateBottomUp() {
+        const tasks = document.getElementsByClassName('taskEstimate');
+        let total = 0;
+        for (let task of tasks) {
+            total += parseFloat(task.value) || 0;
+        }
+        document.getElementById('bottomUpResult').textContent = `Total Estimate: ${total.toFixed(2)}`;
+    }
+
+    // 5. Delphi Technique
+    let delphiData = [];
+
+    function setupDelphi() {
+        const experts = parseInt(document.getElementById('delphiExperts').value);
+        const rounds = parseInt(document.getElementById('delphiRounds').value);
+        const container = document.getElementById('delphiInputs');
+        container.innerHTML = '';
+
+        for (let i = 0; i < rounds; i++) {
+            const roundDiv = document.createElement('div');
+            roundDiv.innerHTML = `<h3>Round ${i + 1}</h3>`;
+            for (let j = 0; j < experts; j++) {
+                roundDiv.innerHTML += `
+                    Expert ${j + 1}:
+                    <input type="number" class="delphi-estimate" data-round="${i}" data-expert="${j}">
+                `;
+            }
+            container.appendChild(roundDiv);
+        }
+    }
+
+    function runDelphi() {
+        const rounds = parseInt(document.getElementById('delphiRounds').value);
+        const results = document.getElementById('delphiResults');
+        results.innerHTML = '';
+
+        for (let i = 0; i < rounds; i++) {
+            const estimates = document.querySelectorAll(`.delphi-estimate[data-round="${i}"]`);
+            const values = Array.from(estimates).map(e => parseFloat(e.value) || 0);
+            const avg = values.reduce((a, b) => a + b) / values.length;
+            const min = Math.min(...values);
+            const max = Math.max(...values);
+
+            results.innerHTML += `
+                <h4>Round ${i + 1} Results:</h4>
+                Average: ${avg.toFixed(2)}<br>
+                Min: ${min}<br>
+                Max: ${max}<br>
+            `;
+        }
+
+        const finalEstimates = document.querySelectorAll(`.delphi-estimate[data-round="${rounds - 1}"]`);
+        const finalValues = Array.from(finalEstimates).map(e => parseFloat(e.value) || 0);
+        const finalAvg = finalValues.reduce((a, b) => a + b) / finalValues.length;
+
+        results.innerHTML += `<h4>Final Estimate: ${finalAvg.toFixed(2)}</h4>`;
+    }
+
+    // 6. Monte Carlo Simulation
+    function generateMonteCarloTasks() {
+        const taskCount = parseInt(document.getElementById('monteCarloTasks').value);
+        const container = document.getElementById('monteCarloTaskInputs');
+        container.innerHTML = '';
+
+        for (let i = 0; i < taskCount; i++) {
+            const taskDiv = document.createElement('div');
+            taskDiv.innerHTML = `
+                Task ${i + 1}:
+                <input type="number" placeholder="Optimistic" class="mc-optimistic">
+                <input type="number" placeholder="Most Likely" class="mc-likely">
+                <input type="number" placeholder="Pessimistic" class="mc-pessimistic">
+            `;
+            container.appendChild(taskDiv);
+        }
+    }
+
+    function runMonteCarlo() {
+        const iterations = parseInt(document.getElementById('monteCarloIterations').value);
+        const optimistic = document.getElementsByClassName('mc-optimistic');
+        const likely = document.getElementsByClassName('mc-likely');
+        const pessimistic = document.getElementsByClassName('mc-pessimistic');
+
+        let results = [];
+
+        for (let i = 0; i < iterations; i++) {
+            let totalDuration = 0;
+            for (let j = 0; j < optimistic.length; j++) {
+                const o = parseFloat(optimistic[j].value);
+                const m = parseFloat(likely[j].value);
+                const p = parseFloat(pessimistic[j].value);
+                const taskDuration = o + 4*m + p; // PERT formula
+                totalDuration += taskDuration / 6; // Expected value
+            }
+            results.push(totalDuration);
+        }
+
+        const avg = results.reduce((a, b) => a + b) / results.length;
+        const min = Math.min(...results);
+        const max = Math.max(...results);
+
+        document.getElementById('monteCarloResult').innerHTML = `
+            Average Duration: ${avg.toFixed(2)}<br>
+            Min Duration: ${min.toFixed(2)}<br>
+            Max Duration: ${max.toFixed(2)}
+        `;
+
+        // Create histogram
+        const ctx = document.getElementById('monteCarloChart').getContext('2d');
+        const histogramData = results.reduce((acc, val) => {
+            const bin = Math.floor((val - min) / (max - min) * 10);
+            acc[bin] = (acc[bin] || 0) + 1;
+            return acc;
+        }, Array(10).fill(0));
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Array.from({length: 10}, (_, i) => `${(min + (max-min)*i/10).toFixed(0)}-${(min + (max-min)*(i+1)/10).toFixed(0)}`),
+                datasets: [{
+                    label: 'Frequency',
+                    data: histogramData,
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // 7. Planning Poker
+    function setupPlanningPoker() {
+        const participants = parseInt(document.getElementById('pokerParticipants').value);
+        const container = document.getElementById('pokerInputs');
+        container.innerHTML = '';
+
+        for (let i = 0; i < participants; i++) {
+            const div = document.createElement('div');
+            div.innerHTML = `
+                Participant ${i + 1}:
+                <select class="poker-estimate">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="8">8</option>
+                    <option value="13">13</option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="100">100</option>
+                </select>
+            `;
+            container.appendChild(div);
+        }
+    }
+
+    function runPlanningPoker() {
+        const estimates = document.getElementsByClassName('poker-estimate');
+        let values = Array.from(estimates).map(e => parseInt(e.value));
+        
+        if (values.length === 0) {
+            document.getElementById('planningPokerResult').textContent = "Error: No estimates provided.";
+            return;
+        }
+
+        values = values.filter(v => !isNaN(v)); // Remove any NaN values
+
+        if (values.length === 0) {
+            document.getElementById('planningPokerResult').textContent = "Error: All estimates were invalid.";
+            return;
+        }
+
+        values.sort((a, b) => a - b);
+
+        let consensus;
+        if (values.length % 2 === 0) {
+            consensus = (values[values.length/2 - 1] + values[values.length/2]) / 2;
+        } else {
+            consensus = values[Math.floor(values.length/2)];
+        }
+
+        document.getElementById('planningPokerResult').textContent = `Consensus Estimate: ${consensus}`;
+    }
+
+    // 8. Function Point Analysis
+    function calculateFunctionPoints() {
+        const weights = {
+            'ei': {low: 3, avg: 4, high: 6},
+            'eo': {low: 4, avg: 5, high: 7},
+            'eq': {low: 3, avg: 4, high: 6},
+            'ilf': {low: 7, avg: 10, high: 15},
+            'eif': {low: 5, avg: 7, high: 10}
+        };
+
+        let totalFP = 0;
+
+        for (let type in weights) {
+            for (let complexity in weights[type]) {
+                const count = parseInt(document.querySelector(`.fp-${type}[data-complexity="${complexity}"]`).value) || 0;
+                totalFP += count * weights[type][complexity];
+            }
+        }
+
+        // Add complexity adjustment factor (typically between 0.65 and 1.35)
+        const complexityFactor = parseFloat(document.getElementById('complexityFactor').value) || 1;
+        const adjustedFP = totalFP * complexityFactor;
+
+        document.getElementById('functionPointResult').innerHTML = `
+            Unadjusted Function Points: ${totalFP}<br>
+            Adjusted Function Points: ${adjustedFP.toFixed(2)}
+        `;
+    }
+
+    // 9. PERT
+    function calculatePERT() {
+        const o = parseFloat(document.getElementById('pertOptimistic').value);
+        const m = parseFloat(document.getElementById('pertMostLikely').value);
+        const p = parseFloat(document.getElementById('pertPessimistic').value);
+        const estimate = (o + 4*m + p) / 6;
+        const standardDeviation = (p - o) / 6;
+        const variance = Math.pow(standardDeviation, 2);
+        document.getElementById('pertResult').innerHTML = `
+            Estimate: ${estimate.toFixed(2)}<br>
+            Standard Deviation: ${standardDeviation.toFixed(2)}<br>
+            Variance: ${variance.toFixed(2)}
+        `;
+    }
+
+    // 10. Percentage of Completion Method
+    function calculatePercentageCompletion() {
+        const total = parseFloat(document.getElementById('totalEstimate').value);
+        const percentage = parseFloat(document.getElementById('percentageComplete').value) / 100;
+        const completed = total * percentage;
+        const remaining = total - completed;
+        document.getElementById('percentageCompletionResult').innerHTML = `
+            Completed: ${completed.toFixed(2)}<br>
+            Remaining: ${remaining.toFixed(2)}
+        `;
+    }
+
+    // 11. Weighted Average Method
+    function addEstimate() {
+        const div = document.createElement('div');
+        div.innerHTML = `
+            <input type="number" class="estimate" placeholder="Estimate">
+            <input type="number" class="weight" placeholder="Weight">
+        `;
+        document.getElementById('estimates').appendChild(div);
+    }
+
+    function calculateWeightedAverage() {
+        const estimates = document.getElementsByClassName('estimate');
+        const weights = document.getElementsByClassName('weight');
+        let totalWeightedSum = 0;
+        let totalWeight = 0;
+
+        for (let i = 0; i < estimates.length; i++) {
+            const estimate = parseFloat(estimates[i].value) || 0;
+            const weight = parseFloat(weights[i].value) || 0;
+            totalWeightedSum += estimate * weight;
+            totalWeight += weight;
+        }
+
+        const weightedAverage = totalWeightedSum / totalWeight;
+        document.getElementById('weightedAverageResult').textContent = `Weighted Average: ${weightedAverage.toFixed(2)}`;
+    }
+
+    // 12. info button
+    function showAllInfo() {
+        const modal = document.getElementById('infoModal');
+        const content = document.getElementById('infoContent');
+        
+        const info = [
+            {
+                title: "1. Three-Point Estimation",
+                content: "Uses optimistic (O), most likely (M), and pessimistic (P) estimates. Formula: (O + 4M + P) / 6. Provides a more accurate estimate by considering best-case and worst-case scenarios along with the most likely outcome. Also calculates standard deviation as (P - O) / 6."
+            },
+            {
+                title: "2. Analogous Estimating",
+                content: "Uses historical data from similar projects to estimate the current project. Calculates the average ratio of actual to estimated values from past projects and applies this ratio to new estimates. Useful when you have limited information about the current project but have data from similar past projects."
+            },
+            {
+                title: "3. Parametric Estimating",
+                content: "Uses a statistical relationship between historical data and other variables. Multiplies a known parameter (e.g., lines of code) by a productivity rate. Useful for quick estimates when there's a clear relationship between a measurable parameter and the effort required."
+            },
+            {
+                title: "4. Bottom-up Estimating",
+                content: "Breaks down the project into smaller components or tasks, estimates each individually, and then sums them up for the total estimate. Often more accurate but time-consuming. Useful for detailed project planning when you have a good understanding of the project scope."
+            },
+            {
+                title: "5. Delphi Technique",
+                content: "A consensus-building technique where a panel of experts anonymously provides estimates over multiple rounds. After each round, estimates are shared, and experts can revise their estimates. The process continues until consensus is reached. Useful for complex projects where expert judgment is crucial."
+            },
+            {
+                title: "6. Monte Carlo Simulation",
+                content: "Uses computer simulation to model the combined effect of individual project risks and other sources of uncertainty. Runs many iterations with random inputs within specified ranges, producing a distribution of possible outcomes. Useful for understanding the range and likelihood of possible project outcomes."
+            },
+            {
+                title: "7. Planning Poker",
+                content: "A consensus-based technique used in Agile projects. Team members make estimates by playing numbered cards face-down, then reveal them simultaneously. Discussions follow to resolve differences, and the process repeats until consensus is reached. Useful for encouraging team participation and leveraging collective expertise."
+            },
+            {
+                title: "8. Function Point Analysis",
+                content: "Measures the size of software by quantifying its functionality based on logical design. Counts various function types (inputs, outputs, inquiries, files) and their complexity, then applies weighting factors. Useful for estimating software development effort based on functional requirements."
+            },
+            {
+                title: "9. PERT (Program Evaluation and Review Technique)",
+                content: "Similar to Three-Point Estimation, uses optimistic (O), most likely (M), and pessimistic (P) estimates. Formula: (O + 4M + P) / 6. Also calculates standard deviation and variance. Often used in conjunction with Critical Path Method for project scheduling."
+            },
+            {
+                title: "10. Percentage of Completion Method",
+                content: "Estimates the remaining work based on the percentage of work completed and the total estimated effort. Useful for tracking project progress and forecasting completion, especially in long-term projects or when partial billings are involved."
+            },
+            {
+                title: "11. Weighted Average Method",
+                content: "Calculates an estimate by assigning weights to different estimates based on their perceived importance or reliability. Useful when you have multiple estimates from different sources or methods and want to combine them while giving more influence to certain estimates."
+            }
+        ];
+        
+        content.innerHTML = info.map(item => `
+            <h3>${item.title}</h3>
+            <p>${item.content}</p>
+        `).join('');
+        
+        modal.style.display = "block";
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('infoModal');
+        if (event.target == modal || event.target.className == 'close') {
+            modal.style.display = "none";
+        }
+    }
+
+    </script>
+</body>
+</html>

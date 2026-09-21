@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattern Testing Challenge</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    color: #333;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 300;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .subtitle {
+    margin-top: 10px;
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+
+  .button-container {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .instructions_button {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+  }
+
+  .instructions_button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+  }
+
+  .content {
+    padding: 30px;
+  }
+
+  .instructions {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-left: 4px solid #2196F3;
+  }
+
+  .instructions h2 {
+    color: #2196F3;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  .instructions p {
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .name-input-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #e3f2fd;
+    margin-bottom: 20px;
+  }
+
+  .name-input-container label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1976D2;
+    font-size: 1.1rem;
+  }
+
+  .usertext {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1.1rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.2s ease;
+  }
+
+  .usertext:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+  }
+
+  .example-cases {
+    background: #e8f5e8;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #4CAF50;
+    margin: 20px 0;
+  }
+
+  .example-cases h3 {
+    color: #2E7D2E;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+  }
+
+  .example-cases .examples {
+    font-family: 'Courier New', monospace;
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #c8e6c9;
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .test-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .centercontainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 800px;
+  }
+
+  .input-row label {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #333;
+    min-width: 60px;
+  }
+
+  .inputtext {
+    flex: 1;
+    height: 60px;
+    padding: 15px;
+    font-size: 1.2rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.2s ease;
+    font-family: 'Courier New', monospace;
+  }
+
+  .inputtext:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+  }
+
+  .submit_button {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 18px 32px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    min-width: 120px;
+  }
+
+  .submit_button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  }
+
+  .results-section {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+  }
+
+  .results-header {
+    background: linear-gradient(135deg, #6c5ce7, #5f4fcf);
+    color: white;
+    padding: 20px;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  table.resulttable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+  }
+
+  th {
+    background: #f8f9fa;
+    color: #495057;
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+    font-size: 1.1rem;
+  }
+
+  td {
+    padding: 16px;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 1rem;
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+
+  tr:hover {
+    background-color: #e3f2fd;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    body {
+      padding: 10px;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .input-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .input-row label {
+      min-width: auto;
+    }
+
+    .inputtext {
+      font-size: 1rem;
+      height: 50px;
+    }
+
+    .content {
+      padding: 20px;
+    }
+  }
+
+  /* Animation for smooth transitions */
+  .instructions {
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Success/Error styling for results */
+  .match-row {
+    background: linear-gradient(90deg, #C0FFC0, #E8F5E8) !important;
+    border-left: 4px solid #4CAF50;
+  }
+
+  .no-match-row {
+    background: linear-gradient(90deg, #FFC0C0, #FFE8E8) !important;
+    border-left: 4px solid #f44336;
+  }
+</style>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+  // Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyDIEIGoQIcvTsnGWiA_H6tEOgCwGGk7F7M",
+    authDomain: "pattern-testing-3980e.firebaseapp.com",
+    databaseURL: "https://pattern-testing-3980e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "pattern-testing-3980e",
+    storageBucket: "pattern-testing-3980e.firebasestorage.app",
+    messagingSenderId: "633904453209",
+    appId: "1:633904453209:web:ee99e29bdccba358fe8348",
+    measurementId: "G-67KPTGF8Z2"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+
+  var total_tries = 0;
+
+  function hide_instructions() {
+    document.getElementById("instructions").style.display = "none";
+    document.getElementById("show_button").style.display = "block";
+    document.getElementById("hide_button").style.display = "none";
+  }
+
+  function show_instructions() {
+    document.getElementById("instructions").style.display = "block";
+    document.getElementById("show_button").style.display = "none";
+    document.getElementById("hide_button").style.display = "block";
+  }
+
+  function pattern() {
+    var username = encodeURIComponent(document.getElementById("user").value);
+    if (username == "") {
+      alert("The name field is blank. Please enter your name in the field at the top of the instructions.")
+    } else {
+      var inputtext = document.inputform.input.value;
+      
+      // Check pattern locally
+      var isMatch = checkPattern(inputtext);
+      var responseText = isMatch ? "true" : "false";
+      
+      // Add to results table
+      var table = document.getElementById("resulttable");
+      var newrow = document.createElement("tr");
+      newrow.innerHTML = "<td>" + (++total_tries) + "</td><td style='font-family: monospace;'>" + inputtext + "</td><td>" + (responseText == "true" ? "✅ Matches pattern" : "❌ Doesn't match") + "</td>";
+      
+      if (responseText == "true") {
+        newrow.className = "match-row";
+      } else {
+        newrow.className = "no-match-row";
+      }
+      
+      // Prepend to show the latest result first
+      var tbody = table.getElementsByTagName('tbody')[0];
+      tbody.prepend(newrow);
+
+      document.inputform.input.value = "";
+      
+      // Log to Firebase
+      logAttemptToFirebase(decodeURIComponent(username), inputtext, isMatch);
+    }
+  }
+
+  function checkPattern(input) {
+    // Rule 8: Encoded characters (e.g. %20 becomes space)
+    var decodedInput = decodeURIComponent(input);
+
+    // Rule 5: Allow leading/trailing whitespace on the whole string
+    var trimmed = decodedInput.trim();
+    
+    if (trimmed === '') return false;
+    
+    // Rule 4 (Delimiters) & for Rule 10 context: Split by delimiters, keeping them.
+    var allParts = trimmed.split(/([\s,.:]+)/);
+    
+    // Step 1: Extract raw number candidates (parts that are not solely delimiters)
+    var rawNumberCandidates = [];
+    for (let k = 0; k < allParts.length; k++) {
+        let part = allParts[k];
+        if (!part.match(/^[\s,.:]+$/) && part.trim() !== '') { // Not a delimiter and not empty after trim
+            rawNumberCandidates.push(part.trim());
+        }
+    }
+
+    // Step 2: Pre-process raw candidates to merge standalone signs with subsequent hex numbers
+    var finalNumberCandidates = [];
+    let rcIdx = 0;
+    while (rcIdx < rawNumberCandidates.length) {
+        let currentRawCand = rawNumberCandidates[rcIdx];
+        if ((currentRawCand === '+' || currentRawCand === '-') && (rcIdx + 1 < rawNumberCandidates.length)) {
+            let nextRawCand = rawNumberCandidates[rcIdx + 1];
+            if (/^[0-9a-fA-F]+$/.test(nextRawCand)) { // Next is pure hex
+                finalNumberCandidates.push(currentRawCand + nextRawCand); // Merge e.g. "+" + "1A" -> "+1A"
+                rcIdx += 2; // Consumed two raw candidates
+                continue;
+            }
+        }
+        finalNumberCandidates.push(currentRawCand); // Add as is
+        rcIdx += 1;
+    }
+    
+    // Step 3: Parse the first three logical numbers from finalNumberCandidates
+    var numbers = [];
+    let fncIdx = 0; // Index for finalNumberCandidates
+    while (numbers.length < 3 && fncIdx < finalNumberCandidates.length) {
+        let partToParse = finalNumberCandidates[fncIdx];
+        fncIdx++;
+
+        var signMatch = partToParse.match(/^([+-]*)/);
+        var signs = signMatch ? signMatch[1] : '';
+        var numberPartStr = partToParse.substring(signs.length);
+
+        if (signs.length > 1) { // Rule 7: multiple signs make it zero
+            numbers.push(0);
+            continue;
+        }
+        
+        // If numberPartStr is empty here (e.g. candidate was just "+" and wasn't merged, or was "++" already handled)
+        // it means it's not a valid number for this position.
+        if (numberPartStr === '') return false; 
+
+        if (!/^[0-9a-fA-F]+$/.test(numberPartStr)) { // Rule 1: Must be hex
+            return false; 
+        }
+        
+        var value = parseInt(numberPartStr, 16);
+        if (signs === '-') { // Rule 1, 3: Apply single minus sign
+            value = -value;
+        }
+        numbers.push(value);
+    }
+
+    if (numbers.length < 3) { // Did not find three numbers
+        return false;
+    }
+    
+    // Rule 2: Check if they ascend in value
+    var isAscending = numbers[0] < numbers[1] && numbers[1] < numbers[2];
+    if (!isAscending) return false;
+
+    // Step 4: Rule 10 Verification (Appended text ignored IF it starts with whitespace)
+    // We need to find the point in `allParts` where the third logical number (and its preceding delimiter) ended.
+    let logicalNumsFoundInAllParts = 0;
+    let lastConsumedAllPartsIndex = -1;
+
+    for (let k = 0; k < allParts.length; k++) {
+        let currentPartFromAllParts = allParts[k];
+        // Consider a part from allParts as contributing to a logical number if it's not solely a delimiter
+        // and not empty after trimming (already filtered for rawNumberCandidates, this is for tracking position)
+        if (!currentPartFromAllParts.match(/^[\s,.:]+$/) && currentPartFromAllParts.trim() !== '') {
+            logicalNumsFoundInAllParts++;
+        }
+        lastConsumedAllPartsIndex = k;
+        if (logicalNumsFoundInAllParts === 3) {
+            break; // Found the end of the 3rd logical number's component in allParts
+        }
+    }
+
+    // If there are parts remaining in `allParts` after the third logical number's components
+    if (lastConsumedAllPartsIndex + 1 < allParts.length) {
+        // The next part in `allParts` is the beginning of the potentially appended/ignored text (or its leading delimiter)
+        let potentialStartOfIgnoredText = allParts[lastConsumedAllPartsIndex + 1];
+        if (!potentialStartOfIgnoredText.match(/^\s/)) { // Must start with whitespace
+            return false; // Rule 10 violation: appended text does not start with whitespace
+        }
+    }
+    // If it starts with whitespace, or no more parts, Rule 10 is satisfied with respect to any appended text.
+    
+    return true; // All rules passed
+  }
+
+  function logAttemptToFirebase(username, input, isMatch) {
+    var timestamp = new Date().toLocaleTimeString();
+    var logEntry = {
+      timestamp: timestamp,
+      user: username,
+      input: input,
+      result: isMatch ? "match" : "no match",
+      date: new Date().toISOString()
+    };
+    
+    // Add to logs
+    database.ref('logs').push(logEntry);
+    
+    // Update user stats
+    updateUserStatsInFirebase(username, isMatch);
+  }
+
+  function updateUserStatsInFirebase(username, isMatch) {
+    var userRef = database.ref('stats/' + username);
+    
+    userRef.once('value').then(function(snapshot) {
+      var stats = snapshot.val() || { 
+        entries: 0, 
+        matches: 0, 
+        nonMatches: 0, 
+        longest: 0, 
+        currentStreak: 0 
+      };
+      
+      stats.entries++;
+      if (isMatch) {
+        stats.matches++;
+        stats.currentStreak++;
+        stats.longest = Math.max(stats.longest, stats.currentStreak);
+      } else {
+        stats.nonMatches++;
+        stats.currentStreak = 0;
+      }
+      
+      userRef.set(stats);
+    });
+  }
+</script>
+</head>
+<body onload="show_instructions();">
+
+<div class="container">
+  <div class="header">
+    <h1>🔍 Pattern Testing Challenge</h1>
+    <div class="subtitle">Find the hidden pattern using minimum tests</div>
+  </div>
+
+  <div class="button-container">
+    <input type="button" id="show_button" class="instructions_button" value="📖 Show Instructions" onclick="show_instructions();" style="display:none;">
+    <input type="button" id="hide_button" class="instructions_button" value="📖 Hide Instructions" onclick="hide_instructions();" style="display:none;">
+  </div>
+
+  <div class="content">
+    <div id="instructions" class="instructions">
+      <h2>🎯 Mission Briefing</h2>
+      
+      <div class="name-input-container">
+        <label for="user">👤 Enter Your Name:</label>
+        <input type="text" id="user" class="usertext" name="username" value="" placeholder="Enter your name here">
+      </div>
+
+      <p><strong>Your Mission:</strong> This application is looking for a specific pattern in the input you provide. Your goal is to identify and describe that pattern using the <em>minimum possible number of tests</em>.</p>
+
+      <p><strong>How it works:</strong> Each test consists of entering text into the input field below and clicking Submit. The program will tell you whether your input matches the hidden pattern.</p>
+
+      <div class="example-cases">
+        <h3>🚀 Getting Started</h3>
+        <p>Here are three examples that <strong>match the pattern</strong>:</p>
+        <div class="examples">
+          2, 4, 6<br>
+          4, 6, 8<br>
+          6, 8, 10
+        </div>
+      </div>
+
+      <p><strong>Strategy Tips:</strong> Think systematically about what these examples have in common. Try variations to test your hypotheses about the pattern!</p>
+    </div>
+
+    <div class="test-section">
+      <form name="inputform" class="centercontainer" action="javascript:pattern()">
+        <div class="input-row">
+          <label for="input">💬 Test Input:</label>
+          <input type="text" id="input" class="inputtext" name="input" value="" placeholder="Enter your test pattern here...">
+          <input class="submit_button" type="submit" value="🧪 Submit Test">
+        </div>
+      </form>
+    </div>
+
+    <div class="results-section">
+      <div class="results-header">
+        📊 Test Results
+      </div>
+      <table id="resulttable" class="resulttable">
+        <thead>
+          <tr>
+            <th style="width:10%">Test #</th>
+            <th style="width:60%">Input</th>
+            <th style="width:30%">Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="display:none;"><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html> 
