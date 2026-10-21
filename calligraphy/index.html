@@ -293,8 +293,8 @@ const DIA = 'ĂÂÎȘȚ';
 const WORDS = {
   A:['apă','aur','arc'], Ă:['casă','fată','mână'], Â:['câine','pâine','vânt'], B:['barcă','bine','bunic'],
   C:['carte','cer','cuvânt'], D:['dor','drum','dulce'], E:['elev','erou','seară'], F:['floare','foc','frunză'],
-  G:['George','gând','grădină'], H:['hârtie','haină','hartă'], I:['inimă','iarnă','idee'], Î:['început','înger','înalt'],
-  J:['joc','jurnal','joi'], K:['kilogram','kiwi','karate'], L:['lună','lumină','lac'], M:['Manea','mare','munte'],
+  G:['gând','grădină','glas'], H:['hârtie','haină','hartă'], I:['inimă','iarnă','idee'], Î:['început','înger','înalt'],
+  J:['joc','jurnal','joi'], K:['kilogram','kiwi','karate'], L:['lună','lumină','lac'], M:['mare','munte','miere'],
   N:['nor','noapte','nume'], O:['om','ochi','ocean'], P:['pană','poveste','pagină'], Q:['quasar','quiz','quartz'],
   R:['roman','rând','rouă'], S:['scris','soare','stilou'], Ș:['școală','șarpe','ușă'], T:['timp','titlu','tăcere'],
   Ț:['țară','ață','pițigoi'], U:['urs','unu','ușor'], V:['vers','vis','vânt'], W:['web','watt','whisky'],
@@ -317,8 +317,8 @@ const STYLES = [
 const PRESETS = [
   {id:'pangram', label:'Toate literele (pangramă)', text:'Muzicologă în bej vând whisky și tequila, preț fix.'},
   {id:'legaturi', label:'Legături m, n, u', text:'minimum mumie nume uimire mulțumim'},
-  {id:'autograf', label:'Autograf pe carte', text:'Cu drag, George Manea\nLectură plăcută!'},
-  {id:'nume', label:'Numele complet', text:'Manea George Alexandru'},
+  {id:'autograf', label:'Autograf pe carte', text:'Cu drag și prietenie,\nLectură plăcută!'},
+  {id:'nume', label:'Numele tău', text:''},   // filled from the name typed in the Signature mode
   {id:'proverb', label:'Proverb', text:'Vorbele zboară, scrisul rămâne.'},
   {id:'custom', label:'Textul meu', text:''}
 ];
@@ -1051,13 +1051,15 @@ $('#style').addEventListener('change', e => { S.style = e.target.value; persist(
 $('#preset').addEventListener('change', e => {
   S.preset = e.target.value;
   const p = PRESETS.find(x => x.id === S.preset);
-  if (p.id !== 'custom') S.text = p.text; else { S.text = ''; setTimeout(() => $('#txt').focus(), 0); }
+  if (p.id === 'nume') S.text = S.sigName.trim() || EXAMPLE_NAME;
+  else if (p.id !== 'custom') S.text = p.text;
+  else { S.text = ''; setTimeout(() => $('#txt').focus(), 0); }
   $('#txt').value = S.text; textPage = 0; persist(); render();
 });
 let txtT;
 $('#txt').addEventListener('input', e => {
   S.text = e.target.value.slice(0, 600);
-  const p = PRESETS.find(x => x.id !== 'custom' && x.text === S.text);
+  const p = PRESETS.find(x => x.text && x.text === S.text);
   S.preset = p ? p.id : 'custom'; $('#preset').value = S.preset;
   textPage = 0; persist();
   clearTimeout(txtT); txtT = setTimeout(render, 250);
