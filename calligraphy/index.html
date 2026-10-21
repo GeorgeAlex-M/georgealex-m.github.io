@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Caiet de caligrafie</title>
-  <meta name="description" content="Foi de exercițiu pentru caligrafie: scrii cu Apple Pencil peste litere estompate, pe liniatură de caiet.">
+  <meta name="description" content="Foi de exercițiu pentru caligrafie și semnătură: scrii cu Apple Pencil peste modele estompate, pe liniatură de caiet.">
   <meta name="author" content="George">
   <!-- tablet: "Add to Home Screen" opens it full screen, like an app -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -22,7 +22,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link id="gf" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Playwrite+RO:wght@100..400&family=Dancing+Script&family=Pinyon+Script&family=Great+Vibes&family=Sacramento&family=Allura&display=swap">
+  <link id="gf" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Playwrite+RO:wght@100..400&family=Dancing+Script&family=Pinyon+Script&family=Great+Vibes&family=Sacramento&family=Allura&family=Alex+Brush&family=Mrs+Saint+Delafield&family=Herr+Von+Muellerhoff&family=Monsieur+La+Doulaise&family=Mr+Dafoe&family=Allison&family=Corinthia&family=Ephesis&family=Hurricane&family=Parisienne&display=swap">
 <style>
 /* Layout: a one-screen school notebook. App bar and context bar on top, a ruled paper sheet fills the rest. */
 :root{
@@ -30,7 +30,7 @@
   --accent:#2944B4; --accent-fg:#FFFFFF; --danger:#B42318;
   --shadow:0 1px 2px rgba(18,28,58,.08),0 10px 28px rgba(18,28,58,.16);
   /* the paper stays paper in both themes */
-  --paper:#FDFDFB; --paper-muted:#7A829B;
+  --paper:#FDFDFB; --paper-ink:#1C2440; --paper-muted:#7A829B; --paper-line:#E5E8EF;
   --rule:#A9BDE3; --rule-strong:#7895CC; --rule-light:#CBD7EE; --margin:#E39B9B; --ghost:#2C3860;
   --font-ui:"Alegreya Sans","Segoe UI",system-ui,-apple-system,sans-serif;
   --font-brand:"Playwrite RO","Segoe Script","Apple Chancery",cursive;
@@ -68,7 +68,7 @@ button,select,textarea,input{font:inherit;color:inherit}
 .btn.icon{padding:0;width:40px}
 .btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .btn:disabled{opacity:.38;cursor:default}
-.btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.btn[aria-pressed="true"],.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
 .btn.danger{background:var(--danger);border-color:var(--danger);color:var(--accent-fg)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .seg{display:inline-flex;padding:3px;gap:2px;border-radius:12px;background:var(--chip);border:1px solid var(--line)}
@@ -91,6 +91,7 @@ button,select,textarea,input{font:inherit;color:inherit}
   font-weight:500;font-size:15px;padding:0 10px;max-width:230px;min-width:0}
 textarea.ctl{flex:1;min-width:140px;max-width:none;resize:none;padding:9px 12px;line-height:1.3;font-weight:400;font-size:16px;
   -webkit-user-select:text;user-select:text}
+input.ctl{font-weight:400;font-size:16px;padding:0 12px;-webkit-user-select:text;user-select:text}
 .group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .actions{display:flex;gap:6px;align-items:center}
 .pager{display:inline-flex;align-items:center;gap:2px}
@@ -113,7 +114,45 @@ textarea.ctl{flex:1;min-width:140px;max-width:none;resize:none;padding:9px 12px;
 .check{display:flex;gap:10px;align-items:center;font-size:15px}
 .check input{width:20px;height:20px;accent-color:var(--accent);flex:0 0 auto}
 .note{margin:0;font-size:13.5px;color:var(--muted);line-height:1.45}
+
+/* signature gallery */
+.gallery{position:absolute;inset:0;overflow-y:auto;background:var(--bg);-webkit-overflow-scrolling:touch;touch-action:pan-y;
+  padding-block:18px 36px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.gwrap{max-width:1180px;margin:0 auto;display:grid;gap:18px}
+.ghead h2{margin:0;font-size:24px;line-height:1.2;font-weight:700;text-wrap:balance}
+.ghead p{margin:6px 0 0;color:var(--muted);max-width:65ch}
+.gopts{display:grid;gap:10px}
+.gopt{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.gopt .lbl{flex:0 0 84px;padding-top:10px;text-transform:uppercase;letter-spacing:.08em;font-size:12px}
+.gopt input.ctl{flex:1 1 260px;max-width:420px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;min-width:0;flex:1}
+.chip{display:inline-flex;flex-direction:column;align-items:flex-start;padding:6px 12px;border-radius:10px;border:1px solid var(--line);
+  background:var(--chip);cursor:pointer;touch-action:manipulation;text-align:left;line-height:1.25}
+.chip b{font-weight:700;font-size:15px}
+.chip small{font-size:12.5px;color:var(--muted)}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--chip-on);box-shadow:inset 0 0 0 1px var(--accent)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{display:flex;flex-direction:column;padding:0;border-radius:12px;border:1px solid var(--line);background:var(--paper);
+  overflow:hidden;cursor:pointer;text-align:left;touch-action:manipulation;color:var(--paper-ink)}
+.card canvas{display:block;width:100%;height:120px}
+.card .meta{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:8px 12px 10px;border-top:1px solid var(--paper-line)}
+.card .cn{font-weight:700;font-size:14.5px}
+.card .cf{font-size:12.5px;color:var(--paper-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.card.on{box-shadow:0 0 0 2px var(--accent);border-color:var(--accent)}
+.card .make{height:120px;display:grid;place-items:center;text-align:center;padding:0 16px;color:var(--paper-muted);
+  font-size:15px;background:repeating-linear-gradient(0deg,transparent 0 29px,var(--paper-line) 29px 30px)}
+.card .make b{display:block;color:var(--paper-ink);font-size:16px}
+.tips{background:var(--bar);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.tips h3{margin:0 0 12px;font-size:18px}
+.tips ul{margin:0;padding-left:18px;columns:2 340px;column-gap:36px}
+.tips li{margin:0 0 10px;break-inside:avoid;line-height:1.45}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);z-index:40;
+  background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:500;opacity:0;pointer-events:none;
+  transition:opacity .2s,transform .2s;max-width:calc(100vw - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
 @media (max-width:1100px){.ctx-main{flex-basis:100%}}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
 </head>
 <body>
@@ -126,6 +165,7 @@ textarea.ctl{flex:1;min-width:140px;max-width:none;resize:none;padding:9px 12px;
     <div class="seg tabs" id="tabs" role="group" aria-label="Ce exersezi">
       <button data-mode="letters">Litere</button>
       <button data-mode="text">Text</button>
+      <button data-mode="sig">Semnătură</button>
     </div>
     <div class="spacer"></div>
     <div class="seg" id="pens" role="group" aria-label="Instrument de scris">
@@ -148,13 +188,22 @@ textarea.ctl{flex:1;min-width:140px;max-width:none;resize:none;padding:9px 12px;
         <label class="vh" for="txt">Textul tău</label>
         <textarea class="ctl" id="txt" rows="1" placeholder="Scrie aici textul pe care vrei să-l exersezi…"></textarea>
       </div>
+      <div class="group" id="ctxSig">
+        <div class="seg" id="sigViews" role="group" aria-label="Semnătură">
+          <button data-view="models">Modele</button>
+          <button data-view="practice">Exersează</button>
+          <button data-view="create">Creează</button>
+        </div>
+        <div class="seg" id="sigSize" role="group" aria-label="Mărimea semnăturii"></div>
+        <button class="btn primary" id="btnSaveSig">Salvează ca model</button>
+      </div>
     </div>
-    <div class="group">
+    <div class="group" id="ctxStyle">
       <label class="vh" for="style">Stilul scrisului</label>
       <select class="ctl" id="style"></select>
       <div class="seg" id="sizes" role="group" aria-label="Înălțimea literelor mici"></div>
     </div>
-    <div class="actions">
+    <div class="actions" id="actions">
       <button class="btn icon" id="btnModel" aria-pressed="true" aria-label="Arată sau ascunde modelul" title="Arată / ascunde modelul">
         <svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
       </button>
@@ -165,7 +214,7 @@ textarea.ctl{flex:1;min-width:140px;max-width:none;resize:none;padding:9px 12px;
         <svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>
       </button>
       <button class="btn" id="btnClear">Șterge</button>
-      <div class="pager">
+      <div class="pager" id="pager">
         <button class="btn icon" id="btnPrev" aria-label="Înapoi"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
         <span id="pageLbl"></span>
         <button class="btn icon" id="btnNext" aria-label="Înainte"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
@@ -179,6 +228,33 @@ textarea.ctl{flex:1;min-width:140px;max-width:none;resize:none;padding:9px 12px;
       <canvas id="ink"></canvas>
       <div id="hover" hidden></div>
     </div>
+    <section class="gallery" id="gallery" hidden>
+      <div class="gwrap">
+        <div class="ghead">
+          <h2>Idei de semnătură</h2>
+          <p>Scrie-ți numele, alege forma și floritura, apoi atinge un model ca să-l exersezi pe foaie. Sau desenează-ți propria semnătură și exers-o pe aceea. Numele rămâne doar pe dispozitivul tău.</p>
+        </div>
+        <div class="gopts">
+          <div class="gopt"><label class="lbl" for="sigName">Numele tău</label>
+            <input class="ctl" id="sigName" type="text" maxlength="40" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Scrie-ți numele, de exemplu Ion Popescu"></div>
+          <div class="gopt"><span class="lbl">Forma</span><div class="chips" id="fmtChips"></div></div>
+          <div class="gopt"><span class="lbl">Floritura</span><div class="chips" id="flChips"></div></div>
+        </div>
+        <p class="note" id="fontNote" hidden></p>
+        <div class="cards" id="cards"></div>
+        <div class="tips">
+          <h3>Cum îți construiești semnătura</h3>
+          <ul>
+            <li><b>Pornește de la o literă-cheie.</b> Prima literă a prenumelui sau a numelui de familie, scrisă mare și sigur. Restul poate fi mai mic și mai rapid.</li>
+            <li><b>Fă două variante.</b> Una lizibilă pentru autografe și dedicații, și una scurtă pentru acte (de exemplu, inițiala și numele de familie).</li>
+            <li><b>Păstrează aceeași înclinare.</b> Când toate literele sunt aplecate la fel, semnătura arată ordonat chiar și scrisă repede.</li>
+            <li><b>Întâi încet, apoi repede.</b> Trage peste model rar, ca să înveți forma. Apoi grăbește-te până o faci în 2–3 secunde, dintr-o singură mișcare.</li>
+            <li><b>Puțin, dar zilnic.</b> 10–20 de semnături pe zi, câteva săptămâni, și mâna o face singură, la fel de fiecare dată.</li>
+            <li><b>Pe acte, atenție la cea veche.</b> Banca și pașaportul au deja semnătura ta actuală. Pe cea nouă o poți folosi oricând la autografe, iar pe acte după ce o actualizezi acolo.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
   </main>
 
   <div class="settings" id="settings" role="dialog" aria-label="Setări" hidden>
@@ -196,6 +272,8 @@ textarea.ctl{flex:1;min-width:140px;max-width:none;resize:none;padding:9px 12px;
     <label class="check"><input type="checkbox" id="cFinger"> Pot scrie și cu degetul</label>
     <p class="note">Lasă bifa de mai sus goală ca să-ți poți sprijini palma pe ecran: atunci scrie doar Apple Pencil. Atinge foaia cu două degete ca să anulezi ultima linie.</p>
   </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </div>
 
 <script>
@@ -205,8 +283,8 @@ const $ = (s, r = document) => r.querySelector(s);
 const rootCss = getComputedStyle(document.documentElement);
 const tok = n => rootCss.getPropertyValue(n).trim();
 const C = {
-  paper: tok('--paper'), muted: tok('--paper-muted'), rule: tok('--rule'), ruleStrong: tok('--rule-strong'),
-  ruleLight: tok('--rule-light'), margin: tok('--margin'), ghost: tok('--ghost')
+  paper: tok('--paper'), ink: tok('--paper-ink'), muted: tok('--paper-muted'), rule: tok('--rule'),
+  ruleStrong: tok('--rule-strong'), ruleLight: tok('--rule-light'), margin: tok('--margin'), ghost: tok('--ghost')
 };
 
 /* ---------- content ---------- */
@@ -244,25 +322,44 @@ const PRESETS = [
   {id:'proverb', label:'Proverb', text:'Vorbele zboară, scrisul rămâne.'},
   {id:'custom', label:'Textul meu', text:''}
 ];
+const EXAMPLE_NAME = 'Ion Popescu';
+const FLOURISHES = [
+  {id:'none', label:'Fără'}, {id:'line', label:'Linie'}, {id:'double', label:'Două linii'}, {id:'loop', label:'Buclă'}
+];
+const SIG_FONTS = [
+  ['Mrs Saint Delafield','Clasică, de document'], ['Herr Von Muellerhoff','Rapidă, foarte înclinată'],
+  ['Monsieur La Doulaise','Ceremonioasă'], ['Allison','Modernă, aerisită'], ['Corinthia','Fină și alungită'],
+  ['Ephesis','Caligrafică, lizibilă'], ['Hurricane','Dinamică'], ['Alex Brush','Pensulă elegantă'],
+  ['Great Vibes','Clasic elegant'], ['Pinyon Script','Copperplate'], ['Parisienne','Rotundă, prietenoasă'],
+  ['Mr Dafoe','Pensulă apăsată'], ['Allura','Fluidă']
+].map(([family, label]) => ({family, label}));
 const INKS = [['#1E3A9E','Albastru de stilou'], ['#1B1C24','Negru'], ['#7A1F35','Bordo'], ['#0D5E54','Verde închis']];
 const SIZES = [['s', 6], ['m', 9], ['l', 13]];            // x-height in mm
+const SIG_SIZES = [['s','Mică'], ['m','Medie'], ['l','Mare']];
 const PX_PER_MM = 1 / 0.1924;                             // iPad Pro 13″: 264 ppi at 2×, 1 CSS px ≈ 0.19 mm
 const TODAY = new Date().toLocaleDateString('ro-RO', {day:'numeric', month:'long', year:'numeric'});
 
 /* ---------- state ---------- */
-const KEY = 'caiet.v1';
+const KEY = 'caiet.v1', KEY_SIG = 'caiet.customSig';
 const DEF = {mode:'letters', letter:'G', style:'scolar', size:'m', preset:'pangram', text:PRESETS[0].text,
-  pen:'pointed', width:3, angle:40, ink:INKS[0][0], alpha:0.24, fade:'fade', slant:true, finger:false};
+  pen:'pointed', width:3, angle:40, ink:INKS[0][0], alpha:0.24, fade:'fade', slant:true, finger:false,
+  sigView:'models', sigSize:'m', sigName:'', sig:{fmt:'full', font:'Mrs Saint Delafield', fl:'line', custom:false}};
 const S = JSON.parse(JSON.stringify(DEF));
 try {
   const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-  if (saved && typeof saved === 'object') Object.assign(S, saved);
+  if (saved && typeof saved === 'object'){ Object.assign(S, saved); S.sig = Object.assign({}, DEF.sig, saved.sig || {}); }
 } catch {}
-if (!['letters', 'text'].includes(S.mode)) S.mode = DEF.mode;
+if (!['letters', 'text', 'sig'].includes(S.mode)) S.mode = DEF.mode;
 if (!STYLES.some(s => s.id === S.style)) S.style = DEF.style;
 if (!ALPHABET.includes(S.letter)) S.letter = DEF.letter;
 if (!SIZES.some(s => s[0] === S.size)) S.size = DEF.size;
+if (typeof S.sigName !== 'string') S.sigName = '';
+if (!SIG_FONTS.some(f => f.family === S.sig.font)) S.sig.font = DEF.sig.font;
+if (!FLOURISHES.some(f => f.id === S.sig.fl)) S.sig.fl = DEF.sig.fl;
 S.showModel = true;
+let CUSTOM = null;
+try { CUSTOM = JSON.parse(localStorage.getItem(KEY_SIG) || 'null'); } catch {}
+if (S.sig.custom && !CUSTOM) S.sig.custom = false;
 let textPage = 0;
 let saveT;
 function persist(){
@@ -273,6 +370,22 @@ function persist(){
 }
 const style = () => STYLES.find(s => s.id === S.style);
 
+/* the ways a name can be signed, built from whatever name the visitor typed */
+function sigFormats(){
+  const name = S.sigName.trim().replace(/\s+/g, ' ') || EXAMPLE_NAME;
+  const parts = name.split(' '), last = parts[parts.length - 1], given = parts.slice(0, -1);
+  const initial = w => w.charAt(0).toLocaleUpperCase('ro');
+  const list = [{id:'full', text:name, label:'Numele întreg'}];
+  if (given.length){
+    list.push({id:'short', text:given.map(w => initial(w) + '.').join(' ') + ' ' + last, label:'Scurtă, pentru acte'});
+    if (given.length > 1) list.push({id:'first', text:given[0] + ' ' + last, label:'Prenume și nume'});
+    list.push({id:'last', text:last, label:'Doar numele de familie'});
+    list.push({id:'ini', text:parts.map(initial).join(''), label:'Inițiale'});
+  }
+  return list;
+}
+const sigFormat = () => { const l = sigFormats(); return l.find(f => f.id === S.sig.fmt) || l[0]; };
+
 /* ---------- fonts & metrics ---------- */
 const mc = document.createElement('canvas').getContext('2d');
 const fstr = (fam, wt, px) => `${wt} ${px}px "${fam}", cursive`;
@@ -281,7 +394,7 @@ const sheetReady = new Promise(res => {
   if (gf.sheet) return res();
   gf.addEventListener('load', res, {once:true}); gf.addEventListener('error', res, {once:true}); setTimeout(res, 5000);
 });
-const LOADED = new Set(), MET = new Map();
+const LOADED = new Set(), MET = new Map(), GEO = new Map(), SPR = new Map();
 async function loadFont(fam, wt = 400){
   const k = fam + '|' + wt;
   if (LOADED.has(k)) return;
@@ -299,6 +412,91 @@ function metrics(fam, wt){
   const m = {xh: (xs[3] || 45) / 100, asc: asc('lbhkdf') / 100, cap: asc('AHMGĂÎȘ') / 100, desc: desc('gjpqyf') / 100};
   if (LOADED.has(k)) MET.set(k, m);
   return m;
+}
+
+/* ---------- signature geometry ---------- */
+const FL_PATHS = {   // points: [fraction of name width, offset in font size, y below the underline in font size]
+  line:   [[[1,-.02,-.10],[1,.05,.05],[.7,0,.13],[.3,0,.14],[0,-.06,.08],[0,-.12,0]]],
+  double: [[[1,-.02,-.10],[1,.05,.05],[.7,0,.13],[.3,0,.14],[0,-.06,.08],[0,-.12,0]],[[.86,0,.25],[.56,0,.28],[.26,0,.26]]],
+  loop:   [[[1,-.02,-.15],[1,.1,.1],[1,.26,-.05],[1,.22,-.32],[1,.08,-.22],[1,.04,.02],[.85,0,.18],[.45,0,.2],[.1,0,.14],[0,-.08,.04]]]
+};
+function catmull(P, seg){
+  const out = [], n = P.length;
+  for (let i = 0; i < n - 1; i++){
+    const p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(n - 1, i + 2)];
+    for (let j = 0; j < seg; j++){
+      const t = j / seg, t2 = t * t, t3 = t2 * t;
+      const f = d => 0.5 * (2 * p1[d] + (-p0[d] + p2[d]) * t + (2 * p0[d] - 5 * p1[d] + 4 * p2[d] - p3[d]) * t2 + (-p0[d] + 3 * p1[d] - 3 * p2[d] + p3[d]) * t3);
+      out.push([f(0), f(1)]);
+    }
+  }
+  out.push(P[n - 1]);
+  return out;
+}
+function taper(pts, wMax){
+  const L = [0];
+  for (let i = 1; i < pts.length; i++) L.push(L[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const tot = L[L.length - 1] || 1;
+  return pts.map((p, i) => [p[0], p[1], wMax * (Math.pow(Math.sin(Math.PI * Math.pow(L[i] / tot, 0.7)), 0.8) + 0.08)]);
+}
+function flourish(id, tw, M){
+  const paths = FL_PATHS[id];
+  if (!paths) return [];
+  const FS = 100, ul = M.desc * FS * 0.45;
+  return paths.map((pts, i) => taper(catmull(pts.map(([a, b, y]) => [a * tw + b * FS, ul + y * FS]), 14), (i ? 0.035 : 0.05) * FS));
+}
+function fontSigGeom(font, text, fl){
+  const key = `${font}|${text}|${fl}`;
+  if (GEO.has(key)) return GEO.get(key);
+  mc.font = fstr(font, 400, 100);
+  const t = mc.measureText(text);
+  const tw = t.actualBoundingBoxLeft + t.actualBoundingBoxRight;
+  const M = metrics(font, 400);
+  const polys = flourish(fl, tw, M);
+  let x0 = 0, x1 = tw, y0 = -t.actualBoundingBoxAscent, y1 = t.actualBoundingBoxDescent;
+  for (const pl of polys) for (const [x, y, w] of pl){
+    x0 = Math.min(x0, x - w / 2); x1 = Math.max(x1, x + w / 2); y0 = Math.min(y0, y - w / 2); y1 = Math.max(y1, y + w / 2);
+  }
+  const ready = LOADED.has(font + '|400');
+  const g = {kind:'font', key, ready, fam:font, text, drawX:t.actualBoundingBoxLeft, polys, x0, x1, y0, y1, xh:M.xh * 100};
+  if (ready){ if (GEO.size > 200) GEO.clear(); GEO.set(key, g); }
+  return g;
+}
+const customGeom = () => ({kind:'custom', key:'custom:' + CUSTOM.id, ready:true, strokes:CUSTOM.strokes,
+  x0:CUSTOM.x0, x1:CUSTOM.x1, y0:CUSTOM.y0, y1:CUSTOM.y1, xh:1});
+const sigGeom = () => (S.sig.custom && CUSTOM) ? customGeom() : fontSigGeom(S.sig.font, sigFormat().text, S.sig.fl);
+
+function paintSig(g, geo, k, color, res){
+  g.save();
+  g.scale(k, k);
+  g.fillStyle = g.strokeStyle = color;
+  g.lineCap = 'round'; g.lineJoin = 'round';
+  if (geo.kind === 'font'){
+    g.font = fstr(geo.fam, 400, 100);
+    g.textBaseline = 'alphabetic';
+    g.fillText(geo.text, geo.drawX, 0);
+    for (const pl of geo.polys) for (let i = 1; i < pl.length; i++){
+      g.lineWidth = (pl[i - 1][2] + pl[i][2]) / 2;
+      g.beginPath(); g.moveTo(pl[i - 1][0], pl[i - 1][1]); g.lineTo(pl[i][0], pl[i][1]); g.stroke();
+    }
+  } else {
+    for (const st of geo.strokes) renderStroke(g, Object.assign({}, st, {color}), res);
+  }
+  g.restore();
+}
+function sigSprite(geo, k, R){
+  const key = `${geo.key}|${k.toFixed(4)}|${R}`;
+  let sp = SPR.get(key);
+  if (sp) return sp;
+  const pad = 4, w = (geo.x1 - geo.x0) * k + pad * 2, h = (geo.y1 - geo.y0) * k + pad * 2;
+  const c = document.createElement('canvas');
+  c.width = Math.ceil(w * R); c.height = Math.ceil(h * R);
+  const g = c.getContext('2d');
+  g.setTransform(R, 0, 0, R, (pad - geo.x0 * k) * R, (pad - geo.y0 * k) * R);
+  paintSig(g, geo, k, C.ghost, k * R);
+  sp = {c, w, h, pad};
+  if (geo.ready){ if (SPR.size > 24) SPR.clear(); SPR.set(key, sp); }
+  return sp;
 }
 
 /* ---------- pen strokes ---------- */
@@ -358,8 +556,11 @@ function renderStroke(g, st, res){
 /* ---------- pages ---------- */
 const PAGES = new Map();
 const hash = s => { let h = 5381; for (let i = 0; i < s.length; i++) h = (h * 33 + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+function sigKey(){ return (S.sig.custom && CUSTOM) ? 'custom:' + CUSTOM.id : `${S.sig.font}|${hash(sigFormat().text)}|${S.sig.fl}`; }
 function pageKey(){
-  return S.mode === 'letters' ? `L|${S.letter}|${S.style}|${S.size}` : `T|${hash(S.text)}|${S.style}|${S.size}|${textPage}`;
+  if (S.mode === 'letters') return `L|${S.letter}|${S.style}|${S.size}`;
+  if (S.mode === 'text') return `T|${hash(S.text)}|${S.style}|${S.size}|${textPage}`;
+  return S.sigView === 'create' ? 'PAD' : `S|${sigKey()}|${S.sigSize}`;
 }
 let cw = 0, ch = 0, dpr = 1, view = {s:1, ox:0, oy:0}, page = null, layout = null;
 function currentPage(){
@@ -405,7 +606,7 @@ function placeTokens(tokens, x0, x1, gap){
   }
   return out;
 }
-function fullRow(G, top, items){ return {base: top + G.top + G.x * 0.25, top:G.top, bot:G.bot, xh:G.x, slant:G.st.slant, font:G.font, items}; }
+function fullRow(G, top, items){ return {type:'full', base: top + G.top + G.x * 0.25, top:G.top, bot:G.bot, xh:G.x, slant:G.st.slant, font:G.font, items}; }
 
 function layoutLetters(w, h){
   const G = rowGeom(), m = margins(w);
@@ -452,10 +653,42 @@ function layoutText(w, h){
   });
   return {m, rows, header:`Text  ·  ${G.st.name}`, footer:G.st.tip, label:`${textPage + 1} / ${pages}`};
 }
-const buildLayout = (w, h) => S.mode === 'letters' ? layoutLetters(w, h) : layoutText(w, h);
+function layoutSig(w, h){
+  const m = margins(w), geo = sigGeom();
+  const cols = w >= 760 ? 2 : 1, colW = (w - m.l - m.r) / cols;
+  const gw = geo.x1 - geo.x0, gh = geo.y1 - geo.y0, avail = h - m.t - m.b;
+  const frac = {s:0.55, m:0.72, l:0.9}[S.sigSize] || 0.72;
+  const k = Math.min(colW * frac / gw, (avail / 3 - 18) / gh);
+  const tops = rowTops(h, gh * k + 18, m), N = tops.length * cols;
+  const rows = tops.map((t, r) => {
+    const items = [];
+    for (let c = 0; c < cols; c++){
+      const idx = r * cols + c;
+      const f = S.fade === 'model' ? ((cols === 2 ? c === 0 : idx === 0) ? 1.7 : 0) : fade(idx, N);
+      items.push({sig:true, x:m.l + c * colW + 10, f});
+    }
+    return {type:'sig', base:t + 9 - geo.y0 * k, top:-geo.y0 * k, bot:geo.y1 * k, xh:geo.xh * k, k, cols, colW, items};
+  });
+  const flLabel = (FLOURISHES.find(f => f.id === S.sig.fl) || {}).label || '';
+  const fontLabel = (SIG_FONTS.find(f => f.family === S.sig.font) || {}).label || S.sig.font;
+  const header = geo.kind === 'custom' ? 'Semnătura ta (desenată de tine)'
+    : `„${geo.text}”  ·  ${fontLabel}  ·  floritură: ${flLabel.toLowerCase()}`;
+  return {m, rows, geo, header, footer:'Întâi încet, peste model. Apoi tot mai repede, până o semnezi în 2–3 secunde, dintr-o singură mișcare.'};
+}
+function layoutPad(w, h){
+  const m = margins(w), u = Math.min(54, Math.max(26, h * 0.085)), base = Math.round(h * 0.58);
+  return {m, pad:{base, u}, rows:[{type:'pad', base, top:u * 2.6, bot:u * 1.4, xh:u, items:[]}],
+    header:'Creează-ți semnătura  ·  semnează pe linie, ca pe prima pagină a unei cărți',
+    footer:'Începe cu o majusculă mare, restul poate fi mai mic și mai rapid. Când îți place, apasă „Salvează ca model”.'};
+}
+function buildLayout(w, h){
+  if (S.mode === 'letters') return layoutLetters(w, h);
+  if (S.mode === 'text') return layoutText(w, h);
+  return S.sigView === 'create' ? layoutPad(w, h) : layoutSig(w, h);
+}
 
 /* ---------- drawing the sheet ---------- */
-const bg = $('#bg'), ink = $('#ink'), sheet = $('#sheet'), hoverEl = $('#hover');
+const bg = $('#bg'), ink = $('#ink'), sheet = $('#sheet'), gallery = $('#gallery'), hoverEl = $('#hover');
 function hline(g, x0, x1, y, color, lw, dash){
   g.strokeStyle = color; g.lineWidth = lw; g.setLineDash(dash || []);
   g.beginPath(); g.moveTo(x0, y); g.lineTo(x1, y); g.stroke();
@@ -467,17 +700,37 @@ function fitText(g, t, maxW){
 }
 function drawGuides(g, row, L){
   const x0 = L.m.l - 14, x1 = page.w - L.m.r + 8;
-  if (S.slant && row.slant){
-    const H = row.top + row.bot, tan = Math.tan(row.slant * Math.PI / 180), step = row.xh * 1.3;
-    g.save(); g.beginPath(); g.rect(x0, row.base - row.top, x1 - x0, H); g.clip();
-    g.strokeStyle = C.ruleLight; g.lineWidth = 0.9; g.setLineDash([]); g.beginPath();
-    for (let x = x0 - H * tan; x < x1; x += step){ g.moveTo(x, row.base + row.bot); g.lineTo(x + H * tan, row.base - row.top); }
-    g.stroke(); g.restore();
+  if (row.type === 'full'){
+    if (S.slant && row.slant){
+      const H = row.top + row.bot, tan = Math.tan(row.slant * Math.PI / 180), step = row.xh * 1.3;
+      g.save(); g.beginPath(); g.rect(x0, row.base - row.top, x1 - x0, H); g.clip();
+      g.strokeStyle = C.ruleLight; g.lineWidth = 0.9; g.setLineDash([]); g.beginPath();
+      for (let x = x0 - H * tan; x < x1; x += step){ g.moveTo(x, row.base + row.bot); g.lineTo(x + H * tan, row.base - row.top); }
+      g.stroke(); g.restore();
+    }
+    hline(g, x0, x1, row.base - row.top, C.ruleLight, 1);
+    hline(g, x0, x1, row.base - row.xh, C.rule, 1, [6, 5]);
+    hline(g, x0, x1, row.base, C.ruleStrong, 1.4);
+    hline(g, x0, x1, row.base + row.bot, C.ruleLight, 1);
+  } else if (row.type === 'sig'){
+    hline(g, x0, x1, row.base - row.xh, C.ruleLight, 1, [4, 6]);
+    hline(g, x0, x1, row.base, C.ruleStrong, 1.3);
+    if (row.cols === 2){
+      const x = L.m.l + row.colW;
+      g.strokeStyle = C.ruleLight; g.lineWidth = 1; g.setLineDash([2, 5]);
+      g.beginPath(); g.moveTo(x, row.base - row.top); g.lineTo(x, row.base + row.bot); g.stroke();
+    }
+  } else {
+    hline(g, x0, x1, row.base - row.top, C.ruleLight, 1, [3, 7]);
+    hline(g, x0, x1, row.base - row.xh, C.rule, 1, [6, 5]);
+    hline(g, L.m.l, x1 - 10, row.base, C.ruleStrong, 1.6);
+    hline(g, x0, x1, row.base + row.bot, C.ruleLight, 1, [3, 7]);
+    const cx = L.m.l + 6, cy = row.base - 12, s = 6;
+    g.setLineDash([]); g.strokeStyle = C.margin; g.lineWidth = 1.6; g.beginPath();
+    g.moveTo(cx - s, cy - s); g.lineTo(cx + s, cy + s); g.moveTo(cx + s, cy - s); g.lineTo(cx - s, cy + s); g.stroke();
+    g.fillStyle = C.muted; g.font = '500 13px "Alegreya Sans", system-ui, sans-serif';
+    g.fillText('Semnătura', L.m.l, row.base + 20);
   }
-  hline(g, x0, x1, row.base - row.top, C.ruleLight, 1);
-  hline(g, x0, x1, row.base - row.xh, C.rule, 1, [6, 5]);
-  hline(g, x0, x1, row.base, C.ruleStrong, 1.4);
-  hline(g, x0, x1, row.base + row.bot, C.ruleLight, 1);
   g.setLineDash([]);
 }
 function drawBg(){
@@ -498,8 +751,10 @@ function drawBg(){
       const a = Math.min(0.92, S.alpha * it.f);
       if (a < 0.004) continue;
       g.globalAlpha = a;
-      g.font = row.font;
-      g.fillText(it.text, it.x, row.base);
+      if (it.sig){
+        const sp = sigSprite(L.geo, row.k, view.s * dpr);
+        g.drawImage(sp.c, it.x - sp.pad, row.base + L.geo.y0 * row.k - sp.pad, sp.w, sp.h);
+      } else { g.font = row.font; g.fillText(it.text, it.x, row.base); }
     }
     g.globalAlpha = 1;
   }
@@ -514,20 +769,81 @@ function drawInk(){
   for (const st of page.strokes) renderStroke(g, st, view.s * dpr);
 }
 
+/* ---------- gallery ---------- */
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;'}[c]));
+function drawCard(cv, geo){
+  const r = cv.getBoundingClientRect();
+  if (!r.width) return;
+  cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+  const g = cv.getContext('2d');
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.fillStyle = C.paper; g.fillRect(0, 0, r.width, r.height);
+  const gw = geo.x1 - geo.x0, gh = geo.y1 - geo.y0;
+  const k = Math.min((r.width - 32) / gw, (r.height - 22) / gh);
+  const ox = (r.width - gw * k) / 2 - geo.x0 * k, base = (r.height - gh * k) / 2 - geo.y0 * k;
+  hline(g, 14, r.width - 14, base, C.ruleLight, 1);
+  g.translate(ox, base);
+  paintSig(g, geo, k, C.ink, k * dpr);
+}
+function chipsHtml(list, attr, cur, title, sub){
+  return list.map(x => `<button class="chip" data-${attr}="${x.id}" aria-pressed="${x.id === cur}"><b>${esc(title(x))}</b>${sub ? `<small>${esc(sub(x))}</small>` : ''}</button>`).join('');
+}
+/* a font that lacks a letter of the name (often ș, ț, ă) falls back to another font for it;
+   the fallback differs between monospace and serif, so the widths differ */
+function fontHasChars(fam, text){
+  const chars = [...new Set(text.replace(/\s/g, ''))].join('');
+  mc.font = `100px "${fam}", monospace`; const a = mc.measureText(chars).width;
+  mc.font = `100px "${fam}", serif`; const b = mc.measureText(chars).width;
+  return Math.abs(a - b) < 0.5;
+}
+async function renderGallery(my){
+  const fmts = sigFormats(), fmt = sigFormat();
+  $('#fmtChips').innerHTML = chipsHtml(fmts, 'fmt', fmt.id, f => f.text, f => f.label);
+  $('#flChips').innerHTML = chipsHtml(FLOURISHES, 'fl', S.sig.fl, f => f.label);
+  await Promise.all(SIG_FONTS.map(f => loadFont(f.family)));
+  if (my !== seq) return;
+  const fonts = SIG_FONTS.filter(f => fontHasChars(f.family, fmt.text)), hidden = SIG_FONTS.length - fonts.length;
+  const note = $('#fontNote');
+  note.hidden = !hidden;
+  note.textContent = hidden === 1 ? 'Un stil nu are toate literele din numele tău (de exemplu diacriticele), așa că e ascuns.'
+    : `${hidden} stiluri nu au toate literele din numele tău (de exemplu diacriticele), așa că sunt ascunse.`;
+  const items = [CUSTOM ? {custom:true} : {make:true}, ...fonts];
+  $('#cards').innerHTML = items.map(it => {
+    if (it.make) return `<button class="card" data-make="1"><div class="make"><span><b>Desenează-ți propria semnătură</b>apoi o exersezi aici</span></div><span class="meta"><span class="cn">Semnătura ta</span><span class="cf">Creează</span></span></button>`;
+    if (it.custom) return `<button class="card${S.sig.custom ? ' on' : ''}" data-custom="1"><canvas></canvas><span class="meta"><span class="cn">Semnătura ta</span><span class="cf">desenată de tine</span></span></button>`;
+    const on = !S.sig.custom && S.sig.font === it.family;
+    return `<button class="card${on ? ' on' : ''}" data-font="${it.family}"><canvas></canvas><span class="meta"><span class="cn">${it.label}</span><span class="cf">${it.family}</span></span></button>`;
+  }).join('');
+  for (const card of $('#cards').children){
+    const cv = card.querySelector('canvas');
+    if (!cv) continue;
+    drawCard(cv, card.dataset.custom ? customGeom() : fontSigGeom(card.dataset.font, fmt.text, S.sig.fl));
+  }
+}
+
 /* ---------- UI sync ---------- */
 const press = (sel, attr, val) => document.querySelectorAll(`${sel} [data-${attr}]`).forEach(b => b.setAttribute('aria-pressed', String(b.dataset[attr] === val)));
 function syncUI(){
+  const isL = S.mode === 'letters', isT = S.mode === 'text', isS = S.mode === 'sig';
   press('#tabs', 'mode', S.mode);
   press('#pens', 'pen', S.pen);
   press('#inks', 'ink', S.ink);
   press('#ctxLetters', 'letter', S.letter);
   press('#sizes', 'size', S.size);
+  press('#sigViews', 'view', S.sigView);
+  press('#sigSize', 'sigsize', S.sigSize);
   press('#fades', 'fade', S.fade);
-  $('#ctxLetters').hidden = S.mode !== 'letters'; $('#ctxText').hidden = S.mode !== 'text';
+  $('#ctxLetters').hidden = !isL; $('#ctxText').hidden = !isT; $('#ctxSig').hidden = !isS; $('#ctxStyle').hidden = isS;
+  $('#sigSize').hidden = !(isS && S.sigView === 'practice');
+  $('#btnSaveSig').hidden = !(isS && S.sigView === 'create');
+  $('#actions').hidden = isS && S.sigView === 'models';
+  $('#pager').hidden = isS;
+  $('#btnModel').hidden = isS && S.sigView === 'create';
   $('#btnModel').setAttribute('aria-pressed', String(S.showModel));
   $('#style').value = S.style;
   $('#preset').value = S.preset;
   if (document.activeElement !== $('#txt')) $('#txt').value = S.text;
+  if (document.activeElement !== $('#sigName')) $('#sigName').value = S.sigName;
   $('#rWidth').value = S.width; $('#oWidth').textContent = S.width;
   $('#rAngle').value = S.angle; $('#oAngle').textContent = S.angle + '°'; $('#rAngle').disabled = S.pen !== 'broad';
   $('#rAlpha').value = S.alpha; $('#oAlpha').textContent = Math.round(S.alpha * 100) + '%';
@@ -537,7 +853,7 @@ function syncActions(){
   $('#btnUndo').disabled = !page || !page.hist.length;
   $('#btnRedo').disabled = !page || !page.redo.length;
   $('#btnClear').disabled = !page || !page.strokes.length;
-  if (layout) $('#pageLbl').textContent = layout.label;
+  if (layout && layout.label) $('#pageLbl').textContent = layout.label;
 }
 
 /* ---------- render loop ---------- */
@@ -545,8 +861,11 @@ let seq = 0;
 async function render(){
   const my = ++seq;
   syncUI();
-  const st = style();
-  await loadFont(st.family, st.weight);
+  const models = S.mode === 'sig' && S.sigView === 'models';
+  gallery.hidden = !models;
+  if (models){ await renderGallery(my); return; }
+  if (S.mode !== 'sig'){ const st = style(); await loadFont(st.family, st.weight); }
+  else if (S.sigView === 'practice' && !(S.sig.custom && CUSTOM)) await loadFont(S.sig.font);
   if (my !== seq || !cw || !ch) return;
   const key = pageKey();
   page = currentPage(); computeView();
@@ -562,12 +881,12 @@ function resize(){
   if (!cw || !ch) return;
   dpr = Math.min(3, window.devicePixelRatio || 1);
   for (const c of [bg, ink]){ c.width = Math.round(cw * dpr); c.height = Math.round(ch * dpr); }
-  inkSaved = false;
+  inkSaved = false; SPR.clear();
   render();
 }
 let rzq = 0;
 new ResizeObserver(() => { cancelAnimationFrame(rzq); rzq = requestAnimationFrame(resize); }).observe($('.stage'));
-document.fonts.addEventListener('loadingdone', schedule);
+document.fonts.addEventListener('loadingdone', () => { GEO.clear(); SPR.clear(); schedule(); });
 
 /* ---------- pen input ---------- */
 let drawing = null, penSeen = false, rect = null, gesture = null;
@@ -667,11 +986,35 @@ function clearPage(){
   page.hist.push({t:'clear', strokes:page.strokes}); page.strokes = []; page.redo = [];
   drawInk(); syncActions();
 }
+let toastT;
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 3200);
+}
+function saveCustom(){
+  const p = PAGES.get('PAD');
+  if (!p || !p.strokes.length || !layout.pad){ toast('Semnează întâi pe linie, apoi salvează.'); return; }
+  const {base, u} = layout.pad;
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const st of p.strokes){
+    const r = st.w * (st.pen === 'broad' ? 1.4 : 1.2);
+    for (const q of st.pts){ minX = Math.min(minX, q.x - r); maxX = Math.max(maxX, q.x + r); minY = Math.min(minY, q.y - r); maxY = Math.max(maxY, q.y + r); }
+  }
+  const strokes = p.strokes.map(st => ({pen:st.pen, w:+(st.w / u).toFixed(4), a:st.a,
+    pts:st.pts.map(q => ({x:+((q.x - minX) / u).toFixed(3), y:+((q.y - base) / u).toFixed(3), p:q.p}))}));
+  CUSTOM = {id:Date.now(), strokes, x0:0, x1:(maxX - minX) / u, y0:(minY - base) / u, y1:(maxY - base) / u};
+  let stored = true;
+  try { localStorage.setItem(KEY_SIG, JSON.stringify(CUSTOM)); } catch { stored = false; }
+  S.sig = Object.assign({}, S.sig, {custom:true}); S.sigView = 'practice';
+  persist(); render();
+  toast(stored ? 'Model salvat pe acest dispozitiv. Acum exers-o.' : 'Model pregătit. Nu s-a putut salva pe dispozitiv, deci se pierde la reîncărcare.');
+}
 
 /* ---------- build controls ---------- */
 $('#ctxLetters').innerHTML = ALPHABET.map(ch => `<button data-letter="${ch}" class="${DIA.includes(ch) ? 'dia' : ''}" aria-label="Litera ${ch}">${ch}</button>`).join('');
 $('#style').innerHTML = STYLES.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
 $('#sizes').innerHTML = SIZES.map(([id, mm]) => `<button data-size="${id}" title="Literele mici au ${mm} mm pe iPad 13″">${mm} mm</button>`).join('');
+$('#sigSize').innerHTML = SIG_SIZES.map(([id, l]) => `<button data-sigsize="${id}">${l}</button>`).join('');
 $('#inks').innerHTML = INKS.map(([c, n]) => `<button class="swatch" data-ink="${c}" style="background:${c}" aria-label="${n}" title="${n}"></button>`).join('');
 $('#preset').innerHTML = PRESETS.map(p => `<option value="${p.id}">${p.label}</option>`).join('');
 
@@ -685,7 +1028,25 @@ on('#pens', 'pen', v => { S.pen = v; persist(); syncUI(); });
 on('#inks', 'ink', v => { S.ink = v; persist(); syncUI(); });
 on('#ctxLetters', 'letter', v => { S.letter = v; persist(); render(); centerLetter(); });
 on('#sizes', 'size', v => { S.size = v; persist(); render(); });
+on('#sigViews', 'view', v => { S.sigView = v; persist(); render(); });
+on('#sigSize', 'sigsize', v => { S.sigSize = v; persist(); render(); });
 on('#fades', 'fade', v => { S.fade = v; persist(); render(); });
+on('#fmtChips', 'fmt', v => { S.sig.fmt = v; persist(); render(); });
+on('#flChips', 'fl', v => { S.sig.fl = v; persist(); render(); });
+let nameT;
+$('#sigName').addEventListener('input', e => {
+  S.sigName = e.target.value.slice(0, 40);
+  persist();
+  clearTimeout(nameT); nameT = setTimeout(render, 300);
+});
+$('#cards').addEventListener('click', e => {
+  const c = e.target.closest('.card');
+  if (!c) return;
+  if (c.dataset.make){ S.sigView = 'create'; }
+  else if (c.dataset.custom){ S.sig.custom = true; S.sigView = 'practice'; }
+  else { S.sig = Object.assign({}, S.sig, {font:c.dataset.font, custom:false}); S.sigView = 'practice'; }
+  persist(); render();
+});
 $('#style').addEventListener('change', e => { S.style = e.target.value; persist(); render(); });
 $('#preset').addEventListener('change', e => {
   S.preset = e.target.value;
@@ -701,7 +1062,7 @@ $('#txt').addEventListener('input', e => {
   textPage = 0; persist();
   clearTimeout(txtT); txtT = setTimeout(render, 250);
 });
-$('#btnModel').onclick = () => { S.showModel = !S.showModel; syncUI(); if (page && layout) drawBg(); };
+$('#btnModel').onclick = () => { S.showModel = !S.showModel; syncUI(); if (page && layout && gallery.hidden) drawBg(); };
 $('#btnUndo').onclick = undo;
 $('#btnRedo').onclick = redo;
 const clearBtn = $('#btnClear');
@@ -715,12 +1076,13 @@ clearBtn.onclick = () => {
 };
 function step(d){
   if (S.mode === 'letters'){ const i = ALPHABET.indexOf(S.letter); S.letter = ALPHABET[(i + d + ALPHABET.length) % ALPHABET.length]; persist(); }
-  else textPage = Math.max(0, textPage + d);
+  else if (S.mode === 'text') textPage = Math.max(0, textPage + d);
   render();
   centerLetter();
 }
 $('#btnPrev').onclick = () => step(-1);
 $('#btnNext').onclick = () => step(1);
+$('#btnSaveSig').onclick = saveCustom;
 
 const setPanel = $('#settings'), gear = $('#btnSettings');
 function toggleSettings(open){
@@ -735,7 +1097,7 @@ $('#rWidth').addEventListener('input', e => { S.width = +e.target.value; $('#oWi
 $('#rAngle').addEventListener('input', e => { S.angle = +e.target.value; $('#oAngle').textContent = S.angle + '°'; persist(); });
 $('#rAlpha').addEventListener('input', e => {
   S.alpha = +e.target.value; $('#oAlpha').textContent = Math.round(S.alpha * 100) + '%'; persist();
-  if (page && layout) drawBg();
+  if (page && layout && gallery.hidden) drawBg();
 });
 $('#cSlant').addEventListener('change', e => { S.slant = e.target.checked; persist(); render(); });
 $('#cFinger').addEventListener('change', e => { S.finger = e.target.checked; persist(); });
