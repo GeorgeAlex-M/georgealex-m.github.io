@@ -776,6 +776,9 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
 .leaflet-control-attribution a { color: var(--accent); }
 .coordbox { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 3px 7px; font-family: var(--font-mono); font-size: 11.5px; }
 .grab, .fab, .drawbar { display: none; }
+.toast { position: fixed; z-index: 1200; top: calc(env(safe-area-inset-top, 0px) + 12px); right: max(12px, env(safe-area-inset-right, 0px)); max-width: min(380px, calc(100vw - 24px));
+  background: var(--ink); color: var(--panel); border-radius: 12px; padding: 10px 14px; font-size: 14px; line-height: 1.4; box-shadow: 0 6px 20px rgba(0, 0, 0, .25); cursor: pointer; }
+@media (max-width: 760px) { .toast { left: 12px; right: 70px; max-width: none; } }
 @media (max-width: 760px) {
   /* the map fills the screen; the panel is a sheet over its lower part that you drag up or down */
   html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
@@ -911,6 +914,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     <p class="foot"><a href="../" style="color:var(--accent)">← georgealex-m.github.io</a> · Surse: ROMATSA (zone UAS, CTR, NOTAM), aerofoto.mapn.ro (zone permanente, frontiera), © OpenStreetMap contributors (fundal). Explicațiile nu sunt consultanță juridică.</p>
   </aside>
   <div id="map" role="application" aria-label="Harta zonelor"></div>
+  <div class="toast" id="toast" role="status" hidden></div>
   <div class="fab" id="fab">
     <button type="button" id="fab-gps" aria-label="Unde sunt acum" title="Unde sunt acum">◎</button>
     <button type="button" id="fab-map" aria-label="Arată toată harta" title="Arată toată harta">⤢</button>
@@ -1470,16 +1474,54 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     centreOn(lat, lon, Math.max(map.getZoom(), 15)); check(lat, lon);
   });
   $('coord').addEventListener('input', () => $('coord').setCustomValidity(''));
-  $('fab-gps').addEventListener('click', () => $('gps').click());
-  if (!('geolocation' in navigator)) $('fab-gps').hidden = true;
-  if ('geolocation' in navigator) {
-    $('gps').hidden = false;
-    $('gps').addEventListener('click', () => {
-      const msg = $('gpsmsg'); msg.hidden = false; msg.textContent = 'Caut poziția…';
-      navigator.geolocation.getCurrentPosition(p => { msg.hidden = true; centreOn(p.coords.latitude, p.coords.longitude, 16); check(p.coords.latitude, p.coords.longitude, true); },
-        () => { msg.textContent = 'Poziția nu e disponibilă aici. Deschide varianta offline a hărții pe telefon sau scrie coordonatele.'; }, { enableHighAccuracy: true, timeout: 15000 });
-    });
+  // ---------- where am I: the browser asks the visitor for permission the first time ----------
+  let geoWatch = null, meDot = null, meAcc = null, meFirst = true;
+  function say(text, ms) {   // a note over the map, so it is seen even when the phone's sheet is down
+    const t = $('toast'); t.textContent = text; t.hidden = !text;
+    clearTimeout(say.t); if (text && ms) say.t = setTimeout(() => { t.hidden = true; }, ms);
+    $('gpsmsg').hidden = !text; $('gpsmsg').textContent = text;
   }
+  const GEO_ERR = {
+    1: MODE === 'artifact'
+      ? 'Pagina de pe Claude nu are voie să ceară locația. Deschide harta de pe site, georgealex-m.github.io/harta-drone, și apasă din nou.'
+      : 'Accesul la locație e refuzat. Pe iPhone: Setări → Confidențialitate și securitate → Servicii de localizare → Site-uri Safari → „Cât timp folosiți aplicația”. Apoi, în Safari, apasă aA → Setări site web → Localizare → Permite, reîncarcă pagina și apasă din nou.',
+    2: 'Telefonul nu găsește poziția acum. Verifică dacă localizarea e pornită și încearcă din nou, ideal afară.',
+    3: 'Găsirea poziției durează prea mult. Încearcă din nou, afară sau lângă o fereastră.',
+  };
+  function showMe(p) {
+    const ll = [p.coords.latitude, p.coords.longitude], acc = Math.round(p.coords.accuracy || 0);
+    if (!meDot) {
+      meAcc = L.circle(ll, { renderer, radius: acc, color: '#1a73e8', weight: 1, fillColor: '#1a73e8', fillOpacity: .12, interactive: false }).addTo(map);
+      meDot = L.circleMarker(ll, { renderer, radius: 8, color: '#ffffff', weight: 3, fillColor: '#1a73e8', fillOpacity: 1, interactive: false }).addTo(map);
+    } else { meDot.setLatLng(ll); meAcc.setLatLng(ll).setRadius(acc); }
+    if (meFirst) {
+      meFirst = false;
+      centreOn(ll[0], ll[1], Math.max(map.getZoom(), 16)); check(ll[0], ll[1], true);
+      say(`Ești aici (precizie de aprox. ${acc} m). Punctul albastru te urmărește cât ții pagina deschisă.`, 6000);
+    }
+  }
+  function locate() {
+    if (!('geolocation' in navigator)) { say('Browserul acesta nu oferă locația. Scrie coordonatele de mână.'); return; }
+    if (!window.isSecureContext) { say('Locația merge doar pe o pagină sigură (https). Deschide harta de pe georgealex-m.github.io/harta-drone.'); return; }
+    if (geoWatch !== null && meDot) { const ll = meDot.getLatLng(); centreOn(ll.lat, ll.lng, Math.max(map.getZoom(), 16)); check(ll.lat, ll.lng, true); return; }
+    meFirst = true;
+    say('Caut poziția… Dacă browserul te întreabă, apasă „Permite”.');
+    let precise = true;
+    const start = () => {
+      geoWatch = navigator.geolocation.watchPosition(showMe, e => {
+        if (e.code === 3 && precise) {   // no GPS fix in time: try again with the network position
+          precise = false; navigator.geolocation.clearWatch(geoWatch); start(); return;
+        }
+        navigator.geolocation.clearWatch(geoWatch); geoWatch = null;
+        say(GEO_ERR[e.code] || 'Poziția nu e disponibilă acum. Încearcă din nou.');
+      }, { enableHighAccuracy: precise, timeout: precise ? 15000 : 25000, maximumAge: 10000 });
+    };
+    start();
+  }
+  $('gps').hidden = false;
+  $('gps').addEventListener('click', locate);
+  $('fab-gps').addEventListener('click', locate);
+  $('toast').addEventListener('click', () => { $('toast').hidden = true; });
 
   // ---------- load ----------
   // ---------- data: live from ROMATSA on the website, a saved copy in the artifact and the offline file ----------
