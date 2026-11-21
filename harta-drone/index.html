@@ -752,6 +752,7 @@ summary { cursor: pointer; font-family: var(--font-head); font-weight: 600; font
 .pill.ok { background: var(--ok-bg); color: var(--ok-ink); } .pill.warn { background: var(--warn-bg); color: var(--warn-ink); } .pill.bad { background: var(--bad-bg); color: var(--bad-ink); }
 textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono); font-size: 12px; line-height: 1.5; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); resize: vertical; }
 .vx { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 600 11px var(--font-mono); border: 2px solid var(--panel); box-shadow: 0 1px 3px rgba(0,0,0,.35); cursor: grab; }
+.vm { display: block; border-radius: 50%; background: var(--panel); border: 2px solid var(--accent); opacity: .9; cursor: grab; }
 .ml { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--z-mine); background: color-mix(in srgb, var(--panel) 85%, transparent); border-radius: 4px; padding: 1px 4px; white-space: nowrap; pointer-events: none; }
 .saved { display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font-size: 13.5px; }
 .saved > span { min-width: 0; overflow-wrap: anywhere; }
@@ -818,6 +819,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
       <div class="row" id="draw-btns">
         <button type="button" class="primary" id="d-start">Desenează o zonă</button>
         <button type="button" id="d-undo" hidden>Șterge ultimul punct</button>
+        <button type="button" id="d-free" hidden>Desen liber</button>
         <button type="button" id="d-done" hidden>Gata cu colțurile</button>
         <button type="button" id="d-tk" hidden>Alege decolarea</button>
         <button type="button" id="d-clear" hidden>Renunță</button>
@@ -1094,6 +1096,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   // ---------- input ----------
   map.on('click', e => {
     const p = [e.latlng.lat, e.latlng.lng];
+    if (draft.mode === 'free') return;   // the outline comes from the stroke, not from clicks
     if (draft.mode === 'pts') { draft.pts.push(p); redrawDraft(); return; }
     if (draft.mode === 'tk') { draft.tk = p; setMode(null); redrawDraft(); return; }
     check(p[0], p[1]);
@@ -1131,6 +1134,8 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
 
   // ---------- planning a new request ----------
   const draft = { pts: [], tk: null, mode: null, markers: [], poly: null, tkm: null };
+  const COARSE = matchMedia('(pointer: coarse)').matches;
+  let PEN_SEEN = false;
   let drafts = [];
   try { drafts = JSON.parse(localStorage.getItem('drone-drafts') || '[]'); } catch (e) { drafts = []; }
   const saveDrafts = () => { try { localStorage.setItem('drone-drafts', JSON.stringify(drafts)); } catch (e) {} };
@@ -1138,13 +1143,19 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
 
   function setMode(m) {
     draft.mode = m;
-    $('draw-hint').textContent = m === 'pts' ? 'Atinge harta ca să adaugi colțurile zonei, în ordine, de jur împrejur. Trage de un punct ca să-l muți.'
+    $('draw-hint').textContent = m === 'pts' ? (PEN_SEEN || COARSE
+        ? 'Cu Apple Pencil trasezi conturul zonei dintr-o singură mișcare sau atingi colțurile pe rând. Cu degetul muți și mărești harta.'
+        : 'Atinge harta ca să adaugi colțurile zonei, în ordine, de jur împrejur, sau apasă „Desen liber” și trasează conturul.')
+      : m === 'free' ? 'Trasează conturul zonei dintr-o singură mișcare. La final îl transform în colțuri pe care le poți ajusta.'
       : m === 'tk' ? 'Atinge harta în interiorul zonei, acolo unde vrei să decolezi.' : draft.pts.length ? 'Poți trage de puncte ca să ajustezi zona.' : HINT;
     $('map').style.cursor = m ? 'crosshair' : '';
     drawButtons();
   }
   function drawButtons() {
-    const n = draft.pts.length, drawing = draft.mode === 'pts';
+    const n = draft.pts.length, drawing = draft.mode === 'pts' || draft.mode === 'free';
+    $('d-free').hidden = !drawing;
+    $('d-free').setAttribute('aria-pressed', String(draft.mode === 'free'));
+    $('d-free').textContent = draft.mode === 'free' ? 'Înapoi la colțuri' : 'Desen liber';
     $('d-start').hidden = n > 0 || drawing;
     $('d-undo').hidden = n === 0;
     $('d-done').hidden = !drawing || n < 3;
@@ -1159,11 +1170,24 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     const st = { renderer, color: css('--accent'), weight: 3, dashArray: '6 4', fillColor: css('--accent'), fillOpacity: .15, interactive: false };
     if (draft.pts.length > 2) draft.poly = L.polygon(draft.pts, st).addTo(map);
     else if (draft.pts.length) draft.poly = L.polyline(draft.pts, st).addTo(map);
+    const S = COARSE ? 30 : 22;   // bigger handles for a finger or the Apple Pencil
     draft.pts.forEach((p, i) => {
-      const mk = L.marker(p, { draggable: true, icon: L.divIcon({ className: '', html: `<span class="vx">${i + 1}</span>`, iconSize: [22, 22], iconAnchor: [11, 11] }) }).addTo(map);
+      const mk = L.marker(p, { draggable: true, icon: L.divIcon({ className: '', html: `<span class="vx" style="width:${S}px;height:${S}px">${i + 1}</span>`, iconSize: [S, S], iconAnchor: [S / 2, S / 2] }) }).addTo(map);
       mk.on('drag', e => { draft.pts[i] = [e.latlng.lat, e.latlng.lng]; if (draft.poly) draft.poly.setLatLngs(draft.pts); });
       mk.on('dragend', redrawDraft);
+      // double tap (or a long press) removes a corner, as long as 3 remain
+      const drop = () => { if (draft.pts.length > 3) { draft.pts.splice(i, 1); redrawDraft(); } };
+      mk.on('dblclick contextmenu', e => { L.DomEvent.stop(e); drop(); });
       draft.markers.push(mk);
+    });
+    // a small handle in the middle of each side: drag it to add a corner there
+    if (draft.pts.length > 2 && draft.mode !== 'pts') draft.pts.forEach((p, i) => {
+      const q = draft.pts[(i + 1) % draft.pts.length], m = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2], h = Math.round(S * .55);
+      const mid = L.marker(m, { draggable: true, icon: L.divIcon({ className: '', html: `<span class="vm" style="width:${h}px;height:${h}px"></span>`, iconSize: [h, h], iconAnchor: [h / 2, h / 2] }) }).addTo(map);
+      mid.on('dragstart', () => { draft.pts.splice(i + 1, 0, m.slice()); });
+      mid.on('drag', e => { draft.pts[i + 1] = [e.latlng.lat, e.latlng.lng]; if (draft.poly) draft.poly.setLatLngs(draft.pts); });
+      mid.on('dragend', redrawDraft);
+      draft.markers.push(mid);
     });
     if (draft.tk) draft.tkm = L.circleMarker(draft.tk, { renderer, radius: 8, color: css('--ink'), weight: 3, fillColor: css('--panel'), fillOpacity: 1, interactive: false }).addTo(map);
     analyseDraft(); drawButtons();
@@ -1250,9 +1274,73 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   }
   $('d-start').addEventListener('click', () => { Object.assign(draft, { pts: [], tk: null, name: '' }); setMode('pts'); redrawDraft(); });
   $('d-undo').addEventListener('click', () => { draft.pts.pop(); if (draft.pts.length < 3) draft.tk = null; if (!draft.pts.length && draft.mode !== 'pts') setMode(null); redrawDraft(); });
-  $('d-done').addEventListener('click', () => setMode(null));
+  $('d-done').addEventListener('click', () => { setMode(null); redrawDraft(); });   // redraw so the side handles appear
   $('d-tk').addEventListener('click', () => setMode('tk'));
   $('d-clear').addEventListener('click', () => { Object.assign(draft, { pts: [], tk: null, name: '' }); setMode(null); redrawDraft(); });
+  $('d-free').addEventListener('click', () => setMode(draft.mode === 'free' ? 'pts' : 'free'));
+
+  // ---------- Apple Pencil (and freehand with mouse or finger) ----------
+  // In drawing mode the pencil draws and the finger keeps moving the map; a pencil tap adds one corner,
+  // a pencil stroke becomes the whole outline. "Desen liber" lets a mouse or a finger trace the outline too.
+  const mapEl = $('map');
+  let stroke = null;
+  function simplifyPx(pts, tol) {
+    if (pts.length < 3) return pts;
+    const keep = new Array(pts.length).fill(false); keep[0] = keep[pts.length - 1] = true;
+    const st = [[0, pts.length - 1]];
+    while (st.length) {
+      const [a, b] = st.pop(); let best = 0, bi = -1;
+      const [x1, y1] = pts[a], [x2, y2] = pts[b], dx = x2 - x1, dy = y2 - y1, n2 = dx * dx + dy * dy || 1;
+      for (let i = a + 1; i < b; i++) { const t = Math.max(0, Math.min(1, ((pts[i][0] - x1) * dx + (pts[i][1] - y1) * dy) / n2)); const ex = pts[i][0] - x1 - t * dx, ey = pts[i][1] - y1 - t * dy, d = ex * ex + ey * ey; if (d > best) { best = d; bi = i; } }
+      if (best > tol * tol) { keep[bi] = true; st.push([a, bi], [bi, b]); }
+    }
+    return pts.filter((p, i) => keep[i]);
+  }
+  const drawsHere = e => draft.mode && (e.pointerType === 'pen' || (draft.mode === 'free' && e.isPrimary));
+  mapEl.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'pen' && !PEN_SEEN) { PEN_SEEN = true; if (draft.mode) setMode(draft.mode); }
+    if (!drawsHere(e) || e.target.closest('.leaflet-marker-icon, .leaflet-control')) return;
+    e.preventDefault(); e.stopPropagation();
+    map.dragging.disable();
+    try { mapEl.setPointerCapture(e.pointerId); } catch (err) {}   // keeps the stroke even if the pencil leaves the map
+    const r = mapEl.getBoundingClientRect();
+    stroke = { id: e.pointerId, px: [[e.clientX - r.left, e.clientY - r.top]], line: L.polyline([], { renderer, color: css('--accent'), weight: 3, interactive: false }).addTo(map) };
+  }, true);
+  mapEl.addEventListener('pointermove', e => {
+    const r = mapEl.getBoundingClientRect(), pt = [e.clientX - r.left, e.clientY - r.top];
+    if (e.pointerType === 'pen' && !stroke) {   // pencil hover: show where it points before it touches
+      const ll = map.containerPointToLatLng(pt); coordCtl.getContainer().textContent = `${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;
+    }
+    if (!stroke || e.pointerId !== stroke.id) return;
+    e.preventDefault(); e.stopPropagation();
+    const last = stroke.px[stroke.px.length - 1];
+    if (Math.hypot(pt[0] - last[0], pt[1] - last[1]) < 2) return;
+    stroke.px.push(pt);
+    stroke.line.addLatLng(map.containerPointToLatLng(pt));
+  }, true);
+  function endStroke(e) {
+    if (!stroke || e.pointerId !== stroke.id) return;
+    e.preventDefault(); e.stopPropagation();
+    map.removeLayer(stroke.line); map.dragging.enable();
+    const px = stroke.px; stroke = null;
+    const len = px.reduce((s, p, i) => i ? s + Math.hypot(p[0] - px[i - 1][0], p[1] - px[i - 1][1]) : 0, 0);
+    if (len < 12) {   // a tap: one corner, or the takeoff point
+      const ll = map.containerPointToLatLng(px[0]);
+      if (draft.mode === 'tk') { draft.tk = [ll.lat, ll.lng]; setMode(null); } else draft.pts.push([ll.lat, ll.lng]);
+      redrawDraft(); return;
+    }
+    let simple = simplifyPx(px, 7);
+    const d0 = Math.hypot(simple[0][0] - simple[simple.length - 1][0], simple[0][1] - simple[simple.length - 1][1]);
+    if (d0 < 25 && simple.length > 3) simple = simple.slice(0, -1);   // closed outline: drop the duplicate end
+    for (let tol = 9; simple.length > 30; tol += 3) simple = simplifyPx(px, tol);   // keep the corner list short enough for the form
+    if (simple.length < 3) { $('draw-hint').textContent = 'Conturul e prea mic. Mărește harta și mai trasează o dată.'; return; }
+    draft.pts = simple.map(p => { const ll = map.containerPointToLatLng(p); return [ll.lat, ll.lng]; });
+    setMode(null); redrawDraft();
+  }
+  mapEl.addEventListener('pointerup', endStroke, true);
+  mapEl.addEventListener('pointercancel', e => { if (stroke && e.pointerId === stroke.id) { map.removeLayer(stroke.line); map.dragging.enable(); stroke = null; } }, true);
+  // a pencil tap also produces a click; drop that one so the corner is not added twice
+  mapEl.addEventListener('click', e => { if (draft.mode && e.pointerType === 'pen') { e.stopPropagation(); } }, true);
   $('go').addEventListener('submit', e => {
     e.preventDefault();
     const m = $('coord').value.replace(/[°NE]/gi, ' ').match(/(-?\d+(?:[.,]\d+)?)[\s,;]+(-?\d+(?:[.,]\d+)?)/);
