@@ -789,6 +789,11 @@ button:disabled { opacity: .45; cursor: default; }
 .leaflet-control-attribution a { color: var(--accent); }
 .coordbox { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 3px 7px; font-family: var(--font-mono); font-size: 11.5px; }
 .grab, .fab, .drawbar { display: none; }
+.app.collapsed { grid-template-columns: minmax(0, 1fr); }
+.app.collapsed .panel { display: none; }
+.side-btn { display: flex; align-items: center; gap: 6px; font: 600 13.5px var(--font-ui); padding: 8px 11px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--panel); color: var(--ink); box-shadow: 0 1px 5px rgba(0, 0, 0, .2); cursor: pointer; }
+.side-btn svg { width: 16px; height: 16px; }
 .toast button { display: block; margin-top: 8px; background: var(--panel); color: var(--ink); border: 0; }
 .guide-back { position: fixed; inset: 0; z-index: 1300; background: rgba(10, 14, 12, .45); display: flex; align-items: flex-end; justify-content: center; padding: 12px; }
 .guide { background: var(--panel); color: var(--ink); border-radius: 18px; width: min(520px, 100%); max-height: calc(100dvh - 24px); overflow-y: auto;
@@ -841,6 +846,7 @@ button:disabled { opacity: .45; cursor: default; }
   .leaflet-control-zoom a { width: 40px !important; height: 40px !important; line-height: 40px !important; font-size: 20px !important; }
   .leaflet-bottom.leaflet-right { bottom: var(--sheet-h, 42dvh); }
   .leaflet-bottom.leaflet-left { display: none; }
+  .side-ctl { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
 </style>
@@ -956,7 +962,7 @@ button:disabled { opacity: .45; cursor: default; }
     <p class="foot"><a href="../" style="color:var(--accent)">← georgealex-m.github.io</a> · Surse: ROMATSA (zone UAS, CTR, NOTAM), aerofoto.mapn.ro (zone permanente, frontiera), © OpenStreetMap contributors (fundal). Explicațiile nu sunt consultanță juridică.</p>
   </aside>
   <div id="map" role="application" aria-label="Harta zonelor"></div>
-  <div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button type="button" id="toast-guide" hidden>Arată-mi unde activez</button></div>
+  <div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button type="button" id="toast-guide" hidden>Arată-mi unde activez</button><button type="button" id="toast-open" hidden>Vezi detaliile în panou</button></div>
   <div class="guide-back" id="guide" hidden>
     <div class="guide" role="dialog" aria-modal="true" aria-labelledby="guide-h">
       <div class="top"><h2 id="guide-h">Pornește localizarea pentru hartă</h2><button type="button" id="guide-x" aria-label="Închide">✕</button></div>
@@ -1108,6 +1114,29 @@ button:disabled { opacity: .45; cursor: default; }
   // ---------- map ----------
   const map = L.map('map', { preferCanvas: true, zoomControl: true, minZoom: 6, maxZoom: 22, zoomSnap: 0.5, zoomDelta: 1, wheelPxPerZoomLevel: 90, attributionControl: true }).setView([44.425, 26.105], 11);
   new ResizeObserver(() => map.invalidateSize()).observe($('map'));
+
+  // ---------- hide / show the side panel (tablet and laptop), remembered in this browser ----------
+  const sideCtl = L.control({ position: 'topleft' });
+  sideCtl.onAdd = () => {
+    const wrap = L.DomUtil.create('div', 'leaflet-control side-ctl');
+    const b = L.DomUtil.create('button', 'side-btn', wrap); b.type = 'button'; b.id = 'side-btn';
+    L.DomEvent.disableClickPropagation(wrap);
+    b.addEventListener('click', () => setSide(!document.querySelector('.app').classList.contains('collapsed')));
+    return wrap;
+  };
+  sideCtl.addTo(map);
+  function setSide(collapsed) {
+    const c = map.getCenter();
+    document.querySelector('.app').classList.toggle('collapsed', collapsed);
+    const ic = collapsed ? '<path d="M3 4h18v16H3zM9 4v16" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 9l3 3-3 3" fill="none" stroke="currentColor" stroke-width="2"/>'
+                         : '<path d="M3 4h18v16H3zM9 4v16" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 9l-3 3 3 3" fill="none" stroke="currentColor" stroke-width="2"/>';
+    $('side-btn').innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg>${collapsed ? 'Arată panoul' : 'Ascunde panoul'}`;
+    $('side-btn').setAttribute('aria-expanded', String(!collapsed));
+    try { localStorage.setItem('drone-side', collapsed ? 'hidden' : 'shown'); } catch (e) {}
+    setTimeout(() => { map.invalidateSize(); map.panTo(c, { animate: false }); }, 0);   // keep the same spot in the middle
+  }
+  let sideHidden = false; try { sideHidden = localStorage.getItem('drone-side') === 'hidden'; } catch (e) {}
+  setSide(sideHidden && !matchMedia('(max-width: 760px)').matches);
 
   // ---------- phone layout: bottom sheet ----------
   const PHONE = matchMedia('(max-width: 760px)');
@@ -1270,6 +1299,7 @@ button:disabled { opacity: .45; cursor: default; }
     const general = `<div class="hit" style="--c:${css('--accent')}"><div class="top"><span class="name">Mereu, în categoria „deschisă”</span></div>
       <p class="todo">Max. 120 m față de sol, drona la vedere (VLOS), niciodată peste mulțimi. În aviz: dacă apar oameni sau aeronave aproape, oprești zborul.</p></div>`;
     $('res').innerHTML = head + cards + general;
+    if (!PHONE.matches && document.querySelector('.app').classList.contains('collapsed')) say(`${title}. ${items[0] || ''}`, 0, false, true);
   }
 
   function card(z) {
@@ -1690,8 +1720,8 @@ button:disabled { opacity: .45; cursor: default; }
   $('coord').addEventListener('input', () => $('coord').setCustomValidity(''));
   // ---------- where am I: the browser asks the visitor for permission the first time ----------
   let geoWatch = null, meDot = null, meAcc = null, meFirst = true, waitT = null;
-  function say(text, ms, guide) {   // a note over the map, so it is seen even when the phone's sheet is down
-    const t = $('toast'); $('toast-text').textContent = text; t.hidden = !text; $('toast-guide').hidden = !guide;
+  function say(text, ms, guide, details) {   // a note over the map, so it is seen even when the phone's sheet is down
+    const t = $('toast'); $('toast-text').textContent = text; t.hidden = !text; $('toast-guide').hidden = !guide; $('toast-open').hidden = !details;
     clearTimeout(say.t); if (text && ms) say.t = setTimeout(() => { t.hidden = true; }, ms);
     $('gpsmsg').hidden = !text; $('gpsmsg').textContent = text;
   }
@@ -1750,6 +1780,7 @@ button:disabled { opacity: .45; cursor: default; }
   $('gps-help').addEventListener('click', () => openGuide());
   $('fab-gps').addEventListener('click', locate);
   $('toast').addEventListener('click', e => { if (e.target.id !== 'toast-guide') $('toast').hidden = true; });
+  $('toast-open').addEventListener('click', () => { setSide(false); setTimeout(() => $('results').scrollIntoView({ block: 'start' }), 50); });
   // ---------- the guide ----------
   const IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const ANDROID = /Android/i.test(navigator.userAgent);
