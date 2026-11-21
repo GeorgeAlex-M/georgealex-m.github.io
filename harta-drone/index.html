@@ -1387,6 +1387,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
       return { zones, base, mine, source: 'copy' };
     }
     const copy = await getJSON('data/zones.json');   // the AIP zones and the border band come from this copy; the rest is replaced live
+    const mine = await getJSON('data/mine.json').catch(() => []);   // only the approved areas that may be public
     try {
       const [rz, nt, ctr] = await Promise.all([getJSON(WFS('zone_restrictionate_uav')), getJSON(WFS('restrictii_notam_pt_uav')), getJSON(WFS('CTR_LRBB'))]);
       const live = rz.features.map(f => ({ cat: category(f.properties.contact), id: clean(f.properties.zone_id), lo: clean(f.properties.lower_lim),
@@ -1395,9 +1396,9 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
       copy.zones = copy.zones.filter(z => z.cat === 'aip').concat(live, ctrs);
       copy.notams = nt.features.map(f => ({ cat: 'notam', id: f.properties.serie, from: f.properties.dfrom, to: f.properties.dto, tip: f.properties.tip,
         msg: String(f.properties.mesaj || '').replace(/\r/g, '\n').trim(), geom: toPolys(f.geometry) }));
-      return { zones: copy, mine: [], source: 'live', at: new Date() };
+      return { zones: copy, mine, source: 'live', at: new Date() };
     } catch (e) {
-      return { zones: copy, mine: [], source: 'copy', error: e };
+      return { zones: copy, mine, source: 'copy', error: e };
     }
   }
 
