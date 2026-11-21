@@ -758,6 +758,17 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
 .prop .name { font-family: var(--font-head); font-weight: 700; font-size: 16.5px; line-height: 1.2; }
 .prop ul { margin: 0; padding-left: 18px; font-size: 13.5px; display: flex; flex-direction: column; gap: 2px; }
 .zchip { font-family: var(--font-mono); font-size: 11.5px; border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; color: var(--muted); }
+.pt-d, .pt-a { display: grid; place-items: center; border-radius: 6px; color: #fff; font: 700 13px var(--font-mono); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.4); cursor: grab; }
+.pt-d { background: #14213d; } .pt-a { background: #c2611a; border-radius: 50%; }
+.tscroll { overflow-x: auto; }
+.ctab { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.ctab th, .ctab td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+.ctab thead th { font-family: var(--font-ui); font-size: 12px; color: var(--muted); font-weight: 600; }
+.ctab tbody th { color: var(--muted); font-weight: 600; font-family: var(--font-ui); }
+.ctab td[data-c] { cursor: copy; } .ctab td[data-c]:hover, .ctab td[data-c]:active { background: var(--bg); color: var(--accent); }
+.ctab tr.note td { color: var(--muted); font-family: var(--font-ui); font-size: 12px; padding-top: 0; }
+.ctab tr.sep td { font-family: var(--font-ui); font-weight: 600; color: var(--muted); padding-top: 10px; }
+button:disabled { opacity: .45; cursor: default; }
 .ml { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--z-mine); background: color-mix(in srgb, var(--panel) 85%, transparent); border-radius: 4px; padding: 1px 4px; white-space: nowrap; pointer-events: none; }
 .saved { display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font-size: 13.5px; }
 .saved > span { min-width: 0; overflow-wrap: anywhere; }
@@ -889,10 +900,21 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
         <button type="button" id="d-free" hidden>Desen liber</button>
         <button type="button" id="d-done" hidden>Gata cu colțurile</button>
         <button type="button" id="d-tk" hidden>Alege decolarea</button>
+        <button type="button" id="d-land" hidden>Alege aterizarea</button>
         <button type="button" id="d-clear" hidden>Renunță</button>
       </div>
+      <div class="row" id="d-history" hidden><button type="button" id="d-hundo" title="Ctrl/Cmd+Z">↶ Anulează</button><button type="button" id="d-hredo" title="Ctrl/Cmd+Shift+Z">↷ Refă</button><span class="sub" id="autosave-st" aria-live="polite"></span></div>
       <div id="draft-out" style="display:flex;flex-direction:column;gap:10px"></div>
+      <h2 style="margin-top:6px">Zonele mele salvate</h2>
       <div id="draft-saved" style="display:flex;flex-direction:column;gap:6px"></div>
+      <div id="xfer" style="display:flex;flex-direction:column;gap:8px" hidden>
+        <div class="row">
+          <button type="button" id="xfer-copy">Copiază toate ca text</button>
+          <button type="button" id="xfer-send">Trimite / salvează fișierul</button>
+          <label class="btnlike" for="xfer-imp">Importă zone</label><input type="file" id="xfer-imp" accept="application/json,.json" class="vh">
+        </div>
+        <p class="sub">Zonele stau în browserul în care le-ai desenat. Ca să le ai pe laptop: pe tabletă apasă „Trimite” (AirDrop, Mail, Fișiere sau Notițe), iar pe laptop deschide harta și apasă „Importă zone”. Sau „Copiază toate ca text” și lipește-le într-o notiță.</p>
+      </div>
     </section>
 
     <section aria-labelledby="h-res" id="results">
@@ -981,7 +1003,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   <div class="drawbar" id="drawbar" role="toolbar" aria-label="Desenează zona">
     <p id="drawbar-hint"></p>
     <div class="row">
-      <button type="button" id="db-undo">Înapoi</button><button type="button" id="db-free">Desen liber</button>
+      <button type="button" id="db-undo" aria-label="Anulează">↶</button><button type="button" id="db-redo" aria-label="Refă">↷</button><button type="button" id="db-free">Desen liber</button>
       <button type="button" class="primary" id="db-done">Gata</button><button type="button" id="db-clear">Renunță</button>
     </div>
   </div>
@@ -1271,7 +1293,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     const p = [e.latlng.lat, e.latlng.lng];
     if (draft.mode === 'free') return;   // the outline comes from the stroke, not from clicks
     if (draft.mode === 'pts') { draft.pts.push(p); redrawDraft(); return; }
-    if (draft.mode === 'tk') { draft.tk = p; setMode(null); redrawDraft(); return; }
+    if (placePoint(p)) return;
     check(p[0], p[1]);
   });
 
@@ -1306,13 +1328,53 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   }
 
   // ---------- planning a new request ----------
-  const draft = { pts: [], tk: null, mode: null, markers: [], poly: null, tkm: null };
+  const draft = { pts: [], tk: null, land: null, mode: null, markers: [], poly: null, name: '' };
   const COARSE = matchMedia('(pointer: coarse)').matches;
   let PEN_SEEN = false;
   let drafts = [];
   try { drafts = JSON.parse(localStorage.getItem('drone-drafts') || '[]'); } catch (e) { drafts = []; }
   const saveDrafts = () => { try { localStorage.setItem('drone-drafts', JSON.stringify(drafts)); } catch (e) {} };
   const HINT = $('draw-hint').textContent;
+
+  // undo / redo over the whole drawing, and an autosave so a refresh loses nothing
+  const snap = () => JSON.stringify({ pts: draft.pts, tk: draft.tk, land: draft.land, name: draft.name || '' });
+  const hist = { stack: [snap()], i: 0, busy: false };
+  function record() {
+    if (hist.busy) return;
+    const s = snap();
+    if (hist.stack[hist.i] === s) return;
+    hist.stack = hist.stack.slice(0, hist.i + 1).concat([s]);
+    if (hist.stack.length > 300) hist.stack.shift();
+    hist.i = hist.stack.length - 1;
+  }
+  function restore(s) {
+    const o = JSON.parse(s);
+    hist.busy = true;
+    Object.assign(draft, { pts: o.pts.map(p => p.slice()), tk: o.tk, land: o.land, name: o.name || '' });
+    if (draft.pts.length < 3 && (draft.mode === 'tk' || draft.mode === 'land')) draft.mode = null;
+    redrawDraft(); hist.busy = false;
+  }
+  const undo = () => { if (hist.i > 0) { hist.i--; restore(hist.stack[hist.i]); } };
+  const redo = () => { if (hist.i < hist.stack.length - 1) { hist.i++; restore(hist.stack[hist.i]); } };
+  function autosave() {   // on every change, so closing the tablet's lid or a refresh loses nothing
+    try {
+      localStorage.setItem('drone-current', snap());
+      const t = new Date().toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      $('autosave-st').textContent = draft.pts.length ? `Salvat automat la ${t}` : '';
+    } catch (e) { $('autosave-st').textContent = 'Nu pot salva automat în acest browser (navigare privată?). Salvează zona cu nume.'; }
+  }
+  // also when the page goes to the background (lid closed, app switched), in case a drag was still in progress
+  document.addEventListener('visibilitychange', () => { if (document.hidden) autosave(); });
+  addEventListener('pagehide', autosave);
+  const savedMatch = () => drafts.some(d => d.name === draft.name && JSON.stringify({ pts: d.pts, tk: d.tk, land: d.land || null, name: d.name }) === snap());
+  function restoreCurrent() {   // after a refresh: bring back the zone being drawn
+    let o = null; try { o = JSON.parse(localStorage.getItem('drone-current') || 'null'); } catch (e) {}
+    if (!o || !o.pts || !o.pts.length) return;
+    hist.busy = true; Object.assign(draft, { pts: o.pts, tk: o.tk, land: o.land, name: o.name || '' }); redrawDraft(); hist.busy = false;
+    hist.stack = [snap()]; hist.i = 0; drawButtons();
+    if (draft.pts.length > 2) fitView(draft.pts, 40);
+    say(`Am păstrat zona la care lucrai${draft.name ? ' („' + draft.name + '”)' : ''}: ${draft.pts.length} colțuri.`, 5000);
+  }
 
   function setMode(m) {
     draft.mode = m;
@@ -1321,7 +1383,9 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
         : COARSE ? 'Atinge harta la fiecare colț al zonei, de jur împrejur, sau apasă „Desen liber” și trasează conturul cu degetul.'
         : 'Atinge harta ca să adaugi colțurile zonei, în ordine, de jur împrejur, sau apasă „Desen liber” și trasează conturul.')
       : m === 'free' ? 'Trasează conturul zonei dintr-o singură mișcare. La final îl transform în colțuri pe care le poți ajusta.'
-      : m === 'tk' ? 'Atinge harta în interiorul zonei, acolo unde vrei să decolezi.' : draft.pts.length ? 'Poți trage de puncte ca să ajustezi zona.' : HINT;
+      : m === 'tk' ? 'Atinge harta în interiorul zonei, acolo unde vrei să decolezi (D).'
+      : m === 'land' ? 'Atinge harta în interiorul zonei, acolo unde vrei să aterizezi (A). Dacă e același loc ca decolarea, nu alege nimic.'
+      : draft.pts.length ? 'Poți trage de colțuri și de punctele D și A ca să ajustezi zona.' : HINT;
     $('map').style.cursor = m ? 'crosshair' : '';
     const bar = m && PHONE.matches;
     $('drawbar').classList.toggle('on', !!bar);
@@ -1330,22 +1394,32 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     else if (PHONE.matches && draft.pts.length > 2 && sheet === 'peek') setSheet('half');
     drawButtons();
   }
+  // a tap on the map while choosing the takeoff or landing point
+  function placePoint(p) {
+    if (draft.mode === 'tk') draft.tk = p; else if (draft.mode === 'land') draft.land = p; else return false;
+    setMode(null); redrawDraft(); return true;
+  }
   function drawButtons() {
     const n = draft.pts.length, drawing = draft.mode === 'pts' || draft.mode === 'free';
     $('d-free').hidden = !drawing;
     $('d-free').setAttribute('aria-pressed', String(draft.mode === 'free'));
     $('d-free').textContent = draft.mode === 'free' ? 'Înapoi la colțuri' : 'Desen liber';
-    $('d-start').hidden = n > 0 || drawing;
-    $('d-undo').hidden = n === 0;
+    $('d-start').hidden = drawing;
+    $('d-start').textContent = n ? 'Zonă nouă' : 'Desenează o zonă';
+    $('d-undo').hidden = n === 0 || !drawing;
     $('d-done').hidden = !drawing || n < 3;
     $('d-tk').hidden = n < 3 || drawing;
     $('d-tk').textContent = draft.tk ? 'Mută decolarea' : 'Alege decolarea';
+    $('d-land').hidden = n < 3 || drawing;
+    $('d-land').textContent = draft.land ? 'Mută aterizarea' : 'Alege aterizarea';
     $('d-clear').hidden = n === 0 && !drawing;
+    for (const [id, off] of [['d-hundo', hist.i <= 0], ['d-hredo', hist.i >= hist.stack.length - 1], ['db-undo', hist.i <= 0], ['db-redo', hist.i >= hist.stack.length - 1]]) $(id).disabled = off;
+    $('d-history').hidden = hist.stack.length < 2;
   }
+  function pinIcon(letter, cls) { const S = COARSE ? 30 : 24; return L.divIcon({ className: '', html: `<span class="${cls}" style="width:${S}px;height:${S}px">${letter}</span>`, iconSize: [S, S], iconAnchor: [S / 2, S / 2] }); }
   function redrawDraft() {
     draft.markers.forEach(m => map.removeLayer(m)); draft.markers = [];
     if (draft.poly) { map.removeLayer(draft.poly); draft.poly = null; }
-    if (draft.tkm) { map.removeLayer(draft.tkm); draft.tkm = null; }
     const st = { renderer, color: css('--accent'), weight: 3, dashArray: '6 4', fillColor: css('--accent'), fillOpacity: .15, interactive: false };
     if (draft.pts.length > 2) draft.poly = L.polygon(draft.pts, st).addTo(map);
     else if (draft.pts.length) draft.poly = L.polyline(draft.pts, st).addTo(map);
@@ -1368,8 +1442,14 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
       mid.on('dragend', redrawDraft);
       draft.markers.push(mid);
     });
-    if (draft.tk) draft.tkm = L.circleMarker(draft.tk, { renderer, radius: 8, color: css('--ink'), weight: 3, fillColor: css('--panel'), fillOpacity: 1, interactive: false }).addTo(map);
-    analyseDraft(); drawButtons();
+    // takeoff (D) and landing (A): drag them to move
+    for (const [key, letter, cls] of [['tk', 'D', 'pt-d'], ['land', 'A', 'pt-a']]) {
+      if (!draft[key]) continue;
+      const mk = L.marker(draft[key], { draggable: true, zIndexOffset: 500, icon: pinIcon(letter, cls) }).addTo(map);
+      mk.on('dragend', e => { draft[key] = [e.target.getLatLng().lat, e.target.getLatLng().lng]; redrawDraft(); });
+      draft.markers.push(mk);
+    }
+    record(); autosave(); analyseDraft(); drawButtons();
   }
 
   const segX = (a, b, c, d) => { const o = (p, q, r) => Math.sign((q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])); return o(a, b, c) !== o(a, b, d) && o(c, d, a) !== o(c, d, b); };
@@ -1392,10 +1472,24 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   function addWorkdays(d, n) { const x = new Date(d); while (n > 0) { x.setDate(x.getDate() + 1); if (x.getDay() % 6) n--; } return x; }
   const dmy = d => d.toLocaleDateString('ro-RO', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const fmtPt = p => `${p[0].toFixed(8)}° N   ${p[1].toFixed(8)}° E`;
+  const c8 = v => v.toFixed(8);
+  // one zone as text, in the order of the aerofoto form
+  function zoneText(z) {
+    const land = z.land || z.tk;
+    return [`Zona: ${z.name || 'fără nume'}`,
+      `Coordonate punct de decolare: ${z.tk ? fmtPt(z.tk) : '(nealeasă)'}`,
+      `Coordonate punct de aterizare: ${land ? fmtPt(land) : '(nealeasă)'}${z.land ? '' : (z.tk ? '  (aceeași ca decolarea)' : '')}`,
+      'Înălțimea de zbor: 1 m / 120 m',
+      `Zona de operare – Perimetru (${z.pts.length} colțuri):`].concat(z.pts.map((p, i) => `${i + 1}. ${fmtPt(p)}`)).join('\n');
+  }
+  async function copyText(t, what) {
+    try { await navigator.clipboard.writeText(t); say(`Copiat: ${what}`, 1800); }
+    catch (e) { say('Nu am putut copia automat. Ține apăsat pe valoare și alege Copiază.', 4000); }
+  }
 
   function analyseDraft() {
     const out = $('draft-out'), n = draft.pts.length;
-    if (n < 3) { out.innerHTML = n ? `<p class="sub">${n} ${n === 1 ? 'punct' : 'puncte'}. Îți trebuie cel puțin 3.</p>` : ''; renderSaved(); return; }
+    if (n < 3) { out.innerHTML = n ? `<p class="sub">${n} ${n === 1 ? 'colț' : 'colțuri'}. Îți trebuie cel puțin 3.</p>` : ''; renderSaved(); return; }
     const hits = all.filter(z => z.cat !== 'prop' && (z.cat !== 'notam' || z.status !== 'expired')).filter(z => overlaps(draft.pts, z));
     const isAerofoto = h => (h.cat === 'uas' && /aerofoto@mapn\.ro/i.test(h.contact || '')) || (h.cat === 'aip' && /^LRR3/i.test(h.id));
     const needs = hits.some(isAerofoto);
@@ -1403,64 +1497,125 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     const notamA = hits.filter(h => h.cat === 'notam');
     const mineHit = hits.filter(h => h.cat === 'mine');
     const bucuresti = hits.some(h => h.id === 'RZ 570');
-    const tkIn = draft.tk && inRing(draft.tk[0], draft.tk[1], draft.pts);
+    const inside = p => p && inRing(p[0], p[1], draft.pts);
     const a = areaM2(draft.pts);
     let cls = 'ok', title = 'Nu ai nevoie de aviz MApN aici', items = ['În afara zonelor restricționate, filmarea în categoria „deschisă” nu cere aviz MApN (HG 859, art. 5 alin. (1) lit. e). Se aplică regulile generale.'];
     if (needs) { cls = 'warn'; title = 'Faci cerere de aviz pe aerofoto.mapn.ro'; items = [`Cel mai devreme început al zborurilor: ${dmy(addWorkdays(now, bucuresti ? 12 : 7))} (${bucuresti ? '12' : '7'} zile lucrătoare de azi; sărbătorile legale nu sunt numărate, adaugă-le tu).`]; }
     if (other.length) { cls = 'bad'; title = needs ? 'Aviz MApN, plus alte acorduri' : 'Zona atinge zone cu alte reguli'; other.forEach(o => items.push(`${CATS[o.cat].tag}: ${o.id}. Mută colțurile ca să nu intri în ea sau cere acordul.`)); }
     if (notamA.length) items.push(`NOTAM-uri în zonă: ${notamA.map(x => x.id).join(', ')} (verifică perioada).`);
     if (mineHit.length) items.push(`Se suprapune cu avizul tău: ${mineHit.map(m => m.cod + ' / zbor ' + m.zbor).join(', ')}.`);
-    if (draft.tk && !tkIn) { if (cls === 'ok') cls = 'warn'; items.push('Punctul de decolare e în afara zonei. Mută-l înăuntru.'); }
-    const lines = draft.pts.map(fmtPt).join('\n');
+    if (!draft.tk) items.push('Alege punctul de decolare (D). Formularul aerofoto îl cere.');
+    if (draft.tk && !inside(draft.tk)) { if (cls === 'ok') cls = 'warn'; items.push('Punctul de decolare (D) e în afara zonei. Mută-l înăuntru.'); }
+    if (draft.land && !inside(draft.land)) { if (cls === 'ok') cls = 'warn'; items.push('Punctul de aterizare (A) e în afara zonei. Mută-l înăuntru.'); }
+    const land = draft.land || draft.tk;
+    const row = (label, p, note) => p ? `<tr><th>${label}</th><td data-c="${c8(p[0])}">${c8(p[0])}</td><td data-c="${c8(p[1])}">${c8(p[1])}</td></tr>${note ? `<tr class="note"><td colspan="3">${note}</td></tr>` : ''}` : `<tr><th>${label}</th><td colspan="2" class="sub">nealeasă</td></tr>`;
     out.innerHTML = `<div class="verdict ${cls}"><strong>${title}</strong><ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>
-      <dl class="lim"><dt>Suprafață</dt><dd>${a >= 10000 ? (a / 10000).toFixed(2).replace('.', ',') + ' ha' : Math.round(a).toLocaleString('ro-RO') + ' m²'}</dd>
-        <dt>Colțuri</dt><dd>${n}</dd><dt>Decolare</dt><dd class="mono">${draft.tk ? fmtPt(draft.tk) : 'nealeasă (butonul „Alege decolarea”)'}</dd></dl>
-      <label class="sub" for="d-coords">Perimetrul, ca în formularul aerofoto (Mod specificare zonă: Perimetru):</label>
-      <textarea class="coords" id="d-coords" readonly>${esc(lines)}</textarea>
-      <div class="row"><button type="button" class="primary" id="d-copy">Copiază coordonatele</button><span class="sub" id="d-copied" hidden>Copiat.</span></div>
-      <form class="row" id="d-save"><input type="text" id="d-name" placeholder="Nume, de ex. Lacul Titan" aria-label="Numele zonei" value="${esc(draft.name || '')}"><button type="submit">Salvează zona</button></form>
+      <dl class="lim"><dt>Suprafață</dt><dd>${a >= 10000 ? (a / 10000).toFixed(2).replace('.', ',') + ' ha' : Math.round(a).toLocaleString('ro-RO') + ' m²'}</dd><dt>Colțuri</dt><dd>${n}</dd><dt>Înălțime</dt><dd>1 m – 120 m</dd></dl>
+      <p class="sub">Atinge orice valoare ca s-o copiezi, apoi o lipești în câmpul ei din formularul aerofoto.</p>
+      <div class="tscroll"><table class="ctab"><thead><tr><th></th><th>Latitudine (N)</th><th>Longitudine (E)</th></tr></thead><tbody>
+        ${row('Decolare', draft.tk)}${row('Aterizare', land, !draft.land && draft.tk ? 'aceeași ca decolarea' : '')}
+        <tr class="sep"><td colspan="3">Perimetru</td></tr>
+        ${draft.pts.map((p, i) => row(i + 1, p)).join('')}
+      </tbody></table></div>
+      <div class="row"><button type="button" class="primary" id="d-copy">Copiază toată zona ca text</button></div>
+      <form class="row" id="d-save"><input type="text" id="d-name" placeholder="Nume, de ex. Tineretului deal" aria-label="Numele zonei" value="${esc(draft.name || '')}"><button type="submit">${savedMatch() ? 'Salvată ✓' : 'Salvează zona'}</button></form>
       ${hits.filter(h => h.cat !== 'mine').map(card).join('')}`;
-    $('d-copy').addEventListener('click', () => {
-      const ta = $('d-coords'), done = () => { $('d-copied').hidden = false; };
-      if (navigator.clipboard) navigator.clipboard.writeText(ta.value).then(done, () => { ta.select(); done(); }); else { ta.select(); done(); }
-    });
+    out.querySelectorAll('td[data-c]').forEach(td => td.addEventListener('click', () => copyText(td.dataset.c, td.dataset.c)));
+    $('d-copy').addEventListener('click', () => copyText(zoneText(draft), 'toată zona'));
+    $('d-name').addEventListener('change', () => { draft.name = $('d-name').value.trim(); record(); autosave(); });
     $('d-save').addEventListener('submit', e => {
       e.preventDefault();
       const name = $('d-name').value.trim() || 'Zonă ' + dmy(new Date());
       draft.name = name;
       drafts = drafts.filter(d => d.name !== name);
-      drafts.unshift({ name, pts: draft.pts, tk: draft.tk, saved: new Date().toISOString() });
-      saveDrafts(); renderSaved();
+      drafts.unshift({ name, pts: draft.pts.map(p => p.slice()), tk: draft.tk, land: draft.land, saved: new Date().toISOString() });
+      saveDrafts(); record(); autosave(); analyseDraft(); say(`Zona „${name}” e salvată în acest browser.`, 2500);
     });
     renderSaved();
   }
   function renderSaved() {
     const box = $('draft-saved');
-    if (!drafts.length) { box.innerHTML = ''; return; }
-    box.innerHTML = '<p class="sub">Zone salvate în acest browser:</p>';
+    $('xfer').hidden = false;
+    $('xfer-send').disabled = $('xfer-copy').disabled = !drafts.length;
+    if (!drafts.length) { box.innerHTML = '<p class="sub">Nicio zonă salvată încă.</p>'; return; }
+    box.innerHTML = `<p class="sub">Zone salvate în acest browser (${drafts.length}). O cerere aerofoto are cel mult 5 zboruri.</p>`;
     drafts.forEach((d, i) => {
       const el = document.createElement('div'); el.className = 'saved';
-      el.innerHTML = `<span><b>${esc(d.name)}</b> · ${d.pts.length} colțuri · ${dmy(new Date(d.saved))}</span><span class="row"><button type="button">Deschide</button><button type="button">Șterge</button></span>`;
+      el.innerHTML = `<span><b>${esc(d.name)}</b> · ${d.pts.length} colțuri${d.tk ? ' · D' : ''}${d.land ? ' · A' : ''} · ${dmy(new Date(d.saved))}</span><span class="row"><button type="button">Deschide</button><button type="button">Șterge</button></span>`;
       const [open, del] = el.querySelectorAll('button');
-      open.addEventListener('click', () => { Object.assign(draft, { pts: d.pts.map(p => p.slice()), tk: d.tk, name: d.name }); setMode(null); redrawDraft(); fitView(draft.pts, 40); });
+      open.addEventListener('click', () => {
+        Object.assign(draft, { pts: d.pts.map(p => p.slice()), tk: d.tk, land: d.land || null, name: d.name });
+        setMode(null); redrawDraft(); fitView(draft.pts, 40);
+        if (PHONE.matches) setSheet('half');
+        $('plan').scrollIntoView({ block: 'start', behavior: 'smooth' });
+      });
       del.addEventListener('click', () => {
-        if (del.dataset.armed) { drafts.splice(i, 1); saveDrafts(); renderSaved(); return; }
+        if (del.dataset.armed) { drafts.splice(i, 1); saveDrafts(); renderSaved(); if (draft.pts.length > 2) analyseDraft(); return; }
         del.dataset.armed = '1'; del.textContent = 'Sigur?';
         setTimeout(() => { if (del.isConnected) { delete del.dataset.armed; del.textContent = 'Șterge'; } }, 4000);
       });
       box.appendChild(el);
     });
   }
-  $('d-start').addEventListener('click', () => { Object.assign(draft, { pts: [], tk: null, name: '' }); setMode('pts'); redrawDraft(); });
-  $('d-undo').addEventListener('click', () => { draft.pts.pop(); if (draft.pts.length < 3) draft.tk = null; if (!draft.pts.length && draft.mode !== 'pts') setMode(null); redrawDraft(); });
+
+  // ---------- moving zones between the tablet and the laptop ----------
+  const xferJSON = () => JSON.stringify({ app: 'harta-drone', version: 1, exported: new Date().toISOString(), zones: drafts }, null, 1);
+  $('xfer-copy').addEventListener('click', () => copyText(drafts.map(zoneText).join('\n\n'), `${drafts.length} ${drafts.length === 1 ? 'zonă' : 'zone'}`));
+  $('xfer-send').addEventListener('click', async () => {
+    const name = `zone-drona-${new Date().toISOString().slice(0, 10)}.json`, json = xferJSON();
+    const file = new File([json], name, { type: 'application/json' });
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Zone dronă' }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    say(`Am salvat fișierul ${name}. Pe celălalt dispozitiv folosește „Importă zone”.`, 5000);
+  });
+  $('xfer-imp').addEventListener('change', async e => {
+    const f = e.target.files[0]; e.target.value = '';
+    if (!f) return;
+    try {
+      const o = JSON.parse(await f.text());
+      const zs = (o && o.zones) || [];
+      if (!Array.isArray(zs) || !zs.every(z => z && Array.isArray(z.pts) && z.pts.length >= 3)) throw new Error('nu e un fișier cu zone de pe hartă');
+      let added = 0;
+      for (const z of zs) {
+        const same = drafts.find(d => d.name === z.name);
+        if (same && JSON.stringify(same.pts) === JSON.stringify(z.pts)) continue;
+        drafts.push(Object.assign({}, z, { name: same ? z.name + ' (importat)' : z.name, saved: z.saved || new Date().toISOString() })); added++;
+      }
+      saveDrafts(); renderSaved();
+      say(added ? `Am adăugat ${added} ${added === 1 ? 'zonă' : 'zone'}.` : 'Zonele din fișier erau deja aici.', 3500);
+    } catch (err) { say('Nu am putut citi fișierul: ' + err.message + '.', 5000); }
+  });
+
+  $('d-start').addEventListener('click', () => {
+    const b = $('d-start');
+    if (draft.pts.length && !savedMatch() && !b.dataset.armed) {   // an unsaved zone: ask once (it stays in Undo anyway)
+      b.dataset.armed = '1'; b.textContent = 'Zona nu e salvată. Apasă din nou';
+      setTimeout(() => { if (b.dataset.armed) { delete b.dataset.armed; drawButtons(); } }, 4000); return;
+    }
+    delete b.dataset.armed;
+    Object.assign(draft, { pts: [], tk: null, land: null, name: '' }); setMode('pts'); redrawDraft();
+  });
+  $('d-undo').addEventListener('click', () => { draft.pts.pop(); if (draft.pts.length < 3) { draft.tk = null; draft.land = null; } if (!draft.pts.length && draft.mode !== 'pts') setMode(null); redrawDraft(); });
   $('d-done').addEventListener('click', () => { setMode(null); redrawDraft(); });   // redraw so the side handles appear
   $('d-tk').addEventListener('click', () => setMode('tk'));
-  $('d-clear').addEventListener('click', () => { Object.assign(draft, { pts: [], tk: null, name: '' }); setMode(null); redrawDraft(); });
+  $('d-land').addEventListener('click', () => setMode('land'));
+  $('d-clear').addEventListener('click', () => { Object.assign(draft, { pts: [], tk: null, land: null, name: '' }); setMode(null); redrawDraft(); });
   $('d-free').addEventListener('click', () => setMode(draft.mode === 'free' ? 'pts' : 'free'));
-  $('db-undo').addEventListener('click', () => $('d-undo').click());
+  $('d-hundo').addEventListener('click', undo);
+  $('d-hredo').addEventListener('click', redo);
+  $('db-undo').addEventListener('click', undo);
+  $('db-redo').addEventListener('click', redo);
   $('db-free').addEventListener('click', () => { $('d-free').click(); $('db-free').textContent = draft.mode === 'free' ? 'Colțuri' : 'Desen liber'; });
-  $('db-done').addEventListener('click', () => { if (draft.mode === 'tk') { setMode(null); return; } if (draft.pts.length >= 3) $('d-done').click(); else setMode(null); });
+  $('db-done').addEventListener('click', () => { if (draft.mode === 'tk' || draft.mode === 'land') { setMode(null); return; } if (draft.pts.length >= 3) $('d-done').click(); else setMode(null); });
   $('db-clear').addEventListener('click', () => $('d-clear').click());
+  document.addEventListener('keydown', e => {   // Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z or Ctrl+Y, outside text fields
+    if (!(e.ctrlKey || e.metaKey) || e.target.closest('input, textarea')) return;
+    const k = e.key.toLowerCase();
+    if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); } else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); redo(); }
+  });
 
   // ---------- Apple Pencil (and freehand with mouse or finger) ----------
   // In drawing mode the pencil draws and the finger keeps moving the map; a pencil tap adds one corner,
@@ -1509,8 +1664,8 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     const len = px.reduce((s, p, i) => i ? s + Math.hypot(p[0] - px[i - 1][0], p[1] - px[i - 1][1]) : 0, 0);
     if (len < 12) {   // a tap: one corner, or the takeoff point
       const ll = map.containerPointToLatLng(px[0]);
-      if (draft.mode === 'tk') { draft.tk = [ll.lat, ll.lng]; setMode(null); } else draft.pts.push([ll.lat, ll.lng]);
-      redrawDraft(); return;
+      if (!placePoint([ll.lat, ll.lng])) { draft.pts.push([ll.lat, ll.lng]); redrawDraft(); }
+      return;
     }
     let simple = simplifyPx(px, 7);
     const d0 = Math.hypot(simple[0][0] - simple[simple.length - 1][0], simple[0][1] - simple[simple.length - 1][1]);
@@ -1738,7 +1893,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     for (const p of (d.props && d.props.places) || []) all.push({ cat: 'prop', id: p.name, why: p.why, geom: [[p.poly]], key: p.key });
     for (const z of all) z.bb = bbox(z.geom);
     refreshMine();
-    drawBase(); buildZones(); buildLayerList(); drawPlaces(); buildRequests(); renderSaved(); buildJumps(); buildProposals();
+    drawBase(); buildZones(); buildLayerList(); drawPlaces(); buildRequests(); renderSaved(); buildJumps(); buildProposals(); restoreCurrent();
     map.on('zoomend moveend', drawPlaces);
   }).catch(err => { $('res-empty').textContent = 'Datele hărții nu s-au încărcat (' + err.message + '). Reîncarcă pagina.'; });
 
@@ -1758,7 +1913,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
       b1.addEventListener('click', () => fitView(p.poly, 30));
       const b2 = document.createElement('button'); b2.type = 'button'; b2.className = 'primary'; b2.textContent = 'Deschide în planificator';
       b2.addEventListener('click', () => {
-        Object.assign(draft, { pts: p.poly.map(q => q.slice()), tk: p.takeoff ? p.takeoff.slice() : null, name: p.name });
+        Object.assign(draft, { pts: p.poly.map(q => q.slice()), tk: p.takeoff ? p.takeoff.slice() : null, land: null, name: p.name });
         setMode(null); redrawDraft(); fitView(p.poly, 40);
         if (PHONE.matches) setSheet('half');
         $('plan').scrollIntoView({ block: 'start', behavior: 'smooth' });
