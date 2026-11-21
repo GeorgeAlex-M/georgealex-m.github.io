@@ -694,6 +694,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
   --map-rail: #59625d; --map-county: #6d7b74; --map-label: #c4cec8;
   --ok-bg: #173826; --ok-ink: #8fe0b0; --warn-bg: #3a2c0d; --warn-ink: #f5c86a; --bad-bg: #3d1a1a; --bad-ink: #ff9d9d; color-scheme: dark }
 html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }   /* the site page has no host reset, and the guide/toast/fab set their own display */
 body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 15px; }
 * { box-sizing: border-box; }
 .app { height: 100%; display: grid; grid-template-columns: minmax(320px, 400px) 1fr; }
@@ -937,7 +938,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   <div class="guide-back" id="guide" hidden>
     <div class="guide" role="dialog" aria-modal="true" aria-labelledby="guide-h">
       <div class="top"><h2 id="guide-h">Pornește localizarea pentru hartă</h2><button type="button" id="guide-x" aria-label="Închide">✕</button></div>
-      <p class="sub">Un site nu are voie să deschidă Setările telefonului, așa că îți arăt exact ce să atingi. Durează un minut.</p>
+      <p class="sub">Un site nu are voie să deschidă setările dispozitivului, așa că îți arăt exact ce să atingi. Durează un minut.</p>
       <div id="guide-ios">
         <ol class="steps">
           <li><b>Deschide harta direct în Safari</b>, nu din Claude, Gmail sau WhatsApp. Copiază adresa și lipește-o în Safari:
@@ -952,6 +953,16 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
           <li>Apasă butonul de mai jos. Când apare întrebarea „Permiteți accesul la locație?”, apasă <b>Permite</b>.</li>
         </ol>
         <p class="sub">Folosești Chrome pe iPhone? La pasul 3 intri în Setări → <b>Chrome</b> → Localizare → „Cât timp folosiți aplicația”.</p>
+      </div>
+      <div id="guide-desktop" hidden>
+        <ol class="steps">
+          <li>În bara de adrese, apasă iconița din stânga adresei (lacătul sau „i”) → <b>Permisiuni pentru acest site</b> → <b>Locație</b> → <b>Permite</b>.</li>
+          <li id="guide-win"><b>Windows:</b> Setări → Confidențialitate și securitate → <b>Localizare</b>:
+            <div class="ios"><div class="ios-row">Servicii de localizare<span class="sw-on"></span></div><div class="ios-row">Permiteți aplicațiilor desktop să vă acceseze locația<span class="sw-on"></span></div></div>
+            Al doilea comutator contează pentru Edge și Chrome.</li>
+          <li id="guide-mac"><b>Mac:</b> Setări de sistem → Confidențialitate și securitate → <b>Servicii de localizare</b> → pornește-le și bifează browserul tău.</li>
+          <li>Apasă butonul de mai jos și alege <b>Permite</b>. Pe laptop poziția vine din Wi-Fi, deci poate fi aproximativă (zeci sau sute de metri).</li>
+        </ol>
       </div>
       <div id="guide-android" hidden>
         <ol class="steps">
@@ -1532,7 +1543,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   const GEO_ERR = {
     1: MODE === 'artifact'
       ? 'Pagina de pe Claude nu are voie să ceară locația. Deschide harta de pe site, georgealex-m.github.io/harta-drone, și apasă din nou.'
-      : 'Telefonul nu dă locația acestei pagini. 1) Deschide pagina direct în Safari (nu din Claude, Gmail sau alte aplicații). 2) Setări → Confidențialitate și securitate → Servicii de localizare: pornit, iar la „Site-uri Safari” alege „Întreabă data viitoare” sau „Cât timp folosiți aplicația”, cu „Locație exactă” pornită. 3) În Safari: aA → Setări site web → Localizare → Întreabă sau Permite. Reîncarcă pagina și apasă din nou. Cu Chrome: Setări → Chrome → Localizare.',
+      : 'Locația e blocată pentru această pagină. Apasă butonul de mai jos ca să vezi unde o activezi pe dispozitivul tău.',
     2: 'Telefonul nu găsește poziția acum. Verifică dacă localizarea e pornită și încearcă din nou, ideal afară.',
     3: 'Găsirea poziției durează prea mult. Încearcă din nou, afară sau lângă o fereastră.',
   };
@@ -1549,7 +1560,11 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
       say(`Ești aici (precizie de aprox. ${acc} m). Punctul albastru te urmărește cât ții pagina deschisă.`, 6000);
     }
   }
-  function locate() {
+  async function geoPermission() {
+    try { return (await navigator.permissions.query({ name: 'geolocation' })).state; } catch (e) { return 'unknown'; }
+  }
+  async function locate() {
+    const perm = await geoPermission();
     if (!('geolocation' in navigator)) { say('Browserul acesta nu oferă locația. Scrie coordonatele de mână.'); return; }
     if (!window.isSecureContext) { say('Locația merge doar pe o pagină sigură (https). Deschide harta de pe georgealex-m.github.io/harta-drone.'); return; }
     if (geoWatch !== null && meDot) { const ll = meDot.getLatLng(); centreOn(ll.lat, ll.lng, Math.max(map.getZoom(), 16)); check(ll.lat, ll.lng, true); return; }
@@ -1558,7 +1573,11 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     let precise = true;
     // if neither a position nor an error arrives, the question was probably never shown: say what to check
     clearTimeout(waitT);
-    waitT = setTimeout(() => { if (meFirst) say('Nu apare întrebarea „Permiteți accesul la locație?”. De obicei telefonul o blochează din Setări.', 0, true); }, 7000);
+    waitT = setTimeout(() => {
+      if (!meFirst) return;
+      if (perm === 'granted') say('Caut încă poziția… Locația e permisă, doar că durează. Pe laptop poziția vine din Wi-Fi și poate dura mai mult.');
+      else say('Nu apare întrebarea „Permiteți accesul la locație?”. De obicei dispozitivul o blochează din setări.', 0, true);
+    }, 7000);
     const start = () => {
       geoWatch = navigator.geolocation.watchPosition(showMe, e => {
         if (e.code === 3 && precise) {   // no GPS fix in time: try again with the network position
@@ -1566,7 +1585,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
         }
         navigator.geolocation.clearWatch(geoWatch); geoWatch = null; clearTimeout(waitT);
         say((GEO_ERR[e.code] || 'Poziția nu e disponibilă acum. Încearcă din nou.') + ` (cod ${e.code}${e.message ? ': ' + e.message : ''})`, 0, e.code === 1 && MODE !== 'artifact');
-        if (e.code === 1 && MODE !== 'artifact') openGuide();
+        if (e.code === 1 && MODE !== 'artifact' && perm !== 'granted') openGuide();
       }, { enableHighAccuracy: precise, timeout: precise ? 15000 : 25000, maximumAge: 10000 });
     };
     start();
@@ -1580,7 +1599,10 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   const IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const ANDROID = /Android/i.test(navigator.userAgent);
   function openGuide() {
-    $('guide-ios').hidden = ANDROID; $('guide-android').hidden = !ANDROID;
+    const desk = !IOS && !ANDROID, mac = /Macintosh/.test(navigator.userAgent) && !IOS;
+    $('guide-ios').hidden = !IOS; $('guide-android').hidden = !ANDROID; $('guide-desktop').hidden = !desk;
+    $('guide-win').hidden = mac; $('guide-mac').hidden = !mac;
+    $('guide-h').textContent = desk ? 'Pornește localizarea în browser' : 'Pornește localizarea pentru hartă';
     $('guide-url').textContent = location.host + location.pathname;
     $('toast').hidden = true;   // the guide says it all
     $('guide').hidden = false; $('guide-retry').focus();
