@@ -40,10 +40,10 @@
   // Every sim does `const { COLORS } = A` at load, so this object's IDENTITY
   // must never change — setTheme assigns over its properties in place.
   A.COLORS = {};
-  A.theme = 'dark';
+  A.theme = 'light';
 
   A.setTheme = function (name) {
-    const t = A.THEMES[name] ? name : 'dark';
+    const t = A.THEMES[name] ? name : 'light';
     A.theme = t;
     Object.assign(A.COLORS, A.THEMES[t]);
     document.documentElement.setAttribute('data-theme', t);
@@ -61,7 +61,7 @@
   A.toggleTheme = function () { return A.setTheme(A.theme === 'dark' ? 'light' : 'dark'); };
 
   A.setTheme((() => {
-    try { return localStorage.getItem('doodle-theme') || 'dark'; } catch (e) { return 'dark'; }
+    try { return localStorage.getItem('doodle-theme') || 'light'; } catch (e) { return 'light'; }
   })());
 
   // The toggle installs itself, so every page that loads doodle.css and this

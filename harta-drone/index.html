@@ -1,0 +1,1428 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Harta zonelor pentru drone din România: zonele ROMATSA, CTR, NOTAM, zone permanente AIP și frontiera, explicate pentru orice punct de pe hartă.">
+<meta name="author" content="George">
+<script>window.__MODE='site';try{document.documentElement.setAttribute('data-theme',localStorage.getItem('doodle-theme')==='dark'?'dark':'light')}catch(e){document.documentElement.setAttribute('data-theme','light')}</script>
+<title>Harta zonelor pentru drone</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* required styles */
+
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	}
+.leaflet-container {
+	overflow: hidden;
+	}
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	        user-select: none;
+	  -webkit-user-drag: none;
+	}
+/* Prevents IE11 from highlighting tiles in blue */
+.leaflet-tile::selection {
+	background: transparent;
+}
+/* Safari renders non-retina tile on retina better with this, but Chrome is worse */
+.leaflet-safari .leaflet-tile {
+	image-rendering: -webkit-optimize-contrast;
+	}
+/* hack that prevents hw layers "stretching" when loading new tiles */
+.leaflet-safari .leaflet-tile-container {
+	width: 1600px;
+	height: 1600px;
+	-webkit-transform-origin: 0 0;
+	}
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	display: block;
+	}
+/* .leaflet-container svg: reset svg max-width decleration shipped in Joomla! (joomla.org) 3.x */
+/* .leaflet-container img: map is broken in FF if you have max-width: 100% on tiles */
+.leaflet-container .leaflet-overlay-pane svg {
+	max-width: none !important;
+	max-height: none !important;
+	}
+.leaflet-container .leaflet-marker-pane img,
+.leaflet-container .leaflet-shadow-pane img,
+.leaflet-container .leaflet-tile-pane img,
+.leaflet-container img.leaflet-image-layer,
+.leaflet-container .leaflet-tile {
+	max-width: none !important;
+	max-height: none !important;
+	width: auto;
+	padding: 0;
+	}
+
+.leaflet-container img.leaflet-tile {
+	/* See: https://bugs.chromium.org/p/chromium/issues/detail?id=600120 */
+	mix-blend-mode: plus-lighter;
+}
+
+.leaflet-container.leaflet-touch-zoom {
+	-ms-touch-action: pan-x pan-y;
+	touch-action: pan-x pan-y;
+	}
+.leaflet-container.leaflet-touch-drag {
+	-ms-touch-action: pinch-zoom;
+	/* Fallback for FF which doesn't support pinch-zoom */
+	touch-action: none;
+	touch-action: pinch-zoom;
+}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+.leaflet-container {
+	-webkit-tap-highlight-color: transparent;
+}
+.leaflet-container a {
+	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+}
+.leaflet-tile {
+	filter: inherit;
+	visibility: hidden;
+	}
+.leaflet-tile-loaded {
+	visibility: inherit;
+	}
+.leaflet-zoom-box {
+	width: 0;
+	height: 0;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	z-index: 800;
+	}
+/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */
+.leaflet-overlay-pane svg {
+	-moz-user-select: none;
+	}
+
+.leaflet-pane         { z-index: 400; }
+
+.leaflet-tile-pane    { z-index: 200; }
+.leaflet-overlay-pane { z-index: 400; }
+.leaflet-shadow-pane  { z-index: 500; }
+.leaflet-marker-pane  { z-index: 600; }
+.leaflet-tooltip-pane   { z-index: 650; }
+.leaflet-popup-pane   { z-index: 700; }
+
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg    { z-index: 200; }
+
+.leaflet-vml-shape {
+	width: 1px;
+	height: 1px;
+	}
+.lvml {
+	behavior: url(#default#VML);
+	display: inline-block;
+	position: absolute;
+	}
+
+
+/* control positioning */
+
+.leaflet-control {
+	position: relative;
+	z-index: 800;
+	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
+	pointer-events: auto;
+	}
+.leaflet-top,
+.leaflet-bottom {
+	position: absolute;
+	z-index: 1000;
+	pointer-events: none;
+	}
+.leaflet-top {
+	top: 0;
+	}
+.leaflet-right {
+	right: 0;
+	}
+.leaflet-bottom {
+	bottom: 0;
+	}
+.leaflet-left {
+	left: 0;
+	}
+.leaflet-control {
+	float: left;
+	clear: both;
+	}
+.leaflet-right .leaflet-control {
+	float: right;
+	}
+.leaflet-top .leaflet-control {
+	margin-top: 10px;
+	}
+.leaflet-bottom .leaflet-control {
+	margin-bottom: 10px;
+	}
+.leaflet-left .leaflet-control {
+	margin-left: 10px;
+	}
+.leaflet-right .leaflet-control {
+	margin-right: 10px;
+	}
+
+
+/* zoom and fade animations */
+
+.leaflet-fade-anim .leaflet-popup {
+	opacity: 0;
+	-webkit-transition: opacity 0.2s linear;
+	   -moz-transition: opacity 0.2s linear;
+	        transition: opacity 0.2s linear;
+	}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+	opacity: 1;
+	}
+.leaflet-zoom-animated {
+	-webkit-transform-origin: 0 0;
+	    -ms-transform-origin: 0 0;
+	        transform-origin: 0 0;
+	}
+svg.leaflet-zoom-animated {
+	will-change: transform;
+}
+
+.leaflet-zoom-anim .leaflet-zoom-animated {
+	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
+	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
+	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
+	}
+.leaflet-zoom-anim .leaflet-tile,
+.leaflet-pan-anim .leaflet-tile {
+	-webkit-transition: none;
+	   -moz-transition: none;
+	        transition: none;
+	}
+
+.leaflet-zoom-anim .leaflet-zoom-hide {
+	visibility: hidden;
+	}
+
+
+/* cursors */
+
+.leaflet-interactive {
+	cursor: pointer;
+	}
+.leaflet-grab {
+	cursor: -webkit-grab;
+	cursor:    -moz-grab;
+	cursor:         grab;
+	}
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+	cursor: crosshair;
+	}
+.leaflet-popup-pane,
+.leaflet-control {
+	cursor: auto;
+	}
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+	cursor: move;
+	cursor: -webkit-grabbing;
+	cursor:    -moz-grabbing;
+	cursor:         grabbing;
+	}
+
+/* marker & overlays interactivity */
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-image-layer,
+.leaflet-pane > svg path,
+.leaflet-tile-container {
+	pointer-events: none;
+	}
+
+.leaflet-marker-icon.leaflet-interactive,
+.leaflet-image-layer.leaflet-interactive,
+.leaflet-pane > svg path.leaflet-interactive,
+svg.leaflet-image-layer.leaflet-interactive path {
+	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
+	pointer-events: auto;
+	}
+
+/* visual tweaks */
+
+.leaflet-container {
+	background: #ddd;
+	outline-offset: 1px;
+	}
+.leaflet-container a {
+	color: #0078A8;
+	}
+.leaflet-zoom-box {
+	border: 2px dotted #38f;
+	background: rgba(255,255,255,0.5);
+	}
+
+
+/* general typography */
+.leaflet-container {
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-size: 0.75rem;
+	line-height: 1.5;
+	}
+
+
+/* general toolbar styles */
+
+.leaflet-bar {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+	border-radius: 4px;
+	}
+.leaflet-bar a {
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	}
+.leaflet-bar a,
+.leaflet-control-layers-toggle {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+	}
+.leaflet-bar a:hover,
+.leaflet-bar a:focus {
+	background-color: #f4f4f4;
+	}
+.leaflet-bar a:first-child {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	}
+.leaflet-bar a:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: none;
+	}
+.leaflet-bar a.leaflet-disabled {
+	cursor: default;
+	background-color: #f4f4f4;
+	color: #bbb;
+	}
+
+.leaflet-touch .leaflet-bar a {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	}
+.leaflet-touch .leaflet-bar a:first-child {
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	}
+.leaflet-touch .leaflet-bar a:last-child {
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	}
+
+/* zoom control */
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+	}
+
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
+	font-size: 22px;
+	}
+
+
+/* layers control */
+
+.leaflet-control-layers {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	background: #fff;
+	border-radius: 5px;
+	}
+.leaflet-control-layers-toggle {
+	background-image: url(images/layers.png);
+	width: 36px;
+	height: 36px;
+	}
+.leaflet-retina .leaflet-control-layers-toggle {
+	background-image: url(images/layers-2x.png);
+	background-size: 26px 26px;
+	}
+.leaflet-touch .leaflet-control-layers-toggle {
+	width: 44px;
+	height: 44px;
+	}
+.leaflet-control-layers .leaflet-control-layers-list,
+.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+	display: none;
+	}
+.leaflet-control-layers-expanded .leaflet-control-layers-list {
+	display: block;
+	position: relative;
+	}
+.leaflet-control-layers-expanded {
+	padding: 6px 10px 6px 6px;
+	color: #333;
+	background: #fff;
+	}
+.leaflet-control-layers-scrollbar {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding-right: 5px;
+	}
+.leaflet-control-layers-selector {
+	margin-top: 2px;
+	position: relative;
+	top: 1px;
+	}
+.leaflet-control-layers label {
+	display: block;
+	font-size: 13px;
+	font-size: 1.08333em;
+	}
+.leaflet-control-layers-separator {
+	height: 0;
+	border-top: 1px solid #ddd;
+	margin: 5px -10px 5px -6px;
+	}
+
+/* Default icon URLs */
+.leaflet-default-icon-path { /* used only in path-guessing heuristic, see L.Icon.Default */
+	background-image: url(images/marker-icon.png);
+	}
+
+
+/* attribution and scale controls */
+
+.leaflet-container .leaflet-control-attribution {
+	background: #fff;
+	background: rgba(255, 255, 255, 0.8);
+	margin: 0;
+	}
+.leaflet-control-attribution,
+.leaflet-control-scale-line {
+	padding: 0 5px;
+	color: #333;
+	line-height: 1.4;
+	}
+.leaflet-control-attribution a {
+	text-decoration: none;
+	}
+.leaflet-control-attribution a:hover,
+.leaflet-control-attribution a:focus {
+	text-decoration: underline;
+	}
+.leaflet-attribution-flag {
+	display: inline !important;
+	vertical-align: baseline !important;
+	width: 1em;
+	height: 0.6669em;
+	}
+.leaflet-left .leaflet-control-scale {
+	margin-left: 5px;
+	}
+.leaflet-bottom .leaflet-control-scale {
+	margin-bottom: 5px;
+	}
+.leaflet-control-scale-line {
+	border: 2px solid #777;
+	border-top: none;
+	line-height: 1.1;
+	padding: 2px 5px 1px;
+	white-space: nowrap;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	background: rgba(255, 255, 255, 0.8);
+	text-shadow: 1px 1px #fff;
+	}
+.leaflet-control-scale-line:not(:first-child) {
+	border-top: 2px solid #777;
+	border-bottom: none;
+	margin-top: -2px;
+	}
+.leaflet-control-scale-line:not(:first-child):not(:last-child) {
+	border-bottom: 2px solid #777;
+	}
+
+.leaflet-touch .leaflet-control-attribution,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	box-shadow: none;
+	}
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	border: 2px solid rgba(0,0,0,0.2);
+	background-clip: padding-box;
+	}
+
+
+/* popup */
+
+.leaflet-popup {
+	position: absolute;
+	text-align: center;
+	margin-bottom: 20px;
+	}
+.leaflet-popup-content-wrapper {
+	padding: 1px;
+	text-align: left;
+	border-radius: 12px;
+	}
+.leaflet-popup-content {
+	margin: 13px 24px 13px 20px;
+	line-height: 1.3;
+	font-size: 13px;
+	font-size: 1.08333em;
+	min-height: 1px;
+	}
+.leaflet-popup-content p {
+	margin: 17px 0;
+	margin: 1.3em 0;
+	}
+.leaflet-popup-tip-container {
+	width: 40px;
+	height: 20px;
+	position: absolute;
+	left: 50%;
+	margin-top: -1px;
+	margin-left: -20px;
+	overflow: hidden;
+	pointer-events: none;
+	}
+.leaflet-popup-tip {
+	width: 17px;
+	height: 17px;
+	padding: 1px;
+
+	margin: -10px auto 0;
+	pointer-events: auto;
+
+	-webkit-transform: rotate(45deg);
+	   -moz-transform: rotate(45deg);
+	    -ms-transform: rotate(45deg);
+	        transform: rotate(45deg);
+	}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: white;
+	color: #333;
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+	}
+.leaflet-container a.leaflet-popup-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: none;
+	text-align: center;
+	width: 24px;
+	height: 24px;
+	font: 16px/24px Tahoma, Verdana, sans-serif;
+	color: #757575;
+	text-decoration: none;
+	background: transparent;
+	}
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus {
+	color: #585858;
+	}
+.leaflet-popup-scrolled {
+	overflow: auto;
+	}
+
+.leaflet-oldie .leaflet-popup-content-wrapper {
+	-ms-zoom: 1;
+	}
+.leaflet-oldie .leaflet-popup-tip {
+	width: 24px;
+	margin: 0 auto;
+
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
+	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
+	}
+
+.leaflet-oldie .leaflet-control-zoom,
+.leaflet-oldie .leaflet-control-layers,
+.leaflet-oldie .leaflet-popup-content-wrapper,
+.leaflet-oldie .leaflet-popup-tip {
+	border: 1px solid #999;
+	}
+
+
+/* div icon */
+
+.leaflet-div-icon {
+	background: #fff;
+	border: 1px solid #666;
+	}
+
+
+/* Tooltip */
+/* Base styles for the element that has a tooltip */
+.leaflet-tooltip {
+	position: absolute;
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #fff;
+	border-radius: 3px;
+	color: #222;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	pointer-events: none;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+	}
+.leaflet-tooltip.leaflet-interactive {
+	cursor: pointer;
+	pointer-events: auto;
+	}
+.leaflet-tooltip-top:before,
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	position: absolute;
+	pointer-events: none;
+	border: 6px solid transparent;
+	background: transparent;
+	content: "";
+	}
+
+/* Directions */
+
+.leaflet-tooltip-bottom {
+	margin-top: 6px;
+}
+.leaflet-tooltip-top {
+	margin-top: -6px;
+}
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-top:before {
+	left: 50%;
+	margin-left: -6px;
+	}
+.leaflet-tooltip-top:before {
+	bottom: 0;
+	margin-bottom: -12px;
+	border-top-color: #fff;
+	}
+.leaflet-tooltip-bottom:before {
+	top: 0;
+	margin-top: -12px;
+	margin-left: -6px;
+	border-bottom-color: #fff;
+	}
+.leaflet-tooltip-left {
+	margin-left: -6px;
+}
+.leaflet-tooltip-right {
+	margin-left: 6px;
+}
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	top: 50%;
+	margin-top: -6px;
+	}
+.leaflet-tooltip-left:before {
+	right: 0;
+	margin-right: -12px;
+	border-left-color: #fff;
+	}
+.leaflet-tooltip-right:before {
+	left: 0;
+	margin-left: -12px;
+	border-right-color: #fff;
+	}
+
+/* Printing */
+
+@media print {
+	/* Prevent printers from removing background-images of controls. */
+	.leaflet-control {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+		}
+	}
+
+/* Layout: full-height app, map on the right, a briefing panel on the left (stacked under the map on phones). */
+:root {
+  --bg: #f3f5f2; --panel: #ffffff; --ink: #18211d; --muted: #5d6a63; --line: #d9dfda; --accent: #1f6f5c; --accent-ink: #ffffff;
+  --map-land: #eef0ea; --map-water: #a9cfe6; --map-green: #cfe3c2; --map-forest: #b9d6ad; --map-road: #ffffff; --map-road-edge: #c4c9c2;
+  --map-rail: #8a918c; --map-county: #7d8a83; --map-label: #3b4741;
+  --z-uas: #d64545; --z-ctr: #3b5bdb; --z-notamabil: #7c858d; --z-notam: #e3a008; --z-cncan: #c2255c; --z-economie: #8e5cd9; --z-aip: #e8590c;
+  --z-border: #6f8fb5; --z-ctrlive: #2f6fd1; --z-mine: #1f8a4c;
+  --ok-bg: #e3f3e8; --ok-ink: #17643a; --warn-bg: #fff3d6; --warn-ink: #8a5300; --bad-bg: #fde5e5; --bad-ink: #a12626;
+  --font-ui: "Barlow", "Segoe UI", system-ui, sans-serif; --font-head: "Barlow Semi Condensed", "Arial Narrow", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121715; --panel: #1a211e; --ink: #e6ece8; --muted: #9aa8a0; --line: #2d3732; --accent: #5cc2a3; --accent-ink: #0d1412;
+  --map-land: #1b2220; --map-water: #1f3b4d; --map-green: #22352a; --map-forest: #1f3326; --map-road: #3a4440; --map-road-edge: #2a322f;
+  --map-rail: #59625d; --map-county: #6d7b74; --map-label: #c4cec8;
+  --ok-bg: #173826; --ok-ink: #8fe0b0; --warn-bg: #3a2c0d; --warn-ink: #f5c86a; --bad-bg: #3d1a1a; --bad-ink: #ff9d9d; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121715; --panel: #1a211e; --ink: #e6ece8; --muted: #9aa8a0; --line: #2d3732; --accent: #5cc2a3; --accent-ink: #0d1412;
+  --map-land: #1b2220; --map-water: #1f3b4d; --map-green: #22352a; --map-forest: #1f3326; --map-road: #3a4440; --map-road-edge: #2a322f;
+  --map-rail: #59625d; --map-county: #6d7b74; --map-label: #c4cec8;
+  --ok-bg: #173826; --ok-ink: #8fe0b0; --warn-bg: #3a2c0d; --warn-ink: #f5c86a; --bad-bg: #3d1a1a; --bad-ink: #ff9d9d; color-scheme: dark }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-ui); font-size: 15px; }
+* { box-sizing: border-box; }
+.app { height: 100%; display: grid; grid-template-columns: minmax(320px, 400px) 1fr; }
+.panel { background: var(--panel); border-right: 1px solid var(--line); overflow-y: auto; min-width: 0;
+  padding-block: 16px 24px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: 16px; display: flex; flex-direction: column; gap: 18px; }
+#map { height: 100%; background: var(--map-land); }
+h1 { font-family: var(--font-head); font-weight: 700; font-size: 26px; line-height: 1.1; margin: 0; letter-spacing: .2px; text-wrap: balance; }
+h2 { font-family: var(--font-head); font-weight: 600; font-size: 13px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--muted); margin: 0; }
+p { margin: 0; line-height: 1.45; }
+.sub { color: var(--muted); font-size: 13.5px; }
+.mono { font-family: var(--font-mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+section { display: flex; flex-direction: column; gap: 10px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+input[type=text] { flex: 1 1 180px; min-width: 0; font: inherit; font-family: var(--font-mono); font-size: 13px; padding: 9px 10px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+button { font: inherit; font-weight: 600; font-size: 14px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button:focus-visible, input:focus-visible, label.layer:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chips button { font-size: 13px; padding: 6px 10px; }
+/* results */
+.verdict { border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+.verdict.ok { background: var(--ok-bg); color: var(--ok-ink); } .verdict.warn { background: var(--warn-bg); color: var(--warn-ink); } .verdict.bad { background: var(--bad-bg); color: var(--bad-ink); }
+.verdict strong { font-family: var(--font-head); font-size: 18px; font-weight: 700; }
+.verdict ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 3px; }
+.hit { min-width: 0; border: 1px solid var(--line); border-left: 6px solid var(--c); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; background: var(--panel); }
+.hit .top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.hit .name { font-family: var(--font-head); font-weight: 700; font-size: 17px; }
+.tag { font-size: 11.5px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--c); }
+.lim { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 13.5px; }
+.lim dt { color: var(--muted); } .lim dd { margin: 0; }
+.todo { font-size: 14px; }
+.contact { font-family: var(--font-mono); font-size: 12px; background: var(--bg); border-radius: 6px; padding: 6px 8px; overflow-wrap: anywhere; user-select: all; }
+pre.notam { font-family: var(--font-mono); font-size: 11.5px; white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; background: var(--bg); padding: 8px; border-radius: 6px; max-height: 180px; overflow: auto; }
+.empty { color: var(--muted); font-size: 14px; border: 1px dashed var(--line); border-radius: 10px; padding: 14px; }
+/* layers */
+.layers { display: flex; flex-direction: column; gap: 2px; }
+label.layer { display: grid; grid-template-columns: auto 18px 1fr auto; gap: 10px; align-items: start; padding: 8px 6px; border-radius: 8px; cursor: pointer; }
+label.layer:hover { background: var(--bg); }
+label.layer input { margin: 3px 0 0; accent-color: var(--accent); }
+.sw { width: 18px; height: 14px; border-radius: 3px; margin-top: 3px; background: color-mix(in srgb, var(--c) 35%, transparent); border: 2px solid var(--c); }
+.sw.dash { border-style: dashed; }
+.layer b { font-weight: 600; display: block; } .layer small { color: var(--muted); font-size: 12.5px; line-height: 1.35; display: block; margin-top: 2px; }
+.count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); padding-top: 2px; }
+details { border-top: 1px solid var(--line); padding-top: 12px; }
+summary { cursor: pointer; font-family: var(--font-head); font-weight: 600; font-size: 15px; }
+.gloss { display: grid; grid-template-columns: 64px 1fr; gap: 6px 10px; font-size: 13.5px; margin-top: 10px; }
+.gloss dt { font-family: var(--font-mono); font-weight: 600; } .gloss dd { margin: 0; color: var(--ink); }
+.seg { display: flex; flex: none; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; font-size: 12.5px; padding: 6px 9px; background: var(--panel); color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.req { border: 1px solid var(--line); border-left: 6px solid var(--z-mine); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+.req .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.req .name { font-family: var(--font-head); font-weight: 700; font-size: 17px; }
+.pill { font-size: 12px; font-weight: 600; border-radius: 99px; padding: 2px 9px; }
+.pill.ok { background: var(--ok-bg); color: var(--ok-ink); } .pill.warn { background: var(--warn-bg); color: var(--warn-ink); } .pill.bad { background: var(--bad-bg); color: var(--bad-ink); }
+textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono); font-size: 12px; line-height: 1.5; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); resize: vertical; }
+.vx { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 600 11px var(--font-mono); border: 2px solid var(--panel); box-shadow: 0 1px 3px rgba(0,0,0,.35); cursor: grab; }
+.ml { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--z-mine); background: color-mix(in srgb, var(--panel) 85%, transparent); border-radius: 4px; padding: 1px 4px; white-space: nowrap; pointer-events: none; }
+.saved { display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font-size: 13.5px; }
+.saved > span { min-width: 0; overflow-wrap: anywhere; }
+.saved .row { flex-wrap: nowrap; } .saved button { font-size: 12.5px; padding: 5px 8px; }
+.btnlike { display: inline-block; font-weight: 600; font-size: 14px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+.vh { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.row:has(.vh:focus-visible) .btnlike { outline: 2px solid var(--accent); outline-offset: 2px; }
+:root[data-theme="dark"] .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.6); }
+.foot { font-size: 12px; color: var(--muted); line-height: 1.45; }
+/* map labels and controls */
+.place { font-family: var(--font-ui); font-size: 11.5px; font-weight: 600; color: var(--map-label); white-space: nowrap; text-shadow: 0 0 3px var(--map-land), 0 0 3px var(--map-land); pointer-events: none; }
+.place.r0 { font-size: 15px; } .place.r1 { font-size: 13px; }
+.zl { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; color: var(--ink); background: color-mix(in srgb, var(--panel) 80%, transparent); padding: 0 3px; border-radius: 3px; white-space: nowrap; pointer-events: none; }
+.leaflet-container { font-family: var(--font-ui); background: var(--map-land); }
+.leaflet-control-zoom a, .leaflet-bar a { background: var(--panel); color: var(--ink); border-color: var(--line); }
+.leaflet-control-attribution { background: color-mix(in srgb, var(--panel) 85%, transparent) !important; color: var(--muted); font-size: 10.5px; }
+.leaflet-control-attribution a { color: var(--accent); }
+.coordbox { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 3px 7px; font-family: var(--font-mono); font-size: 11.5px; }
+@media (max-width: 760px) {
+  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: 52vh auto; height: auto; }
+  #map { height: 52vh; order: -1; }
+  .panel { border-right: 0; border-top: 1px solid var(--line); overflow: visible; padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+</style>
+
+</head>
+<body>
+<div class="app">
+  <aside class="panel">
+    <header style="display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <h1>Harta zonelor pentru drone</h1>
+        <div class="seg" role="group" aria-label="Temă">
+          <button type="button" data-t="light" aria-pressed="false">Luminos</button><button type="button" data-t="dark" aria-pressed="false">Întunecat</button>
+        </div>
+      </div>
+      <p class="sub" id="srcline">Se încarcă zonele…</p>
+    </header>
+
+    <section aria-labelledby="h-go">
+      <h2 id="h-go">Verifică un loc</h2>
+      <p class="sub">Atinge harta oriunde sau scrie coordonatele (ca în cererea aerofoto).</p>
+      <form class="row" id="go">
+        <input type="text" id="coord" placeholder="44.42252, 26.15580" aria-label="Coordonate lat, lon" autocomplete="off">
+        <button class="primary" type="submit">Verifică</button>
+      </form>
+      <div class="chips" id="jumps"></div>
+      <button type="button" id="gps" hidden>Unde sunt acum</button>
+      <p class="sub" id="gpsmsg" hidden></p>
+    </section>
+
+    <section aria-labelledby="h-req">
+      <h2 id="h-req">Cererile mele aprobate</h2>
+      <div id="reqs" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div class="row"><label class="btnlike" for="imp">Adaugă un aviz (PDF de pe aerofoto)</label><input type="file" id="imp" accept="application/pdf,.pdf" multiple class="vh"></div>
+      <p class="sub" id="imp-msg" hidden></p>
+      <p class="sub">Avizele adăugate rămân doar în acest browser. Nu se trimit nicăieri.</p>
+    </section>
+
+    <section aria-labelledby="h-plan" id="plan">
+      <h2 id="h-plan">Plănuiește o cerere nouă</h2>
+      <p class="sub" id="draw-hint">Desenează zona în care ai vrea să zbori. Îți arăt ce zone atinge, ce cerere îți trebuie și coordonatele gata de copiat în formularul aerofoto.</p>
+      <div class="row" id="draw-btns">
+        <button type="button" class="primary" id="d-start">Desenează o zonă</button>
+        <button type="button" id="d-undo" hidden>Șterge ultimul punct</button>
+        <button type="button" id="d-done" hidden>Gata cu colțurile</button>
+        <button type="button" id="d-tk" hidden>Alege decolarea</button>
+        <button type="button" id="d-clear" hidden>Renunță</button>
+      </div>
+      <div id="draft-out" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div id="draft-saved" style="display:flex;flex-direction:column;gap:6px"></div>
+    </section>
+
+    <section aria-labelledby="h-res" id="results">
+      <h2 id="h-res">Ce se aplică aici</h2>
+      <div class="empty" id="res-empty">Alege un loc pe hartă. Aici apar toate zonele care îl acoperă, ce înseamnă fiecare și pe cine trebuie să contactezi.</div>
+      <div id="res" style="display:flex;flex-direction:column;gap:10px"></div>
+    </section>
+
+    <section aria-labelledby="h-lay">
+      <h2 id="h-lay">Straturi</h2>
+      <div class="layers" id="layers"></div>
+    </section>
+
+    <details>
+      <summary>Cum citești înălțimile zonelor</summary>
+      <dl class="gloss">
+        <dt>GND</dt><dd>Zona începe de la sol, deci și drona ta e în ea.</dd>
+        <dt>AGL</dt><dd>Înălțime față de sol. Limita ta, în categoria „deschisă”, e 120 m AGL.</dd>
+        <dt>AMSL</dt><dd>Față de nivelul mării. Bucureștiul e la aprox. 70 m, deci „2000 ft AMSL” ≈ 610 m ≈ 540 m deasupra solului.</dd>
+        <dt>FL</dt><dd>Nivel de zbor, în sute de picioare: FL105 ≈ 3.200 m. E plafonul zonei, nu limita ta.</dd>
+        <dt>ft</dt><dd>Picioare: 1 ft = 0,3048 m.</dd>
+        <dt>H24</dt><dd>Activă non-stop.</dd>
+      </dl>
+    </details>
+
+    <details>
+      <summary>Care hartă e cea oficială?</summary>
+      <div class="sub" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+        <p>Zonele pentru drone le publică ROMATSA, pe flightplan.romatsa.ro/init/drones. Harta de pe aerofoto.mapn.ro folosește aceleași zone, dar dintr-o copie din 12.09.2024, la care adaugă zonele permanente din AIP, frontiera și județele. Față de copia aceea, ROMATSA are acum 3 zone noi (RZ 1076 și RZ 1077 OMV Petrom, RZ 4436 militară).</p>
+        <p id="official">Harta de aici le pune pe toate la un loc: zonele ROMATSA, straturile aerofoto și avizele tale. E o unealtă de lucru, nu o sursă oficială.</p>
+        <p><b>În ziua zborului</b> te uiți pe harta live ROMATSA (zone și NOTAM-uri de azi) și respecți avizul MApN cu condițiile lui. <b>Când faci o cerere</b>, desenezi zona pe aerofoto, iar aici verifici dinainte ce atinge.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Ce nu arată harta</summary>
+      <p class="sub" style="margin-top:10px" id="limits">Datele sunt o copie din ziua descărcării. NOTAM-urile se schimbă zilnic: în ziua zborului verifică harta live ROMATSA (flightplan.romatsa.ro/init/drones) și aerofoto.mapn.ro. Fundalul detaliat (lacuri, parcuri, drumuri) e doar pentru București–Ilfov; în rest vezi doar județele. Explicațiile sunt ale mele, nu consultanță juridică.</p>
+    </details>
+    <p class="foot"><a href="../" style="color:var(--accent)">← georgealex-m.github.io</a> · Surse: ROMATSA (zone UAS, CTR, NOTAM), aerofoto.mapn.ro (zone permanente, frontiera), © OpenStreetMap contributors (fundal). Explicațiile nu sunt consultanță juridică.</p>
+  </aside>
+  <div id="map" role="application" aria-label="Harta zonelor"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+
+<script>
+(function () {
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const $ = id => document.getElementById(id);
+
+  // theme: light by default (the map reads better), dark on request; remembered in this browser
+  const MODE = window.__MODE || (window.__DATA ? 'offline' : 'artifact');
+  let theme = 'light';
+  try { theme = localStorage.getItem('doodle-theme') === 'dark' ? 'dark' : 'light'; } catch (e) {}
+  function setTheme(t) {
+    theme = t;
+    document.documentElement.setAttribute('data-theme', t);
+    document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t === t)));
+    try { localStorage.setItem('doodle-theme', t); } catch (e) {}
+  }
+  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.t)));
+  setTheme(theme);
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ---------- what each layer means ----------
+  const CATS = {
+    mine:      { name: 'Avizele mele', c: '--z-mine', on: true, tag: 'Aviz MApN',
+                 info: 'Perimetrele aprobate în avizele tale. Înăuntru ai voie să filmezi, în perioada avizului, cu regulile categoriei „deschise”.' },
+    uas:       { name: 'Zone restricționate UAS', c: '--z-uas', on: true, tag: 'Zonă UAS · MApN',
+                 info: 'Zone pentru drone stabilite la cererea instituțiilor. Cele cu contact aerofoto@mapn.ro cer aviz MApN pentru acces și filmare.' },
+    aip:       { name: 'Zone restricționate permanent (AIP)', c: '--z-aip', on: true, tag: 'Zonă AIP',
+                 info: 'Zone publicate în AIP România pentru toate aeronavele: LRP interzisă, LRR restricționată, LRD periculoasă.' },
+    cncan:     { name: 'Zone nucleare (CNCAN)', c: '--z-cncan', on: true, tag: 'CNCAN',
+                 info: 'În jurul instalațiilor nucleare. Zbori doar cu acordul CNCAN.' },
+    economie:  { name: 'Zone Ministerul Economiei', c: '--z-economie', on: true, tag: 'Economie',
+                 info: 'Obiective ale industriei de apărare. Ceri acordul la adresa din contact.' },
+    ctr:       { name: 'Lângă aeroporturi (ROMATSA)', c: '--z-ctr', on: true, tag: 'Aeroport',
+                 info: 'Zone pentru drone lângă aeroporturi și aerodromuri. Contactezi turnul de control înainte.' },
+    ctrlive:   { name: 'CTR – zona de control a aeroportului', c: '--z-ctrlive', on: false, tag: 'CTR', dash: true,
+                 info: 'Spațiul aerian controlat din jurul aeroporturilor (ROMATSA). În categoria „deschisă” zbori până la 120 m, cu informare la turn.' },
+    notamabil: { name: 'Activabile prin NOTAM', c: '--z-notamabil', on: false, tag: 'Militar · NOTAM',
+                 info: 'Zone militare care se activează prin NOTAM. Cât sunt active, ai nevoie de autorizare.' },
+    notam:     { name: 'Activate prin NOTAM acum', c: '--z-notam', on: true, tag: 'NOTAM',
+                 info: 'Restricții temporare valabile la data descărcării sau mai târziu. Respecți textul NOTAM în intervalul lui.' },
+    border30:  { name: 'Frontiera – 30 km', c: '--z-border', on: true, tag: 'Frontieră', dash: true,
+                 info: 'În zona de 30 km de la graniță anunți Poliția de Frontieră cu cel puțin o oră înainte.' },
+  };
+  const ORDER = ['mine', 'uas', 'aip', 'cncan', 'economie', 'ctr', 'ctrlive', 'notam', 'notamabil', 'border30'];
+
+  // ---------- heights in plain words ----------
+  function lim(s) {
+    if (!s) return '—';
+    const t = s.toUpperCase().replace(/\s+/g, ' ').trim();
+    let m;
+    if (t === 'GND' || t === 'SFC') return 'de la sol';
+    if ((m = t.match(/^FL ?(\d+)/))) return `${s} ≈ ${Math.round(+m[1] * 100 * 0.3048).toLocaleString('ro-RO')} m deasupra nivelului mării`;
+    if ((m = t.match(/(\d+) ?M AGL/))) return `${m[1]} m față de sol`;
+    if ((m = t.match(/(\d+) ?FT ?(AMSL|QNH)/)) || (m = t.match(/ALT (\d+) ?FT/))) return `${s} ≈ ${Math.round(+m[1] * 0.3048).toLocaleString('ro-RO')} m deasupra nivelului mării`;
+    if ((m = t.match(/(\d+) ?FT/))) return `${s} ≈ ${Math.round(+m[1] * 0.3048).toLocaleString('ro-RO')} m`;
+    return s;
+  }
+  const startsAtGround = s => /^(GND|SFC)$/i.test((s || '').trim());
+
+  // what to do, per zone
+  function todo(z) {
+    const c = z.contact || '';
+    if (z.cat === 'uas') {
+      if (/aerofoto@mapn\.ro/i.test(c)) return 'Pentru acces și pentru filmare sau fotografiere îți trebuie aviz MApN, cerut pe aerofoto.mapn.ro (cel puțin 7 zile lucrătoare înainte; 12 în București).';
+      return 'Ceri acordul la contactul de mai jos înainte de zbor.';
+    }
+    if (z.cat === 'ctr') return 'Zonă lângă aeroport, de la sol. Contactezi turnul de control (datele de mai jos) înainte de zbor și respecți ce îți spun.';
+    if (z.cat === 'notamabil') return 'Când zona e activată prin NOTAM, ai nevoie de autorizare. Verifici NOTAM-urile în ziua zborului; dacă nu e activă, restricția nu se aplică.';
+    if (z.cat === 'cncan') return 'Nu zbori fără acordul CNCAN, oricare ar fi avizul MApN.';
+    if (z.cat === 'economie') return 'Nu zbori fără acordul Ministerului Economiei (adresa de mai jos).';
+    if (z.cat === 'aip') {
+      const id = (z.id || '').toUpperCase();
+      if (id.startsWith('LRR3')) return 'Are același contur ca RZ 570 București: pentru filmare te acoperă avizul MApN de pe aerofoto.';
+      if (id.startsWith('LRP')) return 'Zonă interzisă: nu zbori. Pătrunderea într-o zonă interzisă e infracțiune (Codul aerian, art. 117).';
+      if (id.startsWith('LRD')) return startsAtGround(z.lo) ? 'Zonă periculoasă (parașutism, planoare), activă ziua. Nu zbori cât e activă.' : `Zonă periculoasă care începe la ${lim(z.lo)}, mult deasupra celor 120 m ai tăi. La zbor normal nu o atingi, dar fii atent la avioane și parașutiști.`;
+      if (/VFR/.test(z.cond || '')) return 'Condiția publicată privește zborurile VFR (avioane, elicoptere). Pentru drone nu e spus explicit: întreabă aerofoto sau AACR înainte.';
+      return 'Zonă restricționată din AIP: zbori doar în condițiile publicate. Pentru drone întreabă aerofoto@mapn.ro.';
+    }
+    if (z.cat === 'notam') return 'Restricție temporară: în intervalul de mai jos respecți textul NOTAM. Dacă e o restricție pentru UAS, nu zbori în zonă.';
+    if (z.cat === 'ctrlive') return 'În categoria „deschisă” poți zbura în CTR până la 120 m fără autorizare de la turn, dar trimiți o informare la turnul de control (TWR), dacă locul nu e și într-o zonă interzisă sau restricționată (manualul AACR, p. 30–31).';
+    if (z.cat === 'border30') return 'Anunți Poliția de Frontieră cu cel puțin o oră înainte de zbor.';
+    return '';
+  }
+
+  // ---------- geometry ----------
+  function bbox(geom) { let a = 90, b = 180, c = -90, d = -180; for (const p of geom) for (const [y, x] of p[0]) { if (y < a) a = y; if (y > c) c = y; if (x < b) b = x; if (x > d) d = x; } return [a, b, c, d]; }
+  function inRing(lat, lon, r) { let ins = false; for (let i = 0, j = r.length - 1; i < r.length; j = i++) { const [yi, xi] = r[i], [yj, xj] = r[j]; if ((yi > lat) !== (yj > lat) && lon < (xj - xi) * (lat - yi) / (yj - yi) + xi) ins = !ins; } return ins; }
+  function inGeom(lat, lon, geom) { for (const p of geom) { if (inRing(lat, lon, p[0]) && !p.slice(1).some(h => inRing(lat, lon, h))) return true; } return false; }
+
+  const now = new Date();
+  const fmtT = s => new Date(s).toLocaleString('ro-RO', { timeZone: 'Europe/Bucharest', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const pd = s => { const [d, m, y] = s.split('.'); return new Date(+y, +m - 1, +d); };
+
+  // ---------- map ----------
+  const map = L.map('map', { preferCanvas: true, zoomControl: true, minZoom: 6, maxZoom: 18, attributionControl: true }).setView([44.425, 26.105], 11);
+  new ResizeObserver(() => map.invalidateSize()).observe($('map'));   // the panel and fonts settle after the map starts
+  map.attributionControl.setPrefix('').addAttribution((window.__MODE === 'site' ? '' : '© OpenStreetMap contributors · ') + 'ROMATSA · MApN');
+  const renderer = L.canvas({ padding: 0.3 });
+  const coordCtl = L.control({ position: 'bottomleft' });
+  coordCtl.onAdd = () => { const d = L.DomUtil.create('div', 'coordbox'); d.textContent = '—'; return d; };
+  coordCtl.addTo(map);
+  map.on('mousemove', e => { coordCtl.getContainer().textContent = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`; });
+
+  let DATA, all = [], groups = {}, baseLayers = [], labelLayer, highlight, pin;
+
+  // big zones (RZ 570, LRR3, the border band) get almost no fill, so stacked zones don't hide the lakes and parks underneath
+  function zoneStyle(cat, z) {
+    const col = css(CATS[cat].c), big = z && z.bb && (z.bb[2] - z.bb[0]) * (z.bb[3] - z.bb[1]) > 0.01;
+    return { renderer, color: col, weight: cat === 'mine' ? 3 : big ? 2 : 1.4, opacity: .95, fillColor: col,
+      fillOpacity: cat === 'mine' ? .22 : cat === 'border30' || big ? .03 : .12, dashArray: CATS[cat].dash || big ? '7 5' : null, interactive: false };
+  }
+
+  let tiles;
+  function drawBase() {
+    if (MODE === 'site') {
+      if (!tiles) tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+      return;
+    }
+    baseLayers.forEach(l => map.removeLayer(l)); baseLayers = [];
+    const B = DATA.base, add = l => { l.addTo(map); baseLayers.push(l); };
+    const poly = (arr, fill) => add(L.polygon(arr, { renderer, stroke: false, fillColor: fill, fillOpacity: 1, interactive: false }));
+    const line = (arr, color, w, dash) => add(L.polyline(arr, { renderer, color, weight: w, opacity: 1, dashArray: dash, interactive: false }));
+    poly(B.forest, css('--map-forest')); poly(B.green, css('--map-green')); poly(B.water, css('--map-water'));
+    line(B.river, css('--map-water'), 2);
+    line(B.road3, css('--map-road-edge'), 1.2); line(B.road2, css('--map-road-edge'), 2.2); line(B.road1, css('--map-road-edge'), 3.4);
+    line(B.road2, css('--map-road'), 1.2); line(B.road1, css('--map-road'), 2);
+    line(B.rail, css('--map-rail'), 1, '4 3');
+    line(DATA.zones.judete.flatMap(j => j.geom.map(p => p[0])), css('--map-county'), 1, '2 3');
+    baseLayers.slice().reverse().forEach(l => l.bringToBack());   // keep the drawing order: forest, parks, water, roads under the zones
+  }
+
+  function drawPlaces() {
+    if (MODE === 'site' || !DATA.base) return;   // the tiles carry their own names
+    if (labelLayer) map.removeLayer(labelLayer);
+    labelLayer = L.layerGroup().addTo(map);
+    const z = map.getZoom(), b = map.getBounds().pad(.2);
+    for (const [n, lat, lon, r] of DATA.base.places) {
+      if (r > (z >= 13 ? 3 : z >= 12 ? 2 : z >= 10 ? 1 : 0) || !b.contains([lat, lon])) continue;
+      L.marker([lat, lon], { interactive: false, keyboard: false, icon: L.divIcon({ className: '', html: `<span class="place r${r}">${esc(n)}</span>`, iconSize: [0, 0] }) }).addTo(labelLayer);
+    }
+  }
+
+  function buildZones() {
+    Object.values(groups).forEach(g => map.removeLayer(g)); groups = {};
+    for (const k of ORDER) groups[k] = L.layerGroup();
+    for (const z of all) {
+      const pl = L.polygon(z.geom, zoneStyle(z.cat, z));
+      pl.addTo(groups[z.cat]); z.layer = pl;
+      if (z.cat === 'mine') {   // label each approved flight and mark its declared takeoff point
+        const ring = z.geom[0][0], c = [ring.reduce((s, p) => s + p[0], 0) / ring.length, ring.reduce((s, p) => s + p[1], 0) / ring.length];
+        L.marker(c, { interactive: false, keyboard: false, icon: L.divIcon({ className: '', html: `<span class="ml">${z.cod} · Z${z.zbor}</span>`, iconSize: [0, 0] }) }).addTo(groups.mine);
+        L.circleMarker(z.takeoff, { renderer, radius: 4, color: css('--z-mine'), weight: 2, fillColor: css('--panel'), fillOpacity: 1, interactive: false }).addTo(groups.mine);
+      }
+    }
+    for (const k of ORDER) if (layerOn(k)) groups[k].addTo(map);
+  }
+
+  // ---------- layer list ----------
+  const state = {};
+  function layerOn(k) { return state[k] ?? CATS[k].on; }
+  function buildLayerList() {
+    const box = $('layers'); box.innerHTML = '';
+    for (const k of ORDER) {
+      const n = all.filter(z => z.cat === k).length;
+      const lab = document.createElement('label'); lab.className = 'layer'; lab.style.setProperty('--c', css(CATS[k].c));
+      lab.innerHTML = `<input type="checkbox" id="ly-${k}" ${layerOn(k) ? 'checked' : ''}><span class="sw${CATS[k].dash ? ' dash' : ''}"></span>
+        <span><b>${CATS[k].name}</b><small>${CATS[k].info}</small></span><span class="count">${n}</span>`;
+      lab.querySelector('input').addEventListener('change', e => { state[k] = e.target.checked; e.target.checked ? groups[k].addTo(map) : map.removeLayer(groups[k]); });
+      box.appendChild(lab);
+    }
+  }
+
+  // ---------- results ----------
+  function check(lat, lon, fromGps) {
+    if (pin) map.removeLayer(pin);
+    pin = L.circleMarker([lat, lon], { radius: 7, color: css('--ink'), weight: 2, fillColor: css('--accent'), fillOpacity: 1, renderer }).addTo(map);
+    const hits = all.filter(z => lat >= z.bb[0] && lat <= z.bb[2] && lon >= z.bb[1] && lon <= z.bb[3] && inGeom(lat, lon, z.geom))
+      .filter(z => z.cat !== 'notam' || z.status !== 'expired');
+    if (highlight) map.removeLayer(highlight);
+    highlight = L.layerGroup(hits.map(z => L.polygon(z.geom, { renderer, color: css('--ink'), weight: 2.5, fill: false, interactive: false }))).addTo(map);
+    renderResults(lat, lon, hits, fromGps);
+    $('results').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  function renderResults(lat, lon, hits, fromGps) {
+    $('res-empty').hidden = true;
+    const mine = hits.filter(h => h.cat === 'mine'), rest = hits.filter(h => h.cat !== 'mine');
+    const other = rest.filter(h => ['cncan', 'economie', 'ctr'].includes(h.cat) || (h.cat === 'uas' && !/aerofoto@mapn\.ro/i.test(h.contact || '')));
+    const prohibited = rest.filter(h => h.cat === 'aip' && /^LRP/i.test(h.id));
+    const activeNotam = rest.filter(h => h.cat === 'notam' && h.status === 'active');
+    const needsAviz = rest.some(h => (h.cat === 'uas' && /aerofoto@mapn\.ro/i.test(h.contact || '')) || (h.cat === 'aip' && /^LRR3/i.test(h.id)));
+    const validMine = mine.filter(m => now >= pd(m.from) && now <= new Date(pd(m.to).getTime() + 86399e3));
+    let cls = 'ok', title = 'Nicio zonă restricționată aici', items = [];
+    if (prohibited.length) { cls = 'bad'; title = 'Zonă interzisă'; items.push('Nu zbori aici.'); }
+    else if (other.length || activeNotam.length) { cls = 'bad'; title = 'Ai nevoie și de alte acorduri';
+      other.forEach(o => items.push(`${CATS[o.cat].tag}: ${o.id}`)); activeNotam.forEach(n => items.push(`NOTAM activ acum: ${n.id}`)); }
+    else if (needsAviz && validMine.length) { title = 'Ești în perimetrul avizului tău'; validMine.forEach(m => items.push(`Aviz ${m.cod}, zbor nr. ${m.zbor}: valabil ${m.from}–${m.to}`)); }
+    else if (needsAviz && mine.length) { cls = 'warn'; title = 'Avizul tău nu e valabil azi'; mine.forEach(m => items.push(`Aviz ${m.cod}, zbor nr. ${m.zbor}: valabil ${m.from}–${m.to}`)); }
+    else if (needsAviz) { cls = 'warn'; title = 'Pentru filmare îți trebuie aviz MApN'; items.push('Locul nu e în niciunul dintre perimetrele tale aprobate.'); }
+    if (cls === 'ok' && !needsAviz) items.push(`După ${DATE_TXT}. Se aplică regulile generale ale categoriei „deschise”.`);
+    if (validMine.length && (other.length || activeNotam.length)) items.unshift(`Ești în avizul ${validMine.map(m => m.cod + ' / zbor ' + m.zbor).join(', ')}, dar:`);
+    const head = `<div class="verdict ${cls}"><strong>${title}</strong><ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
+      <span class="mono">${lat.toFixed(5)}, ${lon.toFixed(5)}${fromGps ? ' · poziția ta' : ''}</span></div>`;
+    const cards = hits.sort((a, b) => ORDER.indexOf(a.cat) - ORDER.indexOf(b.cat)).map(card).join('');
+    const general = `<div class="hit" style="--c:${css('--accent')}"><div class="top"><span class="name">Mereu, în categoria „deschisă”</span></div>
+      <p class="todo">Max. 120 m față de sol, drona la vedere (VLOS), niciodată peste mulțimi. În aviz: dacă apar oameni sau aeronave aproape, oprești zborul.</p></div>`;
+    $('res').innerHTML = head + cards + general;
+  }
+
+  function card(z) {
+    const c = css(CATS[z.cat].c);
+    if (z.cat === 'mine') return `<div class="hit" style="--c:${c}"><div class="top"><span class="name">Aviz ${z.cod} · Zbor nr. ${z.zbor}</span><span class="tag">${CATS.mine.tag}</span></div>
+      <dl class="lim"><dt>Perioada</dt><dd>${z.from} – ${z.to}</dd><dt>Înălțime</dt><dd>1–120 m</dd><dt>Decolare</dt><dd class="mono">${z.takeoff[0].toFixed(5)}, ${z.takeoff[1].toFixed(5)}</dd></dl>
+      <p class="todo">Poți decola și ateriza din orice punct din interiorul perimetrului (răspuns aerofoto, 22.10.2026). Ai la tine PDF-ul avizului.</p></div>`;
+    if (z.cat === 'notam') return `<div class="hit" style="--c:${c}"><div class="top"><span class="name">NOTAM ${esc(z.id)}</span><span class="tag">${z.status === 'active' ? 'activ acum' : 'urmează'}</span></div>
+      <dl class="lim"><dt>De la</dt><dd>${fmtT(z.from)}</dd><dt>Până la</dt><dd>${fmtT(z.to)}</dd></dl>
+      <p class="todo">${esc(todo(z))}</p><pre class="notam">${esc(z.msg)}</pre></div>`;
+    if (z.cat === 'border30') return `<div class="hit" style="--c:${c}"><div class="top"><span class="name">Zona de frontieră</span><span class="tag">${CATS.border30.tag}</span></div><p class="todo">${esc(todo(z))}</p></div>`;
+    return `<div class="hit" style="--c:${c}"><div class="top"><span class="name">${esc(z.id)}</span><span class="tag">${CATS[z.cat].tag}</span></div>
+      <dl class="lim"><dt>Începe</dt><dd>${esc(lim(z.lo))}</dd><dt>Până la</dt><dd>${esc(lim(z.hi))}</dd>${z.cond ? `<dt>Condiții</dt><dd>${esc(z.cond)}</dd>` : ''}</dl>
+      <p class="todo">${esc(todo(z))}</p>${z.contact ? `<div class="contact">${esc(z.contact)}</div>` : ''}</div>`;
+  }
+
+  // ---------- input ----------
+  map.on('click', e => {
+    const p = [e.latlng.lat, e.latlng.lng];
+    if (draft.mode === 'pts') { draft.pts.push(p); redrawDraft(); return; }
+    if (draft.mode === 'tk') { draft.tk = p; setMode(null); redrawDraft(); return; }
+    check(p[0], p[1]);
+  });
+
+  // ---------- approved requests ----------
+  const ST = { valid: ['valabil azi', 'ok'], upcoming: ['începe mai târziu', 'warn'], expired: ['expirat', 'bad'] };
+  const reqStatus = m => now < pd(m.from) ? 'upcoming' : now > new Date(pd(m.to).getTime() + 86399e3) ? 'expired' : 'valid';
+  // the place is whatever the request itself says (its purpose line), so no names live in this page
+  const placeName = m => m.loc ? m.loc.charAt(0).toUpperCase() + m.loc.slice(1) : 'Aviz ' + m.cod;
+  const shortPlace = m => { const t = placeName(m).replace(/^(Filmare\/?foto|Filmarefoto|peisaj|Peisaj)\s*/i, ''); return t.length > 26 ? t.slice(0, 25) + '…' : t; };
+  function buildRequests() {
+    const box = $('reqs'); box.innerHTML = '';
+    const by = {};
+    for (const m of myFlights()) (by[m.cod] = by[m.cod] || []).push(m);
+    if (!Object.keys(by).length) box.innerHTML = '<p class="empty">Niciun aviz încă. Adaugă PDF-ul cererii aprobate, descărcat de pe aerofoto („Cererile mele” → Descarcă).</p>';
+    for (const cod of Object.keys(by)) {
+      const fl = by[cod], st = reqStatus(fl[0]);
+      const el = document.createElement('div'); el.className = 'req';
+      el.innerHTML = `<div class="top"><span class="name">Aviz ${esc(cod)}</span><span class="pill ${ST[st][1]}">${ST[st][0]}</span></div>
+        <p class="sub">${esc(placeName(fl[0]))} · ${fl[0].from} – ${fl[0].to} · ${fl.length} ${fl.length > 1 ? 'zboruri' : 'zbor'}, 1–120 m</p><div class="chips"></div>`;
+      const ch = el.querySelector('.chips');
+      const btn = (t, fn) => { const x = document.createElement('button'); x.type = 'button'; x.textContent = t; x.addEventListener('click', fn); ch.appendChild(x); return x; };
+      if (fl.length > 1) btn('Toate', () => map.fitBounds(fl.flatMap(x => x.poly), { padding: [30, 30] }));
+      for (const m of fl) btn('Zbor ' + m.zbor, () => { map.fitBounds(m.poly, { padding: [40, 40] }); check(m.takeoff[0], m.takeoff[1]); });
+      if (fl[0].imp) {
+        const del = btn('Scoate', () => {
+          if (!del.dataset.armed) { del.dataset.armed = '1'; del.textContent = 'Sigur?'; setTimeout(() => { if (del.isConnected) { delete del.dataset.armed; del.textContent = 'Scoate'; } }, 4000); return; }
+          saveImported(loadImported().filter(x => x.cod !== cod)); refreshMine(); buildZones(); buildLayerList(); buildRequests(); buildJumps();
+        });
+      }
+      box.appendChild(el);
+    }
+  }
+
+  // ---------- planning a new request ----------
+  const draft = { pts: [], tk: null, mode: null, markers: [], poly: null, tkm: null };
+  let drafts = [];
+  try { drafts = JSON.parse(localStorage.getItem('drone-drafts') || '[]'); } catch (e) { drafts = []; }
+  const saveDrafts = () => { try { localStorage.setItem('drone-drafts', JSON.stringify(drafts)); } catch (e) {} };
+  const HINT = $('draw-hint').textContent;
+
+  function setMode(m) {
+    draft.mode = m;
+    $('draw-hint').textContent = m === 'pts' ? 'Atinge harta ca să adaugi colțurile zonei, în ordine, de jur împrejur. Trage de un punct ca să-l muți.'
+      : m === 'tk' ? 'Atinge harta în interiorul zonei, acolo unde vrei să decolezi.' : draft.pts.length ? 'Poți trage de puncte ca să ajustezi zona.' : HINT;
+    $('map').style.cursor = m ? 'crosshair' : '';
+    drawButtons();
+  }
+  function drawButtons() {
+    const n = draft.pts.length, drawing = draft.mode === 'pts';
+    $('d-start').hidden = n > 0 || drawing;
+    $('d-undo').hidden = n === 0;
+    $('d-done').hidden = !drawing || n < 3;
+    $('d-tk').hidden = n < 3 || drawing;
+    $('d-tk').textContent = draft.tk ? 'Mută decolarea' : 'Alege decolarea';
+    $('d-clear').hidden = n === 0 && !drawing;
+  }
+  function redrawDraft() {
+    draft.markers.forEach(m => map.removeLayer(m)); draft.markers = [];
+    if (draft.poly) { map.removeLayer(draft.poly); draft.poly = null; }
+    if (draft.tkm) { map.removeLayer(draft.tkm); draft.tkm = null; }
+    const st = { renderer, color: css('--accent'), weight: 3, dashArray: '6 4', fillColor: css('--accent'), fillOpacity: .15, interactive: false };
+    if (draft.pts.length > 2) draft.poly = L.polygon(draft.pts, st).addTo(map);
+    else if (draft.pts.length) draft.poly = L.polyline(draft.pts, st).addTo(map);
+    draft.pts.forEach((p, i) => {
+      const mk = L.marker(p, { draggable: true, icon: L.divIcon({ className: '', html: `<span class="vx">${i + 1}</span>`, iconSize: [22, 22], iconAnchor: [11, 11] }) }).addTo(map);
+      mk.on('drag', e => { draft.pts[i] = [e.latlng.lat, e.latlng.lng]; if (draft.poly) draft.poly.setLatLngs(draft.pts); });
+      mk.on('dragend', redrawDraft);
+      draft.markers.push(mk);
+    });
+    if (draft.tk) draft.tkm = L.circleMarker(draft.tk, { renderer, radius: 8, color: css('--ink'), weight: 3, fillColor: css('--panel'), fillOpacity: 1, interactive: false }).addTo(map);
+    analyseDraft(); drawButtons();
+  }
+
+  const segX = (a, b, c, d) => { const o = (p, q, r) => Math.sign((q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])); return o(a, b, c) !== o(a, b, d) && o(c, d, a) !== o(c, d, b); };
+  function overlaps(pts, z) {
+    const la = pts.map(p => p[0]), lo = pts.map(p => p[1]);
+    if (Math.max(...la) < z.bb[0] || Math.min(...la) > z.bb[2] || Math.max(...lo) < z.bb[1] || Math.min(...lo) > z.bb[3]) return false;
+    if (pts.some(p => inGeom(p[0], p[1], z.geom))) return true;
+    for (const poly of z.geom) {
+      const r = poly[0];
+      if (r.some(p => inRing(p[0], p[1], pts))) return true;
+      for (let i = 0; i < pts.length; i++) { const a = pts[i], b = pts[(i + 1) % pts.length]; for (let j = 0; j < r.length - 1; j++) if (segX(a, b, r[j], r[j + 1])) return true; }
+    }
+    return false;
+  }
+  function areaM2(pts) {
+    const k = Math.cos(pts[0][0] * Math.PI / 180) * 111320, q = pts.map(p => [p[1] * k, p[0] * 110540]);
+    let s = 0; for (let i = 0; i < q.length; i++) { const [x1, y1] = q[i], [x2, y2] = q[(i + 1) % q.length]; s += x1 * y2 - x2 * y1; }
+    return Math.abs(s / 2);
+  }
+  function addWorkdays(d, n) { const x = new Date(d); while (n > 0) { x.setDate(x.getDate() + 1); if (x.getDay() % 6) n--; } return x; }
+  const dmy = d => d.toLocaleDateString('ro-RO', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const fmtPt = p => `${p[0].toFixed(8)}° N   ${p[1].toFixed(8)}° E`;
+
+  function analyseDraft() {
+    const out = $('draft-out'), n = draft.pts.length;
+    if (n < 3) { out.innerHTML = n ? `<p class="sub">${n} ${n === 1 ? 'punct' : 'puncte'}. Îți trebuie cel puțin 3.</p>` : ''; renderSaved(); return; }
+    const hits = all.filter(z => z.cat !== 'notam' || z.status !== 'expired').filter(z => overlaps(draft.pts, z));
+    const isAerofoto = h => (h.cat === 'uas' && /aerofoto@mapn\.ro/i.test(h.contact || '')) || (h.cat === 'aip' && /^LRR3/i.test(h.id));
+    const needs = hits.some(isAerofoto);
+    const other = hits.filter(h => ['cncan', 'economie', 'ctr'].includes(h.cat) || (h.cat === 'uas' && !isAerofoto(h)) || (h.cat === 'aip' && !isAerofoto(h)));
+    const notamA = hits.filter(h => h.cat === 'notam');
+    const mineHit = hits.filter(h => h.cat === 'mine');
+    const bucuresti = hits.some(h => h.id === 'RZ 570');
+    const tkIn = draft.tk && inRing(draft.tk[0], draft.tk[1], draft.pts);
+    const a = areaM2(draft.pts);
+    let cls = 'ok', title = 'Nu ai nevoie de aviz MApN aici', items = ['În afara zonelor restricționate, filmarea în categoria „deschisă” nu cere aviz MApN (HG 859, art. 5 alin. (1) lit. e). Se aplică regulile generale.'];
+    if (needs) { cls = 'warn'; title = 'Faci cerere de aviz pe aerofoto.mapn.ro'; items = [`Cel mai devreme început al zborurilor: ${dmy(addWorkdays(now, bucuresti ? 12 : 7))} (${bucuresti ? '12' : '7'} zile lucrătoare de azi; sărbătorile legale nu sunt numărate, adaugă-le tu).`]; }
+    if (other.length) { cls = 'bad'; title = needs ? 'Aviz MApN, plus alte acorduri' : 'Zona atinge zone cu alte reguli'; other.forEach(o => items.push(`${CATS[o.cat].tag}: ${o.id}. Mută colțurile ca să nu intri în ea sau cere acordul.`)); }
+    if (notamA.length) items.push(`NOTAM-uri în zonă: ${notamA.map(x => x.id).join(', ')} (verifică perioada).`);
+    if (mineHit.length) items.push(`Se suprapune cu avizul tău: ${mineHit.map(m => m.cod + ' / zbor ' + m.zbor).join(', ')}.`);
+    if (draft.tk && !tkIn) { if (cls === 'ok') cls = 'warn'; items.push('Punctul de decolare e în afara zonei. Mută-l înăuntru.'); }
+    const lines = draft.pts.map(fmtPt).join('\n');
+    out.innerHTML = `<div class="verdict ${cls}"><strong>${title}</strong><ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>
+      <dl class="lim"><dt>Suprafață</dt><dd>${a >= 10000 ? (a / 10000).toFixed(2).replace('.', ',') + ' ha' : Math.round(a).toLocaleString('ro-RO') + ' m²'}</dd>
+        <dt>Colțuri</dt><dd>${n}</dd><dt>Decolare</dt><dd class="mono">${draft.tk ? fmtPt(draft.tk) : 'nealeasă (butonul „Alege decolarea”)'}</dd></dl>
+      <label class="sub" for="d-coords">Perimetrul, ca în formularul aerofoto (Mod specificare zonă: Perimetru):</label>
+      <textarea class="coords" id="d-coords" readonly>${esc(lines)}</textarea>
+      <div class="row"><button type="button" class="primary" id="d-copy">Copiază coordonatele</button><span class="sub" id="d-copied" hidden>Copiat.</span></div>
+      <form class="row" id="d-save"><input type="text" id="d-name" placeholder="Nume, de ex. Lacul Titan" aria-label="Numele zonei" value="${esc(draft.name || '')}"><button type="submit">Salvează zona</button></form>
+      ${hits.filter(h => h.cat !== 'mine').map(card).join('')}`;
+    $('d-copy').addEventListener('click', () => {
+      const ta = $('d-coords'), done = () => { $('d-copied').hidden = false; };
+      if (navigator.clipboard) navigator.clipboard.writeText(ta.value).then(done, () => { ta.select(); done(); }); else { ta.select(); done(); }
+    });
+    $('d-save').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = $('d-name').value.trim() || 'Zonă ' + dmy(new Date());
+      draft.name = name;
+      drafts = drafts.filter(d => d.name !== name);
+      drafts.unshift({ name, pts: draft.pts, tk: draft.tk, saved: new Date().toISOString() });
+      saveDrafts(); renderSaved();
+    });
+    renderSaved();
+  }
+  function renderSaved() {
+    const box = $('draft-saved');
+    if (!drafts.length) { box.innerHTML = ''; return; }
+    box.innerHTML = '<p class="sub">Zone salvate în acest browser:</p>';
+    drafts.forEach((d, i) => {
+      const el = document.createElement('div'); el.className = 'saved';
+      el.innerHTML = `<span><b>${esc(d.name)}</b> · ${d.pts.length} colțuri · ${dmy(new Date(d.saved))}</span><span class="row"><button type="button">Deschide</button><button type="button">Șterge</button></span>`;
+      const [open, del] = el.querySelectorAll('button');
+      open.addEventListener('click', () => { Object.assign(draft, { pts: d.pts.map(p => p.slice()), tk: d.tk, name: d.name }); setMode(null); redrawDraft(); map.fitBounds(draft.pts, { padding: [40, 40] }); });
+      del.addEventListener('click', () => {
+        if (del.dataset.armed) { drafts.splice(i, 1); saveDrafts(); renderSaved(); return; }
+        del.dataset.armed = '1'; del.textContent = 'Sigur?';
+        setTimeout(() => { if (del.isConnected) { delete del.dataset.armed; del.textContent = 'Șterge'; } }, 4000);
+      });
+      box.appendChild(el);
+    });
+  }
+  $('d-start').addEventListener('click', () => { Object.assign(draft, { pts: [], tk: null, name: '' }); setMode('pts'); redrawDraft(); });
+  $('d-undo').addEventListener('click', () => { draft.pts.pop(); if (draft.pts.length < 3) draft.tk = null; if (!draft.pts.length && draft.mode !== 'pts') setMode(null); redrawDraft(); });
+  $('d-done').addEventListener('click', () => setMode(null));
+  $('d-tk').addEventListener('click', () => setMode('tk'));
+  $('d-clear').addEventListener('click', () => { Object.assign(draft, { pts: [], tk: null, name: '' }); setMode(null); redrawDraft(); });
+  $('go').addEventListener('submit', e => {
+    e.preventDefault();
+    const m = $('coord').value.replace(/[°NE]/gi, ' ').match(/(-?\d+(?:[.,]\d+)?)[\s,;]+(-?\d+(?:[.,]\d+)?)/);
+    if (!m) { $('coord').setCustomValidity('Scrie latitudinea și longitudinea, de exemplu 44.42252, 26.15580'); $('coord').reportValidity(); return; }
+    $('coord').setCustomValidity('');
+    const lat = +m[1].replace(',', '.'), lon = +m[2].replace(',', '.');
+    map.setView([lat, lon], Math.max(map.getZoom(), 15)); check(lat, lon);
+  });
+  $('coord').addEventListener('input', () => $('coord').setCustomValidity(''));
+  if ('geolocation' in navigator) {
+    $('gps').hidden = false;
+    $('gps').addEventListener('click', () => {
+      const msg = $('gpsmsg'); msg.hidden = false; msg.textContent = 'Caut poziția…';
+      navigator.geolocation.getCurrentPosition(p => { msg.hidden = true; map.setView([p.coords.latitude, p.coords.longitude], 16); check(p.coords.latitude, p.coords.longitude, true); },
+        () => { msg.textContent = 'Poziția nu e disponibilă aici. Deschide varianta offline a hărții pe telefon sau scrie coordonatele.'; }, { enableHighAccuracy: true, timeout: 15000 });
+    });
+  }
+
+  // ---------- load ----------
+  // ---------- data: live from ROMATSA on the website, a saved copy in the artifact and the offline file ----------
+  const WFS = n => `https://flightplan.romatsa.ro/init/geoserver/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=carto%3A${n}&maxFeatures=5000&outputFormat=application%2Fjson`;
+  const rd = v => Math.round(v * 1e5) / 1e5;
+  const toPolys = g => !g ? [] : (g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : []).map(p => p.map(r => r.map(c => [rd(c[1]), rd(c[0])])));
+  const clean = s => String(s ?? '').replace(/\s+/g, ' ').trim();
+  const ftLim = s => { s = clean(s); return /^\d+$/.test(s) ? (+s) + ' FT AMSL' : s; };
+  // same split as the aerofoto map, by the zone's contact
+  function category(c) {
+    c = c || '';
+    if (/@cncan\.ro|Nuclear Energy/.test(c)) return 'cncan';
+    if (/secretariat\.aparare@economie\.gov\.ro/.test(c)) return 'economie';
+    if (/NOTAM/.test(c)) return 'notamabil';
+    if (/@romatsa\.ro/.test(c) || /military ctr/i.test(c)) return 'ctr';
+    return 'uas';
+  }
+  async function getJSON(url, ms) {
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms || 30000);
+    try { const r = await fetch(url, { signal: ctl.signal }); if (!r.ok) throw new Error('HTTP ' + r.status); return await r.json(); }
+    finally { clearTimeout(t); }
+  }
+  async function load() {
+    if (window.__DATA) return Object.assign({ source: 'copy' }, window.__DATA);
+    if (MODE !== 'site') {
+      const [zones, base, mine] = await Promise.all(['zones', 'base', 'mine'].map(n => getJSON('data/' + n + '.json')));
+      return { zones, base, mine, source: 'copy' };
+    }
+    const copy = await getJSON('data/zones.json');   // the AIP zones and the border band come from this copy; the rest is replaced live
+    try {
+      const [rz, nt, ctr] = await Promise.all([getJSON(WFS('zone_restrictionate_uav')), getJSON(WFS('restrictii_notam_pt_uav')), getJSON(WFS('CTR_LRBB'))]);
+      const live = rz.features.map(f => ({ cat: category(f.properties.contact), id: clean(f.properties.zone_id), lo: clean(f.properties.lower_lim),
+        hi: clean(f.properties.upper_lim), contact: clean(f.properties.contact), geom: toPolys(f.geometry) }));
+      const ctrs = ctr.features.map(f => ({ cat: 'ctrlive', id: clean(f.properties.arsp_name), lo: ftLim(f.properties.lower_limit), hi: ftLim(f.properties.upper_limit), geom: toPolys(f.geometry) }));
+      copy.zones = copy.zones.filter(z => z.cat === 'aip').concat(live, ctrs);
+      copy.notams = nt.features.map(f => ({ cat: 'notam', id: f.properties.serie, from: f.properties.dfrom, to: f.properties.dto, tip: f.properties.tip,
+        msg: String(f.properties.mesaj || '').replace(/\r/g, '\n').trim(), geom: toPolys(f.geometry) }));
+      return { zones: copy, mine: [], source: 'live', at: new Date() };
+    } catch (e) {
+      return { zones: copy, mine: [], source: 'copy', error: e };
+    }
+  }
+
+  // ---------- my approved requests: built in (artifact, offline file) plus PDFs added in this browser ----------
+  const loadImported = () => { try { return JSON.parse(localStorage.getItem('drone-avize') || '[]'); } catch (e) { return []; } };
+  const saveImported = list => { try { localStorage.setItem('drone-avize', JSON.stringify(list)); } catch (e) {} };
+  function myFlights() {
+    const seen = new Set(), out = [];
+    for (const m of DATA.mine.concat(loadImported())) { const k = m.cod + '/' + m.zbor; if (!seen.has(k)) { seen.add(k); out.push(m); } }
+    return out;
+  }
+  function refreshMine() {
+    for (let i = all.length - 1; i >= 0; i--) if (all[i].cat === 'mine') all.splice(i, 1);
+    for (const m of myFlights()) {
+      const z = { cat: 'mine', id: `Aviz ${m.cod} zbor ${m.zbor}`, cod: m.cod, zbor: m.zbor, from: m.from, to: m.to, takeoff: m.takeoff, loc: m.loc, imp: m.imp, geom: [[m.poly]] };
+      z.bb = bbox(z.geom); all.push(z);
+    }
+  }
+  function loadScript(src) { return new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => no(new Error('nu s-a putut încărca ' + src)); document.head.appendChild(s); }); }
+  async function readAviz(file) {
+    if (!window.pdfjsLib) {   // loaded only when needed; the worker script makes pdf.js run on the page itself
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js');
+    }
+    const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const tc = await (await pdf.getPage(i)).getTextContent();
+      text += tc.items.map(it => it.str + (it.hasEOL ? '\n' : ' ')).join('') + '\n';
+    }
+    const cod = (text.match(/COD:\s*(\d+)/) || [])[1];
+    if (!cod) throw new Error(`${file.name}: nu pare o cerere de pe aerofoto (nu găsesc „COD:”).`);
+    const scop = ((text.match(/Filmare[^\n]{0,160}/) || [])[0] || '').replace(/^Filmare\/?(foto)?\s*/, '').split(/\s+cu\s+DJI|,?\s+DJI/)[0];
+    const where = scop || (text.match(/(Municipiul [^\n]+?Sectorul \d|Judetul [^\n]+?(?:comuna|oras|orașul|municipiul) [A-Za-zĂÂÎȘȚăâîșț-]+)/i) || [])[1] || '';
+    const parts = text.split(/Zbor nr\.\s*(\d+)/);
+    const blocks = [];
+    if (parts.length > 1) for (let i = 1; i < parts.length; i += 2) blocks.push([parts[i], parts[i + 1]]); else blocks.push(['1', text]);
+    const out = [];
+    for (const [n, b] of blocks) {
+      const per = b.match(/(\d\d\.\d\d\.\d{4})\s+(\d\d\.\d\d\.\d{4})/);
+      const dec = b.match(/decolare\s+([\d.]+)°\s*N\s+([\d.]+)°\s*E/);
+      const pts = [...(b.split('Perimetru')[1] || '').matchAll(/([\d.]+)°\s*N\s+([\d.]+)°\s*E/g)].map(m => [+m[1], +m[2]]);
+      if (!per || pts.length < 3) continue;
+      out.push({ cod, zbor: +n, from: per[1], to: per[2], takeoff: dec ? [+dec[1], +dec[2]] : pts[0], poly: pts, loc: clean(where), imp: true });
+    }
+    if (!out.length) throw new Error(`${file.name}: nu găsesc zboruri cu perimetru în el.`);
+    return out;
+  }
+
+  const DATE_COPY = '21.11.2026';
+  let DATE_TXT = 'datele din ' + DATE_COPY;
+  if (MODE === 'site') {
+    $('official').textContent = 'Harta de aici citește zonele, CTR-urile și NOTAM-urile direct de la ROMATSA, de fiecare dată când o deschizi, deci sunt aceleași ca pe harta ROMATSA. Rămâne o unealtă neoficială: legal contează publicațiile ROMATSA și avizul tău MApN.';
+    $('limits').textContent = 'Zonele permanente din AIP și frontiera de 30 km sunt o copie din aerofoto (se schimbă rar). Dacă ROMATSA nu răspunde, harta arată ultima copie salvată și îți spune asta sus. Explicațiile sunt ale mele, nu consultanță juridică.';
+  }
+  load().then(d => {
+    DATA = d;
+    const t = d.at ? d.at.toLocaleString('ro-RO', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+    if (d.source === 'live') {
+      DATE_TXT = 'datele ROMATSA de la ' + t;
+      $('srcline').textContent = `Zonele, CTR-urile și NOTAM-urile vin direct de la ROMATSA, încărcate acum (${t}). Zonele permanente din AIP și frontiera sunt din aerofoto.`;
+    } else if (MODE === 'site') {
+      $('srcline').textContent = `ROMATSA nu a răspuns acum, așa că arăt copia din ${DATE_COPY}. Reîncarcă pagina mai târziu ca să ai datele la zi.`;
+    } else {
+      $('srcline').textContent = `Zonele ROMATSA, zonele permanente din AIP, NOTAM-urile și avizele tale, explicate. Copie din ${DATE_COPY}.`;
+    }
+    for (const z of d.zones.zones) all.push(z);
+    for (const n of d.zones.notams) { const st = now > new Date(n.to) ? 'expired' : now < new Date(n.from) ? 'upcoming' : 'active'; if (st !== 'expired') all.push(Object.assign(n, { status: st })); }
+    all.push({ cat: 'border30', id: 'Frontiera 30 km', geom: d.zones.border30 });
+    for (const z of all) z.bb = bbox(z.geom);
+    refreshMine();
+    drawBase(); buildZones(); buildLayerList(); drawPlaces(); buildRequests(); renderSaved(); buildJumps();
+    map.on('zoomend moveend', drawPlaces);
+  }).catch(err => { $('res-empty').textContent = 'Datele hărții nu s-au încărcat (' + err.message + '). Reîncarcă pagina.'; });
+
+  function buildJumps() {
+    $('jumps').innerHTML = '';
+    const fl = myFlights(), seen = {};
+    for (const m of fl) {
+      if (seen[m.cod]) continue; seen[m.cod] = 1;
+      const b = document.createElement('button'); b.type = 'button';
+      b.textContent = shortPlace(m) + ' · aviz ' + m.cod;
+      b.addEventListener('click', () => { const pts = fl.filter(x => x.cod === m.cod).flatMap(x => x.poly); map.fitBounds(pts, { padding: [30, 30] }); check(m.takeoff[0], m.takeoff[1]); });
+      $('jumps').appendChild(b);
+    }
+    const ro = document.createElement('button'); ro.type = 'button'; ro.textContent = 'Toată țara';
+    ro.addEventListener('click', () => map.setView([45.9, 24.9], 7)); $('jumps').appendChild(ro);
+  }
+  $('imp').addEventListener('change', async e => {
+    const files = [...e.target.files]; e.target.value = '';
+    if (!files.length) return;
+    const msg = $('imp-msg'); msg.hidden = false; msg.textContent = 'Citesc PDF-ul…';
+    const done = [], errs = [];
+    let list = loadImported();
+    for (const f of files) {
+      try { const fl = await readAviz(f); list = list.filter(x => x.cod !== fl[0].cod).concat(fl); done.push(`aviz ${fl[0].cod} (${fl.length} ${fl.length > 1 ? 'zboruri' : 'zbor'})`); }
+      catch (err) { errs.push(err.message); }
+    }
+    saveImported(list);
+    msg.textContent = (done.length ? 'Am adăugat ' + done.join(', ') + '. ' : '') + errs.join(' ');
+    refreshMine(); buildZones(); buildLayerList(); buildRequests(); buildJumps();
+  });
+
+  // redraw colors when the theme changes
+  const restyle = () => { if (!DATA) return; drawBase(); for (const z of all) z.layer && z.layer.setStyle(zoneStyle(z.cat, z)); buildLayerList(); drawPlaces(); };
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', restyle);
+  new MutationObserver(() => {
+    // the viewer can also set data-theme; keep the choice made on this page
+    if (document.documentElement.getAttribute('data-theme') !== theme) document.documentElement.setAttribute('data-theme', theme);
+    restyle();
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+})();
+</script>
+
+</body>
+</html>

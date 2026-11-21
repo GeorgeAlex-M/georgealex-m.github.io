@@ -4,30 +4,6 @@
    ========================================================================== */
 
 :root {
-  --bg: #1e1e1e;
-  --grid: rgba(255, 255, 255, 0.055);
-  --ink: #f8f9fa;
-  --muted: #adb5bd;
-  --cyan: #04d9ff;
-  --green: #69db7c;
-  --orange: #ffa94d;
-  --pink: #f783ac;
-  --yellow: #ffd43b;
-  --red: #ff8787;
-  --ink-2: #e9ecef;
-  --veil: rgba(30, 30, 30, 0.45);
-  --font-hand: 'Gochi Hand', 'Segoe Print', 'Comic Sans MS', cursive;
-  --font-body: 'Patrick Hand', 'Segoe Print', 'Comic Sans MS', cursive;
-  /* Uneven radii make straight CSS borders read as hand-drawn strokes */
-  --wobble: 255px 15px 225px 15px / 15px 225px 15px 255px;
-  --wobble-alt: 15px 225px 15px 255px / 255px 15px 225px 15px;
-  --wobble-soft: 45px 12px 35px 14px / 12px 38px 14px 42px;
-}
-
-/* Light theme. Set by Astro.setTheme() on <html data-theme="light">; the hues
-   move to the dark end of the same Open Color ramps so they stay legible on
-   paper. Keep these in sync with A.THEMES in doodle/engine/palette.js. */
-:root[data-theme='light'] {
   --bg: #ffffff;
   --grid: rgba(0, 0, 0, 0.06);
   --ink: #1e1e1e;
@@ -40,6 +16,30 @@
   --red: #e03131;
   --ink-2: #343a40;
   --veil: rgba(255, 255, 255, 0.55);
+  --font-hand: 'Gochi Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+  --font-body: 'Patrick Hand', 'Segoe Print', 'Comic Sans MS', cursive;
+  /* Uneven radii make straight CSS borders read as hand-drawn strokes */
+  --wobble: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  --wobble-alt: 15px 225px 15px 255px / 255px 15px 225px 15px;
+  --wobble-soft: 45px 12px 35px 14px / 12px 38px 14px 42px;
+}
+
+/* Dark theme. Light is the default (bare :root above); Astro.setTheme() sets
+   <html data-theme="dark"> when the visitor picks dark. Keep these in sync with
+   A.THEMES in doodle/engine/palette.js. */
+:root[data-theme='dark'] {
+  --bg: #1e1e1e;
+  --grid: rgba(255, 255, 255, 0.055);
+  --ink: #f8f9fa;
+  --muted: #adb5bd;
+  --cyan: #04d9ff;
+  --green: #69db7c;
+  --orange: #ffa94d;
+  --pink: #f783ac;
+  --yellow: #ffd43b;
+  --red: #ff8787;
+  --ink-2: #e9ecef;
+  --veil: rgba(30, 30, 30, 0.45);
 }
 
 * { box-sizing: border-box; }

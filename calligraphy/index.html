@@ -17,8 +17,8 @@
   <link rel="apple-touch-icon" href="icon-180.png">
   <link rel="icon" type="image/png" href="icon-192.png">
   <script>
-    // follow the theme picked on the rest of the site, if there is one
-    try { var t = localStorage.getItem('doodle-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+    // follow the theme picked on the rest of the site; light unless dark was picked
+    try { document.documentElement.setAttribute('data-theme', localStorage.getItem('doodle-theme') === 'dark' ? 'dark' : 'light'); } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
