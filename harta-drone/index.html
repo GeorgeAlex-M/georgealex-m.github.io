@@ -1475,7 +1475,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   });
   $('coord').addEventListener('input', () => $('coord').setCustomValidity(''));
   // ---------- where am I: the browser asks the visitor for permission the first time ----------
-  let geoWatch = null, meDot = null, meAcc = null, meFirst = true;
+  let geoWatch = null, meDot = null, meAcc = null, meFirst = true, waitT = null;
   function say(text, ms) {   // a note over the map, so it is seen even when the phone's sheet is down
     const t = $('toast'); t.textContent = text; t.hidden = !text;
     clearTimeout(say.t); if (text && ms) say.t = setTimeout(() => { t.hidden = true; }, ms);
@@ -1484,11 +1484,12 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   const GEO_ERR = {
     1: MODE === 'artifact'
       ? 'Pagina de pe Claude nu are voie să ceară locația. Deschide harta de pe site, georgealex-m.github.io/harta-drone, și apasă din nou.'
-      : 'Accesul la locație e refuzat. Pe iPhone: Setări → Confidențialitate și securitate → Servicii de localizare → Site-uri Safari → „Cât timp folosiți aplicația”. Apoi, în Safari, apasă aA → Setări site web → Localizare → Permite, reîncarcă pagina și apasă din nou.',
+      : 'Telefonul nu dă locația acestei pagini. 1) Deschide pagina direct în Safari (nu din Claude, Gmail sau alte aplicații). 2) Setări → Confidențialitate și securitate → Servicii de localizare: pornit, iar la „Site-uri Safari” alege „Întreabă data viitoare” sau „Cât timp folosiți aplicația”, cu „Locație exactă” pornită. 3) În Safari: aA → Setări site web → Localizare → Întreabă sau Permite. Reîncarcă pagina și apasă din nou. Cu Chrome: Setări → Chrome → Localizare.',
     2: 'Telefonul nu găsește poziția acum. Verifică dacă localizarea e pornită și încearcă din nou, ideal afară.',
     3: 'Găsirea poziției durează prea mult. Încearcă din nou, afară sau lângă o fereastră.',
   };
   function showMe(p) {
+    clearTimeout(waitT);
     const ll = [p.coords.latitude, p.coords.longitude], acc = Math.round(p.coords.accuracy || 0);
     if (!meDot) {
       meAcc = L.circle(ll, { renderer, radius: acc, color: '#1a73e8', weight: 1, fillColor: '#1a73e8', fillOpacity: .12, interactive: false }).addTo(map);
@@ -1507,13 +1508,16 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     meFirst = true;
     say('Caut poziția… Dacă browserul te întreabă, apasă „Permite”.');
     let precise = true;
+    // if neither a position nor an error arrives, the question was probably never shown: say what to check
+    clearTimeout(waitT);
+    waitT = setTimeout(() => { if (meFirst) say('Nu apare întrebarea „Permiteți accesul la locație?”? Deschide pagina direct în Safari, nu din altă aplicație, și verifică în Setări → Confidențialitate și securitate → Servicii de localizare → Site-uri Safari să nu fie „Niciodată”.'); }, 7000);
     const start = () => {
       geoWatch = navigator.geolocation.watchPosition(showMe, e => {
         if (e.code === 3 && precise) {   // no GPS fix in time: try again with the network position
           precise = false; navigator.geolocation.clearWatch(geoWatch); start(); return;
         }
-        navigator.geolocation.clearWatch(geoWatch); geoWatch = null;
-        say(GEO_ERR[e.code] || 'Poziția nu e disponibilă acum. Încearcă din nou.');
+        navigator.geolocation.clearWatch(geoWatch); geoWatch = null; clearTimeout(waitT);
+        say((GEO_ERR[e.code] || 'Poziția nu e disponibilă acum. Încearcă din nou.') + ` (cod ${e.code}${e.message ? ': ' + e.message : ''})`);
       }, { enableHighAccuracy: precise, timeout: precise ? 15000 : 25000, maximumAge: 10000 });
     };
     start();
