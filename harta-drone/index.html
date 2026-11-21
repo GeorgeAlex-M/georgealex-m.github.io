@@ -678,7 +678,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
   --map-land: #eef0ea; --map-water: #a9cfe6; --map-green: #cfe3c2; --map-forest: #b9d6ad; --map-road: #ffffff; --map-road-edge: #c4c9c2;
   --map-rail: #8a918c; --map-county: #7d8a83; --map-label: #3b4741;
   --z-uas: #d64545; --z-ctr: #3b5bdb; --z-notamabil: #7c858d; --z-notam: #e3a008; --z-cncan: #c2255c; --z-economie: #8e5cd9; --z-aip: #e8590c;
-  --z-border: #6f8fb5; --z-ctrlive: #2f6fd1; --z-mine: #1f8a4c;
+  --z-border: #6f8fb5; --z-prop: #7b4fc9; --z-ctrlive: #2f6fd1; --z-mine: #1f8a4c;
   --ok-bg: #e3f3e8; --ok-ink: #17643a; --warn-bg: #fff3d6; --warn-ink: #8a5300; --bad-bg: #fde5e5; --bad-ink: #a12626;
   --font-ui: "Barlow", "Segoe UI", system-ui, sans-serif; --font-head: "Barlow Semi Condensed", "Arial Narrow", "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", Consolas, monospace;
@@ -753,6 +753,10 @@ summary { cursor: pointer; font-family: var(--font-head); font-weight: 600; font
 textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono); font-size: 12px; line-height: 1.5; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); resize: vertical; }
 .vx { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 600 11px var(--font-mono); border: 2px solid var(--panel); box-shadow: 0 1px 3px rgba(0,0,0,.35); cursor: grab; }
 .vm { display: block; border-radius: 50%; background: var(--panel); border: 2px solid var(--accent); opacity: .9; cursor: grab; }
+.prop { border: 1px solid var(--line); border-left: 6px dashed var(--z-prop); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+.prop .name { font-family: var(--font-head); font-weight: 700; font-size: 16.5px; line-height: 1.2; }
+.prop ul { margin: 0; padding-left: 18px; font-size: 13.5px; display: flex; flex-direction: column; gap: 2px; }
+.zchip { font-family: var(--font-mono); font-size: 11.5px; border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; color: var(--muted); }
 .ml { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--z-mine); background: color-mix(in srgb, var(--panel) 85%, transparent); border-radius: 4px; padding: 1px 4px; white-space: nowrap; pointer-events: none; }
 .saved { display: flex; justify-content: space-between; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font-size: 13.5px; }
 .saved > span { min-width: 0; overflow-wrap: anywhere; }
@@ -811,6 +815,13 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
       <div class="row"><label class="btnlike" for="imp">Adaugă un aviz (PDF de pe aerofoto)</label><input type="file" id="imp" accept="application/pdf,.pdf" multiple class="vh"></div>
       <p class="sub" id="imp-msg" hidden></p>
       <p class="sub">Avizele adăugate rămân doar în acest browser. Nu se trimit nicăieri.</p>
+    </section>
+
+    <section aria-labelledby="h-prop">
+      <h2 id="h-prop">Locuri propuse pentru cereri noi</h2>
+      <p class="sub" id="prop-intro">Locuri bune de filmat, verificate față de toate zonele. Deschide unul în planificator, ajustează colțurile și copiază coordonatele în aerofoto.</p>
+      <div id="props" style="display:flex;flex-direction:column;gap:8px"></div>
+      <details id="avoid-box"><summary>Locuri pe care le-aș evita</summary><div id="avoid" style="display:flex;flex-direction:column;gap:6px;margin-top:8px"></div></details>
     </section>
 
     <section aria-labelledby="h-plan" id="plan">
@@ -892,6 +903,8 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
 
   // ---------- what each layer means ----------
   const CATS = {
+    prop:      { name: 'Locuri propuse', c: '--z-prop', on: true, tag: 'Propunere', dash: true,
+                 info: 'Zone pe care ți le propun pentru cereri viitoare. Nu sunt aprobate: le folosești ca punct de plecare în planificator.' },
     mine:      { name: 'Avizele mele', c: '--z-mine', on: true, tag: 'Aviz MApN',
                  info: 'Perimetrele aprobate în avizele tale. Înăuntru ai voie să filmezi, în perioada avizului, cu regulile categoriei „deschise”.' },
     uas:       { name: 'Zone restricționate UAS', c: '--z-uas', on: true, tag: 'Zonă UAS · MApN',
@@ -913,7 +926,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     border30:  { name: 'Frontiera – 30 km', c: '--z-border', on: true, tag: 'Frontieră', dash: true,
                  info: 'În zona de 30 km de la graniță anunți Poliția de Frontieră cu cel puțin o oră înainte.' },
   };
-  const ORDER = ['mine', 'uas', 'aip', 'cncan', 'economie', 'ctr', 'ctrlive', 'notam', 'notamabil', 'border30'];
+  const ORDER = ['prop', 'mine', 'uas', 'aip', 'cncan', 'economie', 'ctr', 'ctrlive', 'notam', 'notamabil', 'border30'];
 
   // ---------- heights in plain words ----------
   function lim(s) {
@@ -1080,6 +1093,8 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   }
 
   function card(z) {
+    if (z.cat === 'prop') return `<div class="hit" style="--c:${css('--z-prop')}"><div class="top"><span class="name">${esc(z.id)}</span><span class="tag">propunere</span></div>
+      <p class="todo">${esc(z.why)}</p><p class="sub">Nu e o zonă aprobată. O găsești la „Locuri propuse”.</p></div>`;
     const c = css(CATS[z.cat].c);
     if (z.cat === 'mine') return `<div class="hit" style="--c:${c}"><div class="top"><span class="name">Aviz ${z.cod} · Zbor nr. ${z.zbor}</span><span class="tag">${CATS.mine.tag}</span></div>
       <dl class="lim"><dt>Perioada</dt><dd>${z.from} – ${z.to}</dd><dt>Înălțime</dt><dd>1–120 m</dd><dt>Decolare</dt><dd class="mono">${z.takeoff[0].toFixed(5)}, ${z.takeoff[1].toFixed(5)}</dd></dl>
@@ -1217,7 +1232,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   function analyseDraft() {
     const out = $('draft-out'), n = draft.pts.length;
     if (n < 3) { out.innerHTML = n ? `<p class="sub">${n} ${n === 1 ? 'punct' : 'puncte'}. Îți trebuie cel puțin 3.</p>` : ''; renderSaved(); return; }
-    const hits = all.filter(z => z.cat !== 'notam' || z.status !== 'expired').filter(z => overlaps(draft.pts, z));
+    const hits = all.filter(z => z.cat !== 'prop' && (z.cat !== 'notam' || z.status !== 'expired')).filter(z => overlaps(draft.pts, z));
     const isAerofoto = h => (h.cat === 'uas' && /aerofoto@mapn\.ro/i.test(h.contact || '')) || (h.cat === 'aip' && /^LRR3/i.test(h.id));
     const needs = hits.some(isAerofoto);
     const other = hits.filter(h => ['cncan', 'economie', 'ctr'].includes(h.cat) || (h.cat === 'uas' && !isAerofoto(h)) || (h.cat === 'aip' && !isAerofoto(h)));
@@ -1383,11 +1398,12 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   async function load() {
     if (window.__DATA) return Object.assign({ source: 'copy' }, window.__DATA);
     if (MODE !== 'site') {
-      const [zones, base, mine] = await Promise.all(['zones', 'base', 'mine'].map(n => getJSON('data/' + n + '.json')));
-      return { zones, base, mine, source: 'copy' };
+      const [zones, base, mine, props] = await Promise.all(['zones', 'base', 'mine', 'proposals'].map(n => getJSON('data/' + n + '.json').catch(() => null)));
+      return { zones, base, mine: mine || [], props, source: 'copy' };
     }
     const copy = await getJSON('data/zones.json');   // the AIP zones and the border band come from this copy; the rest is replaced live
     const mine = await getJSON('data/mine.json').catch(() => []);   // only the approved areas that may be public
+    const props = await getJSON('data/proposals.json').catch(() => null);
     try {
       const [rz, nt, ctr] = await Promise.all([getJSON(WFS('zone_restrictionate_uav')), getJSON(WFS('restrictii_notam_pt_uav')), getJSON(WFS('CTR_LRBB'))]);
       const live = rz.features.map(f => ({ cat: category(f.properties.contact), id: clean(f.properties.zone_id), lo: clean(f.properties.lower_lim),
@@ -1396,9 +1412,9 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
       copy.zones = copy.zones.filter(z => z.cat === 'aip').concat(live, ctrs);
       copy.notams = nt.features.map(f => ({ cat: 'notam', id: f.properties.serie, from: f.properties.dfrom, to: f.properties.dto, tip: f.properties.tip,
         msg: String(f.properties.mesaj || '').replace(/\r/g, '\n').trim(), geom: toPolys(f.geometry) }));
-      return { zones: copy, mine, source: 'live', at: new Date() };
+      return { zones: copy, mine, props, source: 'live', at: new Date() };
     } catch (e) {
-      return { zones: copy, mine, source: 'copy', error: e };
+      return { zones: copy, mine, props, source: 'copy', error: e };
     }
   }
 
@@ -1468,11 +1484,38 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     for (const z of d.zones.zones) all.push(z);
     for (const n of d.zones.notams) { const st = now > new Date(n.to) ? 'expired' : now < new Date(n.from) ? 'upcoming' : 'active'; if (st !== 'expired') all.push(Object.assign(n, { status: st })); }
     all.push({ cat: 'border30', id: 'Frontiera 30 km', geom: d.zones.border30 });
+    for (const p of (d.props && d.props.places) || []) all.push({ cat: 'prop', id: p.name, why: p.why, geom: [[p.poly]], key: p.key });
     for (const z of all) z.bb = bbox(z.geom);
     refreshMine();
-    drawBase(); buildZones(); buildLayerList(); drawPlaces(); buildRequests(); renderSaved(); buildJumps();
+    drawBase(); buildZones(); buildLayerList(); drawPlaces(); buildRequests(); renderSaved(); buildJumps(); buildProposals();
     map.on('zoomend moveend', drawPlaces);
   }).catch(err => { $('res-empty').textContent = 'Datele hărții nu s-au încărcat (' + err.message + '). Reîncarcă pagina.'; });
+
+  function buildProposals() {
+    const P = DATA.props, box = $('props');
+    if (!P || !P.places) { box.closest('section').hidden = true; return; }
+    box.innerHTML = '';
+    for (const p of P.places) {
+      const el = document.createElement('div'); el.className = 'prop';
+      const days = p.inBucharest ? 12 : 7;
+      el.innerHTML = `<span class="name">${esc(p.name)}</span><p class="sub">${esc(p.why)}</p>
+        <div class="chips">${p.zones.map(z => `<span class="zchip">${esc(z)}</span>`).join('')}</div>
+        <p class="sub">${p.contacts.length === 1 && p.contacts[0] === 'aerofoto' ? `Toate zonele au contact aerofoto: o singură cerere de aviz MApN, cu cel puțin ${days} zile lucrătoare înainte.` : 'Atinge și zone cu alte contacte: vezi detaliile după ce o deschizi.'}</p>
+        <ul>${p.watch.map(w => `<li>${esc(w)}</li>`).join('')}</ul><div class="row"></div>`;
+      const row = el.querySelector('.row');
+      const b1 = document.createElement('button'); b1.type = 'button'; b1.textContent = 'Vezi pe hartă';
+      b1.addEventListener('click', () => map.fitBounds(p.poly, { padding: [30, 30] }));
+      const b2 = document.createElement('button'); b2.type = 'button'; b2.className = 'primary'; b2.textContent = 'Deschide în planificator';
+      b2.addEventListener('click', () => {
+        Object.assign(draft, { pts: p.poly.map(q => q.slice()), tk: p.takeoff ? p.takeoff.slice() : null, name: p.name });
+        setMode(null); redrawDraft(); map.fitBounds(p.poly, { padding: [40, 40] });
+        $('plan').scrollIntoView({ block: 'start', behavior: 'smooth' });
+      });
+      row.append(b1, b2); box.appendChild(el);
+    }
+    $('avoid').innerHTML = (P.avoid || []).map(a => `<p class="sub"><b>${esc(a.name)}.</b> ${esc(a.why)}</p>`).join('');
+    $('prop-intro').textContent = `Locuri bune de filmat, verificate pe ${P.checked} față de toate zonele. Deschide unul în planificator, ajustează colțurile (cu Apple Pencil e cel mai ușor) și copiază coordonatele în aerofoto. Pe teren, alege tu punctul exact de decolare.`;
+  }
 
   function buildJumps() {
     $('jumps').innerHTML = '';
