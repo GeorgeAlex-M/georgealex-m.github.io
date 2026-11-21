@@ -775,10 +775,39 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
 .leaflet-control-attribution { background: color-mix(in srgb, var(--panel) 85%, transparent) !important; color: var(--muted); font-size: 10.5px; }
 .leaflet-control-attribution a { color: var(--accent); }
 .coordbox { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; padding: 3px 7px; font-family: var(--font-mono); font-size: 11.5px; }
+.grab, .fab, .drawbar { display: none; }
 @media (max-width: 760px) {
-  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: 52vh auto; height: auto; }
-  #map { height: 52vh; order: -1; }
-  .panel { border-right: 0; border-top: 1px solid var(--line); overflow: visible; padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  /* the map fills the screen; the panel is a sheet over its lower part that you drag up or down */
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  .app { display: block; position: relative; height: 100dvh; }
+  #map { position: absolute; inset: 0; height: auto; }
+  .panel { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1000; height: var(--sheet-h, 42dvh); border-right: 0;
+    border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(0, 0, 0, .18); overscroll-behavior: contain;
+    padding-top: 0; padding-bottom: max(24px, env(safe-area-inset-bottom, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); transition: height .22s ease; }
+  .panel.dragging { transition: none; }
+  .grab { display: flex; position: sticky; top: 0; z-index: 2; margin: 0 -16px; padding: 8px 16px 10px; background: var(--panel); border-radius: 18px 18px 0 0;
+    flex-direction: column; align-items: center; gap: 6px; touch-action: none; cursor: grab; border-bottom: 1px solid var(--line); }
+  .grab .pill { width: 44px; height: 5px; border-radius: 3px; background: var(--line); }
+  .grab .row { width: 100%; justify-content: space-between; align-items: center; flex-wrap: nowrap; }
+  .grab b { font-family: var(--font-head); font-size: 15px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .grab button { font-size: 13px; padding: 6px 10px; flex: none; }
+  h1 { font-size: 22px; }
+  input[type=text] { font-size: 16px; }   /* iPhone zooms the page into smaller inputs */
+  .fab { display: flex; flex-direction: column; gap: 8px; position: absolute; z-index: 900;
+    right: max(10px, env(safe-area-inset-right, 0px)); top: calc(env(safe-area-inset-top, 0px) + 10px); }
+  .fab button { width: 44px; height: 44px; padding: 0; border-radius: 12px; background: var(--panel); box-shadow: 0 2px 8px rgba(0, 0, 0, .2); font-size: 18px; line-height: 1; }
+  .drawbar { position: absolute; z-index: 950; left: max(10px, env(safe-area-inset-left, 0px)); right: max(10px, env(safe-area-inset-right, 0px));
+    top: calc(env(safe-area-inset-top, 0px) + 10px); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .2); flex-direction: column; gap: 8px; }
+  .drawbar.on { display: flex; }
+  .drawbar p { font-size: 13.5px; }
+  .drawbar .row button { flex: 1 1 auto; }
+  .app.drawing .fab { top: auto; bottom: calc(var(--sheet-h, 42dvh) + 10px); }
+  .leaflet-top { top: env(safe-area-inset-top, 0px); }
+  .leaflet-left { left: env(safe-area-inset-left, 0px); }
+  .leaflet-control-zoom a { width: 40px !important; height: 40px !important; line-height: 40px !important; font-size: 20px !important; }
+  .leaflet-bottom.leaflet-right { bottom: var(--sheet-h, 42dvh); }
+  .leaflet-bottom.leaflet-left { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
 </style>
@@ -786,7 +815,11 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
 </head>
 <body>
 <div class="app">
-  <aside class="panel">
+  <aside class="panel" id="panel">
+    <div class="grab" id="grab" aria-label="Trage ca să mărești sau micșorezi panoul">
+      <span class="pill"></span>
+      <div class="row"><b id="grab-title">Harta zonelor pentru drone</b><button type="button" id="sheet-btn">Mărește</button></div>
+    </div>
     <header style="display:flex;flex-direction:column;gap:6px">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
         <h1>Harta zonelor pentru drone</h1>
@@ -878,6 +911,17 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     <p class="foot"><a href="../" style="color:var(--accent)">← georgealex-m.github.io</a> · Surse: ROMATSA (zone UAS, CTR, NOTAM), aerofoto.mapn.ro (zone permanente, frontiera), © OpenStreetMap contributors (fundal). Explicațiile nu sunt consultanță juridică.</p>
   </aside>
   <div id="map" role="application" aria-label="Harta zonelor"></div>
+  <div class="fab" id="fab">
+    <button type="button" id="fab-gps" aria-label="Unde sunt acum" title="Unde sunt acum">◎</button>
+    <button type="button" id="fab-map" aria-label="Arată toată harta" title="Arată toată harta">⤢</button>
+  </div>
+  <div class="drawbar" id="drawbar" role="toolbar" aria-label="Desenează zona">
+    <p id="drawbar-hint"></p>
+    <div class="row">
+      <button type="button" id="db-undo">Înapoi</button><button type="button" id="db-free">Desen liber</button>
+      <button type="button" class="primary" id="db-done">Gata</button><button type="button" id="db-clear">Renunță</button>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
@@ -978,7 +1022,57 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
 
   // ---------- map ----------
   const map = L.map('map', { preferCanvas: true, zoomControl: true, minZoom: 6, maxZoom: 18, attributionControl: true }).setView([44.425, 26.105], 11);
-  new ResizeObserver(() => map.invalidateSize()).observe($('map'));   // the panel and fonts settle after the map starts
+  new ResizeObserver(() => map.invalidateSize()).observe($('map'));
+
+  // ---------- phone layout: bottom sheet ----------
+  const PHONE = matchMedia('(max-width: 760px)');
+  const SHEET = { peek: 0.16, half: 0.45, full: 0.9 };
+  let sheet = 'half';
+  const sheetPx = () => PHONE.matches ? $('panel').getBoundingClientRect().height : 0;
+  function setSheet(st, px) {
+    sheet = st;
+    const h = px != null ? px + 'px' : Math.round(SHEET[st] * 100) + 'dvh';
+    document.documentElement.style.setProperty('--sheet-h', h);
+    $('sheet-btn').textContent = st === 'full' ? 'Micșorează' : 'Mărește';
+  }
+  // fit or centre the map in the part of the screen the sheet leaves free
+  function fitView(latlngs, pad) {
+    const b = sheetPx();
+    map.fitBounds(latlngs, { paddingTopLeft: [pad, pad], paddingBottomRight: [pad, pad + b] });
+  }
+  function centreOn(lat, lon, z) {
+    map.setView([lat, lon], z);
+    const b = sheetPx(); if (b) map.panBy([0, b / 2], { animate: false });
+  }
+  $('sheet-btn').addEventListener('click', e => { e.stopPropagation(); setSheet(sheet === 'full' ? 'half' : 'full'); });
+  $('fab-map').addEventListener('click', () => setSheet(sheet === 'peek' ? 'half' : 'peek'));
+  (function dragSheet() {
+    const g = $('grab'), pnl = $('panel');
+    let y0 = null, h0 = 0, moved = false;
+    g.addEventListener('pointerdown', e => { if (e.target.closest('button')) return; y0 = e.clientY; h0 = pnl.getBoundingClientRect().height; moved = false; pnl.classList.add('dragging'); g.setPointerCapture?.(e.pointerId); });
+    g.addEventListener('pointermove', e => {
+      if (y0 == null) return;
+      const h = Math.max(70, Math.min(innerHeight * .94, h0 + (y0 - e.clientY)));
+      if (Math.abs(y0 - e.clientY) > 4) moved = true;
+      document.documentElement.style.setProperty('--sheet-h', h + 'px');
+    });
+    const end = e => {
+      if (y0 == null) return;
+      pnl.classList.remove('dragging');
+      const f = pnl.getBoundingClientRect().height / innerHeight; y0 = null;
+      if (!moved) { setSheet(sheet === 'peek' ? 'half' : sheet === 'half' ? 'full' : 'half'); return; }
+      setSheet(f < .3 ? 'peek' : f < .68 ? 'half' : 'full');
+    };
+    g.addEventListener('pointerup', end); g.addEventListener('pointercancel', end);
+  })();
+  setSheet('half');
+  $('panel').addEventListener('scroll', () => {
+    if (!PHONE.matches) return;
+    const secs = [...$('panel').querySelectorAll('section h2')], top = $('panel').getBoundingClientRect().top + 60;
+    let t = 'Harta zonelor pentru drone';
+    for (const h of secs) if (h.getBoundingClientRect().top < top) t = h.textContent;
+    $('grab-title').textContent = t.charAt(0) + t.slice(1).toLowerCase();
+  }, { passive: true });   // the panel and fonts settle after the map starts
   map.attributionControl.setPrefix('').addAttribution((window.__MODE === 'site' ? '' : '© OpenStreetMap contributors · ') + 'ROMATSA · MApN');
   const renderer = L.canvas({ padding: 0.3 });
   const coordCtl = L.control({ position: 'bottomleft' });
@@ -1064,7 +1158,8 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     if (highlight) map.removeLayer(highlight);
     highlight = L.layerGroup(hits.map(z => L.polygon(z.geom, { renderer, color: css('--ink'), weight: 2.5, fill: false, interactive: false }))).addTo(map);
     renderResults(lat, lon, hits, fromGps);
-    $('results').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    if (PHONE.matches && sheet === 'peek') setSheet('half');
+    $('results').scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
 
   function renderResults(lat, lon, hits, fromGps) {
@@ -1135,8 +1230,8 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
         <p class="sub">${esc(placeName(fl[0]))} · ${fl[0].from} – ${fl[0].to} · ${fl.length} ${fl.length > 1 ? 'zboruri' : 'zbor'}, 1–120 m</p><div class="chips"></div>`;
       const ch = el.querySelector('.chips');
       const btn = (t, fn) => { const x = document.createElement('button'); x.type = 'button'; x.textContent = t; x.addEventListener('click', fn); ch.appendChild(x); return x; };
-      if (fl.length > 1) btn('Toate', () => map.fitBounds(fl.flatMap(x => x.poly), { padding: [30, 30] }));
-      for (const m of fl) btn('Zbor ' + m.zbor, () => { map.fitBounds(m.poly, { padding: [40, 40] }); check(m.takeoff[0], m.takeoff[1]); });
+      if (fl.length > 1) btn('Toate', () => fitView(fl.flatMap(x => x.poly), 30));
+      for (const m of fl) btn('Zbor ' + m.zbor, () => { fitView(m.poly, 40); check(m.takeoff[0], m.takeoff[1]); });
       if (fl[0].imp) {
         const del = btn('Scoate', () => {
           if (!del.dataset.armed) { del.dataset.armed = '1'; del.textContent = 'Sigur?'; setTimeout(() => { if (del.isConnected) { delete del.dataset.armed; del.textContent = 'Scoate'; } }, 4000); return; }
@@ -1158,12 +1253,18 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
 
   function setMode(m) {
     draft.mode = m;
-    $('draw-hint').textContent = m === 'pts' ? (PEN_SEEN || COARSE
+    $('draw-hint').textContent = m === 'pts' ? (PEN_SEEN
         ? 'Cu Apple Pencil trasezi conturul zonei dintr-o singură mișcare sau atingi colțurile pe rând. Cu degetul muți și mărești harta.'
+        : COARSE ? 'Atinge harta la fiecare colț al zonei, de jur împrejur, sau apasă „Desen liber” și trasează conturul cu degetul.'
         : 'Atinge harta ca să adaugi colțurile zonei, în ordine, de jur împrejur, sau apasă „Desen liber” și trasează conturul.')
       : m === 'free' ? 'Trasează conturul zonei dintr-o singură mișcare. La final îl transform în colțuri pe care le poți ajusta.'
       : m === 'tk' ? 'Atinge harta în interiorul zonei, acolo unde vrei să decolezi.' : draft.pts.length ? 'Poți trage de puncte ca să ajustezi zona.' : HINT;
     $('map').style.cursor = m ? 'crosshair' : '';
+    const bar = m && PHONE.matches;
+    $('drawbar').classList.toggle('on', !!bar);
+    document.querySelector('.app').classList.toggle('drawing', !!bar);
+    if (bar) { setSheet('peek'); $('drawbar-hint').textContent = $('draw-hint').textContent; }
+    else if (PHONE.matches && draft.pts.length > 2 && sheet === 'peek') setSheet('half');
     drawButtons();
   }
   function drawButtons() {
@@ -1278,7 +1379,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
       const el = document.createElement('div'); el.className = 'saved';
       el.innerHTML = `<span><b>${esc(d.name)}</b> · ${d.pts.length} colțuri · ${dmy(new Date(d.saved))}</span><span class="row"><button type="button">Deschide</button><button type="button">Șterge</button></span>`;
       const [open, del] = el.querySelectorAll('button');
-      open.addEventListener('click', () => { Object.assign(draft, { pts: d.pts.map(p => p.slice()), tk: d.tk, name: d.name }); setMode(null); redrawDraft(); map.fitBounds(draft.pts, { padding: [40, 40] }); });
+      open.addEventListener('click', () => { Object.assign(draft, { pts: d.pts.map(p => p.slice()), tk: d.tk, name: d.name }); setMode(null); redrawDraft(); fitView(draft.pts, 40); });
       del.addEventListener('click', () => {
         if (del.dataset.armed) { drafts.splice(i, 1); saveDrafts(); renderSaved(); return; }
         del.dataset.armed = '1'; del.textContent = 'Sigur?';
@@ -1293,6 +1394,10 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
   $('d-tk').addEventListener('click', () => setMode('tk'));
   $('d-clear').addEventListener('click', () => { Object.assign(draft, { pts: [], tk: null, name: '' }); setMode(null); redrawDraft(); });
   $('d-free').addEventListener('click', () => setMode(draft.mode === 'free' ? 'pts' : 'free'));
+  $('db-undo').addEventListener('click', () => $('d-undo').click());
+  $('db-free').addEventListener('click', () => { $('d-free').click(); $('db-free').textContent = draft.mode === 'free' ? 'Colțuri' : 'Desen liber'; });
+  $('db-done').addEventListener('click', () => { if (draft.mode === 'tk') { setMode(null); return; } if (draft.pts.length >= 3) $('d-done').click(); else setMode(null); });
+  $('db-clear').addEventListener('click', () => $('d-clear').click());
 
   // ---------- Apple Pencil (and freehand with mouse or finger) ----------
   // In drawing mode the pencil draws and the finger keeps moving the map; a pencil tap adds one corner,
@@ -1362,14 +1467,16 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
     if (!m) { $('coord').setCustomValidity('Scrie latitudinea și longitudinea, de exemplu 44.42252, 26.15580'); $('coord').reportValidity(); return; }
     $('coord').setCustomValidity('');
     const lat = +m[1].replace(',', '.'), lon = +m[2].replace(',', '.');
-    map.setView([lat, lon], Math.max(map.getZoom(), 15)); check(lat, lon);
+    centreOn(lat, lon, Math.max(map.getZoom(), 15)); check(lat, lon);
   });
   $('coord').addEventListener('input', () => $('coord').setCustomValidity(''));
+  $('fab-gps').addEventListener('click', () => $('gps').click());
+  if (!('geolocation' in navigator)) $('fab-gps').hidden = true;
   if ('geolocation' in navigator) {
     $('gps').hidden = false;
     $('gps').addEventListener('click', () => {
       const msg = $('gpsmsg'); msg.hidden = false; msg.textContent = 'Caut poziția…';
-      navigator.geolocation.getCurrentPosition(p => { msg.hidden = true; map.setView([p.coords.latitude, p.coords.longitude], 16); check(p.coords.latitude, p.coords.longitude, true); },
+      navigator.geolocation.getCurrentPosition(p => { msg.hidden = true; centreOn(p.coords.latitude, p.coords.longitude, 16); check(p.coords.latitude, p.coords.longitude, true); },
         () => { msg.textContent = 'Poziția nu e disponibilă aici. Deschide varianta offline a hărții pe telefon sau scrie coordonatele.'; }, { enableHighAccuracy: true, timeout: 15000 });
     });
   }
@@ -1504,11 +1611,12 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
         <ul>${p.watch.map(w => `<li>${esc(w)}</li>`).join('')}</ul><div class="row"></div>`;
       const row = el.querySelector('.row');
       const b1 = document.createElement('button'); b1.type = 'button'; b1.textContent = 'Vezi pe hartă';
-      b1.addEventListener('click', () => map.fitBounds(p.poly, { padding: [30, 30] }));
+      b1.addEventListener('click', () => fitView(p.poly, 30));
       const b2 = document.createElement('button'); b2.type = 'button'; b2.className = 'primary'; b2.textContent = 'Deschide în planificator';
       b2.addEventListener('click', () => {
         Object.assign(draft, { pts: p.poly.map(q => q.slice()), tk: p.takeoff ? p.takeoff.slice() : null, name: p.name });
-        setMode(null); redrawDraft(); map.fitBounds(p.poly, { padding: [40, 40] });
+        setMode(null); redrawDraft(); fitView(p.poly, 40);
+        if (PHONE.matches) setSheet('half');
         $('plan').scrollIntoView({ block: 'start', behavior: 'smooth' });
       });
       row.append(b1, b2); box.appendChild(el);
@@ -1524,7 +1632,7 @@ textarea.coords { width: 100%; min-height: 120px; font-family: var(--font-mono);
       if (seen[m.cod]) continue; seen[m.cod] = 1;
       const b = document.createElement('button'); b.type = 'button';
       b.textContent = shortPlace(m) + ' · aviz ' + m.cod;
-      b.addEventListener('click', () => { const pts = fl.filter(x => x.cod === m.cod).flatMap(x => x.poly); map.fitBounds(pts, { padding: [30, 30] }); check(m.takeoff[0], m.takeoff[1]); });
+      b.addEventListener('click', () => { const pts = fl.filter(x => x.cod === m.cod).flatMap(x => x.poly); fitView(pts, 30); check(m.takeoff[0], m.takeoff[1]); });
       $('jumps').appendChild(b);
     }
     const ro = document.createElement('button'); ro.type = 'button'; ro.textContent = 'Toată țara';
