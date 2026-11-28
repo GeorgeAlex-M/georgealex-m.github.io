@@ -883,7 +883,7 @@ button:disabled { opacity: .45; cursor: default; }
     </section>
 
     <section aria-labelledby="h-req">
-      <h2 id="h-req">Cererile mele aprobate</h2>
+      <h2 id="h-req">Cererile mele</h2>
       <div id="reqs" style="display:flex;flex-direction:column;gap:8px"></div>
       <div class="row"><label class="btnlike" for="imp">Adaugă un aviz (PDF de pe aerofoto)</label><input type="file" id="imp" accept="application/pdf,.pdf" multiple class="vh"></div>
       <p class="sub" id="imp-msg" hidden></p>
@@ -1200,7 +1200,7 @@ button:disabled { opacity: .45; cursor: default; }
   function zoneStyle(cat, z) {
     const col = css(CATS[cat].c), big = z && z.bb && (z.bb[2] - z.bb[0]) * (z.bb[3] - z.bb[1]) > 0.01;
     return { renderer, color: col, weight: cat === 'mine' ? 3 : big ? 2 : 1.4, opacity: .95, fillColor: col,
-      fillOpacity: cat === 'mine' ? .22 : cat === 'border30' || big ? .03 : .12, dashArray: CATS[cat].dash || big ? '7 5' : null, interactive: false };
+      fillOpacity: cat === 'mine' ? .22 : cat === 'border30' || big ? .03 : .12, dashArray: z && z.pending ? '8 6' : CATS[cat].dash || big ? '7 5' : null, interactive: false };
   }
 
   let tiles;
@@ -1241,7 +1241,7 @@ button:disabled { opacity: .45; cursor: default; }
       pl.addTo(groups[z.cat]); z.layer = pl;
       if (z.cat === 'mine') {   // label each approved flight and mark its declared takeoff point
         const ring = z.geom[0][0], c = [ring.reduce((s, p) => s + p[0], 0) / ring.length, ring.reduce((s, p) => s + p[1], 0) / ring.length];
-        L.marker(c, { interactive: false, keyboard: false, icon: L.divIcon({ className: '', html: `<span class="ml">${z.cod} · Z${z.zbor}</span>`, iconSize: [0, 0] }) }).addTo(groups.mine);
+        L.marker(c, { interactive: false, keyboard: false, icon: L.divIcon({ className: '', html: `<span class="ml">${z.cod} · Z${z.zbor}${z.pending ? ' · trimisă' : ''}</span>`, iconSize: [0, 0] }) }).addTo(groups.mine);
         L.circleMarker(z.takeoff, { renderer, radius: 4, color: css('--z-mine'), weight: 2, fillColor: css('--panel'), fillOpacity: 1, interactive: false }).addTo(groups.mine);
       }
     }
@@ -1283,12 +1283,15 @@ button:disabled { opacity: .45; cursor: default; }
     const prohibited = rest.filter(h => h.cat === 'aip' && /^LRP/i.test(h.id));
     const activeNotam = rest.filter(h => h.cat === 'notam' && h.status === 'active');
     const needsAviz = rest.some(h => (h.cat === 'uas' && /aerofoto@mapn\.ro/i.test(h.contact || '')) || (h.cat === 'aip' && /^LRR3/i.test(h.id)));
-    const validMine = mine.filter(m => now >= pd(m.from) && now <= new Date(pd(m.to).getTime() + 86399e3));
+    const pendMine = mine.filter(m => m.pending);
+    const validMine = mine.filter(m => !m.pending && now >= pd(m.from) && now <= new Date(pd(m.to).getTime() + 86399e3));
     let cls = 'ok', title = 'Nicio zonă restricționată aici', items = [];
     if (prohibited.length) { cls = 'bad'; title = 'Zonă interzisă'; items.push('Nu zbori aici.'); }
     else if (other.length || activeNotam.length) { cls = 'bad'; title = 'Ai nevoie și de alte acorduri';
       other.forEach(o => items.push(`${CATS[o.cat].tag}: ${o.id}`)); activeNotam.forEach(n => items.push(`NOTAM activ acum: ${n.id}`)); }
     else if (needsAviz && validMine.length) { title = 'Ești în perimetrul avizului tău'; validMine.forEach(m => items.push(`Aviz ${m.cod}, zbor nr. ${m.zbor}: valabil ${m.from}–${m.to}`)); }
+    else if (needsAviz && pendMine.length && pendMine.length === mine.length) { cls = 'warn'; title = 'Cererea ta e trimisă, avizul nu a venit încă';
+      pendMine.forEach(m => items.push(`Cererea ${m.cod}, zbor nr. ${m.zbor}: așteaptă avizul MApN.`)); items.push('Nu zbura aici până nu primești avizul pe aerofoto.'); }
     else if (needsAviz && mine.length) { cls = 'warn'; title = 'Avizul tău nu e valabil azi'; mine.forEach(m => items.push(`Aviz ${m.cod}, zbor nr. ${m.zbor}: valabil ${m.from}–${m.to}`)); }
     else if (needsAviz) { cls = 'warn'; title = 'Pentru filmare îți trebuie aviz MApN'; items.push('Locul nu e în niciunul dintre perimetrele tale aprobate.'); }
     if (cls === 'ok' && !needsAviz) items.push(`După ${DATE_TXT}. Se aplică regulile generale ale categoriei „deschise”.`);
@@ -1306,6 +1309,9 @@ button:disabled { opacity: .45; cursor: default; }
     if (z.cat === 'prop') return `<div class="hit" style="--c:${css('--z-prop')}"><div class="top"><span class="name">${esc(z.id)}</span><span class="tag">propunere</span></div>
       <p class="todo">${esc(z.why)}</p><p class="sub">Nu e o zonă aprobată. O găsești la „Locuri propuse”.</p></div>`;
     const c = css(CATS[z.cat].c);
+    if (z.cat === 'mine' && z.pending) return `<div class="hit" style="--c:${c}"><div class="top"><span class="name">Cererea ${z.cod} · Zbor nr. ${z.zbor}</span><span class="tag">trimisă</span></div>
+      <dl class="lim"><dt>Perioada cerută</dt><dd>${z.from} – ${z.to}</dd><dt>Înălțime</dt><dd>1–120 m</dd><dt>Decolare</dt><dd class="mono">${z.takeoff[0].toFixed(5)}, ${z.takeoff[1].toFixed(5)}</dd></dl>
+      <p class="todo">Cererea e trimisă la MApN și așteaptă avizul. Până vine avizul nu zbori aici. Când îl primești, adaugă PDF-ul lui la „Cererile mele”.</p></div>`;
     if (z.cat === 'mine') return `<div class="hit" style="--c:${c}"><div class="top"><span class="name">Aviz ${z.cod} · Zbor nr. ${z.zbor}</span><span class="tag">${CATS.mine.tag}</span></div>
       <dl class="lim"><dt>Perioada</dt><dd>${z.from} – ${z.to}</dd><dt>Înălțime</dt><dd>1–120 m</dd><dt>Decolare</dt><dd class="mono">${z.takeoff[0].toFixed(5)}, ${z.takeoff[1].toFixed(5)}</dd></dl>
       <p class="todo">Poți decola și ateriza din orice punct din interiorul perimetrului (răspuns aerofoto, 22.10.2026). Ai la tine PDF-ul avizului.</p></div>`;
@@ -1328,8 +1334,8 @@ button:disabled { opacity: .45; cursor: default; }
   });
 
   // ---------- approved requests ----------
-  const ST = { valid: ['valabil azi', 'ok'], upcoming: ['începe mai târziu', 'warn'], expired: ['expirat', 'bad'] };
-  const reqStatus = m => now < pd(m.from) ? 'upcoming' : now > new Date(pd(m.to).getTime() + 86399e3) ? 'expired' : 'valid';
+  const ST = { valid: ['valabil azi', 'ok'], upcoming: ['începe mai târziu', 'warn'], expired: ['expirat', 'bad'], pending: ['așteaptă avizul', 'warn'] };
+  const reqStatus = m => m.pending ? 'pending' : now < pd(m.from) ? 'upcoming' : now > new Date(pd(m.to).getTime() + 86399e3) ? 'expired' : 'valid';
   // the place is whatever the request itself says (its purpose line), so no names live in this page
   const placeName = m => m.loc ? m.loc.charAt(0).toUpperCase() + m.loc.slice(1) : 'Aviz ' + m.cod;
   const shortPlace = m => { const t = placeName(m).replace(/^(Filmare\/?foto|Filmarefoto|peisaj|Peisaj)\s*/i, ''); return t.length > 26 ? t.slice(0, 25) + '…' : t; };
@@ -1341,7 +1347,7 @@ button:disabled { opacity: .45; cursor: default; }
     for (const cod of Object.keys(by)) {
       const fl = by[cod], st = reqStatus(fl[0]);
       const el = document.createElement('div'); el.className = 'req';
-      el.innerHTML = `<div class="top"><span class="name">Aviz ${esc(cod)}</span><span class="pill ${ST[st][1]}">${ST[st][0]}</span></div>
+      el.innerHTML = `<div class="top"><span class="name">${fl[0].pending ? 'Cererea' : 'Aviz'} ${esc(cod)}</span><span class="pill ${ST[st][1]}">${ST[st][0]}</span></div>
         <p class="sub">${esc(placeName(fl[0]))} · ${fl[0].from} – ${fl[0].to} · ${fl.length} ${fl.length > 1 ? 'zboruri' : 'zbor'}, 1–120 m</p><div class="chips"></div>`;
       const ch = el.querySelector('.chips');
       const btn = (t, fn) => { const x = document.createElement('button'); x.type = 'button'; x.textContent = t; x.addEventListener('click', fn); ch.appendChild(x); return x; };
@@ -1860,13 +1866,13 @@ button:disabled { opacity: .45; cursor: default; }
   const saveImported = list => { try { localStorage.setItem('drone-avize', JSON.stringify(list)); } catch (e) {} };
   function myFlights() {
     const seen = new Set(), out = [];
-    for (const m of DATA.mine.concat(loadImported())) { const k = m.cod + '/' + m.zbor; if (!seen.has(k)) { seen.add(k); out.push(m); } }
+    for (const m of loadImported().concat(DATA.mine)) { const k = m.cod + '/' + m.zbor; if (!seen.has(k)) { seen.add(k); out.push(m); } }
     return out;
   }
   function refreshMine() {
     for (let i = all.length - 1; i >= 0; i--) if (all[i].cat === 'mine') all.splice(i, 1);
     for (const m of myFlights()) {
-      const z = { cat: 'mine', id: `Aviz ${m.cod} zbor ${m.zbor}`, cod: m.cod, zbor: m.zbor, from: m.from, to: m.to, takeoff: m.takeoff, loc: m.loc, imp: m.imp, geom: [[m.poly]] };
+      const z = { cat: 'mine', id: `Aviz ${m.cod} zbor ${m.zbor}`, cod: m.cod, zbor: m.zbor, from: m.from, to: m.to, takeoff: m.takeoff, loc: m.loc, imp: m.imp, pending: !!m.pending, geom: [[m.poly]] };
       z.bb = bbox(z.geom); all.push(z);
     }
   }
